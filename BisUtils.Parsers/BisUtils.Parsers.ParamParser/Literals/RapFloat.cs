@@ -5,7 +5,7 @@ using BisUtils.Parsers.ParamParser.Interfaces;
 namespace BisUtils.Parsers.ParamParser.Literals;
 
 public class RapFloat : IRapDeserializable<Generated.ParamLang.ParamParser.LiteralFloatContext>, IRapArrayEntry {
-    public float Value { get; private set; } = 0.0f;
+    public float Value { get; set; } = 0.0f;
     public static implicit operator RapFloat(float s) => new(s);
     public static implicit operator float(RapFloat s) => s.Value;
     public RapFloat(float f) => Value = f;

@@ -7,7 +7,7 @@ namespace BisUtils.Parsers.ParamParser.Literals;
 
 public class RapArray : IRapArrayEntry, IEnumerable<IRapArrayEntry>, IRapDeserializable<Generated.ParamLang.ParamParser.LiteralArrayContext> {
     public static readonly RapArray EmptyArray = new RapArray(new List<IRapArrayEntry>());
-    public IEnumerable<IRapArrayEntry> Entries { get; private set; }
+    public IEnumerable<IRapArrayEntry> Entries { get; set; }
 
     public RapArray(IEnumerable<IRapArrayEntry> entries) => Entries = entries;
     

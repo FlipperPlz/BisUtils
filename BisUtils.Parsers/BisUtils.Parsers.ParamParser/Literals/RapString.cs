@@ -5,7 +5,7 @@ using BisUtils.Parsers.ParamParser.Interfaces;
 namespace BisUtils.Parsers.ParamParser.Literals; 
 
 public class RapString : IRapDeserializable<Generated.ParamLang.ParamParser.LiteralStringContext>, IRapArrayEntry {
-    public string Value { get; private set; }
+    public string Value { get; set; }
     public static implicit operator RapString(string s) => new(s);
     public static implicit operator string(RapString s) => s.Value;
     public RapString(string s) => Value = s;

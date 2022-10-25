@@ -6,7 +6,7 @@ using BisUtils.Parsers.ParamParser.Interfaces;
 namespace BisUtils.Parsers.ParamParser.Literals; 
 
 public class RapInteger : IRapDeserializable<Generated.ParamLang.ParamParser.LiteralIntegerContext>, IRapLiteral, IRapArrayEntry {
-    public int Value { get; private set; }
+    public int Value { get; set; }
     public static implicit operator RapInteger(int s) => new(s);
     public static implicit operator int (RapInteger s) => s.Value;
 
