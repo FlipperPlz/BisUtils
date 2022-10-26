@@ -37,7 +37,7 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         if (ParentClassname is not null) builder.Append(" : ").Append(ParentClassname);
         builder.Append(" {\n");
         foreach (var s in Statements) builder.Append(s.ToString(indentation + 1)).Append('\n');
-        return builder.Append("};").ToString();
+        return builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", indentation))).Append("};").ToString();
     }
     
     public static RapClassDeclaration FromContext(Generated.ParamLang.ParamParser.ClassDeclarationContext ctx) =>

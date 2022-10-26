@@ -7,4 +7,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\BisUtils.Extensions\BisUtils.Extensions.ParamConversion\BisUtils.Extensions.ParamConversion.csproj" />
+      <ProjectReference Include="..\..\BisUtils.Parsers\BisUtils.Parsers.ParamParser\BisUtils.Parsers.ParamParser.csproj" />
+    </ItemGroup>
+
 </Project>
