@@ -5,7 +5,7 @@ using BisUtils.Parsers.ParamParser.Interfaces;
 namespace BisUtils.Parsers.ParamParser.Statements; 
 
 public class RapDeleteStatement : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.DeleteStatementContext> {
-    private string Target { get; set; } = null!;
+    public string Target { get; set; } = null!;
     
     public string ToString(int indentation = char.MinValue) => new StringBuilder(string.Join(string.Empty, Enumerable.Repeat("\t", indentation)))
         .Append("delete ").Append(Target).Append(';').ToString();

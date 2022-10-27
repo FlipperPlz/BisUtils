@@ -1,4 +1,7 @@
 ﻿using System.Text;
+using Antlr4.Runtime;
+using BisUtils.Extensions.ParamConversion.Enumeration;
+using BisUtils.Generated.ParamLang;
 using BisUtils.Parsers.ParamParser;
 using BisUtils.Parsers.ParamParser.Declarations;
 using BisUtils.Parsers.ParamParser.Interfaces;
@@ -8,15 +11,37 @@ using BisUtils.Parsers.ParamParser.Statements;
 namespace BisUtils.Extensions.ParamConversion;
 
 public static class ParamConversionExtensions {
-    public static string ToString(this ParamFile paramFile, ParamFileTextFormat format = ParamFileTextFormat.CPP) {
+    public static string ToString(this ParamFile paramFile, ParamFileTextFormats format = ParamFileTextFormats.CPP) {
         switch (format) {
-            case ParamFileTextFormat.CPP: return string.Join('\n', paramFile.Statements.Select(s => s.ToString()));
-            case ParamFileTextFormat.XML: {
+            case ParamFileTextFormats.CPP: return string.Join('\n', paramFile.Statements.Select(s => s.ToString()));
+            case ParamFileTextFormats.XML: {
                 var builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
                 builder.Append("<!-- BIS Config File -->\n");
                 foreach (var statement in paramFile.Statements) builder.Append(WriteParamXML(statement)).Append('\n');
                 return builder.ToString();
             }
+            default: throw new NotSupportedException();
+        }
+    }
+
+    public static string[]? FromString(this ParamFile paramFile, Stream paramsStream, ParamFileTextFormats format = ParamFileTextFormats.CPP) {
+        var stream = new MemoryStream();
+        paramsStream.CopyTo(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        
+        switch (format) {
+            case ParamFileTextFormats.CPP: {
+                var lexer = new ParamLexer(CharStreams.fromStream(stream));
+                var tokens = new CommonTokenStream(lexer);
+                var parser = new ParamParser(tokens);
+           
+                var computationalStart = parser.computationalStart();
+                if (parser.NumberOfSyntaxErrors != 0) throw new Exception(); //TODO return error list
+                paramFile.ReadParseTree(computationalStart);
+                
+                return null;
+            }
+            case ParamFileTextFormats.XML: throw new NotImplementedException();
             default: throw new NotSupportedException();
         }
     }

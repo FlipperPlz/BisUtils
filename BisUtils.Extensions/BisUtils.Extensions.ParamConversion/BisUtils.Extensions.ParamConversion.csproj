@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\BisUtils.Core\BisUtils.Core.csproj" />
+      <ProjectReference Include="..\..\BisUtils.Parsers\BisUtils.Parsers.ParamParser\BisUtils.Parsers.ParamParser.csproj" />
+    </ItemGroup>
+
 </Project>
