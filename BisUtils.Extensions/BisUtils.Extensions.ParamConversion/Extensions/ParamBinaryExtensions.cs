@@ -52,6 +52,7 @@ public static class ParamBinaryExtensions {
                 writer.BaseStream.Position = enumOffsetPosition;
                 writer.Write(BitConverter.GetBytes(enumOffset), 0, 4);
                 writer.BaseStream.Position = enumOffset;
+                writer.Write(766);
         
                 writer.Write(paramFile.EnumValues is { } vals ? vals.Count : 0);
 
@@ -76,7 +77,7 @@ public static class ParamBinaryExtensions {
         return output;
     }
 
-    public static void FromBinary(this ParamFile paramFile, Stream stream,
+    public static ParamFile FromBinary(this ParamFile paramFile, Stream stream,
         ParamFileBinaryFormats format = ParamFileBinaryFormats.RapElite) {
         var memStream = new MemoryStream();
         stream.CopyTo(memStream);
@@ -95,7 +96,7 @@ public static class ParamBinaryExtensions {
                     reader.ReadAsciiZ();
                     var parentEntryCount = reader.ReadCompactInteger();
 
-                    for (var i = 0; i < parentEntryCount; ++i) {
+                    for (var i = 0; i < parentEntryCount; i++) {
                         switch (reader.PeekChar()) {
                             case 0: paramFile.Statements.Add(reader.ReadOFPClassDeclaration());      break;
                             case 1: paramFile.Statements.Add(reader.ReadOFPVariableDeclaration());   break;
@@ -127,9 +128,10 @@ public static class ParamBinaryExtensions {
                         reader.BaseStream.Position = clazz.BinaryOffset;
                         var parent = reader.ReadAsciiZ();
                         clazz.ParentClassname = (parent == string.Empty) ? null : parent;
-                        for (var i = 0; i < reader.ReadCompactInteger(); ++i) AddEntryToClass(clazz);
+                        var clazzCount = reader.ReadCompactInteger();
+                        for (var i = 0; i < clazzCount; i++) AddEntryToClass(clazz);
                         
-                        foreach (var statement in paramFile.Statements) {
+                        foreach (var statement in clazz.Statements) {
                             if(statement is not RapClassDeclaration child) continue;
                             LoadChildClasses(child);
                         }
@@ -147,18 +149,20 @@ public static class ParamBinaryExtensions {
 
                 if (!ReadParentClasses()) throw new Exception("No parent classes were found. (OFP:ParamBinaryExtensions)");
                 if (!ReadChildClasses()) throw new Exception("No child classes were found. (OFP:ParamBinaryExtensions)");
-
+                reader.ReadInt32();
                 var enumCount = reader.ReadInt32();
                 if(enumCount == 0) break;
 
                 paramFile.EnumValues = new Dictionary<string, int?>();
                 
-                for (var e = 0; e < enumCount; e++) paramFile.EnumValues.Add(reader.ReadAsciiZ(), reader.ReadInt32());
-                //TODO: Read Enums
+                for (var e = 0; e < enumCount; e++) 
+                    paramFile.EnumValues.Add(reader.ReadAsciiZ(), reader.ReadInt32());
                 break;
             }
             case ParamFileBinaryFormats.RapOFP: throw new NotImplementedException();
             default: throw new ArgumentOutOfRangeException(nameof(format), format, null);
         }
+
+        return paramFile;
     }
 }

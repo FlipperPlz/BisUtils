@@ -20,14 +20,12 @@ public static class ParamConversionExtensions {
                 var valList = paramFile.EnumValues.Values.ToList();
 
                 for (var i = 0; i < keyList.Count; i++) {
-                    for (var j = 0; j < valList.Count; j++) {
-                        var key = keyList[i];
-                        var val = valList[j];
-                        builder.Append(key);
-                        if (val is not null) builder.Append('=').Append(val.Value);
-                        if (i + 1 < keyList.Count) builder.Append(',');
-                        builder.Append('\n');
-                    }
+                    var key = keyList[i];
+                    var val = valList[i];
+                    builder.Append('\t').Append(key);
+                    if (val is not null) builder.Append('=').Append(val.Value);
+                    if (i + 1 < keyList.Count) builder.Append(',');
+                    builder.Append('\n');
                 }
 
                 builder.Append("};\n");
@@ -43,7 +41,7 @@ public static class ParamConversionExtensions {
         }
     }
 
-    public static string[]? FromString(this ParamFile paramFile, Stream paramsStream, ParamFileTextFormats format = ParamFileTextFormats.CPP) {
+    public static ParamFile FromString(this ParamFile paramFile, Stream paramsStream, ParamFileTextFormats format = ParamFileTextFormats.CPP) {
         var stream = new MemoryStream();
         paramsStream.CopyTo(stream);
         stream.Seek(0, SeekOrigin.Begin);
@@ -58,7 +56,7 @@ public static class ParamConversionExtensions {
                 if (parser.NumberOfSyntaxErrors != 0) throw new Exception(); //TODO return error list
                 paramFile.ReadParseTree(computationalStart);
                 
-                return null;
+                return paramFile;
             }
             case ParamFileTextFormats.XML: throw new NotImplementedException();
             default: throw new NotSupportedException();
