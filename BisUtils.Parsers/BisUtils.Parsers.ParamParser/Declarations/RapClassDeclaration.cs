@@ -7,7 +7,7 @@ namespace BisUtils.Parsers.ParamParser.Declarations;
 public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.ClassDeclarationContext> {
     public string Classname { get; set; } = string.Empty;
     public string? ParentClassname { get; set; } = null;
-    public IEnumerable<IRapStatement> Statements { get; set; }
+    public List<IRapStatement> Statements { get; set; }
 
     public uint BinaryOffset { get; set; } = 0;
     public long BinaryOffsetPosition { get; set; } = 0;
@@ -18,7 +18,7 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         statements ??= new List<IRapStatement>();
         Classname = classname;
         ParentClassname = parentClassname;
-        Statements = statements;
+        Statements = statements.ToList();
     }
     
     private RapClassDeclaration() {}
@@ -27,7 +27,7 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         if (ctx.classname is not { } classname) throw new Exception();
         Classname = classname.GetText();
         if (ctx.superclass is { } superclass) ParentClassname = superclass.GetText();
-        if (ctx.statement() is { } statements) Statements = statements.Select(RapStatementFactory.Create);
+        if (ctx.statement() is { } statements) Statements = statements.Select(RapStatementFactory.Create).ToList();
         return this;
     }
 
