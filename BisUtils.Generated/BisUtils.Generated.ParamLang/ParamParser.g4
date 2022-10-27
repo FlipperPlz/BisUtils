@@ -4,7 +4,11 @@ parser grammar ParamParser;
 
 options { tokenVocab=ParamLexer; }
 
-computationalStart: statement*;
+computationalStart: ( enumDeclaration | statement )*;
+
+enumDeclaration: Enum LCBracket (enumValue (Comma enumValue)* Comma?)? RCBracket Semicolon;
+enumValue: identifier (Assign literalInteger)?;
+
 
 statement: 
     deleteStatement           Semicolon        |

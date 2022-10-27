@@ -53,8 +53,15 @@ public static class ParamBinaryExtensions {
                 writer.Write(BitConverter.GetBytes(enumOffset), 0, 4);
                 writer.BaseStream.Position = enumOffset;
         
-                writer.Write((uint) 0);
-                    
+                writer.Write(paramFile.EnumValues is { } vals ? vals.Count : 0);
+
+                if (paramFile.EnumValues is not null) {
+                    foreach (var param in paramFile.EnumValues) {
+                        writer.WriteAsciiZ(param.Key);
+                        writer.Write(param.Value ?? 0);
+                    }
+                }
+                
                 break;
             }
             case ParamFileBinaryFormats.RapOFP: throw new NotImplementedException();
@@ -140,6 +147,13 @@ public static class ParamBinaryExtensions {
 
                 if (!ReadParentClasses()) throw new Exception("No parent classes were found. (OFP:ParamBinaryExtensions)");
                 if (!ReadChildClasses()) throw new Exception("No child classes were found. (OFP:ParamBinaryExtensions)");
+
+                var enumCount = reader.ReadInt32();
+                if(enumCount == 0) break;
+
+                paramFile.EnumValues = new Dictionary<string, int?>();
+                
+                for (var e = 0; e < enumCount; e++) paramFile.EnumValues.Add(reader.ReadAsciiZ(), reader.ReadInt32());
                 //TODO: Read Enums
                 break;
             }

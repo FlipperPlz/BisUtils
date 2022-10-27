@@ -7,6 +7,7 @@ EMPTY_DELIMITED_COMMENT: ('/*/' | '/**/')    -> channel(HIDDEN);
 DELIMITED_COMMENT: '/*' .*? '*/'             -> channel(HIDDEN);
 WHITESPACES: [\r\n \t]                       -> channel(HIDDEN);
 
+Enum:               'enum';
 Class:              'class';
 Delete:             'delete';
 Add_Assign:         '+=';

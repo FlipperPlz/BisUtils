@@ -39,6 +39,18 @@ public interface IParamParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitComputationalStart([NotNull] ParamParser.ComputationalStartContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ParamParser.enumDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEnumDeclaration([NotNull] ParamParser.EnumDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ParamParser.enumValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEnumValue([NotNull] ParamParser.EnumValueContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ParamParser.statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

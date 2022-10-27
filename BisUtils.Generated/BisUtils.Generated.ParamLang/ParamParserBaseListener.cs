@@ -49,6 +49,30 @@ public partial class ParamParserBaseListener : IParamParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitComputationalStart([NotNull] ParamParser.ComputationalStartContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ParamParser.enumDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEnumDeclaration([NotNull] ParamParser.EnumDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ParamParser.enumDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEnumDeclaration([NotNull] ParamParser.EnumDeclarationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ParamParser.enumValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEnumValue([NotNull] ParamParser.EnumValueContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ParamParser.enumValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEnumValue([NotNull] ParamParser.EnumValueContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ParamParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

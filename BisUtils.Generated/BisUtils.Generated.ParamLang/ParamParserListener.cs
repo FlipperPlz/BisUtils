@@ -42,6 +42,26 @@ public interface IParamParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitComputationalStart([NotNull] ParamParser.ComputationalStartContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ParamParser.enumDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEnumDeclaration([NotNull] ParamParser.EnumDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ParamParser.enumDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEnumDeclaration([NotNull] ParamParser.EnumDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ParamParser.enumValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEnumValue([NotNull] ParamParser.EnumValueContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ParamParser.enumValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEnumValue([NotNull] ParamParser.EnumValueContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ParamParser.statement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

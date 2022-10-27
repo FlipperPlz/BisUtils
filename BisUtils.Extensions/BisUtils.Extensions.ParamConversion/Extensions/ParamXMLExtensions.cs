@@ -13,7 +13,26 @@ namespace BisUtils.Extensions.ParamConversion;
 public static class ParamConversionExtensions {
     public static string ToString(this ParamFile paramFile, ParamFileTextFormats format = ParamFileTextFormats.CPP) {
         switch (format) {
-            case ParamFileTextFormats.CPP: return string.Join('\n', paramFile.Statements.Select(s => s.ToString()));
+            case ParamFileTextFormats.CPP: {
+                var builder = new StringBuilder(string.Join('\n', paramFile.Statements.Select(s => s.ToString())));
+                builder.Append("\nenum {\n");
+                var keyList = paramFile.EnumValues.Keys.ToList();
+                var valList = paramFile.EnumValues.Values.ToList();
+
+                for (var i = 0; i < keyList.Count; i++) {
+                    for (var j = 0; j < valList.Count; j++) {
+                        var key = keyList[i];
+                        var val = valList[j];
+                        builder.Append(key);
+                        if (val is not null) builder.Append('=').Append(val.Value);
+                        if (i + 1 < keyList.Count) builder.Append(',');
+                        builder.Append('\n');
+                    }
+                }
+
+                builder.Append("};\n");
+                return builder.ToString();
+            }
             case ParamFileTextFormats.XML: {
                 var builder = new StringBuilder("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
                 builder.Append("<!-- BIS Config File -->\n");
