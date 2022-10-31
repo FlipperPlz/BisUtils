@@ -23,11 +23,10 @@ Comma:              ',';
 DoubleQuote:        '"';
 Identifier: [a-zA-Z_] [a-zA-Z_0-9]*;
 
-LiteralString: '"' (EnforceEscapeSequence | .)*? '"'; // Not 1:1 with bis
+LiteralString: '"'( ('""'|~('"'))*)'"';
 LiteralInteger: Number;
 LiteralFloat: DecimalNumber | ScientificNumber;
 
-fragment EnforceEscapeSequence: '\\\\' | '\\"' | '\\\'';
 fragment Number: ('-')? [0-9]+;
 fragment DecimalNumber:  Number '.' [0-9]+;
 fragment ScientificNumber: DecimalNumber ('e'|'E') ('+'|'-') DecimalNumber;
