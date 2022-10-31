@@ -11,8 +11,7 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
 
     public uint BinaryOffset { get; set; } = 0;
     public long BinaryOffsetPosition { get; set; } = 0;
-
-
+    
     public RapClassDeclaration(string classname, string? parentClassname = null,
         IEnumerable<IRapStatement>? statements = null) {
         statements ??= new List<IRapStatement>();
@@ -21,7 +20,7 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         Statements = statements.ToList();
     }
     
-    private RapClassDeclaration() {}
+    internal RapClassDeclaration() {}
 
     public IRapSerializable ReadParseTree(Generated.ParamLang.ParamParser.ClassDeclarationContext ctx) {
         if (ctx.classname is not { } classname) throw new Exception();

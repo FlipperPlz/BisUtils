@@ -7,12 +7,12 @@ namespace BisUtils.Parsers.ParamParser.Literals;
 
 public class RapArray : IRapArrayEntry, IEnumerable<IRapArrayEntry>, IRapDeserializable<Generated.ParamLang.ParamParser.LiteralArrayContext> {
     public static readonly RapArray EmptyArray = new RapArray(new List<IRapArrayEntry>());
-    public IEnumerable<IRapArrayEntry> Entries { get; set; }
+    public List<IRapArrayEntry> Entries { get; set; }
 
-    public RapArray(IEnumerable<IRapArrayEntry> entries) => Entries = entries;
+    public RapArray(List<IRapArrayEntry> entries) => Entries = entries;
     
     public IRapSerializable ReadParseTree(Generated.ParamLang.ParamParser.LiteralArrayContext ctx) {
-        Entries = (IEnumerable<IRapArrayEntry>) ctx.literalOrArray().Select(RapLiteralFactory.Create);
+        Entries = (List<IRapArrayEntry>) ctx.literalOrArray().Select(RapLiteralFactory.Create);
         return this;
     }
     
@@ -25,7 +25,7 @@ public class RapArray : IRapArrayEntry, IEnumerable<IRapArrayEntry>, IRapDeseria
             .Append(string.Join(',', Entries.Select(v => v.ToString())))
             .Append('}').ToString();
 
-    private RapArray() {}
+    internal RapArray() {}
 
     public static RapArray FromContext(Generated.ParamLang.ParamParser.LiteralArrayContext ctx) =>
         (RapArray) new RapArray().ReadParseTree(ctx);
