@@ -5,7 +5,13 @@ options { tokenVocab=PreProcLexer; }
 preprocessor: text* EOF;
 
 text: code |
-    directive;
+    directive |
+    lineMacro text|
+    fileMacro;
+    
+lineMacro: ENTER_MACRO_MODE LN_MACRO LEAVE_MACRO_MODE;
+fileMacro: ENTER_MACRO_MODE FL_MACRO LEAVE_MACRO_MODE;
+
 
 directive: 
     SHARP INCLUDE LITERAL_STRING newLineOrEOF |

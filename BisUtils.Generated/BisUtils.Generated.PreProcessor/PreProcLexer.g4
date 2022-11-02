@@ -1,8 +1,14 @@
 ﻿lexer grammar PreProcLexer;
 
 SHARP:     '#' -> mode(DIRECTIVE_MODE);
+ENTER_MACRO_MODE:     '__' -> mode(MACRO_MODE);
 CONCAT:    '##';
-CODE: ~[#]+;
+CODE: ~[_#]+;
+
+mode MACRO_MODE;
+LN_MACRO: 'LINE';
+FL_MACRO: 'FILE';
+LEAVE_MACRO_MODE: '__'                      -> mode(DEFAULT_MODE);
 
 mode DIRECTIVE_MODE;
 
@@ -22,7 +28,7 @@ IFDEF:     'ifdef';
 IFNDEF:    'ifndef';
 ELSE:      'else';
 ENDIF:     'endif';
-LINE:      '__LINE__';
+LINE:      '_';
 FILE:      '__FILE__';
 
 IDENTIFIER: LETTER (LETTER | [0-9])*;
