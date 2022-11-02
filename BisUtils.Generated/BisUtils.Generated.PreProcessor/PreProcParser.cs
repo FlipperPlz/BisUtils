@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:/Users/developer/Desktop/BisUtils/BisUtils.Generated/BisUtils.Generated.PreProcessor\PreProcParser.g4 by ANTLR 4.10.1
+// Generated from /Users/ryannkelly/Desktop/BisUtils/BisUtils.Generated/BisUtils.Generated.PreProcessor/PreProcParser.g4 by ANTLR 4.10.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -19,6 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
+namespace BisUtils.Generated.PreProcessor;
 using System;
 using System.IO;
 using System.Text;
@@ -36,31 +37,35 @@ public partial class PreProcParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		SHARP=1, CONCAT=2, CODE=3, DIRECTIVE_WHITESPACES=4, LSBracket=5, RSBracket=6, 
-		LParenthesis=7, RParenthesis=8, Comma=9, UNDEFINE=10, DEFINE=11, INCLUDE=12, 
-		IF=13, IFDEF=14, IFNDEF=15, ELSE=16, ENDIF=17, LINE=18, FILE=19, IDENTIFIER=20, 
-		LITERAL_STRING=21, LITERAL_INT=22, LITERAL_FLOAT=23, NEW_LINE=24, DIRECITVE_NEW_LINE=25;
+		SHARP=1, ENTER_MACRO_MODE=2, SINGLE_LINE_COMMENT=3, EMPTY_DELIMITED_COMMENT=4, 
+		DELIMITED_COMMENT=5, CONCAT=6, CODE=7, LN_MACRO=8, FL_MACRO=9, LEAVE_MACRO_MODE=10, 
+		DIRECTIVE_WHITESPACES=11, LSBracket=12, RSBracket=13, LParenthesis=14, 
+		RParenthesis=15, Comma=16, UNDEFINE=17, DEFINE=18, INCLUDE=19, IF=20, 
+		IFDEF=21, IFNDEF=22, ELSE=23, ENDIF=24, IDENTIFIER=25, LITERAL_INT=26, 
+		LITERAL_FLOAT=27, LITERAL_STRING=28, NEW_LINE=29, DIRECITVE_NEW_LINE=30;
 	public const int
-		RULE_preprocessor = 0, RULE_text = 1, RULE_directive = 2, RULE_ifdefDirective = 3, 
-		RULE_ifndefDirective = 4, RULE_elseDirective = 5, RULE_endIfDirective = 6, 
-		RULE_preprocessor_expression = 7, RULE_preprocessor_macro = 8, RULE_newLineOrEOF = 9, 
-		RULE_code = 10;
+		RULE_preprocessor = 0, RULE_text = 1, RULE_lineMacro = 2, RULE_fileMacro = 3, 
+		RULE_directive = 4, RULE_ifdefDirective = 5, RULE_ifndefDirective = 6, 
+		RULE_elseDirective = 7, RULE_endIfDirective = 8, RULE_preprocessor_expression = 9, 
+		RULE_preprocessor_macro = 10, RULE_newLineOrEOF = 11, RULE_code = 12;
 	public static readonly string[] ruleNames = {
-		"preprocessor", "text", "directive", "ifdefDirective", "ifndefDirective", 
-		"elseDirective", "endIfDirective", "preprocessor_expression", "preprocessor_macro", 
-		"newLineOrEOF", "code"
+		"preprocessor", "text", "lineMacro", "fileMacro", "directive", "ifdefDirective", 
+		"ifndefDirective", "elseDirective", "endIfDirective", "preprocessor_expression", 
+		"preprocessor_macro", "newLineOrEOF", "code"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'#'", "'##'", null, null, "'['", "']'", "'('", "')'", "','", "'undef'", 
-		"'define'", "'include'", "'if'", "'ifdef'", "'ifndef'", "'else'", "'endif'", 
-		"'__LINE__'", "'__FILE__'"
+		null, "'#'", null, null, null, null, "'##'", null, "'LINE'", "'FILE'", 
+		null, null, "'['", "']'", "'('", "')'", "','", "'undef'", "'define'", 
+		"'include'", "'if'", "'ifdef'", "'ifndef'", "'else'", "'endif'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "SHARP", "CONCAT", "CODE", "DIRECTIVE_WHITESPACES", "LSBracket", 
-		"RSBracket", "LParenthesis", "RParenthesis", "Comma", "UNDEFINE", "DEFINE", 
-		"INCLUDE", "IF", "IFDEF", "IFNDEF", "ELSE", "ENDIF", "LINE", "FILE", "IDENTIFIER", 
-		"LITERAL_STRING", "LITERAL_INT", "LITERAL_FLOAT", "NEW_LINE", "DIRECITVE_NEW_LINE"
+		null, "SHARP", "ENTER_MACRO_MODE", "SINGLE_LINE_COMMENT", "EMPTY_DELIMITED_COMMENT", 
+		"DELIMITED_COMMENT", "CONCAT", "CODE", "LN_MACRO", "FL_MACRO", "LEAVE_MACRO_MODE", 
+		"DIRECTIVE_WHITESPACES", "LSBracket", "RSBracket", "LParenthesis", "RParenthesis", 
+		"Comma", "UNDEFINE", "DEFINE", "INCLUDE", "IF", "IFDEF", "IFNDEF", "ELSE", 
+		"ENDIF", "IDENTIFIER", "LITERAL_INT", "LITERAL_FLOAT", "LITERAL_STRING", 
+		"NEW_LINE", "DIRECITVE_NEW_LINE"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -133,21 +138,21 @@ public partial class PreProcParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 25;
+			State = 29;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==SHARP || _la==CODE) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SHARP) | (1L << ENTER_MACRO_MODE) | (1L << CODE))) != 0)) {
 				{
 				{
-				State = 22;
+				State = 26;
 				text();
 				}
 				}
-				State = 27;
+				State = 31;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 28;
+			State = 32;
 			Match(Eof);
 			}
 		}
@@ -168,6 +173,18 @@ public partial class PreProcParser : Parser {
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public DirectiveContext directive() {
 			return GetRuleContext<DirectiveContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public LineMacroContext lineMacro() {
+			return GetRuleContext<LineMacroContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public TextContext text() {
+			return GetRuleContext<TextContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public NewLineOrEOFContext newLineOrEOF() {
+			return GetRuleContext<NewLineOrEOFContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public FileMacroContext fileMacro() {
+			return GetRuleContext<FileMacroContext>(0);
 		}
 		public TextContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -197,25 +214,185 @@ public partial class PreProcParser : Parser {
 		TextContext _localctx = new TextContext(Context, State);
 		EnterRule(_localctx, 2, RULE_text);
 		try {
-			State = 32;
+			State = 46;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case CODE:
+			switch ( Interpreter.AdaptivePredict(TokenStream,3,Context) ) {
+			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 30;
+				State = 34;
 				code();
 				}
 				break;
-			case SHARP:
+			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 31;
+				State = 35;
 				directive();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 3:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 36;
+				lineMacro();
+				State = 39;
+				ErrorHandler.Sync(this);
+				switch (TokenStream.LA(1)) {
+				case SHARP:
+				case ENTER_MACRO_MODE:
+				case CODE:
+					{
+					State = 37;
+					text();
+					}
+					break;
+				case Eof:
+				case NEW_LINE:
+					{
+					State = 38;
+					newLineOrEOF();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				break;
+			case 4:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 41;
+				fileMacro();
+				State = 44;
+				ErrorHandler.Sync(this);
+				switch (TokenStream.LA(1)) {
+				case SHARP:
+				case ENTER_MACRO_MODE:
+				case CODE:
+					{
+					State = 42;
+					text();
+					}
+					break;
+				case Eof:
+				case NEW_LINE:
+					{
+					State = 43;
+					newLineOrEOF();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LineMacroContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENTER_MACRO_MODE() { return GetToken(PreProcParser.ENTER_MACRO_MODE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LN_MACRO() { return GetToken(PreProcParser.LN_MACRO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LEAVE_MACRO_MODE() { return GetToken(PreProcParser.LEAVE_MACRO_MODE, 0); }
+		public LineMacroContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_lineMacro; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IPreProcParserListener typedListener = listener as IPreProcParserListener;
+			if (typedListener != null) typedListener.EnterLineMacro(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IPreProcParserListener typedListener = listener as IPreProcParserListener;
+			if (typedListener != null) typedListener.ExitLineMacro(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPreProcParserVisitor<TResult> typedVisitor = visitor as IPreProcParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLineMacro(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LineMacroContext lineMacro() {
+		LineMacroContext _localctx = new LineMacroContext(Context, State);
+		EnterRule(_localctx, 4, RULE_lineMacro);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 48;
+			Match(ENTER_MACRO_MODE);
+			State = 49;
+			Match(LN_MACRO);
+			State = 50;
+			Match(LEAVE_MACRO_MODE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class FileMacroContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENTER_MACRO_MODE() { return GetToken(PreProcParser.ENTER_MACRO_MODE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FL_MACRO() { return GetToken(PreProcParser.FL_MACRO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LEAVE_MACRO_MODE() { return GetToken(PreProcParser.LEAVE_MACRO_MODE, 0); }
+		public FileMacroContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_fileMacro; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IPreProcParserListener typedListener = listener as IPreProcParserListener;
+			if (typedListener != null) typedListener.EnterFileMacro(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IPreProcParserListener typedListener = listener as IPreProcParserListener;
+			if (typedListener != null) typedListener.ExitFileMacro(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IPreProcParserVisitor<TResult> typedVisitor = visitor as IPreProcParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFileMacro(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public FileMacroContext fileMacro() {
+		FileMacroContext _localctx = new FileMacroContext(Context, State);
+		EnterRule(_localctx, 6, RULE_fileMacro);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 52;
+			Match(ENTER_MACRO_MODE);
+			State = 53;
+			Match(FL_MACRO);
+			State = 54;
+			Match(LEAVE_MACRO_MODE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -277,73 +454,81 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public DirectiveContext directive() {
 		DirectiveContext _localctx = new DirectiveContext(Context, State);
-		EnterRule(_localctx, 4, RULE_directive);
+		EnterRule(_localctx, 8, RULE_directive);
 		int _la;
 		try {
-			State = 52;
+			State = 80;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,3,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 34;
+				State = 56;
 				Match(SHARP);
-				State = 35;
+				State = 57;
 				Match(INCLUDE);
-				State = 36;
+				State = 58;
 				Match(LITERAL_STRING);
-				State = 37;
+				State = 59;
 				newLineOrEOF();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 38;
+				State = 60;
 				Match(SHARP);
-				State = 39;
+				State = 61;
 				Match(DEFINE);
-				State = 40;
+				State = 62;
 				preprocessor_macro();
-				State = 42;
+				State = 64;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << IDENTIFIER) | (1L << LITERAL_INT) | (1L << LITERAL_FLOAT))) != 0)) {
 					{
-					State = 41;
+					State = 63;
 					preprocessor_expression();
 					}
 				}
 
-				State = 44;
+				State = 66;
 				newLineOrEOF();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 46;
+				State = 68;
 				Match(SHARP);
-				State = 47;
+				State = 69;
 				Match(UNDEFINE);
-				State = 48;
+				State = 70;
 				Match(IDENTIFIER);
-				State = 49;
+				State = 71;
 				newLineOrEOF();
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 50;
+				State = 72;
+				Match(SHARP);
+				State = 73;
 				ifdefDirective();
+				State = 74;
+				newLineOrEOF();
 				}
 				break;
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 51;
+				State = 76;
+				Match(SHARP);
+				State = 77;
 				ifndefDirective();
+				State = 78;
+				newLineOrEOF();
 				}
 				break;
 			}
@@ -360,7 +545,6 @@ public partial class PreProcParser : Parser {
 	}
 
 	public partial class IfdefDirectiveContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SHARP() { return GetToken(PreProcParser.SHARP, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IFDEF() { return GetToken(PreProcParser.IFDEF, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PreProcParser.IDENTIFIER, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public NewLineOrEOFContext newLineOrEOF() {
@@ -404,47 +588,45 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public IfdefDirectiveContext ifdefDirective() {
 		IfdefDirectiveContext _localctx = new IfdefDirectiveContext(Context, State);
-		EnterRule(_localctx, 6, RULE_ifdefDirective);
+		EnterRule(_localctx, 10, RULE_ifdefDirective);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 54;
-			Match(SHARP);
-			State = 55;
+			State = 82;
 			Match(IFDEF);
-			State = 56;
+			State = 83;
 			Match(IDENTIFIER);
-			State = 57;
+			State = 84;
 			newLineOrEOF();
-			State = 61;
+			State = 88;
 			ErrorHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(TokenStream,4,Context);
+			_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 58;
+					State = 85;
 					text();
 					}
 					} 
 				}
-				State = 63;
+				State = 90;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,4,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
 			}
-			State = 66;
+			State = 93;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,7,Context) ) {
 			case 1:
 				{
-				State = 64;
+				State = 91;
 				elseDirective();
 				}
 				break;
 			case 2:
 				{
-				State = 65;
+				State = 92;
 				endIfDirective();
 				}
 				break;
@@ -463,7 +645,6 @@ public partial class PreProcParser : Parser {
 	}
 
 	public partial class IfndefDirectiveContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SHARP() { return GetToken(PreProcParser.SHARP, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IFNDEF() { return GetToken(PreProcParser.IFNDEF, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(PreProcParser.IDENTIFIER, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public NewLineOrEOFContext newLineOrEOF() {
@@ -507,47 +688,45 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public IfndefDirectiveContext ifndefDirective() {
 		IfndefDirectiveContext _localctx = new IfndefDirectiveContext(Context, State);
-		EnterRule(_localctx, 8, RULE_ifndefDirective);
+		EnterRule(_localctx, 12, RULE_ifndefDirective);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 68;
-			Match(SHARP);
-			State = 69;
+			State = 95;
 			Match(IFNDEF);
-			State = 70;
+			State = 96;
 			Match(IDENTIFIER);
-			State = 71;
+			State = 97;
 			newLineOrEOF();
-			State = 75;
+			State = 101;
 			ErrorHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
+			_alt = Interpreter.AdaptivePredict(TokenStream,8,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 72;
+					State = 98;
 					text();
 					}
 					} 
 				}
-				State = 77;
+				State = 103;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,8,Context);
 			}
-			State = 80;
+			State = 106;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,7,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,9,Context) ) {
 			case 1:
 				{
-				State = 78;
+				State = 104;
 				elseDirective();
 				}
 				break;
 			case 2:
 				{
-				State = 79;
+				State = 105;
 				endIfDirective();
 				}
 				break;
@@ -606,34 +785,34 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public ElseDirectiveContext elseDirective() {
 		ElseDirectiveContext _localctx = new ElseDirectiveContext(Context, State);
-		EnterRule(_localctx, 10, RULE_elseDirective);
+		EnterRule(_localctx, 14, RULE_elseDirective);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 82;
+			State = 108;
 			Match(SHARP);
-			State = 83;
+			State = 109;
 			Match(ELSE);
-			State = 84;
+			State = 110;
 			newLineOrEOF();
-			State = 88;
+			State = 114;
 			ErrorHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(TokenStream,8,Context);
+			_alt = Interpreter.AdaptivePredict(TokenStream,10,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					State = 85;
+					State = 111;
 					text();
 					}
 					} 
 				}
-				State = 90;
+				State = 116;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,8,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,10,Context);
 			}
-			State = 91;
+			State = 117;
 			endIfDirective();
 			}
 		}
@@ -651,9 +830,6 @@ public partial class PreProcParser : Parser {
 	public partial class EndIfDirectiveContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SHARP() { return GetToken(PreProcParser.SHARP, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ENDIF() { return GetToken(PreProcParser.ENDIF, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public NewLineOrEOFContext newLineOrEOF() {
-			return GetRuleContext<NewLineOrEOFContext>(0);
-		}
 		public EndIfDirectiveContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -680,16 +856,14 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public EndIfDirectiveContext endIfDirective() {
 		EndIfDirectiveContext _localctx = new EndIfDirectiveContext(Context, State);
-		EnterRule(_localctx, 12, RULE_endIfDirective);
+		EnterRule(_localctx, 16, RULE_endIfDirective);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 93;
+			State = 119;
 			Match(SHARP);
-			State = 94;
+			State = 120;
 			Match(ENDIF);
-			State = 95;
-			newLineOrEOF();
 			}
 		}
 		catch (RecognitionException re) {
@@ -762,16 +936,16 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public Preprocessor_expressionContext preprocessor_expression() {
 		Preprocessor_expressionContext _localctx = new Preprocessor_expressionContext(Context, State);
-		EnterRule(_localctx, 14, RULE_preprocessor_expression);
+		EnterRule(_localctx, 18, RULE_preprocessor_expression);
 		try {
-			State = 100;
+			State = 125;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case LITERAL_FLOAT:
 				_localctx = new PreprocessorConstantContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 97;
+				State = 122;
 				Match(LITERAL_FLOAT);
 				}
 				break;
@@ -779,7 +953,7 @@ public partial class PreProcParser : Parser {
 				_localctx = new PreprocessorConstantContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 98;
+				State = 123;
 				Match(LITERAL_INT);
 				}
 				break;
@@ -787,7 +961,7 @@ public partial class PreProcParser : Parser {
 				_localctx = new PreprocessorMacroContext(_localctx);
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 99;
+				State = 124;
 				preprocessor_macro();
 				}
 				break;
@@ -839,23 +1013,23 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public Preprocessor_macroContext preprocessor_macro() {
 		Preprocessor_macroContext _localctx = new Preprocessor_macroContext(Context, State);
-		EnterRule(_localctx, 16, RULE_preprocessor_macro);
+		EnterRule(_localctx, 20, RULE_preprocessor_macro);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 102;
+			State = 127;
 			Match(IDENTIFIER);
-			State = 107;
+			State = 132;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==LParenthesis) {
 				{
-				State = 103;
+				State = 128;
 				Match(LParenthesis);
-				State = 104;
+				State = 129;
 				preprocessor_expression();
-				State = 105;
+				State = 130;
 				Match(RParenthesis);
 				}
 			}
@@ -902,12 +1076,12 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public NewLineOrEOFContext newLineOrEOF() {
 		NewLineOrEOFContext _localctx = new NewLineOrEOFContext(Context, State);
-		EnterRule(_localctx, 18, RULE_newLineOrEOF);
+		EnterRule(_localctx, 22, RULE_newLineOrEOF);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 109;
+			State = 134;
 			_la = TokenStream.LA(1);
 			if ( !(_la==Eof || _la==NEW_LINE) ) {
 			ErrorHandler.RecoverInline(this);
@@ -960,12 +1134,12 @@ public partial class PreProcParser : Parser {
 	[RuleVersion(0)]
 	public CodeContext code() {
 		CodeContext _localctx = new CodeContext(Context, State);
-		EnterRule(_localctx, 20, RULE_code);
+		EnterRule(_localctx, 24, RULE_code);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 112;
+			State = 137;
 			ErrorHandler.Sync(this);
 			_alt = 1;
 			do {
@@ -973,7 +1147,7 @@ public partial class PreProcParser : Parser {
 				case 1:
 					{
 					{
-					State = 111;
+					State = 136;
 					Match(CODE);
 					}
 					}
@@ -981,9 +1155,9 @@ public partial class PreProcParser : Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				State = 114;
+				State = 139;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,11,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,13,Context);
 			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
 			}
 		}
@@ -999,41 +1173,49 @@ public partial class PreProcParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,25,117,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
-		7,7,2,8,7,8,2,9,7,9,2,10,7,10,1,0,5,0,24,8,0,10,0,12,0,27,9,0,1,0,1,0,
-		1,1,1,1,3,1,33,8,1,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,3,2,43,8,2,1,2,1,2,
-		1,2,1,2,1,2,1,2,1,2,1,2,3,2,53,8,2,1,3,1,3,1,3,1,3,1,3,5,3,60,8,3,10,3,
-		12,3,63,9,3,1,3,1,3,3,3,67,8,3,1,4,1,4,1,4,1,4,1,4,5,4,74,8,4,10,4,12,
-		4,77,9,4,1,4,1,4,3,4,81,8,4,1,5,1,5,1,5,1,5,5,5,87,8,5,10,5,12,5,90,9,
-		5,1,5,1,5,1,6,1,6,1,6,1,6,1,7,1,7,1,7,3,7,101,8,7,1,8,1,8,1,8,1,8,1,8,
-		3,8,108,8,8,1,9,1,9,1,10,4,10,113,8,10,11,10,12,10,114,1,10,0,0,11,0,2,
-		4,6,8,10,12,14,16,18,20,0,1,1,1,24,24,121,0,25,1,0,0,0,2,32,1,0,0,0,4,
-		52,1,0,0,0,6,54,1,0,0,0,8,68,1,0,0,0,10,82,1,0,0,0,12,93,1,0,0,0,14,100,
-		1,0,0,0,16,102,1,0,0,0,18,109,1,0,0,0,20,112,1,0,0,0,22,24,3,2,1,0,23,
-		22,1,0,0,0,24,27,1,0,0,0,25,23,1,0,0,0,25,26,1,0,0,0,26,28,1,0,0,0,27,
-		25,1,0,0,0,28,29,5,0,0,1,29,1,1,0,0,0,30,33,3,20,10,0,31,33,3,4,2,0,32,
-		30,1,0,0,0,32,31,1,0,0,0,33,3,1,0,0,0,34,35,5,1,0,0,35,36,5,12,0,0,36,
-		37,5,21,0,0,37,53,3,18,9,0,38,39,5,1,0,0,39,40,5,11,0,0,40,42,3,16,8,0,
-		41,43,3,14,7,0,42,41,1,0,0,0,42,43,1,0,0,0,43,44,1,0,0,0,44,45,3,18,9,
-		0,45,53,1,0,0,0,46,47,5,1,0,0,47,48,5,10,0,0,48,49,5,20,0,0,49,53,3,18,
-		9,0,50,53,3,6,3,0,51,53,3,8,4,0,52,34,1,0,0,0,52,38,1,0,0,0,52,46,1,0,
-		0,0,52,50,1,0,0,0,52,51,1,0,0,0,53,5,1,0,0,0,54,55,5,1,0,0,55,56,5,14,
-		0,0,56,57,5,20,0,0,57,61,3,18,9,0,58,60,3,2,1,0,59,58,1,0,0,0,60,63,1,
-		0,0,0,61,59,1,0,0,0,61,62,1,0,0,0,62,66,1,0,0,0,63,61,1,0,0,0,64,67,3,
-		10,5,0,65,67,3,12,6,0,66,64,1,0,0,0,66,65,1,0,0,0,67,7,1,0,0,0,68,69,5,
-		1,0,0,69,70,5,15,0,0,70,71,5,20,0,0,71,75,3,18,9,0,72,74,3,2,1,0,73,72,
-		1,0,0,0,74,77,1,0,0,0,75,73,1,0,0,0,75,76,1,0,0,0,76,80,1,0,0,0,77,75,
-		1,0,0,0,78,81,3,10,5,0,79,81,3,12,6,0,80,78,1,0,0,0,80,79,1,0,0,0,81,9,
-		1,0,0,0,82,83,5,1,0,0,83,84,5,16,0,0,84,88,3,18,9,0,85,87,3,2,1,0,86,85,
-		1,0,0,0,87,90,1,0,0,0,88,86,1,0,0,0,88,89,1,0,0,0,89,91,1,0,0,0,90,88,
-		1,0,0,0,91,92,3,12,6,0,92,11,1,0,0,0,93,94,5,1,0,0,94,95,5,17,0,0,95,96,
-		3,18,9,0,96,13,1,0,0,0,97,101,5,23,0,0,98,101,5,22,0,0,99,101,3,16,8,0,
-		100,97,1,0,0,0,100,98,1,0,0,0,100,99,1,0,0,0,101,15,1,0,0,0,102,107,5,
-		20,0,0,103,104,5,7,0,0,104,105,3,14,7,0,105,106,5,8,0,0,106,108,1,0,0,
-		0,107,103,1,0,0,0,107,108,1,0,0,0,108,17,1,0,0,0,109,110,7,0,0,0,110,19,
-		1,0,0,0,111,113,5,3,0,0,112,111,1,0,0,0,113,114,1,0,0,0,114,112,1,0,0,
-		0,114,115,1,0,0,0,115,21,1,0,0,0,12,25,32,42,52,61,66,75,80,88,100,107,
-		114
+		4,1,30,142,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,1,0,5,0,28,8,0,10,0,
+		12,0,31,9,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,3,1,40,8,1,1,1,1,1,1,1,3,1,45,
+		8,1,3,1,47,8,1,1,2,1,2,1,2,1,2,1,3,1,3,1,3,1,3,1,4,1,4,1,4,1,4,1,4,1,4,
+		1,4,1,4,3,4,65,8,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,
+		1,4,3,4,81,8,4,1,5,1,5,1,5,1,5,5,5,87,8,5,10,5,12,5,90,9,5,1,5,1,5,3,5,
+		94,8,5,1,6,1,6,1,6,1,6,5,6,100,8,6,10,6,12,6,103,9,6,1,6,1,6,3,6,107,8,
+		6,1,7,1,7,1,7,1,7,5,7,113,8,7,10,7,12,7,116,9,7,1,7,1,7,1,8,1,8,1,8,1,
+		9,1,9,1,9,3,9,126,8,9,1,10,1,10,1,10,1,10,1,10,3,10,133,8,10,1,11,1,11,
+		1,12,4,12,138,8,12,11,12,12,12,139,1,12,0,0,13,0,2,4,6,8,10,12,14,16,18,
+		20,22,24,0,1,1,1,29,29,148,0,29,1,0,0,0,2,46,1,0,0,0,4,48,1,0,0,0,6,52,
+		1,0,0,0,8,80,1,0,0,0,10,82,1,0,0,0,12,95,1,0,0,0,14,108,1,0,0,0,16,119,
+		1,0,0,0,18,125,1,0,0,0,20,127,1,0,0,0,22,134,1,0,0,0,24,137,1,0,0,0,26,
+		28,3,2,1,0,27,26,1,0,0,0,28,31,1,0,0,0,29,27,1,0,0,0,29,30,1,0,0,0,30,
+		32,1,0,0,0,31,29,1,0,0,0,32,33,5,0,0,1,33,1,1,0,0,0,34,47,3,24,12,0,35,
+		47,3,8,4,0,36,39,3,4,2,0,37,40,3,2,1,0,38,40,3,22,11,0,39,37,1,0,0,0,39,
+		38,1,0,0,0,40,47,1,0,0,0,41,44,3,6,3,0,42,45,3,2,1,0,43,45,3,22,11,0,44,
+		42,1,0,0,0,44,43,1,0,0,0,45,47,1,0,0,0,46,34,1,0,0,0,46,35,1,0,0,0,46,
+		36,1,0,0,0,46,41,1,0,0,0,47,3,1,0,0,0,48,49,5,2,0,0,49,50,5,8,0,0,50,51,
+		5,10,0,0,51,5,1,0,0,0,52,53,5,2,0,0,53,54,5,9,0,0,54,55,5,10,0,0,55,7,
+		1,0,0,0,56,57,5,1,0,0,57,58,5,19,0,0,58,59,5,28,0,0,59,81,3,22,11,0,60,
+		61,5,1,0,0,61,62,5,18,0,0,62,64,3,20,10,0,63,65,3,18,9,0,64,63,1,0,0,0,
+		64,65,1,0,0,0,65,66,1,0,0,0,66,67,3,22,11,0,67,81,1,0,0,0,68,69,5,1,0,
+		0,69,70,5,17,0,0,70,71,5,25,0,0,71,81,3,22,11,0,72,73,5,1,0,0,73,74,3,
+		10,5,0,74,75,3,22,11,0,75,81,1,0,0,0,76,77,5,1,0,0,77,78,3,12,6,0,78,79,
+		3,22,11,0,79,81,1,0,0,0,80,56,1,0,0,0,80,60,1,0,0,0,80,68,1,0,0,0,80,72,
+		1,0,0,0,80,76,1,0,0,0,81,9,1,0,0,0,82,83,5,21,0,0,83,84,5,25,0,0,84,88,
+		3,22,11,0,85,87,3,2,1,0,86,85,1,0,0,0,87,90,1,0,0,0,88,86,1,0,0,0,88,89,
+		1,0,0,0,89,93,1,0,0,0,90,88,1,0,0,0,91,94,3,14,7,0,92,94,3,16,8,0,93,91,
+		1,0,0,0,93,92,1,0,0,0,94,11,1,0,0,0,95,96,5,22,0,0,96,97,5,25,0,0,97,101,
+		3,22,11,0,98,100,3,2,1,0,99,98,1,0,0,0,100,103,1,0,0,0,101,99,1,0,0,0,
+		101,102,1,0,0,0,102,106,1,0,0,0,103,101,1,0,0,0,104,107,3,14,7,0,105,107,
+		3,16,8,0,106,104,1,0,0,0,106,105,1,0,0,0,107,13,1,0,0,0,108,109,5,1,0,
+		0,109,110,5,23,0,0,110,114,3,22,11,0,111,113,3,2,1,0,112,111,1,0,0,0,113,
+		116,1,0,0,0,114,112,1,0,0,0,114,115,1,0,0,0,115,117,1,0,0,0,116,114,1,
+		0,0,0,117,118,3,16,8,0,118,15,1,0,0,0,119,120,5,1,0,0,120,121,5,24,0,0,
+		121,17,1,0,0,0,122,126,5,27,0,0,123,126,5,26,0,0,124,126,3,20,10,0,125,
+		122,1,0,0,0,125,123,1,0,0,0,125,124,1,0,0,0,126,19,1,0,0,0,127,132,5,25,
+		0,0,128,129,5,14,0,0,129,130,3,18,9,0,130,131,5,15,0,0,131,133,1,0,0,0,
+		132,128,1,0,0,0,132,133,1,0,0,0,133,21,1,0,0,0,134,135,7,0,0,0,135,23,
+		1,0,0,0,136,138,5,7,0,0,137,136,1,0,0,0,138,139,1,0,0,0,139,137,1,0,0,
+		0,139,140,1,0,0,0,140,25,1,0,0,0,14,29,39,44,46,64,80,88,93,101,106,114,
+		125,132,139
 	};
 
 	public static readonly ATN _ATN =

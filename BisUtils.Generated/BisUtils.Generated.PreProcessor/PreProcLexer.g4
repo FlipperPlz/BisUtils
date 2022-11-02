@@ -1,7 +1,12 @@
 ﻿lexer grammar PreProcLexer;
 
-SHARP:     '#' -> mode(DIRECTIVE_MODE);
-ENTER_MACRO_MODE:     '__' -> mode(MACRO_MODE);
+@header {namespace BisUtils.Generated.PreProcessor;}
+
+SHARP: '#'                                   -> mode(DIRECTIVE_MODE);
+ENTER_MACRO_MODE: '__'                       -> mode(MACRO_MODE);
+SINGLE_LINE_COMMENT: '//' ~[\r\n]*           -> channel(HIDDEN);
+EMPTY_DELIMITED_COMMENT: ('/*/' | '/**/')    -> channel(HIDDEN);
+DELIMITED_COMMENT: '/*' .*? '*/'             -> channel(HIDDEN);
 CONCAT:    '##';
 CODE: ~[_#]+;
 
@@ -28,12 +33,11 @@ IFDEF:     'ifdef';
 IFNDEF:    'ifndef';
 ELSE:      'else';
 ENDIF:     'endif';
-LINE:      '_';
-FILE:      '__FILE__';
 
 IDENTIFIER: LETTER (LETTER | [0-9])*;
 LITERAL_INT: Number | HEXADECIMAL;
 LITERAL_FLOAT: DecimalNumber;
+LITERAL_STRING: '"' (. | DIRECITVE_NEW_LINE)*? '"';
 NEW_LINE: '\r'? '\n'                       -> mode(DEFAULT_MODE);
 DIRECITVE_NEW_LINE: '\\' '\r'? '\n'        -> channel(HIDDEN);
 

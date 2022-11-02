@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:/Users/developer/Desktop/BisUtils/BisUtils.Generated/BisUtils.Generated.PreProcessor\PreProcParser.g4 by ANTLR 4.10.1
+// Generated from /Users/ryannkelly/Desktop/BisUtils/BisUtils.Generated/BisUtils.Generated.PreProcessor/PreProcParser.g4 by ANTLR 4.10.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -19,6 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
+namespace BisUtils.Generated.PreProcessor;
 
 using Antlr4.Runtime.Misc;
 using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
@@ -59,6 +60,30 @@ public partial class PreProcParserBaseListener : IPreProcParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitText([NotNull] PreProcParser.TextContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PreProcParser.lineMacro"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLineMacro([NotNull] PreProcParser.LineMacroContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PreProcParser.lineMacro"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLineMacro([NotNull] PreProcParser.LineMacroContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PreProcParser.fileMacro"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFileMacro([NotNull] PreProcParser.FileMacroContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PreProcParser.fileMacro"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFileMacro([NotNull] PreProcParser.FileMacroContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PreProcParser.directive"/>.
 	/// <para>The default implementation does nothing.</para>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:/Users/developer/Desktop/BisUtils/BisUtils.Generated/BisUtils.Generated.PreProcessor\PreProcParser.g4 by ANTLR 4.10.1
+// Generated from /Users/ryannkelly/Desktop/BisUtils/BisUtils.Generated/BisUtils.Generated.PreProcessor/PreProcParser.g4 by ANTLR 4.10.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -19,6 +19,7 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
+namespace BisUtils.Generated.PreProcessor;
 using Antlr4.Runtime.Misc;
 using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
 using IToken = Antlr4.Runtime.IToken;
@@ -50,6 +51,26 @@ public interface IPreProcParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitText([NotNull] PreProcParser.TextContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PreProcParser.lineMacro"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLineMacro([NotNull] PreProcParser.LineMacroContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PreProcParser.lineMacro"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLineMacro([NotNull] PreProcParser.LineMacroContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="PreProcParser.fileMacro"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFileMacro([NotNull] PreProcParser.FileMacroContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="PreProcParser.fileMacro"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFileMacro([NotNull] PreProcParser.FileMacroContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="PreProcParser.directive"/>.
 	/// </summary>
