@@ -1,5 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Text;
+using BisUtils.Core.Compression;
 
 // ReSharper disable once CheckNamespace
 namespace System.IO 
@@ -31,21 +32,16 @@ namespace System.IO
             writer.Write(Encoding.UTF8.GetBytes(text));
             writer.Write(char.MinValue);
         }
-
-        public static int WriteCompressedData(this BinaryWriter writer, byte[] data, BisCompressionType alg = BisCompressionType.LZSS) 
-        {
-            switch (alg) 
-            {
-                case BisCompressionType.LZSS: 
-                {
-                    var compressedData = BiLZSS.Compress(data);
-                    writer.Write(compressedData);
-                    return compressedData.Length;
-                }
-                default: 
-                    throw new NotSupportedException();
-            }
-        }
+        
+        
+        
+        // I wish I didn't have to use reflection for this but alas,
+        //    .NET doesn't allow you to access static methods on generic types.
+        public static long WriteCompressedData<T>(this BinaryWriter writer, byte[] data) where T : IBisCompressionAlgorithm =>
+            (long) typeof(T).GetMethod("Compress")!.Invoke(null, new object[] {
+                new MemoryStream(data),
+                writer
+            })!;
     }
 }
 

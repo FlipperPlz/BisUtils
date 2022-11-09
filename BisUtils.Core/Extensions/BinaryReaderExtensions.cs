@@ -2,6 +2,7 @@
 // ReSharper disable once CheckNamespace
 
 using System.Text;
+using BisUtils.Core.Compression;
 
 // ReSharper disable once CheckNamespace
 namespace System.IO 
@@ -29,6 +30,21 @@ namespace System.IO
             while ((b = reader.ReadByte()) != '\0') bytes.Add(b);
             return Encoding.UTF8.GetString(bytes.ToArray());
         }
+
+        public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, int expectedSize)
+            where T : IBisDecompressionAlgorithm {
+            var decompressedDataStream = new MemoryStream();
+            var decompressedDataWriter = new BinaryWriter(decompressedDataStream, Encoding.UTF8);
+
+            typeof(T).GetMethod("Decompress")!.Invoke(null, new object[] {
+                new MemoryStream(reader.ReadBytes(expectedSize)),
+                decompressedDataWriter,
+                expectedSize
+            });
+
+            return decompressedDataStream;
+        }
+
     }
 }
 
