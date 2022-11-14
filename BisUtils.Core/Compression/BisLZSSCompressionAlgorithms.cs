@@ -6,7 +6,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
     private const int PacketFormatUncompressed = 1;
     private const byte Space = 0x20;
 
-    public long Compress(MemoryStream input, BinaryWriter output, BisLZSSCompressionOptions options) {
+    public static long Compress(MemoryStream input, BinaryWriter output, BisLZSSCompressionOptions options) {
         var startPos = output.BaseStream.Position;
         
         if (!options.AlwaysCompress && input.Length < 1024) {
@@ -30,7 +30,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         return output.BaseStream.Position - startPos;
     }
 
-    public long Decompress(MemoryStream input, BinaryWriter output, BisLZSSDecompressionOptions options) {
+    public static long Decompress(MemoryStream input, BinaryWriter output, BisLZSSDecompressionOptions options) {
         if (!options.AlwaysDecompress && input.Length < 1024) {
             output.Write(input.ToArray());
             return options.ExpectedSize;
@@ -117,7 +117,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         return outputBytes.Length;
     }
 
-    private void WriteCRC(MemoryStream input, BinaryWriter output) => 
+    private static void WriteCRC(MemoryStream input, BinaryWriter output) => 
         output.Write(BitConverter.GetBytes(input.ToArray().Aggregate<byte, uint>(0, (current, t) => current + t)));
     
     internal class Packet {
