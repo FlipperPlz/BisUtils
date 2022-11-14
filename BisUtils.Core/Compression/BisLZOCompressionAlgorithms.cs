@@ -3,13 +3,23 @@ using BisUtils.Core.Compression.Options;
 
 namespace BisUtils.Core.Compression; 
 
-public class BisLZOCompressionAlgorithms : IBisCompressionAlgorithm<BisCompressionOptions>, IBisDecompressionAlgorithm<BisDecompressionOptions> {
-    public long Compress(MemoryStream input, BinaryWriter output, BisCompressionOptions options) 
+public class BisLZOCompressionAlgorithms : IBisCompressionAlgorithm<BisLZOCompressionOptions>, IBisDecompressionAlgorithm<BisLZODecompressionOptions> {
+    public long Compress(MemoryStream input, BinaryWriter output, BisLZOCompressionOptions options) 
         => throw new NotSupportedException();
 
-    public long Decompress(MemoryStream input, BinaryWriter output, BisDecompressionOptions options) {
+    public long Decompress(MemoryStream input, BinaryWriter output, BisLZODecompressionOptions options) {
         var startPos = output.BaseStream.Position;
-        output.Write(BFF_LZO.ReadLZO(input, (uint) options.ExpectedSize));
+
+        var isCompressed = !(!options.ForceDecompression && input.Length > 1024);
+        var reader = new BinaryReader(input);
+
+        if (options.UseCompressionFlag) isCompressed = reader.ReadBoolean();
+
+        output.Write(
+            isCompressed 
+                ? BFF_LZO.ReadLZO(reader.BaseStream, (uint) options.ExpectedSize) 
+                : reader.ReadBytes((int) (reader.BaseStream.Length - reader.BaseStream.Position))
+                );
         return output.BaseStream.Position - startPos;
     }
 }

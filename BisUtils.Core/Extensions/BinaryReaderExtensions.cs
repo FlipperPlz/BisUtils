@@ -1,6 +1,7 @@
 ﻿
 // ReSharper disable once CheckNamespace
 
+using System.Diagnostics;
 using System.Text;
 using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
@@ -32,6 +33,30 @@ namespace System.IO
             byte b;
             while ((b = reader.ReadByte()) != '\0') bytes.Add(b);
             return Encoding.UTF8.GetString(bytes.ToArray());
+        }
+        
+        public static byte[] ReadCompressedIndices(this BinaryReader reader, int bytesToRead, uint expectedSize)
+        {
+            var result = new byte[expectedSize];
+            var outputI = 0;
+            for(var i = 0; i < bytesToRead; i++)
+            {
+                var b = reader.ReadByte();
+                if( (b & 128) != 0 )
+                {
+                    var n = (byte)(b - 127);
+                    var value = reader.ReadByte();
+                    for (var j = 0; j < n; j++) result[outputI++] = value;
+                }
+                else
+                {
+                    for (var j = 0; j < b + 1; j++) result[outputI++] = reader.ReadByte();
+                }
+            }
+
+            Debug.Assert(outputI == expectedSize);
+
+            return result;
         }
 
         public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, BisDecompressionOptions options) {
