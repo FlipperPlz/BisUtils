@@ -1,12 +1,21 @@
 ﻿using System.IO.Compression;
 using System.Text;
 using BisUtils.Core.Compression;
+using BisUtils.Core.Compression.Options;
 
 // ReSharper disable once CheckNamespace
 namespace System.IO 
 {
     public static class BinaryWriterExtensions 
     {
+        
+        public static void WriteUInt24(this BinaryWriter writer, uint length)
+        {
+            writer.Write((byte)(length & 0xFF));
+            writer.Write((byte)((length >> 8) & 0xFF));
+            writer.Write((byte)((length >> 16) & 0xFF));
+        }
+        
         public static void WriteCompactInteger(this BinaryWriter writer, int data) 
         {
             do 
@@ -37,11 +46,15 @@ namespace System.IO
         
         // I wish I didn't have to use reflection for this but alas,
         //    .NET doesn't allow you to access static methods on generic types.
-        public static long WriteCompressedData<T>(this BinaryWriter writer, byte[] data) where T : IBisCompressionAlgorithm =>
-            (long) typeof(T).GetMethod("Compress")!.Invoke(null, new object[] {
+        public static long WriteCompressedData<T>(this BinaryWriter writer, byte[] data,
+            BisCompressionOptions options) {
+            return (long) typeof(T).GetMethod("Compress")!.Invoke(null, new object[] {
                 new MemoryStream(data),
-                writer
+                writer,
+                options
             })!;
+        }
+            
     }
 }
 

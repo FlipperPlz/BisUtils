@@ -3,12 +3,15 @@
 
 using System.Text;
 using BisUtils.Core.Compression;
+using BisUtils.Core.Compression.Options;
 
 // ReSharper disable once CheckNamespace
 namespace System.IO 
 {
     public static class BinaryReaderExtensions 
     {
+        public static uint ReadUInt24(this BinaryReader reader) => (uint)(reader.ReadByte() + (reader.ReadByte() << 8) + (reader.ReadByte() << 16));
+        
         public static int ReadCompactInteger(this BinaryReader reader) 
         {
             var value = 0;
@@ -31,15 +34,14 @@ namespace System.IO
             return Encoding.UTF8.GetString(bytes.ToArray());
         }
 
-        public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, int expectedSize)
-            where T : IBisDecompressionAlgorithm {
+        public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, BisDecompressionOptions options) {
             var decompressedDataStream = new MemoryStream();
             var decompressedDataWriter = new BinaryWriter(decompressedDataStream, Encoding.UTF8);
 
             typeof(T).GetMethod("Decompress")!.Invoke(null, new object[] {
-                new MemoryStream(reader.ReadBytes(expectedSize)),
+                new MemoryStream(reader.ReadBytes(options.ExpectedSize)),
                 decompressedDataWriter,
-                expectedSize
+                options
             });
 
             return decompressedDataStream;

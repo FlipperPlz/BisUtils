@@ -1,14 +1,20 @@
+using BisUtils.Core.Compression.Options;
+
 namespace BisUtils.Core.Compression;
 
-public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm, IBisDecompressionAlgorithm {
+public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSCompressionOptions>, IBisDecompressionAlgorithm<BisLZSSDecompressionOptions> {
     private const int PacketFormatUncompressed = 1;
     private const byte Space = 0x20;
 
-    public long Compress(MemoryStream input, BinaryWriter output) {
+    public long Compress(MemoryStream input, BinaryWriter output, BisLZSSCompressionOptions options) {
         var startPos = output.BaseStream.Position;
         
+        if (!options.AlwaysCompress && input.Length < 1024) {
+            output.Write(input.ToArray());
+            return output.BaseStream.Position - startPos;
+        }
+        
         var buffer = new CompressionBuffer();
-
         var dataLength = input.Length;
         var readData = 0;
 
@@ -19,27 +25,31 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm, IBisDecomp
             output.Write(packet.GetContent());
         }
 
-        WriteCRC(input, output);
+        if(options.WriteSignedChecksum) WriteCRC(input, output);
 
         return output.BaseStream.Position - startPos;
     }
 
-    public long Decompress(MemoryStream input, BinaryWriter output, int expectedSize, bool useSignedChecksum = true) {
+    public long Decompress(MemoryStream input, BinaryWriter output, BisLZSSDecompressionOptions options) {
+        if (!options.AlwaysDecompress && input.Length < 1024) {
+            output.Write(input.ToArray());
+            return options.ExpectedSize;
+        }
         const int N = 4096;
         const int F = 18;
         const int THRESHOLD = 2;
         var text_buf = new char[N + F - 1];
-        var outputBytes = new byte[expectedSize];
+        var outputBytes = new byte[options.ExpectedSize];
 
-        if (expectedSize <= 0) {
+        if (options.ExpectedSize <= 0) {
             output.Write(outputBytes);
-            return expectedSize;
+            return options.ExpectedSize;
         } 
         
         using var inputReader = new BinaryReader(new MemoryStream(input.ToArray()));
         int i; 
         var flags = 0; 
-        int cSum = 0, iDst = 0, bytesLeft = expectedSize;
+        int cSum = 0, iDst = 0, bytesLeft = options.ExpectedSize;
         for (i = 0; i < N - F; i++) text_buf[i] = ' ';
         var r = N - F;
 
@@ -52,7 +62,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm, IBisDecomp
 
             if ((flags & 1) != 0) {
                 c = inputReader.ReadByte();
-                if (useSignedChecksum)
+                if (options.UseSignedChecksum)
                     cSum += (sbyte) c;
                 else
                     cSum += (byte) c;
@@ -81,7 +91,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm, IBisDecomp
 
                 for (; ii <= jj; ii++) {
                     c = (byte) text_buf[ii & (N - 1)];
-                    if (useSignedChecksum)
+                    if (options.UseSignedChecksum)
                         cSum += (sbyte) c;
                     else
                         cSum += (byte) c;
@@ -100,16 +110,13 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm, IBisDecomp
         var csData = new byte[4];
         inputReader.Read(csData, 0, 4);
         var csr = BitConverter.ToInt32(csData, 0);
-
-        if (csr != cSum) throw new ArgumentException("Checksum mismatch");
+        
+        if (options.UseSignedChecksum && csr != cSum) throw new ArgumentException("Checksum mismatch");
 
         output.Write(outputBytes);
         return outputBytes.Length;
     }
 
-    public long Decompress(MemoryStream input, BinaryWriter output, int expectedSize) =>
-        Decompress(input, output, expectedSize, true);
-    
     private void WriteCRC(MemoryStream input, BinaryWriter output) => 
         output.Write(BitConverter.GetBytes(input.ToArray().Aggregate<byte, uint>(0, (current, t) => current + t)));
     
@@ -345,4 +352,5 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm, IBisDecomp
             return sequence;
         }
     }
+
 }

@@ -1,16 +1,17 @@
 using System.IO.Compression;
+using BisUtils.Core.Compression.Options;
 
 namespace BisUtils.Core.Compression; 
 
-public class BisZLibCompressionAlgorithms : IBisDecompressionAlgorithm, IBisCompressionAlgorithm {
-    public long Decompress(MemoryStream input, BinaryWriter output, int expectedSize) {
+public class BisZLibCompressionAlgorithms : IBisDecompressionAlgorithm<BisDecompressionOptions>, IBisCompressionAlgorithm<BisCompressionOptions> {
+    public long Decompress(MemoryStream input, BinaryWriter output, BisDecompressionOptions options) {
         var startPos = output.BaseStream.Position;
         using var inputStream = new MemoryStream(input.ToArray());
         var deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress);
         
-        for ( var bytesRead = 0; bytesRead < expectedSize; ) {
+        for ( var bytesRead = 0; bytesRead < options.ExpectedSize; ) {
             var toRead = 1000; // 1000 byte chunks
-            if ( bytesRead + toRead > expectedSize ) toRead = expectedSize - bytesRead;
+            if ( bytesRead + toRead > options.ExpectedSize ) toRead = options.ExpectedSize - bytesRead;
             var buffer = new byte[toRead];
             deflateStream.Read(buffer, 0, toRead);
             output.Write(buffer, 0, toRead);
@@ -20,7 +21,7 @@ public class BisZLibCompressionAlgorithms : IBisDecompressionAlgorithm, IBisComp
         return output.BaseStream.Position - startPos;
     }
 
-    public long Compress(MemoryStream input, BinaryWriter output) {
+    public long Compress(MemoryStream input, BinaryWriter output, BisCompressionOptions options) {
         throw new NotSupportedException();
     }
 }
