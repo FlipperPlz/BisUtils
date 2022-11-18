@@ -4,7 +4,7 @@ using BisUtils.Core.Compression.Options;
 namespace BisUtils.Core.Compression; 
 
 public class BisZLibCompressionAlgorithms : IBisDecompressionAlgorithm<BisDecompressionOptions>, IBisCompressionAlgorithm<BisCompressionOptions> {
-    public long Decompress(MemoryStream input, BinaryWriter output, BisDecompressionOptions options) {
+    public static long Decompress(MemoryStream input, BinaryWriter output, BisDecompressionOptions options) {
         var startPos = output.BaseStream.Position;
         using var inputStream = new MemoryStream(input.ToArray());
         var deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress);
@@ -21,7 +21,7 @@ public class BisZLibCompressionAlgorithms : IBisDecompressionAlgorithm<BisDecomp
         return output.BaseStream.Position - startPos;
     }
 
-    public long Compress(MemoryStream input, BinaryWriter output, BisCompressionOptions options) {
+    public static long Compress(MemoryStream input, BinaryWriter output, BisCompressionOptions options) {
         throw new NotSupportedException();
     }
 }
