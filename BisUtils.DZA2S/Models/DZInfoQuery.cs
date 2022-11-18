@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using BisUtils.DZA2S.Enumerations;
 
 namespace BisUtils.DZA2S.Models;
 
@@ -57,13 +58,15 @@ public record DZInfoQuery(
     string?                   Spectator,
     short?                    SpectatorPort,
     short?                    Port) : IDzQuery {
-    public static byte[] Magic { get; }
+    private static readonly byte[] _magic;
 
+    public static byte[] GetMagic() => _magic;
     static DZInfoQuery() {
         var bytes = new List<byte>();
+        bytes.Add((byte) SteamQueryCode.InfoCode);
         bytes.AddRange(Encoding.ASCII.GetBytes(IDzQuery.InfoQueryMessage));
         bytes.Add(0x00);
-        Magic = bytes.ToArray();
+        _magic = bytes.ToArray();
     }
 
 }

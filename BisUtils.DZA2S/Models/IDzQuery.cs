@@ -4,6 +4,5 @@ namespace BisUtils.DZA2S.Models;
 public interface IDzQuery {
     public static readonly byte[] QueryHeader = new byte[] {0xFF, 0xFF, 0xFF, 0xFF};
     public const string InfoQueryMessage = "Source Engine Query";
-
-    public static byte[] Magic { get; } 
+    public static byte[] GetMagic() => throw new NotSupportedException();
 }
