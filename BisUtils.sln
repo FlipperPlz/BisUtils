@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BisUtils.Tools", "BisUtils.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParamConverter", "BisUtils.Tools\ParamConverter\ParamConverter.csproj", "{5FD099B2-2379-4E6C-A8B0-E974FCE9171F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DZA2S", "BisUtils.DZA2S\BisUtils.DZA2S.csproj", "{310B7396-C470-4057-B5CF-ACF94348BAD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{5FD099B2-2379-4E6C-A8B0-E974FCE9171F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FD099B2-2379-4E6C-A8B0-E974FCE9171F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FD099B2-2379-4E6C-A8B0-E974FCE9171F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{310B7396-C470-4057-B5CF-ACF94348BAD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{310B7396-C470-4057-B5CF-ACF94348BAD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{310B7396-C470-4057-B5CF-ACF94348BAD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{310B7396-C470-4057-B5CF-ACF94348BAD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4C7DA915-10A9-4A3C-AB9C-9438372918FF} = {728EFC74-0F35-43C8-8A00-0BE60D709B20}
