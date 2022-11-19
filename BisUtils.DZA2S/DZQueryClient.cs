@@ -1,5 +1,4 @@
 using System.Net.Sockets;
-using System.Reflection;
 using BisUtils.DZA2S.Enumerations;
 using BisUtils.DZA2S.Extensions;
 using BisUtils.DZA2S.Models;
@@ -21,78 +20,75 @@ public static class DzQueryClient {
         var requestStream = new MemoryStream();
         await using var requestWriter = new BinaryWriter(requestStream);
         requestWriter.Write(IDzQuery.QueryHeader);
-        requestWriter.Write((byte[]) typeof(T).GetMethod("GetMagic")!.Invoke(null, null)! ??
+        requestWriter.Write((byte[]) typeof(T).GetMethod("GetSendMagic")!.Invoke(null, null)! ??
                             throw new InvalidOperationException());
         
         return requestStream.ToArray();
     }
     
-    public static async Task<DZInfoQuery?> QueryInformation(string ip, short port, 
-        short clientSocket = 11551, int timeoutMs = 100000, CancellationToken cancellationToken = default) {
+    private static byte[] GetReceiveHeader<T>() where T : IDzQuery =>
+        (byte[])typeof(T).GetMethod("GetReceiveMagic")!.Invoke(null, null)! ??
+        throw new InvalidOperationException();
 
-        var infoRequest = await BuildQueryRequest<DZInfoQuery>();
-        byte[]? infoResponse;
-        DZInfoQuery? response;
-
-        using (var udpClient = new UdpClient(clientSocket)) {
-            udpClient.Client.ReceiveTimeout = timeoutMs;
-
-            await udpClient.SendAsync(infoRequest, ip, port, cancellationToken);
-
-            var challengeResult = (await udpClient.ReceiveAsync(cancellationToken));
-
-            var fullRequest = new byte[infoRequest.Length + 4];
-            infoRequest.CopyTo(fullRequest, 0);
-            ReadQueryChallenge(challengeResult.Buffer).CopyTo(fullRequest, infoRequest.Length);
-            
-            await udpClient.SendAsync(fullRequest, ip, port, cancellationToken);
-            
-            infoResponse = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
-        }
-
-        if (infoResponse is null) throw new Exception("Failed to receive a response");
+    public static async Task<T?> QueryServer<T>(string ip, short port, short clientSocket = 11551,
+        int timeoutMs = 100000, CancellationToken cancellationToken = default) where T : IDzQuery {
         
-        using (var reader = new BinaryReader(new MemoryStream(infoResponse))) {
-            if (!reader.ReadSteamHeader() || reader.ReadByte() != (byte) SteamQueryCode.InfoResponse)
-                throw new Exception("Failed to parse info response");
-            response = reader.ReadDZInfoQuery();
-        }
-
-        return response;
-    }
-
-    public static async Task<DZPlayerQuery?> QueryPlayerInformation(string ip, short port, 
-        short clientSocket = 11551, int timeoutMs = 100000, CancellationToken cancellationToken = default) {
-        byte[]? playerResponse;
-        DZPlayerQuery? response;
-        
-        var playerRequest = await BuildQueryRequest<DZPlayerQuery>();
+        var request = await BuildQueryRequest<T>();
+        byte[]? response;
+        T serializedResponse;
         
         using (var udpClient = new UdpClient(clientSocket)) {
             udpClient.Client.ReceiveTimeout = timeoutMs;
 
-            await udpClient.SendAsync(playerRequest, ip, port, cancellationToken);
+            await udpClient.SendAsync(request, ip, port, cancellationToken);
             
-            var challengeResult = (await udpClient.ReceiveAsync(cancellationToken));
+            var challengeResultOrQuery = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
 
-            var fullRequest = new byte[playerRequest.Length];
-            playerRequest[..5].CopyTo(fullRequest, 0);
-            ReadQueryChallenge(challengeResult.Buffer).CopyTo(fullRequest, playerRequest.Length - 4);
-
-            await udpClient.SendAsync(fullRequest, ip, port, cancellationToken);
-            
-            playerResponse = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
+            switch (challengeResultOrQuery[4]) {
+                case (byte)SteamQueryCode.ChallengeResponse: {
+                    byte[] fullRequest;
+                    switch (typeof(T).Name) {
+                        case nameof(DZInfoQuery):
+                            fullRequest = new byte[request.Length + 4];
+                            request.CopyTo(fullRequest, 0);
+                            ReadQueryChallenge(challengeResultOrQuery).CopyTo(fullRequest, request.Length);
+                            break;
+                        default:
+                            fullRequest = new byte[request.Length];
+                            request[..5].CopyTo(fullRequest, 0);
+                            ReadQueryChallenge(challengeResultOrQuery).CopyTo(fullRequest, request.Length - 4);
+                            break;
+                    }
+                    await udpClient.SendAsync(fullRequest, ip, port, cancellationToken);
+                    response = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
+                    
+                    break;
+                }
+                default: {
+                    if (challengeResultOrQuery[4] != GetReceiveHeader<T>()[0]) throw new Exception("Unknown Response");
+                    response = challengeResultOrQuery;
+                    break;
+                }
+            }
         }
+        
+        if (response is null) throw new Exception("Failed to receive a response");
 
-        if (playerResponse is null) throw new Exception("Failed to receive a response");
-
-        using (var reader = new BinaryReader(new MemoryStream(playerResponse))) {
-            if (!reader.ReadSteamHeader() || reader.ReadByte() != (byte) SteamQueryCode.PlayersResponse)
+        using (var reader = new BinaryReader(new MemoryStream(response))) {
+            if (!reader.ReadSteamHeader() || reader.ReadByte() != GetReceiveHeader<T>()[0])
                 throw new Exception("Failed to parse player response");
-            await Console.Out.WriteLineAsync(Convert.ToBase64String(reader.ReadBytes((int) (reader.BaseStream.Length - reader.BaseStream.Position))));
-            response = reader.ReadDZPlayerQuery();
+            serializedResponse = reader.ReadSteamResponse<T>();
         }
 
-        return response;
-    }
+        return serializedResponse;
+    } 
+    
+    public static async Task<DZInfoQuery?> QueryInformation(string ip, short port, short clientSocket = 11551, int timeoutMs = 100000, CancellationToken cancellationToken = default) =>
+        await QueryServer<DZInfoQuery>(ip, port, clientSocket, timeoutMs, cancellationToken);
+    
+    public static async Task<DZRulesQuery?> QueryRules(string ip, short port, short clientSocket = 11551, int timeoutMs = 100000, CancellationToken cancellationToken = default) =>
+        await QueryServer<DZRulesQuery>(ip, port, clientSocket, timeoutMs, cancellationToken);
+
+    public static async Task<DZPlayerQuery?> QueryPlayers(string ip, short port, short clientSocket = 11551, int timeoutMs = 100000, CancellationToken cancellationToken = default) =>
+        await QueryServer<DZPlayerQuery>(ip, port, clientSocket, timeoutMs, cancellationToken);
 }

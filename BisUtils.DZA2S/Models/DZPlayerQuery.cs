@@ -6,12 +6,16 @@ public record DZPlayerQuery(
     
     ) : IDzQuery {
 
-    private static readonly byte[] _magic;
-    public static byte[] GetMagic() => _magic;
+    private static readonly byte[] _sendMagic, _receiveMagic;
+
+    public static byte[] GetSendMagic() => _sendMagic;
+    public static byte[] GetReceiveMagic() => _receiveMagic;
+    
     static DZPlayerQuery() {
         var bytes = new List<byte>();
         bytes.Add((byte) SteamQueryCode.PlayersCode);
         bytes.AddRange(IDzQuery.QueryHeader);
-        _magic= bytes.ToArray();
+        _sendMagic = bytes.ToArray();
+        _receiveMagic = new[] { (byte)SteamQueryCode.PlayersResponse };
     }   
 }

@@ -37,7 +37,7 @@ public enum SteamExtraDataFlags : byte
 }
 
 public record DZInfoQuery(
-    byte                      Protocol,
+    byte                      ProtocolVersion,
     string                    Name,
     string                    Map,
     string                    Folder,
@@ -58,15 +58,18 @@ public record DZInfoQuery(
     string?                   Spectator,
     short?                    SpectatorPort,
     short?                    Port) : IDzQuery {
-    private static readonly byte[] _magic;
+    private static readonly byte[] _sendMagic, _receiveMagic;
 
-    public static byte[] GetMagic() => _magic;
+    public static byte[] GetSendMagic() => _sendMagic;
+    public static byte[] GetReceiveMagic() => _receiveMagic;
+
     static DZInfoQuery() {
         var bytes = new List<byte>();
         bytes.Add((byte) SteamQueryCode.InfoCode);
         bytes.AddRange(Encoding.ASCII.GetBytes(IDzQuery.InfoQueryMessage));
         bytes.Add(0x00);
-        _magic = bytes.ToArray();
+        _sendMagic = bytes.ToArray();
+        _receiveMagic = new[] { (byte)SteamQueryCode.InfoResponse };
     }
 
 }
