@@ -30,53 +30,53 @@ public static class DzQueryClient {
         (byte[])typeof(T).GetMethod("GetReceiveMagic")!.Invoke(null, null)! ??
         throw new InvalidOperationException();
 
+    private static async Task<byte[]> CompleteChallenge<T>(UdpClient udpClient, string ip, short port, CancellationToken cancellationToken = default) where T : IDzQuery {
+        var challengeResultOrQuery =  (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
+
+        while (challengeResultOrQuery[4] != GetReceiveHeader<T>()[0]) {
+            if (challengeResultOrQuery[4] != (byte)SteamQueryCode.ChallengeResponse)
+                throw new Exception($"Expected a challenge response. Instead got {challengeResultOrQuery[4]:x8}");
+            byte[] fullRequest;
+            var request = await BuildQueryRequest<T>();
+            switch (typeof(T).Name) {
+                case nameof(DZInfoQuery):
+                    fullRequest = new byte[request.Length + 4];
+                    request.CopyTo(fullRequest, 0);
+                    ReadQueryChallenge(challengeResultOrQuery).CopyTo(fullRequest, request.Length);
+                    break;
+                default:
+                    fullRequest = new byte[request.Length];
+                    request[..5].CopyTo(fullRequest, 0);
+                    ReadQueryChallenge(challengeResultOrQuery).CopyTo(fullRequest, request.Length - 4);
+                    break;
+            }
+            await udpClient.SendAsync(fullRequest, ip, port, cancellationToken);
+            challengeResultOrQuery = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
+        }
+
+        return challengeResultOrQuery;
+    }
+
     public static async Task<T?> QueryServer<T>(string ip, short port, short clientSocket = 11551,
         int timeoutMs = 100000, CancellationToken cancellationToken = default) where T : IDzQuery {
         
         var request = await BuildQueryRequest<T>();
-        byte[]? response;
+        byte[] response;
         T serializedResponse;
-        
+        byte[]? challengeResultOrQuery;
+
         using (var udpClient = new UdpClient(clientSocket)) {
             udpClient.Client.ReceiveTimeout = timeoutMs;
 
             await udpClient.SendAsync(request, ip, port, cancellationToken);
-            
-            var challengeResultOrQuery = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
 
-            switch (challengeResultOrQuery[4]) {
-                case (byte)SteamQueryCode.ChallengeResponse: {
-                    byte[] fullRequest;
-                    switch (typeof(T).Name) {
-                        case nameof(DZInfoQuery):
-                            fullRequest = new byte[request.Length + 4];
-                            request.CopyTo(fullRequest, 0);
-                            ReadQueryChallenge(challengeResultOrQuery).CopyTo(fullRequest, request.Length);
-                            break;
-                        default:
-                            fullRequest = new byte[request.Length];
-                            request[..5].CopyTo(fullRequest, 0);
-                            ReadQueryChallenge(challengeResultOrQuery).CopyTo(fullRequest, request.Length - 4);
-                            break;
-                    }
-                    await udpClient.SendAsync(fullRequest, ip, port, cancellationToken);
-                    response = (await udpClient.ReceiveAsync(cancellationToken)).Buffer;
-                    
-                    break;
-                }
-                default: {
-                    if (challengeResultOrQuery[4] != GetReceiveHeader<T>()[0]) throw new Exception("Unknown Response");
-                    response = challengeResultOrQuery;
-                    break;
-                }
-            }
+            response = await CompleteChallenge<T>(udpClient, ip, port, cancellationToken);
         }
-        
-        if (response is null) throw new Exception("Failed to receive a response");
 
         using (var reader = new BinaryReader(new MemoryStream(response))) {
-            if (!reader.ReadSteamHeader() || reader.ReadByte() != GetReceiveHeader<T>()[0])
+            if(!reader.ReadSteamHeader() || reader.ReadByte() != GetReceiveHeader<T>()[0])
                 throw new Exception("Failed to parse player response");
+                
             serializedResponse = reader.ReadSteamResponse<T>();
         }
 

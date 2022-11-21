@@ -56,16 +56,23 @@ public static class BinaryReaderExtensions {
     }
     
     public static DZRulesQuery ReadDZRulesQuery(this BinaryReader reader) {
+        var mods = new List<DZRulesQuery.ServerMod>();
+        var startingPos = reader.BaseStream.Position;
+
+        reader.BaseStream.Position = startingPos;
+            
         var protocolVersion = reader.ReadByte();
         var difficulty = reader.ReadByte();
-        var dlcFlags = reader.ReadInt16();
-        var mods = new List<DZRulesQuery.ServerMod>();
-        // seek
-        var modCount = reader.ReadByte() - 1;
-        reader.BaseStream.Seek(4, SeekOrigin.Current);
-        for (var i = 0; i < modCount /* - getDLCCount()*/; i++) {
+        var dlcCount = reader.ReadByte();
+        var unknown = reader.ReadByte();
+        reader.BaseStream.Seek( (dlcCount + 1) * 4, SeekOrigin.Current);
+        var modCount = reader.ReadByte();
+
+        for (var i = 0; i < modCount; i++) {
+            var modHash = reader.ReadInt32();
+
             var modIdLength = (byte) (reader.ReadByte() & 0x0F);
-            var dlc = modIdLength == 0x00;
+            //var dlc = modIdLength == 0x00;
             long modId = modIdLength switch {
                 1 => reader.ReadByte(),
                 2 => reader.ReadInt16(),
@@ -73,12 +80,11 @@ public static class BinaryReaderExtensions {
                 _ => throw new ArgumentOutOfRangeException()
             };
             var modName = reader.ReadChars(reader.ReadByte()).ToString() ?? string.Empty;
-            var modHash = reader.ReadInt32();
             
-            mods.Add(new DZRulesQuery.ServerMod(modName, modId, modHash, dlc));
+            mods.Add(new DZRulesQuery.ServerMod(modName, modId, modHash, false));
         }
 
-        return new DZRulesQuery(protocolVersion, difficulty, dlcFlags, mods);
+        return new DZRulesQuery(protocolVersion, difficulty, dlcCount, mods);
     }
 
     public static T ReadSteamResponse<T>(this BinaryReader reader) where T : IDzQuery {

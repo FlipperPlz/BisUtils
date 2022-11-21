@@ -6,7 +6,7 @@ namespace BisUtils.DZA2S.Models;
 public record DZRulesQuery(
     byte                           ProtocolVersion, 
     byte                           Difficulty, 
-    short                          DLCFlags,
+    short                           DLCFlags,
     List<DZRulesQuery.ServerMod>   ServerMods
 ) : IDzQuery {
     public record ServerMod(
@@ -23,8 +23,7 @@ public record DZRulesQuery(
     static DZRulesQuery() {
         var bytes = new List<byte>();
         bytes.Add((byte) SteamQueryCode.RulesCode);
-        bytes.AddRange(Encoding.ASCII.GetBytes(IDzQuery.InfoQueryMessage));
-        bytes.Add(0x00);
+        bytes.AddRange(IDzQuery.QueryHeader);
         _sendMagic = bytes.ToArray();
         _receiveMagic = new[] { (byte)SteamQueryCode.RulesResponse };
     }
