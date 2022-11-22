@@ -29,4 +29,5 @@ LiteralFloat: DecimalNumber | ScientificNumber;
 
 fragment Number: ('-')? [0-9]+;
 fragment DecimalNumber:  Number '.' [0-9]+;
-fragment ScientificNumber: DecimalNumber ('e'|'E') ('+'|'-') DecimalNumber;
+fragment ScientificNumber: AnyNumber ('e'|'E') ('+'|'-') AnyNumber;
+fragment AnyNumber: DecimalNumber | Number;
