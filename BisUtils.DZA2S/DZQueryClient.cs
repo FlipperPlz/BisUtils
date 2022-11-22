@@ -57,13 +57,12 @@ public static class DzQueryClient {
         return challengeResultOrQuery;
     }
 
-    public static async Task<T?> QueryServer<T>(string ip, short port, short clientSocket = 11551,
+    public static async Task<T> QueryServer<T>(string ip, short port, short clientSocket = 11551,
         int timeoutMs = 100000, CancellationToken cancellationToken = default) where T : IDzQuery {
         
         var request = await BuildQueryRequest<T>();
         byte[] response;
         T serializedResponse;
-        byte[]? challengeResultOrQuery;
 
         using (var udpClient = new UdpClient(clientSocket)) {
             udpClient.Client.ReceiveTimeout = timeoutMs;
