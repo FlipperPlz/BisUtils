@@ -12,7 +12,7 @@ public class RapArray : IRapArrayEntry, IEnumerable<IRapArrayEntry>, IRapDeseria
     public RapArray(List<IRapArrayEntry> entries) => Entries = entries;
     
     public IRapSerializable ReadParseTree(Generated.ParamLang.ParamParser.LiteralArrayContext ctx) {
-        Entries = (List<IRapArrayEntry>) ctx.literalOrArray().Select(RapLiteralFactory.Create);
+        Entries = ctx.literalOrArray().Select(RapLiteralFactory.Create).ToList();
         return this;
     }
     
