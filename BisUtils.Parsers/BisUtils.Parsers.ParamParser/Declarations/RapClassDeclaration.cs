@@ -1,10 +1,11 @@
 using System.Text;
 using BisUtils.Parsers.ParamParser.Factories;
 using BisUtils.Parsers.ParamParser.Interfaces;
+using BisUtils.Parsers.ParamParser.Statements;
 
 namespace BisUtils.Parsers.ParamParser.Declarations; 
 
-public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.ClassDeclarationContext> {
+public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.ClassDeclarationContext>, IComparable<IRapStatement>, IComparable<RapClassDeclaration> {
     public string Classname { get; set; } = string.Empty;
     public string? ParentClassname { get; set; } = null;
     public List<IRapStatement> Statements { get; set; }
@@ -35,7 +36,11 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
             .Append("class ").Append(Classname);
         if (ParentClassname is not null) builder.Append(" : ").Append(ParentClassname);
         builder.Append(" {\n");
-        foreach (var s in Statements) builder.Append(s.ToString(indentation + 1)).Append('\n');
+        
+        var statements = Statements;
+        Statements.Sort((x, y) => x.CompareTo(y));
+        foreach (var s in statements) builder.Append(s.ToString(indentation + 1)).Append('\n');
+        
         return builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", indentation))).Append("};").ToString();
     }
     
@@ -43,4 +48,22 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         (RapClassDeclaration) new RapClassDeclaration().ReadParseTree(ctx);
 
 
+    public int CompareTo(RapClassDeclaration? other) {
+        if (ReferenceEquals(this, other)) return 0;
+        if (ReferenceEquals(null, other)) return 1;
+        
+        return string.Compare(Classname, other.Classname, StringComparison.Ordinal);
+    }
+
+    public int CompareTo(IRapStatement? other) {
+        return other switch {
+            RapClassDeclaration clazz => CompareTo(clazz),
+            RapExternalClassStatement => 1,
+            RapDeleteStatement => 2,
+            RapAppensionStatement => 3,
+            RapArrayDeclaration => 4,
+            RapVariableDeclaration => 5,
+            _ => throw new ArgumentOutOfRangeException(nameof(other), other, null)
+        };
+    }
 }

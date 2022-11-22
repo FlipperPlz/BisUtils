@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System.Text;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using BisUtils.Generated.ParamLang;
 using BisUtils.Parsers.ParamParser.Factories;
@@ -45,5 +46,13 @@ public class ParamFile {
 
         return (ParamFile) new ParamFile().ReadParseTree(computationalStart);
     }
-    
+
+
+    public override string ToString() {
+        var builder = new StringBuilder();
+        var statements = Statements;
+        Statements.Sort((x, y) => x.CompareTo(y));
+        foreach (var s in statements) builder.Append(s.ToString( 0)).Append('\n');
+        return builder.ToString();
+    }
 }

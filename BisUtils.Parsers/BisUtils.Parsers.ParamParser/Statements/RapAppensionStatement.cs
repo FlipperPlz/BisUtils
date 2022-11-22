@@ -1,11 +1,12 @@
 using System.Text;
 using Antlr4.Runtime.Misc;
+using BisUtils.Parsers.ParamParser.Declarations;
 using BisUtils.Parsers.ParamParser.Interfaces;
 using BisUtils.Parsers.ParamParser.Literals;
 
 namespace BisUtils.Parsers.ParamParser.Statements; 
 
-public class RapAppensionStatement : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.ArrayAppensionContext> {
+public class RapAppensionStatement : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.ArrayAppensionContext>, IComparable<RapAppensionStatement>{
     public string Target { get; set; } = string.Empty;
     public RapArray Array { get; set; } = RapArray.EmptyArray;
 
@@ -31,4 +32,22 @@ public class RapAppensionStatement : IRapStatement, IRapDeserializable<Generated
     public static RapAppensionStatement FromContext(Generated.ParamLang.ParamParser.ArrayAppensionContext ctx) =>
         (RapAppensionStatement) new RapAppensionStatement().ReadParseTree(ctx);
 
+    public int CompareTo(IRapStatement? other) {
+        return other switch {
+            RapClassDeclaration => -3,
+            RapExternalClassStatement => -2,
+            RapDeleteStatement => -1,
+            RapAppensionStatement append => CompareTo(append),
+            RapArrayDeclaration => 1,
+            RapVariableDeclaration => 2, 
+            _ => throw new ArgumentOutOfRangeException(nameof(other), other, null)
+        };
+    }
+
+    public int CompareTo(RapAppensionStatement? other) {
+        if (ReferenceEquals(this, other)) return 0;
+        if (ReferenceEquals(null, other)) return 1;
+        
+        return string.Compare(Target, other.Target, StringComparison.Ordinal);
+    }
 }

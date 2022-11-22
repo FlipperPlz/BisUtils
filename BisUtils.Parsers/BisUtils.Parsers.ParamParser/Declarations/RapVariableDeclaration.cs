@@ -2,10 +2,11 @@ using System.Text;
 using BisUtils.Parsers.ParamParser.Factories;
 using BisUtils.Parsers.ParamParser.Interfaces;
 using BisUtils.Parsers.ParamParser.Literals;
+using BisUtils.Parsers.ParamParser.Statements;
 
 namespace BisUtils.Parsers.ParamParser.Declarations; 
 
-public class RapVariableDeclaration : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.TokenDeclarationContext> {
+public class RapVariableDeclaration : IRapStatement, IRapDeserializable<Generated.ParamLang.ParamParser.TokenDeclarationContext>, IComparable<RapVariableDeclaration> {
     public string VariableName { get; set; } = string.Empty;
     public IRapLiteral VariableValue { get; set; }
 
@@ -29,5 +30,24 @@ public class RapVariableDeclaration : IRapStatement, IRapDeserializable<Generate
         VariableName = ctx.identifier().GetText();
         VariableValue = RapLiteralFactory.Create(value);
         return this;
+    }
+
+    public int CompareTo(IRapStatement? other) {
+        return other switch {
+            RapClassDeclaration => -5,
+            RapExternalClassStatement => -4,
+            RapDeleteStatement => -3,
+            RapAppensionStatement => -2,
+            RapArrayDeclaration => -1,
+            RapVariableDeclaration var => CompareTo(var),
+            _ => throw new ArgumentOutOfRangeException(nameof(other), other, null)
+        };
+    }
+
+    public int CompareTo(RapVariableDeclaration? other) {
+        if (ReferenceEquals(this, other)) return 0;
+        if (ReferenceEquals(null, other)) return 1;
+        
+        return string.Compare(VariableName, other.VariableName, StringComparison.Ordinal);
     }
 }
