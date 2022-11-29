@@ -16,11 +16,7 @@ public class PboFile : IPboFile {
     public bool IsWritable => PboStream.CanWrite;
     public List<BasePboEntry> PboEntries { get; set; }
 
-    public ulong DataBlockStartOffset => PboEntries.Aggregate<BasePboEntry?, ulong>(0, (current, entry) => current + entry switch {
-        //Notice: C# for some reason requires this cast to invoke the "new" version of PboVersionEntry::CalculateMetaLength()
-        PboVersionEntry versionEntry => versionEntry.CalculateMetaLength(),
-        _ => entry!.CalculateMetaLength()
-    });
+    public ulong DataBlockStartOffset => PboEntries.Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
 
     public ulong DataBlockEndOffset => PboEntries.Aggregate(DataBlockStartOffset, (current, entry) => current + entry.DataLength);
 
@@ -70,14 +66,7 @@ public class PboFile : IPboFile {
             dataAfterWriter.BaseStream.Position = 0;
             foreach (var ent in PboEntries) {
                 if(ent == dataEntry) break;
-                switch (ent) {
-                    case PboVersionEntry versionEntry:
-                        dataAfterWriter.BaseStream.Seek((long) versionEntry.CalculateMetaLength(), SeekOrigin.Current);
-                        break;
-                    default:
-                        dataAfterWriter.BaseStream.Seek((long) ent.CalculateMetaLength(), SeekOrigin.Current);
-                        break;
-                }
+                dataAfterWriter.BaseStream.Seek((long) ent.CalculateMetaLength(), SeekOrigin.Current);
             }
             dataAfterWriter.BaseStream.Seek((long) Encoding.UTF8.GetBytes(dataEntry.EntryName).Length + 5, SeekOrigin.Current);
             dataAfterWriter.Write(BitConverter.GetBytes((int) dataEntry.OriginalSize), 0, 4);

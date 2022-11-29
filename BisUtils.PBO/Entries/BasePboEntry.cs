@@ -26,7 +26,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
         EntryParent = entryParent;
     }
 
-    public IBisSerializable ReadBinary(BinaryReader reader) {
+    public virtual IBisSerializable ReadBinary(BinaryReader reader) {
         EntryName = reader.ReadAsciiZ();
         EntryMagic = (PboEntryMagic) reader.ReadInt32();
         Reserved1 = reader.ReadUInt32();
@@ -37,7 +37,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
         return this;
     }
 
-    public void WriteBinary(BinaryWriter writer) {
+    public virtual void WriteBinary(BinaryWriter writer) {
         if (EntryMagic is PboEntryMagic.Undefined) throw new Exception($"Cannot write undefined entry. {EntryName}");
         writer.Write(EntryName);
         writer.Write((int) EntryMagic);
@@ -47,7 +47,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
         writer.Write((int) DataLength);
     }
 
-    public ulong CalculateMetaLength() => (ulong) (Encoding.UTF8.GetBytes(EntryName).Length + 21);
+    public virtual ulong CalculateMetaLength() => (ulong) (Encoding.UTF8.GetBytes(EntryName).Length + 21);
     
     public static BasePboEntry ReadPboEntry(PboFile pboFile, BinaryReader reader) {
         var startPos = reader.BaseStream.Position;

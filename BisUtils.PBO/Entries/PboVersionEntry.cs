@@ -10,7 +10,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         Metadata = metadata ?? new Dictionary<string, string>();
     }
 
-    public new ulong CalculateMetaLength() {
+    public override ulong CalculateMetaLength() {
         var offset = 21;
         foreach (var prop in Metadata) {
             offset += Encoding.UTF8.GetBytes(prop.Key).Length + 1;
@@ -22,7 +22,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         return (ulong) offset;
     } 
     
-    public new IBisSerializable ReadBinary(BinaryReader reader) {
+    public override IBisSerializable ReadBinary(BinaryReader reader) {
         EntryName = reader.ReadAsciiZ();
         EntryMagic = (PboEntryMagic) reader.ReadInt32();
         Reserved1 = reader.ReadUInt32();
@@ -40,7 +40,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         return this;
     }
     
-    public new void WriteBinary(BinaryWriter writer) {
+    public override void WriteBinary(BinaryWriter writer) {
         if (EntryMagic is PboEntryMagic.Undefined) throw new Exception("Cannot write undefined entry.");
         writer.Write(EntryName);
         writer.Write((int) EntryMagic);
