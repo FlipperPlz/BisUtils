@@ -8,9 +8,16 @@ public class PboDataEntry : BasePboEntry {
     }
 
 
-    public ulong OriginalSize => Reserved1;
+    public ulong OriginalSize {
+        get => Reserved1;
+        set => Reserved1 = value;
+    }
+
     public ulong TimeStamp => Reserved3;
-    public ulong PackedSize => DataLength;
+    public ulong PackedSize {
+        get => DataLength;
+        set => DataLength = value;
+    }
 
     public ulong EntryDataStartOffset; //Relative to pbo data block
     public ulong EntryDataStopOffset; //Relative to pbo data block

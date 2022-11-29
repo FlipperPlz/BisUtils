@@ -48,8 +48,7 @@ public class PboFile : IPboFile {
     }
 
     public void OverwriteEntryData(PboDataEntry dataEntry, MemoryStream data, bool compressed = false) {
-        //TODO: UNTESTED NON EFFICIENT CODE I PULLED OUT OF MY ASSHOLE.
-        //TODO: Hopefully it reflects my idea of overwriting data. 
+        //TODO: STILL NOT WORKING 
         if (!IsWritable) throw new Exception("The pbo file you're trying to write to is readonly.");
         
         var newDataSize = data.Length;
@@ -57,67 +56,80 @@ public class PboFile : IPboFile {
             var compressedDataStream = new MemoryStream();
             using (var compressionWriter = new BinaryWriter(compressedDataStream, Encoding.UTF8, true)) {
                 compressionWriter.WriteCompressedData<BisLZSSCompressionAlgorithms>(data.ToArray(),
-                    new BisLZSSCompressionOptions() {AlwaysCompress = false, WriteSignedChecksum = true});
+                    new BisLZSSCompressionOptions() { AlwaysCompress = false, WriteSignedChecksum = true });
             }
-            data.Flush();
-            data.Dispose();
+
             data = compressedDataStream;
         }
         var packedDataSize = data.Length;
-        var dataAfter = new MemoryStream();
-        
 
-        using (var writer = new BinaryWriter(PboStream, Encoding.UTF8, true)) {
-            writer.BaseStream.Seek((long) DataBlockStartOffset, SeekOrigin.Begin);
-            writer.BaseStream.Seek((long) dataEntry.EntryDataStartOffset, SeekOrigin.Current);
-            
-            using (var dataAfterWriter = new BinaryWriter(dataAfter, Encoding.UTF8, true)) {
-                using var dataAfterReader = new BinaryReader(PboStream, Encoding.UTF8, true);
-                dataAfterReader.BaseStream.Seek((long) DataBlockStartOffset, SeekOrigin.Begin);
-                dataAfterReader.BaseStream.Seek((long) dataEntry.EntryDataStopOffset, SeekOrigin.Current);
-                dataAfterWriter.Write(dataAfterReader.ReadBytes((int) (dataAfterReader.BaseStream.Position - dataAfterReader.BaseStream.Length)));
-            }
-        
-            writer.BaseStream.SetLength(writer.BaseStream.Position);
-        
-            dataAfter.Flush();
-            dataAfter.Close();
-            writer.Flush();
-            writer.Close();
-        }
-
-        using (var writer = new BinaryWriter(PboStream, Encoding.UTF8, true)) {
-            writer.BaseStream.Seek(0, SeekOrigin.End);
-            writer.Write(data.ToArray());
-            writer.Write(dataAfter.ToArray());
-            writer.BaseStream.Seek(0, SeekOrigin.Begin);
-
+        void WriteExtraData(byte[] fn_extraData) {
+            using var dataAfterWriter = new BinaryWriter(PboStream, Encoding.UTF8, true);
+            dataEntry.OriginalSize = (ulong) newDataSize;
+            dataEntry.PackedSize = (ulong)packedDataSize;
+            dataAfterWriter.BaseStream.Position = 0;
             foreach (var ent in PboEntries) {
-                if (ent == dataEntry) break;
-                writer.BaseStream.Seek((long) ent.CalculateMetaLength(), SeekOrigin.Current);
+                if(ent == dataEntry) break;
+                switch (ent) {
+                    case PboVersionEntry versionEntry:
+                        dataAfterWriter.BaseStream.Seek((long) versionEntry.CalculateMetaLength(), SeekOrigin.Current);
+                        break;
+                    default:
+                        dataAfterWriter.BaseStream.Seek((long) ent.CalculateMetaLength(), SeekOrigin.Current);
+                        break;
+                }
             }
-            
-            writer.BaseStream.Seek(Encoding.UTF8.GetBytes(dataEntry.EntryName).Length, SeekOrigin.Current);
-            writer.BaseStream.Seek(1, SeekOrigin.Current);
-            writer.Write( BitConverter.GetBytes(compressed ? (int) PboEntryMagic.Compressed : (int) PboEntryMagic.Decompressed), 0, 4);
-            writer.Write(BitConverter.GetBytes(newDataSize), 0, 4); //TODO: check to see if this advances stream by 5
-            writer.BaseStream.Seek(8, SeekOrigin.Current);
-            writer.Write(BitConverter.GetBytes(packedDataSize), 0, 4); //TODO: check to see if this advances stream by 5
-            writer.BaseStream.SetLength(writer.BaseStream.Position);
-            
-            writer.Flush();
-            writer.Close();
+            dataAfterWriter.BaseStream.Seek((long) Encoding.UTF8.GetBytes(dataEntry.EntryName).Length + 5, SeekOrigin.Current);
+            dataAfterWriter.Write(BitConverter.GetBytes((int) dataEntry.OriginalSize), 0, 4);
+            dataAfterWriter.BaseStream.Seek(8, SeekOrigin.Current);
+            dataAfterWriter.Write(BitConverter.GetBytes((int) dataEntry.PackedSize), 0, 4);
+                        
+            dataAfterWriter.BaseStream.Position = dataAfterWriter.BaseStream.Length;
+            dataAfterWriter.Write(fn_extraData);
+            var checksum = CalculatePBOChecksum(dataAfterWriter.BaseStream);
+            dataAfterWriter.Write((byte) 0x0);
+            dataAfterWriter.Write(checksum);
+            dataAfterWriter.Flush();
         }
 
+        using var writer = new BinaryWriter(PboStream, Encoding.UTF8, true);
+        writer.BaseStream.Seek((long) DataBlockStartOffset, SeekOrigin.Begin);
+        writer.BaseStream.Position += (long) dataEntry.EntryDataStartOffset;
 
-        using (var writer = new BinaryWriter(PboStream, Encoding.UTF8, true)) {
-            var checksum = CalculatePBOChecksum(writer.BaseStream);
-            writer.Write((byte) 0x0);
-            writer.Write(checksum);
-            
-            writer.Flush();
-            writer.Close();
+        //Check to see if we already have enough space to overwrite
+        if (data.Length <= (long) dataEntry.PackedSize) {
+            writer.Write(data.ToArray(), 0, (int) data.Length);
+
+            var leftoverBytesCount = dataEntry.PackedSize - (ulong) data.Length;
+                
+            //Remove Leftover Data
+            if (leftoverBytesCount > 0) {
+                byte[] extraData;
+                using (var dataAfterReader = new BinaryReader(PboStream, Encoding.UTF8, true)) {
+                    dataAfterReader.BaseStream.Seek(writer.BaseStream.Position + (long) leftoverBytesCount, SeekOrigin.Begin);
+                    extraData = dataAfterReader.ReadBytes((int)(DataBlockEndOffset - (ulong)dataAfterReader.BaseStream.Position));
+                }
+                writer.BaseStream.SetLength(writer.BaseStream.Position);
+                writer.Flush();
+                WriteExtraData(extraData);
+                return;
+            }
         }
+        //We dont have enough space so lets use what we have and make the rest as we go
+        writer.Write(data.ToArray()[..(int) dataEntry.PackedSize], 0, (int) dataEntry.PackedSize);
+        writer.Write(data.ToArray()[(int) dataEntry.PackedSize..]);
+
+        byte[] extraEntryData;
+        using (var dataAfterReader = new BinaryReader(PboStream, Encoding.UTF8, true)) {
+            dataAfterReader.BaseStream.Seek(writer.BaseStream.Position, SeekOrigin.Begin);
+            extraEntryData = dataAfterReader.ReadBytes(
+                (int)(DataBlockEndOffset - (ulong) dataAfterReader.BaseStream.Position));
+        }
+            
+        WriteExtraData(extraEntryData);
+            
+        writer.BaseStream.SetLength(writer.BaseStream.Position);
+        writer.Flush();
     } 
 
     private static byte[] CalculatePBOChecksum(Stream stream) {
