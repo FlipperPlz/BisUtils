@@ -16,7 +16,12 @@ public class PboFile : IPboFile {
     public bool IsWritable => PboStream.CanWrite;
     public List<BasePboEntry> PboEntries { get; set; }
 
-    public ulong DataBlockStartOffset => PboEntries.Aggregate<BasePboEntry?, ulong>(0, (current, entry) => current + entry!.CalculateMetaLength());
+    public ulong DataBlockStartOffset => PboEntries.Aggregate<BasePboEntry?, ulong>(0, (current, entry) => current + entry switch {
+        //Notice: C# for some reason requires this cast to invoke the "new" version of PboVersionEntry::CalculateMetaLength()
+        PboVersionEntry versionEntry => versionEntry.CalculateMetaLength(),
+        _ => entry!.CalculateMetaLength()
+    });
+
     public ulong DataBlockEndOffset => PboEntries.Aggregate(DataBlockStartOffset, (current, entry) => current + entry.DataLength);
 
 
@@ -28,9 +33,8 @@ public class PboFile : IPboFile {
 
     public MemoryStream ReadEntryData(PboDataEntry dataEntry) {
         using var reader = new BinaryReader(PboStream, Encoding.UTF8, true);
-        //TODO: THESE OFFSETS APPEAR TO BE OFF BY A SMALL AMOUNT, ATTENTION LOOK INTO THIS  !!TODO!!TODO!!TODO!!TODO!!
-        reader.BaseStream.Seek((long) DataBlockStartOffset, SeekOrigin.Begin);
-        reader.BaseStream.Seek((long) dataEntry.EntryDataStartOffset, SeekOrigin.Current);
+        reader.BaseStream.Seek((long)DataBlockStartOffset, SeekOrigin.Begin);
+        reader.BaseStream.Position += (long) dataEntry.EntryDataStartOffset;
 
         return dataEntry.EntryMagic switch {
             PboEntryMagic.Compressed => reader.ReadCompressedData<BisLZSSCompressionAlgorithms>(
