@@ -38,7 +38,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
     }
 
     public void WriteBinary(BinaryWriter writer) {
-        if (EntryMagic is PboEntryMagic.Undefined) throw new Exception("Cannot write undefined entry.");
+        if (EntryMagic is PboEntryMagic.Undefined) throw new Exception($"Cannot write undefined entry. {EntryName}");
         writer.Write(EntryName);
         writer.Write((int) EntryMagic);
         writer.Write((int) Reserved1);

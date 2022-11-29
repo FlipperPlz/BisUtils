@@ -31,16 +31,16 @@ public class PboFile : IPboFile {
         ReadBinary(new BinaryReader(pboStream, Encoding.UTF8, true));
     }
 
-    public MemoryStream ReadEntryData(PboDataEntry dataEntry) {
+    public MemoryStream ReadEntryData(PboDataEntry dataEntry, bool decompress = true) {
         using var reader = new BinaryReader(PboStream, Encoding.UTF8, true);
         reader.BaseStream.Seek((long)DataBlockStartOffset, SeekOrigin.Begin);
         reader.BaseStream.Position += (long) dataEntry.EntryDataStartOffset;
-
+        
         return dataEntry.EntryMagic switch {
-            PboEntryMagic.Compressed => reader.ReadCompressedData<BisLZSSCompressionAlgorithms>(
+            PboEntryMagic.Compressed => decompress ? reader.ReadCompressedData<BisLZSSCompressionAlgorithms>(
                 new BisLZSSDecompressionOptions() {
                     AlwaysDecompress = false, ExpectedSize = (int)dataEntry.OriginalSize, UseSignedChecksum = true
-                }),
+                }) : new MemoryStream(reader.ReadBytes((int)dataEntry.DataLength)),
             PboEntryMagic.Decompressed => new MemoryStream(reader.ReadBytes((int)dataEntry.DataLength)),
             PboEntryMagic.Encrypted => throw new NotSupportedException(),
             _ => throw new ArgumentOutOfRangeException()
@@ -152,7 +152,17 @@ public class PboFile : IPboFile {
     }
 
     public void WriteBinary(BinaryWriter writer) {
-        throw new NotImplementedException(); //TODO: PBO WRITE
+        foreach (var entry in PboEntries) entry.WriteBinary(writer);
+        foreach (var entry in PboEntries) {
+            if(entry is not PboDataEntry dataEntry) continue;
+            
+            using (var entryData = ReadEntryData(dataEntry, false)) writer.Write(entryData.ToArray());
+            
+            var checksum = CalculatePBOChecksum(writer.BaseStream);
+            
+            writer.Write((byte) 0x0);
+            writer.Write(checksum);
+        }
     }
 
 }
