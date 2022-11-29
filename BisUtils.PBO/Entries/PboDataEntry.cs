@@ -23,6 +23,7 @@ public class PboDataEntry : BasePboEntry {
         EntryDataStartOffset = 0;
         
         foreach (var ent in EntryParent.PboEntries) {
+            if(ent is not PboDataEntry) continue;
             if (ent == this) break;
             EntryDataStartOffset += ent.DataLength;
         }

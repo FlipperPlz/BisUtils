@@ -1,4 +1,5 @@
-﻿using BisUtils.Core;
+﻿using System.Text;
+using BisUtils.Core;
 
 namespace BisUtils.PBO.Entries; 
 
@@ -8,6 +9,18 @@ public sealed class PboVersionEntry : BasePboEntry {
     public PboVersionEntry(PboFile entryParent, Dictionary<string, string>? metadata = null) : base(entryParent) {
         Metadata = metadata ?? new Dictionary<string, string>();
     }
+
+    public new ulong CalculateMetaLength() {
+        var offset = 21;
+        foreach (var prop in Metadata) {
+            offset += Encoding.UTF8.GetBytes(prop.Key).Length + 1;
+            offset += Encoding.UTF8.GetBytes(prop.Value).Length + 1;
+        }
+
+        offset++;
+
+        return (ulong) offset;
+    } 
     
     public new IBisSerializable ReadBinary(BinaryReader reader) {
         EntryName = reader.ReadAsciiZ();
