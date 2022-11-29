@@ -9,7 +9,7 @@ public enum PboEntryMagic {
     Encrypted    = 0x456e6372,
     Decompressed = 0x00000000,
     
-    Undefined    = 0x00000000
+    Undefined    = -1
 }
 
 public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry> {
