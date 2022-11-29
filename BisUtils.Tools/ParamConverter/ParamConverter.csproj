@@ -8,8 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\BisUtils.DZA2S\BisUtils.DZA2S.csproj" />
       <ProjectReference Include="..\..\BisUtils.Extensions\BisUtils.Extensions.ParamConversion\BisUtils.Extensions.ParamConversion.csproj" />
       <ProjectReference Include="..\..\BisUtils.Parsers\BisUtils.Parsers.ParamParser\BisUtils.Parsers.ParamParser.csproj" />
+      <ProjectReference Include="..\..\BisUtils.PBO\BisUtils.PBO.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta3" />
     </ItemGroup>
 
 </Project>
