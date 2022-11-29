@@ -17,10 +17,10 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
     
     public PboEntryMagic EntryMagic = PboEntryMagic.Undefined;
     public string EntryName { get; set; } = string.Empty;
-    protected ulong Reserved1 { get; set; } = 0;
-    protected ulong Reserved2 { get; set; } = 0;
-    protected ulong Reserved3 { get; set; } = 0;
-    public ulong DataLength { get; set; } = 0;
+    protected ulong Reserved1 { get; set; }
+    protected ulong Reserved2 { get; set; }
+    protected ulong Reserved3 { get; set; }
+    protected ulong Reserved4 { get; set; }
 
     protected BasePboEntry(PboFile entryParent) {
         EntryParent = entryParent;
@@ -32,7 +32,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
         Reserved1 = reader.ReadUInt32();
         Reserved2 = reader.ReadUInt32();
         Reserved3 = reader.ReadUInt32();
-        DataLength = reader.ReadUInt32();
+        Reserved4 = reader.ReadUInt32();
         
         return this;
     }
@@ -44,7 +44,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
         writer.Write((int) Reserved1);
         writer.Write((int) Reserved2);
         writer.Write((int) Reserved3);
-        writer.Write((int) DataLength);
+        writer.Write((int) Reserved4);
     }
 
     public virtual ulong CalculateMetaLength() => (ulong) (Encoding.UTF8.GetBytes(EntryName).Length + 21);
@@ -76,7 +76,8 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
                 reader.BaseStream.Position = startPos;
                 return (BasePboEntry) new PboDataEntry(pboFile).ReadBinary(reader); 
             }
-            
+
+            case PboEntryMagic.Undefined:
             default:throw new ArgumentOutOfRangeException(entryMagic.ToString());
         }
 

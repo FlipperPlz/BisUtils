@@ -17,8 +17,7 @@ public class PboFile : IPboFile {
     public List<BasePboEntry> PboEntries { get; set; }
 
     public ulong DataBlockStartOffset => PboEntries.Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
-
-    public ulong DataBlockEndOffset => PboEntries.Aggregate(DataBlockStartOffset, (current, entry) => current + entry.DataLength);
+    public ulong DataBlockEndOffset => PboEntries.Where(e => e is PboDataEntry).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
 
     public PboFile(Stream pboStream) {
@@ -36,8 +35,8 @@ public class PboFile : IPboFile {
             PboEntryMagic.Compressed => decompress ? reader.ReadCompressedData<BisLZSSCompressionAlgorithms>(
                 new BisLZSSDecompressionOptions() {
                     AlwaysDecompress = false, ExpectedSize = (int)dataEntry.OriginalSize, UseSignedChecksum = true
-                }) : new MemoryStream(reader.ReadBytes((int)dataEntry.DataLength)),
-            PboEntryMagic.Decompressed => new MemoryStream(reader.ReadBytes((int)dataEntry.DataLength)),
+                }) : new MemoryStream(reader.ReadBytes((int)dataEntry.PackedSize)),
+            PboEntryMagic.Decompressed => new MemoryStream(reader.ReadBytes((int)dataEntry.PackedSize)),
             PboEntryMagic.Encrypted => throw new NotSupportedException(),
             _ => throw new ArgumentOutOfRangeException()
         };

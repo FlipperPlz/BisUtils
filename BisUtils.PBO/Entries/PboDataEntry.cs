@@ -15,9 +15,10 @@ public class PboDataEntry : BasePboEntry {
 
     public ulong TimeStamp => Reserved3;
     public ulong PackedSize {
-        get => DataLength;
-        set => DataLength = value;
+        get => Reserved4;
+        set => Reserved4 = value;
     }
+    
 
     public ulong EntryDataStartOffset; //Relative to pbo data block
     public ulong EntryDataStopOffset; //Relative to pbo data block
@@ -30,12 +31,12 @@ public class PboDataEntry : BasePboEntry {
         EntryDataStartOffset = 0;
         
         foreach (var ent in EntryParent.PboEntries) {
-            if(ent is not PboDataEntry) continue;
+            if(ent is not PboDataEntry dataEntry) continue;
             if (ent == this) break;
-            EntryDataStartOffset += ent.DataLength;
+            EntryDataStartOffset += dataEntry.PackedSize;
         }
 
-        EntryDataStopOffset = EntryDataStartOffset + DataLength;
+        EntryDataStopOffset = EntryDataStartOffset + Reserved4;
     }
 
     public override int CompareTo(BasePboEntry? other) {

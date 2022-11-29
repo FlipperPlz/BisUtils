@@ -28,7 +28,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         Reserved1 = reader.ReadUInt32();
         Reserved2 = reader.ReadUInt32();
         Reserved3 = reader.ReadUInt32();
-        DataLength = reader.ReadUInt32();
+        Reserved4 = reader.ReadUInt32();
 
         string propertyName;
         while ((propertyName = reader.ReadAsciiZ()) != string.Empty) {
@@ -47,7 +47,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         writer.Write((int) Reserved1);
         writer.Write((int) Reserved2);
         writer.Write((int) Reserved3);
-        writer.Write((int) DataLength);
+        writer.Write((int) Reserved4);
 
         foreach (var metaProperty in Metadata) {
             writer.WriteAsciiZ(metaProperty.Key);
