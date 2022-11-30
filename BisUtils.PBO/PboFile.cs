@@ -5,6 +5,7 @@ using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 using BisUtils.PBO.Builders;
 using BisUtils.PBO.Entries;
+using BisUtils.PBO.Extensions;
 
 namespace BisUtils.PBO;
 
@@ -16,7 +17,9 @@ public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSeria
     public void SyncToStream();
     public void DeSyncStream();
     public IEnumerable<BasePboEntry> GetPboEntries();
-    public PboVersionEntry[]? GetVersionEntry();
+    public IEnumerable<PboVersionEntry>? GetVersionEntries();
+    public PboVersionEntry? GetVersionEntry();
+
 }
 
 public class PboFile : IPboFile {
@@ -108,11 +111,21 @@ public class PboFile : IPboFile {
     public void DeSyncStream() => StreamIsSynced = false;
     
     public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
-    
-    public PboVersionEntry[]? GetVersionEntry() {
-        var versionEntries = _pboEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>().ToArray();
-        if (versionEntries.Length == 0) versionEntries = null;
-        return versionEntries;
+
+    public IEnumerable<PboVersionEntry>? GetVersionEntries() {
+        var versionEntries = _pboEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>();
+        var pboVersionEntries = versionEntries as PboVersionEntry[] ?? versionEntries.ToArray();
+        if (!pboVersionEntries.Any()) versionEntries = null;
+        return pboVersionEntries;
+    }
+
+    public PboVersionEntry? GetVersionEntry() {
+        var versionEntries = GetVersionEntries();
+        if (versionEntries is null) return null;
+
+        var versionEntriesArr = versionEntries!.ToArray();
+
+        return versionEntriesArr!.First();
     }
 
     //TODO: STILL NOT WORKING 
@@ -151,9 +164,7 @@ public class PboFile : IPboFile {
                         
             dataAfterWriter.BaseStream.Position = dataAfterWriter.BaseStream.Length;
             dataAfterWriter.Write(fn_extraData);
-            var checksum = CalculatePBOChecksum(dataAfterWriter.BaseStream);
-            dataAfterWriter.Write((byte) 0x0);
-            dataAfterWriter.Write(checksum);
+            dataAfterWriter.WritePboChecksum();
             dataAfterWriter.Flush();
         }
 
@@ -195,27 +206,24 @@ public class PboFile : IPboFile {
             
         writer.BaseStream.SetLength(writer.BaseStream.Position);
         writer.Flush();
-    } 
-
-    private static byte[] CalculatePBOChecksum(Stream stream) {
-        var oldPos = stream.Position;
-
-        stream.Position = 0;
-#pragma warning disable 
-        var hash = new SHA1Managed().ComputeHash(stream);
-#pragma warning restore 
-
-        stream.Position = oldPos;
-
-        return hash;
     }
 
     public IBisSerializable<PboDeserializationOptions, PboSerializationOptions> ReadBinary(BinaryReader reader, PboDeserializationOptions? options = null) {
         options ??= PboDeserializationOptions.DefaultOptions;
 
+        
         BasePboEntry entry;
+
+        if (options.StrictVersionEntry) {
+            _pboEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
+            if (entry is not PboVersionEntry) throw new Exception($"Expected a starting version entry, instead got {entry.GetType().Name}");
+        }
+        
         do {
             _pboEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
+            if (options.StrictVersionEntry && entry is PboVersionEntry)
+                throw new Exception("Only one version entry is allowed in strict mode.");
+
         } while (entry is not PboDummyEntry);
 
         foreach (var e in _pboEntries) {
@@ -224,8 +232,12 @@ public class PboFile : IPboFile {
         }
 
         reader.BaseStream.Seek((long) DataBlockEndOffset, SeekOrigin.Begin);
+
+        if (options.RequireVersionEntry && GetVersionEntry() is null) throw new Exception("No version entry was found while reading pbo.");
+
+        if (!options.VerifyChecksum) return this;
         
-        //TODO: VALIDATE SHA AFTER DATA BLOCK 
+        if (!reader.VerifyPboChecksum()) throw new Exception("The PBO checksum does not match the one calculated.");
         return this;
     }
 
@@ -245,10 +257,7 @@ public class PboFile : IPboFile {
 
         foreach (var dto in dtos) dto.WriteEntryData(writer);
         
-        var checksum = CalculatePBOChecksum(writer.BaseStream);
-            
-        writer.Write((byte) 0x0);
-        writer.Write(checksum);
+        writer.WritePboChecksum();
     }
 
 }

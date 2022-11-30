@@ -1,6 +1,4 @@
-﻿using BisUtils.PBO.Entries;
-
-namespace BisUtils.PBO.Builders; 
+﻿namespace BisUtils.PBO.Builders; 
 
 public class PboBuilder {
     private readonly PboFile _pboFile;
@@ -13,7 +11,7 @@ public class PboBuilder {
     public PboBuilder(string pboLocation, string? prefix = null) {
         prefix ??= Path.GetFileNameWithoutExtension(pboLocation);
         _pboFile = new PboFile(File.Create(pboLocation), PboFileOption.Create);
-        _pboFile.GetVersionEntry()!.First()!.AddMetadataProperty("prefix", prefix, true);
+        _pboFile.GetVersionEntry()!.AddMetadataProperty("prefix", prefix, true);
     }
 
     public PboBuilder WithEntry(PboDataEntryDto dtoEntry) {
