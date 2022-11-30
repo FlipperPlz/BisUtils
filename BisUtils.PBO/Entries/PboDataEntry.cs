@@ -30,6 +30,15 @@ public class PboDataEntry : BasePboEntry {
         
     }
 
+    public override void WriteBinary(BinaryWriter writer) {
+        writer.WriteAsciiZ(EntryName);
+        writer.Write((int) EntryMagic);
+        writer.Write((int) OriginalSize);
+        writer.Write((int) Reserved3);
+        writer.Write((int) TimeStamp);
+        writer.Write((int) PackedSize);
+    }
+
     internal void ReinitializeOffsets() {
         EntryDataStartOffset = 0;
         
