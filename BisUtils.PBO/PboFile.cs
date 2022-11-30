@@ -8,7 +8,7 @@ using BisUtils.PBO.Entries;
 
 namespace BisUtils.PBO;
 
-public interface IPboFile : IBisSerializable {
+public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSerializationOptions> {
     public byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
     public void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false);
 
@@ -207,8 +207,9 @@ public class PboFile : IPboFile {
         return hash;
     }
 
-    public IBisSerializable ReadBinary(BinaryReader reader) {
-        
+    public IBisSerializable<PboDeserializationOptions, PboSerializationOptions> ReadBinary(BinaryReader reader, PboDeserializationOptions? options = null) {
+        options ??= PboDeserializationOptions.DefaultOptions;
+
         BasePboEntry entry;
         do {
             _pboEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
@@ -225,7 +226,9 @@ public class PboFile : IPboFile {
         return this;
     }
 
-    public void WriteBinary(BinaryWriter writer) {
+    public void WriteBinary(BinaryWriter writer, PboSerializationOptions? options = null) {
+        options ??= PboSerializationOptions.DefaultOptions;
+        
         var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
         foreach (var entry in _pboEntries.Where(e => e is not PboDataEntryDto)) {
             if (entry is PboDummyEntry) foreach (var dtoEnt in dtos) dtoEnt.WriteBinary(writer);
