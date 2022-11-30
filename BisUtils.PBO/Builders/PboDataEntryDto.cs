@@ -1,4 +1,5 @@
-﻿using BisUtils.Core.Compression;
+﻿using System.Text;
+using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 using BisUtils.PBO.Entries;
 
@@ -30,7 +31,7 @@ public class PboDataEntryDto : PboDataEntry {
             }
             case false: {
                 _entryStream.SetLength(newData.LongLength);
-                using (var writer = new BinaryWriter(_entryStream)) {
+                using (var writer = new BinaryWriter(_entryStream, Encoding.UTF8, true)) {
                     writer.BaseStream.Seek(0, SeekOrigin.Begin);
                    writer.Write(newData);
                    
