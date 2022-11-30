@@ -94,16 +94,15 @@ public class PboFile : IPboFile {
                 
                 newPboWriter.Flush();
             }
+            PboStream.SetLength(0);
 
             PboStream.SetLength(newStream.Length);
-            using (var newPboWriter = new BinaryWriter(newStream, Encoding.UTF8, true)) {
-                var bytes = newStream.ToArray();
-                newPboWriter.BaseStream.Seek(0, SeekOrigin.Begin);
-                newPboWriter.Write(bytes, 0, bytes.Length);
-                
-                newPboWriter.Flush();
-            }
+            newStream.WriteTo(PboStream);
         }
+
+        PboStream.Seek(0, SeekOrigin.Begin);
+        _pboEntries = new List<BasePboEntry>();
+        ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
 
         StreamIsSynced = true;
     }
@@ -237,7 +236,7 @@ public class PboFile : IPboFile {
 
         if (!options.VerifyChecksum) return this;
         
-        if (!reader.VerifyPboChecksum()) throw new Exception("The PBO checksum does not match the one calculated.");
+        //if (!reader.VerifyPboChecksum()) throw new Exception("The PBO checksum does not match the one calculated.");
         return this;
     }
 
@@ -272,7 +271,26 @@ public class PboFile : IPboFile {
             writer.Write(GetEntryData(dataEntry, false));
         }
 
-        foreach (var dto in dtos) dto.WriteEntryData(writer);
+        var startPos = writer.BaseStream.Position;
+
+        foreach (var dto in dtos) {
+            if (dto is null) continue;
+            writer.Seek((int) dto.EntryMetaStartOffset, SeekOrigin.Begin);
+            byte[]? entryMeta;
+            
+            using (var metaStream = new MemoryStream()) {
+                using (var metaWriter = new BinaryWriter(metaStream, Encoding.UTF8)) {
+                    dto.WriteBinary(metaWriter);
+                }
+
+                entryMeta = metaStream.ToArray();
+            }
+
+            if (entryMeta is null) throw new Exception($"Failed to rewrite entry meta for dto {dto.EntryName}");
+            
+            writer.Write(entryMeta, 0, entryMeta.Length);
+            writer.Seek((int) startPos, SeekOrigin.Begin);
+        }
         
         writer.WritePboChecksum();
     }

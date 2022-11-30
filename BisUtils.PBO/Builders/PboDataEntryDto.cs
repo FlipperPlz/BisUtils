@@ -7,6 +7,7 @@ namespace BisUtils.PBO.Builders;
 
 public class PboDataEntryDto : PboDataEntry {
     private Stream _entryStream { get; set; }
+    public ulong EntryMetaStartOffset;
     
     public override byte[] EntryData {
         get {
@@ -42,6 +43,11 @@ public class PboDataEntryDto : PboDataEntry {
                 return;
             }
         }
+    }
+
+    public override void WriteBinary(BinaryWriter writer) {
+        EntryMetaStartOffset = (ulong) writer.BaseStream.Position;
+        base.WriteBinary(writer);
     }
 
     public PboDataEntryDto(PboFile entryParent, Stream entryData, ulong? timestamp = null, bool compress = false) : base(entryParent) {
