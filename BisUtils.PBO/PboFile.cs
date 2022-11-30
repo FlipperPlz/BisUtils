@@ -83,7 +83,25 @@ public class PboFile : IPboFile {
         if(!IsWritable) throw new Exception("Cannot sync a readonly stream. Try opening the PBO with write access or writing to a new file.");
 
         if(StreamIsSynced) return;
-        throw new NotImplementedException();
+
+        using (var newStream = new MemoryStream()) {
+            using (var newPboWriter = new BinaryWriter(newStream, Encoding.UTF8, true)) {
+                WriteBinary(newPboWriter);
+                
+                newPboWriter.Flush();
+            }
+
+            PboStream.SetLength(newStream.Length);
+            using (var newPboWriter = new BinaryWriter(newStream, Encoding.UTF8, true)) {
+                var bytes = newStream.ToArray();
+                newPboWriter.BaseStream.Seek(0, SeekOrigin.Begin);
+                newPboWriter.Write(bytes, 0, bytes.Length);
+                
+                newPboWriter.Flush();
+            }
+        }
+
+        StreamIsSynced = true;
     }
 
     public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
