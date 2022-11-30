@@ -8,6 +8,14 @@ public sealed class PboVersionEntry : BasePboEntry {
     
     public PboVersionEntry(PboFile entryParent, Dictionary<string, string>? metadata = null) : base(entryParent) {
         Metadata = metadata ?? new Dictionary<string, string>();
+        EntryMagic = PboEntryMagic.Version;
+    }
+
+    public void AddMetadataProperty(string key, string value, bool syncPbo = false) {
+        EntryParent.StreamIsSynced = false;
+        Metadata.Add(key, value);
+        
+        if (syncPbo) EntryParent.SyncToStream();
     }
 
     public override ulong CalculateMetaLength() {

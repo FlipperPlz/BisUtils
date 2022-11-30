@@ -15,6 +15,7 @@ public interface IPboFile : IBisSerializable {
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
     public void SyncToStream();
     public IEnumerable<BasePboEntry> GetPboEntries();
+    public PboVersionEntry[]? GetVersionEntry();
 }
 
 public class PboFile : IPboFile {
@@ -29,10 +30,23 @@ public class PboFile : IPboFile {
     public ulong DataBlockEndOffset => _pboEntries.Where(e => e is PboDataEntry).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
     
-    public PboFile(Stream pboStream) {
+    public PboFile(Stream pboStream, PboFileOption option = PboFileOption.Read) {
         PboStream = pboStream;
         _pboEntries = new List<BasePboEntry>();
-        ReadBinary(new BinaryReader(pboStream, Encoding.UTF8, true));
+
+        switch (option) {
+            case PboFileOption.Read: {
+                ReadBinary(new BinaryReader(pboStream, Encoding.UTF8, true));
+                break;
+            }
+            case PboFileOption.Create: {
+                _pboEntries.Add(new PboVersionEntry(this));
+                _pboEntries.Add(new PboDummyEntry(this));
+                WriteBinary(new BinaryWriter(pboStream, Encoding.UTF8, true));
+                break;
+            }
+            default: throw new ArgumentOutOfRangeException(option.ToString());
+        }
         StreamIsSynced = true;
     }
 
@@ -58,11 +72,11 @@ public class PboFile : IPboFile {
     }
 
 
-    public void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false) {
+    public void AddEntry(PboDataEntryDto dataEntryDto, bool syncPbo = false) {
+        StreamIsSynced = false;
         _pboEntries.Add(dataEntryDto);
         
-        StreamIsSynced = false;
-        if(syncStream) SyncToStream();
+        if(syncPbo) SyncToStream();
     }
 
     public void SyncToStream() {
@@ -74,9 +88,14 @@ public class PboFile : IPboFile {
 
     public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
     
+    public PboVersionEntry[]? GetVersionEntry() {
+        var versionEntries = _pboEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>().ToArray();
+        if (versionEntries.Length == 0) versionEntries = null;
+        return versionEntries;
+    }
+
     //TODO: STILL NOT WORKING 
     public void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false) {
-        
         if (dataEntry is PboDataEntryDto dto) {
             dto.EntryData = data;
             return;
