@@ -262,7 +262,13 @@ public class PboFile : IPboFile {
         
         var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
         foreach (var entry in _pboEntries.Where(e => e is not PboDataEntryDto)) {
-            if (entry is PboDummyEntry) foreach (var dtoEnt in dtos) dtoEnt.WriteBinary(writer);
+            if (entry is PboDummyEntry) {
+                foreach (var dtoEnt in dtos) {
+                    dtoEnt.WriteBinary(writer);
+                    dtoEnt.RewriteMetadata(writer);
+                }
+            }
+                
             entry.WriteBinary(writer);
         }
         
@@ -271,26 +277,6 @@ public class PboFile : IPboFile {
             writer.Write(GetEntryData(dataEntry, false));
         }
 
-        var startPos = writer.BaseStream.Position;
-
-        foreach (var dto in dtos) {
-            if (dto is null) continue;
-            writer.Seek((int) dto.EntryMetaStartOffset, SeekOrigin.Begin);
-            byte[]? entryMeta;
-            
-            using (var metaStream = new MemoryStream()) {
-                using (var metaWriter = new BinaryWriter(metaStream, Encoding.UTF8)) {
-                    dto.WriteBinary(metaWriter);
-                }
-
-                entryMeta = metaStream.ToArray();
-            }
-
-            if (entryMeta is null) throw new Exception($"Failed to rewrite entry meta for dto {dto.EntryName}");
-            
-            writer.Write(entryMeta, 0, entryMeta.Length);
-            writer.Seek((int) startPos, SeekOrigin.Begin);
-        }
         
         writer.WritePboChecksum();
     }

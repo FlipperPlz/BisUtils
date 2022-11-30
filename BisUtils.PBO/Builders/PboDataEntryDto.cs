@@ -7,7 +7,7 @@ namespace BisUtils.PBO.Builders;
 
 public class PboDataEntryDto : PboDataEntry {
     private Stream _entryStream { get; set; }
-    public ulong EntryMetaStartOffset;
+    public ulong? EntryMetaStartOffset;
     
     public override byte[] EntryData {
         get {
@@ -20,6 +20,24 @@ public class PboDataEntryDto : PboDataEntry {
             return stream.ToArray();
         }
         set => ChangeData(value, true);
+    }
+
+    public void RewriteMetadata(BinaryWriter writer) {
+        if (EntryMetaStartOffset is 0 or null)
+            throw new Exception("In order to rewrite the entry meta, It has to have been re/written previously.");
+        var startPos = writer.BaseStream.Position;
+        writer.Seek((int) EntryMetaStartOffset, SeekOrigin.Begin);
+        byte[]? entryMeta;
+            
+        using (var metaStream = new MemoryStream()) {
+            WriteBinary(new BinaryWriter(metaStream, Encoding.UTF8, true));
+            entryMeta = metaStream.ToArray();
+        }
+
+        if (entryMeta is null) throw new Exception($"Failed to rewrite entry meta for dto {EntryName}");
+            
+        writer.Write(entryMeta, 0, entryMeta.Length);
+        writer.Seek((int) startPos, SeekOrigin.Begin);
     }
 
 
