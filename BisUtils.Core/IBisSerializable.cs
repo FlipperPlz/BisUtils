@@ -1,17 +1,42 @@
 ﻿namespace BisUtils.Core; 
 
+public abstract class BisDeserializationOptions : BisOptions {
+    
+}
+
+public abstract class BisSerializationOptions : BisOptions {
+}
+
+public interface IBisSerializable<DSO, SO> where DSO : BisDeserializationOptions where SO : BisSerializationOptions {
+    public IBisSerializable ReadBinary(BinaryReader reader, DSO deserializationOptions);
+    public void WriteBinary(BinaryWriter writer, SO serializationOptions);
+    
+    public virtual byte[] Binarize(SO serializationOptions) {
+        var stream = new MemoryStream();
+        using var writer = new BinaryWriter(stream);
+        WriteBinary(writer, serializationOptions);
+        return stream.ToArray();
+    }
+
+    public virtual IBisSerializable Debinarize(byte[] data, DSO deserializationOptions) => 
+        ReadBinary(new BinaryReader(new MemoryStream(data)), deserializationOptions);
+
+    public static T FromBinary<T>(byte[] data, DSO deserializationOptions) where T : IBisSerializable<DSO, SO>, new() => (T) new T().Debinarize(data, deserializationOptions);
+}
+
 public interface IBisSerializable {
     public IBisSerializable ReadBinary(BinaryReader reader);
     public void WriteBinary(BinaryWriter writer);
     
-    public byte[] Binarize() {
+    public virtual byte[] Binarize() {
         var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
         WriteBinary(writer);
         return stream.ToArray();
     }
 
-    public IBisSerializable Debinarize(byte[] data) => ReadBinary(new BinaryReader(new MemoryStream(data)));
+    public virtual IBisSerializable Debinarize(byte[] data) => ReadBinary(new BinaryReader(new MemoryStream(data)));
 
     public static T FromBinary<T>(byte[] data) where T : IBisSerializable, new() => (T) new T().Debinarize(data);
 }
+
