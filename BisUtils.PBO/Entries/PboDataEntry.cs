@@ -26,7 +26,7 @@ public class PboDataEntry : BasePboEntry {
     public ulong EntryDataStartOffset; //Relative to pbo data block
     public ulong EntryDataStopOffset; //Relative to pbo data block
 
-    public PboDataEntry(PboFile entryParent) : base(entryParent) {
+    public PboDataEntry(IPboFile entryParent) : base(entryParent) {
         
     }
 
