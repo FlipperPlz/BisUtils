@@ -11,7 +11,7 @@ public abstract class BisCommonSerializationOptions : BisOptions {
 }
 
 public interface IBisSerializable<SO> where SO : BisCommonSerializationOptions {
-    public IBisSerializable ReadBinary(BinaryReader reader, SO deserializationOptions);
+    public IBisSerializable<SO> ReadBinary(BinaryReader reader, SO deserializationOptions);
     public void WriteBinary(BinaryWriter writer, SO serializationOptions);
     
     public virtual byte[] Binarize(SO serializationOptions) {
@@ -21,7 +21,7 @@ public interface IBisSerializable<SO> where SO : BisCommonSerializationOptions {
         return stream.ToArray();
     }
 
-    public virtual IBisSerializable Debinarize(byte[] data, SO deserializationOptions) => 
+    public virtual IBisSerializable<SO> Debinarize(byte[] data, SO deserializationOptions) => 
         ReadBinary(new BinaryReader(new MemoryStream(data)), deserializationOptions);
 
     public static T FromBinary<T>(byte[] data, SO deserializationOptions) where T : IBisSerializable<SO>, new() => (T) new T().Debinarize(data, deserializationOptions);
@@ -29,7 +29,7 @@ public interface IBisSerializable<SO> where SO : BisCommonSerializationOptions {
 
 
 public interface IBisSerializable<DSO, SO> where DSO : BisDeserializationOptions where SO : BisSerializationOptions {
-    public IBisSerializable ReadBinary(BinaryReader reader, DSO deserializationOptions);
+    public IBisSerializable<DSO, SO> ReadBinary(BinaryReader reader, DSO deserializationOptions);
     public void WriteBinary(BinaryWriter writer, SO serializationOptions);
     
     public virtual byte[] Binarize(SO serializationOptions) {
@@ -39,7 +39,7 @@ public interface IBisSerializable<DSO, SO> where DSO : BisDeserializationOptions
         return stream.ToArray();
     }
 
-    public virtual IBisSerializable Debinarize(byte[] data, DSO deserializationOptions) => 
+    public virtual IBisSerializable<DSO, SO> Debinarize(byte[] data, DSO deserializationOptions) => 
         ReadBinary(new BinaryReader(new MemoryStream(data)), deserializationOptions);
 
     public static T FromBinary<T>(byte[] data, DSO deserializationOptions) where T : IBisSerializable<DSO, SO>, new() => (T) new T().Debinarize(data, deserializationOptions);
