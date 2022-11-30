@@ -2,18 +2,21 @@
 
 public class PboDataEntry : BasePboEntry {
     
-    public MemoryStream EntryData {
-        get => EntryParent.ReadEntryData(this);
+    public virtual byte[] EntryData {
+        get => EntryParent.GetEntryData(this);
         set => EntryParent.OverwriteEntryData(this, value, EntryMagic == PboEntryMagic.Compressed);
     }
-
 
     public ulong OriginalSize {
         get => Reserved1;
         set => Reserved1 = value;
     }
 
-    public ulong TimeStamp => Reserved3;
+    public ulong TimeStamp {
+        get => Reserved3;
+        set => Reserved3 = value;
+    }
+    
     public ulong PackedSize {
         get => Reserved4;
         set => Reserved4 = value;
@@ -30,7 +33,7 @@ public class PboDataEntry : BasePboEntry {
     internal void ReinitializeOffsets() {
         EntryDataStartOffset = 0;
         
-        foreach (var ent in EntryParent.PboEntries) {
+        foreach (var ent in EntryParent.GetPboEntries()) {
             if(ent is not PboDataEntry dataEntry) continue;
             if (ent == this) break;
             EntryDataStartOffset += dataEntry.PackedSize;
