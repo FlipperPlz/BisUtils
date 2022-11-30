@@ -243,6 +243,23 @@ public class PboFile : IPboFile {
 
     public void WriteBinary(BinaryWriter writer, PboSerializationOptions? options = null) {
         options ??= PboSerializationOptions.DefaultOptions;
+
+        if (options.RequireVersionEntry) {
+            if (!_pboEntries.Where(v => v is PboVersionEntry).ToArray().Any())
+                throw new Exception("Cannot write PBO without a version entry.");
+        }
+        
+        if (options.RequireDummyEntry) {
+            if (!_pboEntries.Where(v => v is PboDummyEntry).ToArray().Any())
+                throw new Exception("Cannot write PBO without a dummy data entry.");
+        }
+
+        if (options.StrictVersionEntry) {
+            if (_pboEntries.First() is not PboVersionEntry)
+                throw new Exception("In strict mode there must be a single version entry at the beginning of the pbo.");
+            if (_pboEntries.Where(v => v is PboDummyEntry).ToArray().Length > 1)
+                throw new Exception("In strict mode there can only be a single version entry.");
+        }
         
         var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
         foreach (var entry in _pboEntries.Where(e => e is not PboDataEntryDto)) {

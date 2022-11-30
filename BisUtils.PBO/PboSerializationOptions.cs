@@ -7,6 +7,8 @@ public class PboSerializationOptions : BisSerializationOptions {
     
     public bool RequireVersionEntry { get; set; } = true;
     public bool RequireDummyEntry { get; set; } = true;
+    public bool StrictVersionEntry { get; set; } = true;
+
 }
 
 public class PboDeserializationOptions : BisDeserializationOptions {
