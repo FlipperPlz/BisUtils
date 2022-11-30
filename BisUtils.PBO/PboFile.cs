@@ -14,6 +14,7 @@ public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSeria
 
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
     public void SyncToStream();
+    public void DeSyncStream();
     public IEnumerable<BasePboEntry> GetPboEntries();
     public PboVersionEntry[]? GetVersionEntry();
 }
@@ -104,6 +105,8 @@ public class PboFile : IPboFile {
         StreamIsSynced = true;
     }
 
+    public void DeSyncStream() => StreamIsSynced = false;
+    
     public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
     
     public PboVersionEntry[]? GetVersionEntry() {

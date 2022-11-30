@@ -12,7 +12,7 @@ public sealed class PboVersionEntry : BasePboEntry {
     }
 
     public void AddMetadataProperty(string key, string value, bool syncPbo = false) {
-        EntryParent.StreamIsSynced = false;
+        EntryParent.DeSyncStream();
         Metadata.Add(key, value);
         
         if (syncPbo) EntryParent.SyncToStream();
