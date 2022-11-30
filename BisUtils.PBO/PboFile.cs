@@ -236,6 +236,8 @@ public class PboFile : IPboFile {
             if(entry is not PboDataEntry dataEntry) continue;
             writer.Write(GetEntryData(dataEntry, false));
         }
+
+        foreach (var dto in dtos) dto.WriteEntryData(writer);
         
         var checksum = CalculatePBOChecksum(writer.BaseStream);
             
