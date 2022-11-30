@@ -66,6 +66,8 @@ public class PboFile : IPboFile {
     }
 
     public void SyncToStream() {
+        if(!IsWritable) throw new Exception("Cannot sync a readonly stream. Try opening the PBO with write access or writing to a new file.");
+
         if(StreamIsSynced) return;
         throw new NotImplementedException();
     }
