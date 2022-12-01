@@ -10,11 +10,14 @@ namespace BisUtils.PBO;
 
 public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSerializationOptions> {
     byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
-    void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false);
+    void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false, bool syncToStream = true);
 
     void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
+    void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false);
+
     void SyncToStream();
     void DeSyncStream();
+
     IEnumerable<BasePboEntry> GetPboEntries();
     IEnumerable<PboVersionEntry>? GetVersionEntries();
     PboVersionEntry? GetVersionEntry();
@@ -28,9 +31,11 @@ public class PboFile : IPboFile {
     public bool IsWritable => PboStream.CanWrite;
     
     private List<BasePboEntry> _pboEntries { get; set;}
+    internal bool _areOffsetsLocked;     
+    internal ulong _lockedDataStartOffset, _lockedDataEndOffset;
 
-    public ulong DataBlockStartOffset => _pboEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
-    public ulong DataBlockEndOffset => _pboEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
+    public ulong DataBlockStartOffset => _areOffsetsLocked ? _lockedDataStartOffset : _pboEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
+    public ulong DataBlockEndOffset => _areOffsetsLocked ? _lockedDataEndOffset : _pboEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
     
     public PboFile(Stream pboStream, PboFileOption option = PboFileOption.Read) {
@@ -100,7 +105,7 @@ public class PboFile : IPboFile {
         PboStream.Seek(0, SeekOrigin.Begin);
         _pboEntries = new List<BasePboEntry>();
         ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
-
+        UnlockDataOffsets();
         _streamIsSynced = true;
     }
 
@@ -125,84 +130,44 @@ public class PboFile : IPboFile {
         return versionEntriesArr.First();
     }
 
+    internal void LockDataOffsets() {
+        if(_areOffsetsLocked) return;
+        
+        _lockedDataEndOffset = DataBlockEndOffset;
+        _lockedDataStartOffset = DataBlockStartOffset;
+        _areOffsetsLocked = true;
+    }
+
+    internal void UnlockDataOffsets() {
+        if(!_areOffsetsLocked) return;
+
+        _lockedDataEndOffset = 0;
+        _lockedDataStartOffset = 0;
+        _areOffsetsLocked = false;
+    }
+
+    public void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false) {
+        if (dataEntry.EntryParent != this) throw new Exception("Cannot delete an entry outside of the pbo.");
+        if (dataEntry is PboDataEntryDto dto) {
+            _pboEntries.Remove(dto);
+            return;
+        }
+        
+        LockDataOffsets();
+        _pboEntries.Remove(dataEntry);
+        if(syncStream) SyncToStream();
+    }
+    
     //TODO: STILL NOT WORKING 
-    public void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false) {
+    public void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false, bool syncStream = false) {
         if (dataEntry is PboDataEntryDto dto) {
             dto.EntryData = data;
             return;
         }
-        if (!IsWritable) throw new Exception("The pbo file you're trying to write to is readonly.");
+        if (!IsWritable && syncStream) throw new Exception("The pbo file you're trying to write to is readonly.");
         
-        var newDataSize = data.Length;
-        if(compressed) {
-            using var compressedDataStream = new MemoryStream();
-            using (var compressionWriter = new BinaryWriter(compressedDataStream, Encoding.UTF8, true)) {
-                compressionWriter.WriteCompressedData<BisLZSSCompressionAlgorithms>(data.ToArray(),
-                    new BisLZSSCompressionOptions() { AlwaysCompress = false, WriteSignedChecksum = true });
-            }
-            compressedDataStream.Flush();
-            data = compressedDataStream.ToArray();
-        }
-        var packedDataSize = data.Length;
-
-        void WriteExtraData(byte[] fn_extraData) {
-            using var dataAfterWriter = new BinaryWriter(PboStream, Encoding.UTF8, true);
-            dataEntry.OriginalSize = (ulong) newDataSize;
-            dataEntry.PackedSize = (ulong)packedDataSize;
-            dataAfterWriter.BaseStream.Position = 0;
-            foreach (var ent in _pboEntries) {
-                if(ent == dataEntry) break;
-                dataAfterWriter.BaseStream.Seek((long) ent.CalculateMetaLength(), SeekOrigin.Current);
-            }
-            dataAfterWriter.BaseStream.Seek((long) Encoding.UTF8.GetBytes(dataEntry.EntryName).Length + 5, SeekOrigin.Current);
-            dataAfterWriter.Write(BitConverter.GetBytes((int) dataEntry.OriginalSize), 0, 4);
-            dataAfterWriter.BaseStream.Seek(8, SeekOrigin.Current);
-            dataAfterWriter.Write(BitConverter.GetBytes((int) dataEntry.PackedSize), 0, 4);
-                        
-            dataAfterWriter.BaseStream.Position = dataAfterWriter.BaseStream.Length;
-            dataAfterWriter.Write(fn_extraData);
-            dataAfterWriter.WritePboChecksum();
-            dataAfterWriter.Flush();
-        }
-
-        using var writer = new BinaryWriter(PboStream, Encoding.UTF8, true);
-        writer.BaseStream.Seek((long) DataBlockStartOffset, SeekOrigin.Begin);
-        writer.BaseStream.Position += (long) dataEntry.EntryDataStartOffset;
-
-        //Check to see if we already have enough space to overwrite
-        if (data.Length <= (long) dataEntry.PackedSize) {
-            writer.Write(data.ToArray(), 0, data.Length);
-
-            var leftoverBytesCount = dataEntry.PackedSize - (ulong) data.Length;
-                
-            //Remove Leftover Data
-            if (leftoverBytesCount > 0) {
-                byte[] extraData;
-                using (var dataAfterReader = new BinaryReader(PboStream, Encoding.UTF8, true)) {
-                    dataAfterReader.BaseStream.Seek(writer.BaseStream.Position + (long) leftoverBytesCount, SeekOrigin.Begin);
-                    extraData = dataAfterReader.ReadBytes((int)(DataBlockEndOffset - (ulong)dataAfterReader.BaseStream.Position));
-                }
-                writer.BaseStream.SetLength(writer.BaseStream.Position);
-                writer.Flush();
-                WriteExtraData(extraData);
-                return;
-            }
-        }
-        //We dont have enough space so lets use what we have and make the rest as we go
-        writer.Write(data.ToArray()[..(int) dataEntry.PackedSize], 0, (int) dataEntry.PackedSize);
-        writer.Write(data.ToArray()[(int) dataEntry.PackedSize..]);
-
-        byte[] extraEntryData;
-        using (var dataAfterReader = new BinaryReader(PboStream, Encoding.UTF8, true)) {
-            dataAfterReader.BaseStream.Seek(writer.BaseStream.Position, SeekOrigin.Begin);
-            extraEntryData = dataAfterReader.ReadBytes(
-                (int)(DataBlockEndOffset - (ulong) dataAfterReader.BaseStream.Position));
-        }
-            
-        WriteExtraData(extraEntryData);
-            
-        writer.BaseStream.SetLength(writer.BaseStream.Position);
-        writer.Flush();
+        AddEntry(new PboDataEntryDto(this, new MemoryStream(data), dataEntry.TimeStamp, compressed), syncStream);
+        DeleteEntry(dataEntry, syncStream);
     }
 
     public IBisSerializable<PboDeserializationOptions, PboSerializationOptions> ReadBinary(BinaryReader reader, PboDeserializationOptions? options = null) {
