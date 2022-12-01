@@ -1,4 +1,6 @@
-﻿namespace BisUtils.PBO.Entries; 
+﻿using BisUtils.PBO.Builders;
+
+namespace BisUtils.PBO.Entries; 
 
 public class PboDataEntry : BasePboEntry {
     
@@ -48,7 +50,7 @@ public class PboDataEntry : BasePboEntry {
             EntryDataStartOffset += dataEntry.PackedSize;
         }
 
-        EntryDataStopOffset = EntryDataStartOffset + Reserved4;
+        EntryDataStopOffset = EntryDataStartOffset + PackedSize;
     }
 
     public override int CompareTo(BasePboEntry? other) {

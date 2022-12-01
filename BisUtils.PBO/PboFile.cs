@@ -257,31 +257,37 @@ public class PboFile : IPboFile {
             if (_pboEntries.Where(v => v is PboDummyEntry).ToArray().Length > 1)
                 throw new Exception("In strict mode there can only be a single version entry.");
         }
+
+        var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>();
         
-        var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
-        foreach (var entry in _pboEntries.Where(e => e is not PboDataEntryDto)) {
-            if (entry is PboDummyEntry) foreach (var dtoEnt in dtos) dtoEnt.WriteBinary(writer);
+        
+        
+        foreach (var entry in _pboEntries) {
+            if(entry is PboDataEntryDto) continue;
+            if (entry is PboDummyEntry) {
+                foreach (var dtoEnt in dtos) dtoEnt.WriteBinary(writer);
+            }
                 
             entry.WriteBinary(writer);
         }
         
         foreach (var entry in _pboEntries) {
             if(entry is not PboDataEntry dataEntry) continue;
-            switch (entry) {
-                case PboDataEntryDto dataEntryDto: {
-                    dataEntryDto.WriteEntryData(writer);
-                    //dataEntryDto.RewriteMetadata(writer);
-                    break;
-                }
-                default: {
-                    writer.Write(GetEntryData(dataEntry, false));
-                    break;
-                }
-            }
+            if(entry is PboDataEntryDto ) continue; 
+            writer.Write(GetEntryData(dataEntry, false));
         }
 
+        writer.Seek(-21, SeekOrigin.Current);
+
+        
+        foreach (var entry in dtos) {
+            entry.WriteEntryData(writer);
+            entry.RewriteMetadata(writer);
+        }
         
         writer.WritePboChecksum();
+        writer.Flush();
+        writer.BaseStream.Flush();
     }
 
 }
