@@ -75,6 +75,7 @@ public class PboFile : IPboFile {
 
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncPbo = false) {
         StreamIsSynced = false;
+        //TODO: BROKEN, ADDING A DTO FUCKS UP THE OFFSETS BREAKING FILES
         _pboEntries.Add(dataEntryDto);
         
         if(syncPbo) SyncToStream();
