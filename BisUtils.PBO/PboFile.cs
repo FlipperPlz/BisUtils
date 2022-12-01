@@ -29,8 +29,8 @@ public class PboFile : IPboFile {
     
     private List<BasePboEntry> _pboEntries { get; set;}
 
-    public ulong DataBlockStartOffset => _pboEntries.Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
-    public ulong DataBlockEndOffset => _pboEntries.Where(e => e is PboDataEntry).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
+    public ulong DataBlockStartOffset => _pboEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
+    public ulong DataBlockEndOffset => _pboEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
     
     public PboFile(Stream pboStream, PboFileOption option = PboFileOption.Read) {
@@ -75,7 +75,6 @@ public class PboFile : IPboFile {
 
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncPbo = false) {
         StreamIsSynced = false;
-        //TODO: BROKEN, ADDING A DTO FUCKS UP THE OFFSETS BREAKING FILES
         _pboEntries.Add(dataEntryDto);
         
         if(syncPbo) SyncToStream();
@@ -278,9 +277,6 @@ public class PboFile : IPboFile {
             writer.Write(GetEntryData(dataEntry, false));
         }
 
-        writer.Seek(-21, SeekOrigin.Current);
-
-        
         foreach (var entry in dtos) {
             entry.WriteEntryData(writer);
             entry.RewriteMetadata(writer);
