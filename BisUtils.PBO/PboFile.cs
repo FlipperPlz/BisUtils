@@ -270,7 +270,7 @@ public class PboFile : IPboFile {
             switch (entry) {
                 case PboDataEntryDto dataEntryDto: {
                     dataEntryDto.WriteEntryData(writer);
-                    //dataEntryDto.RewriteMetadata(writer);
+                    dataEntryDto.RewriteMetadata(writer);
                     break;
                 }
                 default: {
