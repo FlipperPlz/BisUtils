@@ -9,20 +9,20 @@ using BisUtils.PBO.Extensions;
 namespace BisUtils.PBO;
 
 public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSerializationOptions> {
-    public byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
-    public void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false);
+    byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
+    void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false);
 
-    public void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
-    public void SyncToStream();
-    public void DeSyncStream();
-    public IEnumerable<BasePboEntry> GetPboEntries();
-    public IEnumerable<PboVersionEntry>? GetVersionEntries();
-    public PboVersionEntry? GetVersionEntry();
+    void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
+    void SyncToStream();
+    void DeSyncStream();
+    IEnumerable<BasePboEntry> GetPboEntries();
+    IEnumerable<PboVersionEntry>? GetVersionEntries();
+    PboVersionEntry? GetVersionEntry();
 
 }
 
 public class PboFile : IPboFile {
-    public bool StreamIsSynced;
+    private bool _streamIsSynced;
     
     public readonly Stream PboStream;
     public bool IsWritable => PboStream.CanWrite;
@@ -50,7 +50,7 @@ public class PboFile : IPboFile {
             }
             default: throw new ArgumentOutOfRangeException(option.ToString());
         }
-        StreamIsSynced = true;
+        _streamIsSynced = true;
     }
 
     public byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true) {
@@ -74,7 +74,7 @@ public class PboFile : IPboFile {
 
 
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncPbo = false) {
-        StreamIsSynced = false;
+        _streamIsSynced = false;
         _pboEntries.Add(dataEntryDto);
         
         if(syncPbo) SyncToStream();
@@ -83,7 +83,7 @@ public class PboFile : IPboFile {
     public void SyncToStream() {
         if(!IsWritable) throw new Exception("Cannot sync a readonly stream. Try opening the PBO with write access or writing to a new file.");
 
-        if(StreamIsSynced) return;
+        if(_streamIsSynced) return;
 
         using (var newStream = new MemoryStream()) {
             using (var newPboWriter = new BinaryWriter(newStream, Encoding.UTF8, true)) {
@@ -101,10 +101,10 @@ public class PboFile : IPboFile {
         _pboEntries = new List<BasePboEntry>();
         ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
 
-        StreamIsSynced = true;
+        _streamIsSynced = true;
     }
 
-    public void DeSyncStream() => StreamIsSynced = false;
+    public void DeSyncStream() => _streamIsSynced = false;
     
     public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
 
