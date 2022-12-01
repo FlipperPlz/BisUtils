@@ -258,7 +258,7 @@ public class PboFile : IPboFile {
                 throw new Exception("In strict mode there can only be a single version entry.");
         }
 
-        var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>();
+        var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
         
         
         
