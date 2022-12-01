@@ -13,7 +13,7 @@ public enum PboEntryMagic {
 }
 
 public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry> {
-    public readonly PboFile EntryParent;
+    public readonly IPboFile EntryParent;
     
     public PboEntryMagic EntryMagic = PboEntryMagic.Undefined;
     public string EntryName { get; set; } = string.Empty;
@@ -22,7 +22,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
     protected ulong Reserved3 { get; set; }
     protected ulong Reserved4 { get; set; }
 
-    protected BasePboEntry(PboFile entryParent) {
+    protected BasePboEntry(IPboFile entryParent) {
         EntryParent = entryParent;
     }
 

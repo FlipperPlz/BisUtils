@@ -6,8 +6,16 @@ namespace BisUtils.PBO.Entries;
 public sealed class PboVersionEntry : BasePboEntry {
     public Dictionary<string, string> Metadata { get; set; }
     
-    public PboVersionEntry(PboFile entryParent, Dictionary<string, string>? metadata = null) : base(entryParent) {
+    public PboVersionEntry(IPboFile entryParent, Dictionary<string, string>? metadata = null) : base(entryParent) {
         Metadata = metadata ?? new Dictionary<string, string>();
+        EntryMagic = PboEntryMagic.Version;
+    }
+
+    public void AddMetadataProperty(string key, string value, bool syncPbo = false) {
+        EntryParent.DeSyncStream();
+        Metadata.Add(key, value);
+        
+        if (syncPbo) EntryParent.SyncToStream();
     }
 
     public override ulong CalculateMetaLength() {
@@ -36,6 +44,7 @@ public sealed class PboVersionEntry : BasePboEntry {
 
             Metadata.Add(propertyName, propertyValue);
         }
+        
         
         return this;
     }

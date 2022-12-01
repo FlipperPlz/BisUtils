@@ -1,8 +1,8 @@
 namespace BisUtils.Core.Compression.Options; 
 
-public abstract class BisDecompressionOptions {
+public abstract class BisDecompressionOptions : BisOptions{
     public int ExpectedSize { get; set; } 
 }
 
-public abstract class BisCompressionOptions {
+public abstract class BisCompressionOptions : BisOptions{
 }
