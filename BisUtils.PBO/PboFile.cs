@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 using BisUtils.Core;
 using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
@@ -69,9 +68,7 @@ public class PboFile : IPboFile {
                 }).ToArray() : reader.ReadBytes((int)dataEntry.PackedSize),
             PboEntryMagic.Decompressed => reader.ReadBytes((int)dataEntry.PackedSize),
             PboEntryMagic.Encrypted => throw new NotSupportedException("Encrypted PBOs are not supported by BisUtils."),
-            PboEntryMagic.Version => throw new ArgumentOutOfRangeException(),
-            PboEntryMagic.Undefined => throw new ArgumentOutOfRangeException(),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(dataEntry.EntryMagic.ToString())
         };
     }
 
@@ -111,6 +108,7 @@ public class PboFile : IPboFile {
     
     public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
 
+    // ReSharper disable once ReturnTypeCanBeNotNullable RedundantAssignment
     public IEnumerable<PboVersionEntry>? GetVersionEntries() {
         var versionEntries = _pboEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>();
         var pboVersionEntries = versionEntries as PboVersionEntry[] ?? versionEntries.ToArray();
@@ -122,9 +120,9 @@ public class PboFile : IPboFile {
         var versionEntries = GetVersionEntries();
         if (versionEntries is null) return null;
 
-        var versionEntriesArr = versionEntries!.ToArray();
+        var versionEntriesArr = versionEntries.ToArray();
 
-        return versionEntriesArr!.First();
+        return versionEntriesArr.First();
     }
 
     //TODO: STILL NOT WORKING 
@@ -262,19 +260,24 @@ public class PboFile : IPboFile {
         
         var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
         foreach (var entry in _pboEntries.Where(e => e is not PboDataEntryDto)) {
-            if (entry is PboDummyEntry) {
-                foreach (var dtoEnt in dtos) {
-                    dtoEnt.WriteBinary(writer);
-                    dtoEnt.RewriteMetadata(writer);
-                }
-            }
+            if (entry is PboDummyEntry) foreach (var dtoEnt in dtos) dtoEnt.WriteBinary(writer);
                 
             entry.WriteBinary(writer);
         }
         
         foreach (var entry in _pboEntries) {
             if(entry is not PboDataEntry dataEntry) continue;
-            writer.Write(GetEntryData(dataEntry, false));
+            switch (entry) {
+                case PboDataEntryDto dataEntryDto: {
+                    dataEntryDto.WriteEntryData(writer);
+                    //dataEntryDto.RewriteMetadata(writer);
+                    break;
+                }
+                default: {
+                    writer.Write(GetEntryData(dataEntry, false));
+                    break;
+                }
+            }
         }
 
         

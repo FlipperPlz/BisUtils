@@ -11,13 +11,14 @@ public class PboDataEntryDto : PboDataEntry {
     
     public override byte[] EntryData {
         get {
-            using var stream = new MemoryStream();
-
             var startPos = _entryStream.Position;
-            _entryStream.CopyTo(stream);
-            _entryStream.Seek(startPos, SeekOrigin.Begin);
             
-            return stream.ToArray();
+            _entryStream.Seek(0, SeekOrigin.Begin);
+            using var memoryStream = new MemoryStream();
+            _entryStream.CopyTo(memoryStream);
+            _entryStream.Seek(startPos, SeekOrigin.Begin);
+
+            return memoryStream.ToArray();
         }
         set => ChangeData(value, true);
     }
