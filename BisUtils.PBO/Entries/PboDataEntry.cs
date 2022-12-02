@@ -3,6 +3,8 @@
 namespace BisUtils.PBO.Entries; 
 
 public class PboDataEntry : BasePboEntry {
+
+    private bool _queuedToDelete;
     
     public virtual byte[] EntryData {
         get => EntryParent.GetEntryData(this);
@@ -56,4 +58,8 @@ public class PboDataEntry : BasePboEntry {
     public override int CompareTo(BasePboEntry? other) {
         throw new NotImplementedException();
     }
+
+    public void QueueDeletion() => _queuedToDelete = true;
+
+    public bool IsQueuedForDeletion() => _queuedToDelete;
 }

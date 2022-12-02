@@ -31,11 +31,8 @@ public class PboFile : IPboFile {
     public bool IsWritable => PboStream.CanWrite;
     
     private List<BasePboEntry> _pboEntries { get; set;}
-    internal bool _areOffsetsLocked;     
-    internal ulong _lockedDataStartOffset, _lockedDataEndOffset;
-
-    public ulong DataBlockStartOffset => _areOffsetsLocked ? _lockedDataStartOffset : _pboEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
-    public ulong DataBlockEndOffset => _areOffsetsLocked ? _lockedDataEndOffset : _pboEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
+    public ulong DataBlockStartOffset => _pboEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
+    public ulong DataBlockEndOffset => _pboEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
     
     public PboFile(Stream pboStream, PboFileOption option = PboFileOption.Read) {
@@ -105,7 +102,6 @@ public class PboFile : IPboFile {
         PboStream.Seek(0, SeekOrigin.Begin);
         _pboEntries = new List<BasePboEntry>();
         ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
-        UnlockDataOffsets();
         _streamIsSynced = true;
     }
 
@@ -130,32 +126,27 @@ public class PboFile : IPboFile {
         return versionEntriesArr.First();
     }
 
-    internal void LockDataOffsets() {
-        if(_areOffsetsLocked) return;
-        
-        _lockedDataEndOffset = DataBlockEndOffset;
-        _lockedDataStartOffset = DataBlockStartOffset;
-        _areOffsetsLocked = true;
-    }
-
-    internal void UnlockDataOffsets() {
-        if(!_areOffsetsLocked) return;
-
-        _lockedDataEndOffset = 0;
-        _lockedDataStartOffset = 0;
-        _areOffsetsLocked = false;
-    }
-
     public void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false) {
         if (dataEntry.EntryParent != this) throw new Exception("Cannot delete an entry outside of the pbo.");
-        if (dataEntry is PboDataEntryDto dto) {
-            _pboEntries.Remove(dto);
-            return;
-        }
-        
-        LockDataOffsets();
-        _pboEntries.Remove(dataEntry);
+
+        if(!dataEntry.IsQueuedForDeletion()) dataEntry.QueueDeletion();
         if(syncStream) SyncToStream();
+    }
+
+
+    private ulong GetMetadataOffset(PboDataEntry dataEntry) {
+        if (dataEntry is PboDataEntryDto)
+            throw new Exception("dtos's are not stream-synced and therefore have no offsets.");
+        if (dataEntry.EntryParent != this) throw new Exception("Cannot calculate offset for an entry outside of this pbo instance.");
+
+        ulong offset = 0;
+        foreach (var ent in _pboEntries) {
+            if (ent is PboDataEntryDto) continue;
+            if (ent == dataEntry) break;
+            offset += ent.CalculateMetaLength();
+        }
+
+        return offset;
     }
     
     //TODO: STILL NOT WORKING 
@@ -228,21 +219,30 @@ public class PboFile : IPboFile {
         
         
         foreach (var entry in _pboEntries) {
-            if(entry is PboDataEntryDto) continue;
-            if (entry is PboDummyEntry) {
-                foreach (var dtoEnt in dtos) dtoEnt.WriteBinary(writer);
+            switch (entry) {
+                case PboDataEntryDto: continue;
+                case PboDataEntry dataEntry when dataEntry.IsQueuedForDeletion(): continue;
+                case PboDummyEntry: {
+                    foreach (var dtoEnt in dtos) {
+                        if(dtoEnt.IsQueuedForDeletion()) continue;
+                        dtoEnt.WriteBinary(writer);
+                    }
+                    break;
+                }
             }
-                
+
             entry.WriteBinary(writer);
         }
         
         foreach (var entry in _pboEntries) {
             if(entry is not PboDataEntry dataEntry) continue;
+            if(dataEntry.IsQueuedForDeletion()) continue;
             if(entry is PboDataEntryDto ) continue; 
             writer.Write(GetEntryData(dataEntry, false));
         }
 
         foreach (var entry in dtos) {
+            if(entry.IsQueuedForDeletion()) continue;
             entry.WriteEntryData(writer);
             entry.RewriteMetadata(writer);
         }
