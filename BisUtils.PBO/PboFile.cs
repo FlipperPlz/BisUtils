@@ -236,17 +236,22 @@ public class PboFile : IPboFile {
 
             switch (entry) {
                 case PboDataEntryDto: continue;
-                case PboDataEntry dataEntry when dataEntry.IsQueuedForDeletion(): continue;
+                case PboDataEntry dataEntry: {
+                    if(dataEntry.IsQueuedForDeletion()) 
+                        continue;
+                    entry.WriteBinary(writer);
+                    break;
+                }
                 case PboDummyEntry: {
                     foreach (var dtoEnt in dtos) {
-                        if(dtoEnt.IsQueuedForDeletion()) continue;
+                        if(dtoEnt.IsQueuedForDeletion())
+                            continue;
                         dtoEnt.WriteBinary(writer);
                     }
                     break;
                 }
             }
 
-            entry.WriteBinary(writer);
         }
         
         foreach (var entry in PBOEntries) {
