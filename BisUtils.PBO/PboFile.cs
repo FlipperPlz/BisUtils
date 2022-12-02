@@ -14,7 +14,8 @@ public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSeria
 
     void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
     void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false);
-
+    void RenameEntry(PboDataEntry dataEntry, string newName, bool syncStream = false);
+    
     void SyncToStream();
     void DeSyncStream();
 
@@ -30,14 +31,14 @@ public class PboFile : IPboFile {
     public readonly Stream PboStream;
     public bool IsWritable => PboStream.CanWrite;
     
-    private List<BasePboEntry> _pboEntries { get; set;}
-    public ulong DataBlockStartOffset => _pboEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
-    public ulong DataBlockEndOffset => _pboEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
+    private List<BasePboEntry> PBOEntries { get; set;}
+    public ulong DataBlockStartOffset => PBOEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
+    public ulong DataBlockEndOffset => PBOEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
     
     public PboFile(Stream pboStream, PboFileOption option = PboFileOption.Read) {
         PboStream = pboStream;
-        _pboEntries = new List<BasePboEntry>();
+        PBOEntries = new List<BasePboEntry>();
 
         switch (option) {
             case PboFileOption.Read: {
@@ -45,8 +46,8 @@ public class PboFile : IPboFile {
                 break;
             }
             case PboFileOption.Create: {
-                _pboEntries.Add(new PboVersionEntry(this));
-                _pboEntries.Add(new PboDummyEntry(this));
+                PBOEntries.Add(new PboVersionEntry(this));
+                PBOEntries.Add(new PboDummyEntry(this));
                 WriteBinary(new BinaryWriter(pboStream, Encoding.UTF8, true));
                 break;
             }
@@ -77,7 +78,7 @@ public class PboFile : IPboFile {
 
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncPbo = false) {
         _streamIsSynced = false;
-        _pboEntries.Add(dataEntryDto);
+        PBOEntries.Add(dataEntryDto);
         
         if(syncPbo) SyncToStream();
     }
@@ -100,18 +101,18 @@ public class PboFile : IPboFile {
         }
 
         PboStream.Seek(0, SeekOrigin.Begin);
-        _pboEntries = new List<BasePboEntry>();
+        PBOEntries = new List<BasePboEntry>();
         ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
         _streamIsSynced = true;
     }
 
     public void DeSyncStream() => _streamIsSynced = false;
     
-    public IEnumerable<BasePboEntry> GetPboEntries() => _pboEntries;
+    public IEnumerable<BasePboEntry> GetPboEntries() => PBOEntries;
 
     // ReSharper disable once ReturnTypeCanBeNotNullable RedundantAssignment
     public IEnumerable<PboVersionEntry>? GetVersionEntries() {
-        var versionEntries = _pboEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>();
+        var versionEntries = PBOEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>();
         var pboVersionEntries = versionEntries as PboVersionEntry[] ?? versionEntries.ToArray();
         if (!pboVersionEntries.Any()) versionEntries = null;
         return pboVersionEntries;
@@ -126,6 +127,18 @@ public class PboFile : IPboFile {
         return versionEntriesArr.First();
     }
 
+    public void RenameEntry(PboDataEntry dataEntry, string newName, bool syncStream = false) {
+        switch (dataEntry) {
+            case PboDataEntryDto dataEntryDto:
+                dataEntryDto.EntryName = newName;
+                if(syncStream) SyncToStream();
+                break;
+            case not null:
+                AddEntry(new PboDataEntryDto(this, new MemoryStream(GetEntryData(dataEntry, false)), dataEntry.TimeStamp, dataEntry.EntryMagic is PboEntryMagic.Compressed), syncStream);
+                DeleteEntry(dataEntry, syncStream);
+                break;
+        }
+    }
     public void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false) {
         if (dataEntry.EntryParent != this) throw new Exception("Cannot delete an entry outside of the pbo.");
 
@@ -140,7 +153,7 @@ public class PboFile : IPboFile {
         if (dataEntry.EntryParent != this) throw new Exception("Cannot calculate offset for an entry outside of this pbo instance.");
 
         ulong offset = 0;
-        foreach (var ent in _pboEntries) {
+        foreach (var ent in PBOEntries) {
             if (ent is PboDataEntryDto) continue;
             if (ent == dataEntry) break;
             offset += ent.CalculateMetaLength();
@@ -149,7 +162,6 @@ public class PboFile : IPboFile {
         return offset;
     }
     
-    //TODO: STILL NOT WORKING 
     public void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false, bool syncStream = false) {
         if (dataEntry is PboDataEntryDto dto) {
             dto.EntryData = data;
@@ -164,22 +176,21 @@ public class PboFile : IPboFile {
     public IBisSerializable<PboDeserializationOptions, PboSerializationOptions> ReadBinary(BinaryReader reader, PboDeserializationOptions? options = null) {
         options ??= PboDeserializationOptions.DefaultOptions;
 
-        
         BasePboEntry entry;
 
         if (options.StrictVersionEntry) {
-            _pboEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
+            PBOEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
             if (entry is not PboVersionEntry) throw new Exception($"Expected a starting version entry, instead got {entry.GetType().Name}");
         }
         
         do {
-            _pboEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
+            PBOEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
             if (options.StrictVersionEntry && entry is PboVersionEntry)
                 throw new Exception("Only one version entry is allowed in strict mode.");
 
         } while (entry is not PboDummyEntry);
 
-        foreach (var e in _pboEntries) {
+        foreach (var e in PBOEntries) {
             if(e is not PboDataEntry dataEntry) continue;
             dataEntry.ReinitializeOffsets();
         }
@@ -199,27 +210,27 @@ public class PboFile : IPboFile {
 
         
         if (options.RequireVersionEntry) {
-            if (!_pboEntries.Where(v => v is PboVersionEntry).ToArray().Any())
+            if (!PBOEntries.Where(v => v is PboVersionEntry).ToArray().Any())
                 throw new Exception("Cannot write PBO without a version entry.");
         }
         
         if (options.RequireDummyEntry) {
-            if (!_pboEntries.Where(v => v is PboDummyEntry).ToArray().Any())
+            if (!PBOEntries.Where(v => v is PboDummyEntry).ToArray().Any())
                 throw new Exception("Cannot write PBO without a dummy data entry.");
         }
 
         if (options.StrictVersionEntry) {
-            if (_pboEntries.First() is not PboVersionEntry)
+            if (PBOEntries.First() is not PboVersionEntry)
                 throw new Exception("In strict mode there must be a single version entry at the beginning of the pbo.");
-            if (_pboEntries.Where(v => v is PboDummyEntry).ToArray().Length > 1)
+            if (PBOEntries.Where(v => v is PboDummyEntry).ToArray().Length > 1)
                 throw new Exception("In strict mode there can only be a single version entry.");
         }
 
-        var dtos = _pboEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
+        var dtos = PBOEntries.Where(e => e is PboDataEntryDto).Cast<PboDataEntryDto>().ToList();
         
         
         
-        foreach (var entry in _pboEntries) {
+        foreach (var entry in PBOEntries) {
             if (entry is PboDataEntry pboDataEntry && options.UseCommonTimeStamp is { } timeStamp) 
                 pboDataEntry.TimeStamp = timeStamp;
 
@@ -238,7 +249,7 @@ public class PboFile : IPboFile {
             entry.WriteBinary(writer);
         }
         
-        foreach (var entry in _pboEntries) {
+        foreach (var entry in PBOEntries) {
             if(entry is not PboDataEntry dataEntry) continue;
             if(dataEntry.IsQueuedForDeletion()) continue;
             if(entry is PboDataEntryDto ) continue; 
@@ -253,7 +264,7 @@ public class PboFile : IPboFile {
 
         if (options.WriteDataOffsets) {
             var startPos = writer.BaseStream.Position;
-            foreach (var entry in _pboEntries) {
+            foreach (var entry in PBOEntries) {
                 if(entry is not PboDataEntry dataEntry) continue;
                 var dataOffset = DataBlockStartOffset + dataEntry.EntryDataStartOffset;
                 writer.Seek((int) GetMetadataOffset(dataEntry), SeekOrigin.Begin);
