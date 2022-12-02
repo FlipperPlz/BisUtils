@@ -147,9 +147,9 @@ public class PboFile : IPboFile {
     }
 
 
-    private ulong GetMetadataOffset(PboDataEntry dataEntry) {
+    internal ulong GetMetadataOffset(PboDataEntry dataEntry) {
         if (dataEntry is PboDataEntryDto)
-            throw new Exception("dtos's are not stream-synced and therefore have no offsets.");
+            throw new Exception("Transfer(dto) entries are not stream-synced and therefore have no offsets.");
         if (dataEntry.EntryParent != this) throw new Exception("Cannot calculate offset for an entry outside of this pbo instance.");
 
         ulong offset = 0;
