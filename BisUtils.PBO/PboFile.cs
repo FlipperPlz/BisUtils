@@ -197,6 +197,7 @@ public class PboFile : IPboFile {
     public void WriteBinary(BinaryWriter writer, PboSerializationOptions? options = null) {
         options ??= PboSerializationOptions.DefaultOptions;
 
+        
         if (options.RequireVersionEntry) {
             if (!_pboEntries.Where(v => v is PboVersionEntry).ToArray().Any())
                 throw new Exception("Cannot write PBO without a version entry.");
@@ -219,6 +220,9 @@ public class PboFile : IPboFile {
         
         
         foreach (var entry in _pboEntries) {
+            if (entry is PboDataEntry pboDataEntry && options.UseCommonTimeStamp is { } timeStamp) 
+                pboDataEntry.TimeStamp = timeStamp;
+
             switch (entry) {
                 case PboDataEntryDto: continue;
                 case PboDataEntry dataEntry when dataEntry.IsQueuedForDeletion(): continue;
@@ -245,6 +249,19 @@ public class PboFile : IPboFile {
             if(entry.IsQueuedForDeletion()) continue;
             entry.WriteEntryData(writer);
             entry.RewriteMetadata(writer);
+        }
+
+        if (options.WriteDataOffsets) {
+            var startPos = writer.BaseStream.Position;
+            foreach (var entry in _pboEntries) {
+                if(entry is not PboDataEntry dataEntry) continue;
+                var dataOffset = DataBlockStartOffset + dataEntry.EntryDataStartOffset;
+                writer.Seek((int) GetMetadataOffset(dataEntry), SeekOrigin.Begin);
+                writer.Seek(Encoding.UTF8.GetBytes(dataEntry.EntryName).Length + 9, SeekOrigin.Current);
+                writer.Write(BitConverter.GetBytes((int) dataOffset), 0, 4);
+            }
+
+            writer.Seek((int)startPos, SeekOrigin.Begin);
         }
         
         writer.WritePboChecksum();
