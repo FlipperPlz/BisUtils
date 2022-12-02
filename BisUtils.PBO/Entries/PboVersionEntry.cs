@@ -39,7 +39,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         return (ulong) offset;
     } 
     
-    public override IBisSerializable ReadBinary(BinaryReader reader) {
+    public override IBisBinarizable ReadBinary(BinaryReader reader) {
         EntryName = reader.ReadAsciiZ();
         EntryMagic = (PboEntryMagic) reader.ReadInt32();
         Reserved1 = reader.ReadUInt32();

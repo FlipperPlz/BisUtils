@@ -2,10 +2,10 @@ using BisUtils.Core;
 
 namespace BisUtils.PBO; 
 
-public class PboSerializationOptions : BisSerializationOptions {
-    public static readonly PboSerializationOptions DefaultOptions = new PboSerializationOptions();
+public class PboBinarizationOptions : BisBinarizationOptions {
+    public static readonly PboBinarizationOptions DefaultOptions = new PboBinarizationOptions();
     
-    public static readonly PboSerializationOptions DebugOptions = new PboSerializationOptions() {
+    public static readonly PboBinarizationOptions DebugOptions = new PboBinarizationOptions() {
         UseCommonTimeStamp = 218762506
     };
     
@@ -19,8 +19,8 @@ public class PboSerializationOptions : BisSerializationOptions {
     
 }
 
-public class PboDeserializationOptions : BisDeserializationOptions {
-    public static readonly PboDeserializationOptions DefaultOptions = new PboDeserializationOptions();
+public class PboDebinarizationOptions : BisDebinarizationOptions {
+    public static readonly PboDebinarizationOptions DefaultOptions = new PboDebinarizationOptions();
 
     public bool VerifyChecksum { get; set; } = true;
     public bool RequireVersionEntry { get; set; } = true;

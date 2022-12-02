@@ -8,7 +8,7 @@ using BisUtils.PBO.Extensions;
 
 namespace BisUtils.PBO;
 
-public interface IPboFile : IBisSerializable<PboDeserializationOptions, PboSerializationOptions> {
+public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinarizationOptions> {
     byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
     void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false, bool syncToStream = true);
 
@@ -173,19 +173,19 @@ public class PboFile : IPboFile {
         DeleteEntry(dataEntry, syncStream);
     }
 
-    public IBisSerializable<PboDeserializationOptions, PboSerializationOptions> ReadBinary(BinaryReader reader, PboDeserializationOptions? options = null) {
-        options ??= PboDeserializationOptions.DefaultOptions;
+    public IBisBinarizable<PboDebinarizationOptions, PboBinarizationOptions> ReadBinary(BinaryReader reader, PboDebinarizationOptions? debinarizationOptions = null) {
+        debinarizationOptions ??= PboDebinarizationOptions.DefaultOptions;
 
         BasePboEntry entry;
 
-        if (options.StrictVersionEntry) {
+        if (debinarizationOptions.StrictVersionEntry) {
             PBOEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
             if (entry is not PboVersionEntry) throw new Exception($"Expected a starting version entry, instead got {entry.GetType().Name}");
         }
         
         do {
             PBOEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
-            if (options.StrictVersionEntry && entry is PboVersionEntry)
+            if (debinarizationOptions.StrictVersionEntry && entry is PboVersionEntry)
                 throw new Exception("Only one version entry is allowed in strict mode.");
 
         } while (entry is not PboDummyEntry);
@@ -197,29 +197,29 @@ public class PboFile : IPboFile {
 
         reader.BaseStream.Seek((long) DataBlockEndOffset, SeekOrigin.Begin);
 
-        if (options.RequireVersionEntry && GetVersionEntry() is null) throw new Exception("No version entry was found while reading pbo.");
+        if (debinarizationOptions.RequireVersionEntry && GetVersionEntry() is null) throw new Exception("No version entry was found while reading pbo.");
 
-        if (!options.VerifyChecksum) return this;
+        if (!debinarizationOptions.VerifyChecksum) return this;
         
         //if (!reader.VerifyPboChecksum()) throw new Exception("The PBO checksum does not match the one calculated.");
         return this;
     }
 
-    public void WriteBinary(BinaryWriter writer, PboSerializationOptions? options = null) {
-        options ??= PboSerializationOptions.DefaultOptions;
+    public void WriteBinary(BinaryWriter writer, PboBinarizationOptions? binarizationOptions = null) {
+        binarizationOptions ??= PboBinarizationOptions.DefaultOptions;
 
         
-        if (options.RequireVersionEntry) {
+        if (binarizationOptions.RequireVersionEntry) {
             if (!PBOEntries.Where(v => v is PboVersionEntry).ToArray().Any())
                 throw new Exception("Cannot write PBO without a version entry.");
         }
         
-        if (options.RequireDummyEntry) {
+        if (binarizationOptions.RequireDummyEntry) {
             if (!PBOEntries.Where(v => v is PboDummyEntry).ToArray().Any())
                 throw new Exception("Cannot write PBO without a dummy data entry.");
         }
 
-        if (options.StrictVersionEntry) {
+        if (binarizationOptions.StrictVersionEntry) {
             if (PBOEntries.First() is not PboVersionEntry)
                 throw new Exception("In strict mode there must be a single version entry at the beginning of the pbo.");
             if (PBOEntries.Where(v => v is PboDummyEntry).ToArray().Length > 1)
@@ -231,7 +231,7 @@ public class PboFile : IPboFile {
         
         
         foreach (var entry in PBOEntries) {
-            if (entry is PboDataEntry pboDataEntry && options.UseCommonTimeStamp is { } timeStamp) 
+            if (entry is PboDataEntry pboDataEntry && binarizationOptions.UseCommonTimeStamp is { } timeStamp) 
                 pboDataEntry.TimeStamp = timeStamp;
 
             switch (entry) {
@@ -262,7 +262,7 @@ public class PboFile : IPboFile {
             entry.RewriteMetadata(writer);
         }
 
-        if (options.WriteDataOffsets) {
+        if (binarizationOptions.WriteDataOffsets) {
             var startPos = writer.BaseStream.Position;
             foreach (var entry in PBOEntries) {
                 if(entry is not PboDataEntry dataEntry) continue;

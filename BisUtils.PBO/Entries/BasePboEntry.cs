@@ -12,7 +12,7 @@ public enum PboEntryMagic {
     Undefined    = -1
 }
 
-public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry> {
+public abstract class BasePboEntry : IBisBinarizable, IComparable<BasePboEntry> {
     public readonly IPboFile EntryParent;
     
     public PboEntryMagic EntryMagic = PboEntryMagic.Undefined;
@@ -26,7 +26,7 @@ public abstract class BasePboEntry : IBisSerializable, IComparable<BasePboEntry>
         EntryParent = entryParent;
     }
 
-    public virtual IBisSerializable ReadBinary(BinaryReader reader) {
+    public virtual IBisBinarizable ReadBinary(BinaryReader reader) {
         EntryName = reader.ReadAsciiZ();
         EntryMagic = (PboEntryMagic) reader.ReadInt32();
         Reserved1 = reader.ReadUInt32();
