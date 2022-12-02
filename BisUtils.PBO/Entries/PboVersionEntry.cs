@@ -1,19 +1,28 @@
 ﻿using System.Text;
 using BisUtils.Core;
 
-namespace BisUtils.PBO.Entries; 
+namespace BisUtils.PBO.Entries;
+
+public struct PboProperty {
+    public string PropertyName { get; set; }
+    public string PropertyValue { get; set; }
+}
 
 public sealed class PboVersionEntry : BasePboEntry {
-    public Dictionary<string, string> Metadata { get; set; }
+
+    public List<PboProperty> Metadata { get; set; }
     
-    public PboVersionEntry(IPboFile entryParent, Dictionary<string, string>? metadata = null) : base(entryParent) {
-        Metadata = metadata ?? new Dictionary<string, string>();
+    public PboVersionEntry(IPboFile entryParent, List<PboProperty>? metadata = null) : base(entryParent) {
+        Metadata = metadata ?? new List<PboProperty>();
         EntryMagic = PboEntryMagic.Version;
     }
 
     public void AddMetadataProperty(string key, string value, bool syncPbo = false) {
         EntryParent.DeSyncStream();
-        Metadata.Add(key, value);
+        Metadata.Add(new PboProperty() {
+            PropertyName = key,
+            PropertyValue = value
+        });
         
         if (syncPbo) EntryParent.SyncToStream();
     }
@@ -21,8 +30,8 @@ public sealed class PboVersionEntry : BasePboEntry {
     public override ulong CalculateMetaLength() {
         var offset = 21;
         foreach (var prop in Metadata) {
-            offset += Encoding.UTF8.GetBytes(prop.Key).Length + 1;
-            offset += Encoding.UTF8.GetBytes(prop.Value).Length + 1;
+            offset += Encoding.UTF8.GetBytes(prop.PropertyName).Length + 1;
+            offset += Encoding.UTF8.GetBytes(prop.PropertyValue).Length + 1;
         }
 
         offset++;
@@ -42,7 +51,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         while ((propertyName = reader.ReadAsciiZ()) != string.Empty) {
             var propertyValue = reader.ReadAsciiZ();
 
-            Metadata.Add(propertyName, propertyValue);
+            AddMetadataProperty(propertyName, propertyValue, false);
         }
         
         
@@ -59,8 +68,8 @@ public sealed class PboVersionEntry : BasePboEntry {
         writer.Write((int) Reserved4);
 
         foreach (var metaProperty in Metadata) {
-            writer.WriteAsciiZ(metaProperty.Key);
-            writer.WriteAsciiZ(metaProperty.Value);
+            writer.WriteAsciiZ(metaProperty.PropertyName);
+            writer.WriteAsciiZ(metaProperty.PropertyValue);
         }
         
         writer.WriteAsciiZ();
