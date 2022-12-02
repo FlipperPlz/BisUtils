@@ -1,4 +1,7 @@
 using System.Text;
+using Antlr4.Runtime;
+using BisUtils.Core;
+using BisUtils.Generated.ParamLang;
 using BisUtils.Parsers.ParamParser.Factories;
 using BisUtils.Parsers.ParamParser.Interfaces;
 using BisUtils.Parsers.ParamParser.Literals;
@@ -15,10 +18,7 @@ public class RapVariableDeclaration : IRapStatement, IRapDeserializable<Generate
         VariableValue = value;
     }
 
-    private RapVariableDeclaration() { }
-
-    public string ToString(int indentation = char.MinValue) => new StringBuilder(string.Join(string.Empty, Enumerable.Repeat("\t", indentation)))
-        .Append(VariableName).Append(" = ").Append(VariableValue.ToString()).Append(';').ToString();
+    public RapVariableDeclaration() { }
     
     public static RapVariableDeclaration FromContext(Generated.ParamLang.ParamParser.TokenDeclarationContext ctx) =>
         (RapVariableDeclaration) new RapVariableDeclaration().ReadParseTree(ctx);
@@ -49,5 +49,65 @@ public class RapVariableDeclaration : IRapStatement, IRapDeserializable<Generate
         if (ReferenceEquals(null, other)) return 1;
         
         return string.Compare(VariableName, other.VariableName, StringComparison.Ordinal);
+    }
+
+    public IBisBinarizable FromString(StringBuilder builder, RapDeserializationOptions deserializationOptions) {
+        var lexer = new ParamLexer(CharStreams.fromString(builder.ToString()));
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new Generated.ParamLang.ParamParser(tokens);
+
+        ReadParseTree(parser.tokenDeclaration());
+        if (parser.NumberOfSyntaxErrors != 0) throw new Exception();
+        
+        return this;
+    }
+
+    public void Write(StringBuilder builder, RapSerializationOptions serializationOptions) {
+        builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", serializationOptions.Indentation)));
+
+        switch (serializationOptions.Language) {
+            case ParamLanguage.CPP: {
+                builder.Append(VariableName).Append(" = ");
+                VariableValue.Write(builder, RapSerializationOptions.DefaultOptions);
+                return;
+            }
+            case ParamLanguage.XML: throw new NotSupportedException();
+            default: throw new ArgumentOutOfRangeException(serializationOptions.Language.ToString());
+        }
+    }
+
+    public IBisBinarizable ReadBinary(BinaryReader reader) {
+        if (reader.ReadByte() != 1) throw new Exception("Expected token.");
+        var valType = reader.ReadByte();
+        VariableName = reader.ReadAsciiZ();
+        VariableValue = valType switch {
+            0 => reader.ReadBinarized<RapString>(),
+            1 => reader.ReadBinarized<RapFloat>(),
+            2 => reader.ReadBinarized<RapInteger>(),
+            _ => throw new Exception()
+        };
+        
+        return this;
+    }
+
+    public void WriteBinary(BinaryWriter writer) {
+        writer.Write((byte) 1);
+        switch (VariableValue) {
+            case RapString rapString: 
+                writer.Write((byte) 0);
+                writer.WriteAsciiZ(VariableName);
+                writer.WriteBinarized(rapString);
+                break;
+            case RapFloat rapFloat: 
+                writer.Write((byte) 1);
+                writer.WriteAsciiZ(VariableName);
+                writer.WriteBinarized(rapFloat);
+                break;
+            case RapInteger rapInteger: 
+                writer.Write((byte) 2);
+                writer.WriteAsciiZ(VariableName);
+                writer.WriteBinarized(rapInteger);
+                break;
+        }
     }
 }

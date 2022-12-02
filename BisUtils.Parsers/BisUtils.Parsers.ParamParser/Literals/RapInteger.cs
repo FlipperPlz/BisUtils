@@ -1,5 +1,8 @@
 using System.Text;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using BisUtils.Core;
+using BisUtils.Generated.ParamLang;
 using BisUtils.Parsers.ParamParser.Factories;
 using BisUtils.Parsers.ParamParser.Interfaces;
 
@@ -12,17 +15,48 @@ public class RapInteger : IRapDeserializable<Generated.ParamLang.ParamParser.Lit
 
     public RapInteger(int val = 0) => Value = val;
 
-    public string ToString(int indentation = char.MinValue) =>
-        new StringBuilder(string.Join(string.Empty, Enumerable.Repeat("\t", indentation)))
-            .Append(Value).ToString();
-
     public IRapSerializable ReadParseTree(Generated.ParamLang.ParamParser.LiteralIntegerContext ctx) {
         Value = int.Parse(ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex)));
         return this;
     }
-    
-    private RapInteger() {}
+
+    public RapInteger() {}
 
     public static RapInteger FromContext(Generated.ParamLang.ParamParser.LiteralIntegerContext ctx) =>
         (RapInteger) new RapInteger().ReadParseTree(ctx);
+
+    public IBisBinarizable FromString(StringBuilder builder, RapDeserializationOptions deserializationOptions) {
+        var lexer = new ParamLexer(CharStreams.fromString(builder.ToString()));
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new Generated.ParamLang.ParamParser(tokens);
+
+        ReadParseTree(parser.literalInteger());
+        if (parser.NumberOfSyntaxErrors != 0) throw new Exception();
+        
+        return this;
+    }
+
+    public void Write(StringBuilder builder, RapSerializationOptions serializationOptions) {
+        builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", serializationOptions.Indentation)));
+
+        switch (serializationOptions.Language) {
+            case ParamLanguage.CPP: {
+                builder.Append(Value);
+                return;
+            }
+            case ParamLanguage.XML: {
+                builder.Append("<item>").Append(Value).Append("</item>");
+                return;
+            }
+            default: throw new ArgumentOutOfRangeException(serializationOptions.Language.ToString());
+        }
+    }
+
+    public IBisBinarizable ReadBinary(BinaryReader reader) {
+        Value = reader.ReadInt32();
+
+        return this;
+    }
+
+    public void WriteBinary(BinaryWriter writer) => writer.Write(Value);
 }

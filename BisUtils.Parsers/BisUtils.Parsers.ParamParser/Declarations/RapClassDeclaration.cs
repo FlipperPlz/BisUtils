@@ -1,4 +1,7 @@
 using System.Text;
+using Antlr4.Runtime;
+using BisUtils.Core;
+using BisUtils.Generated.ParamLang;
 using BisUtils.Parsers.ParamParser.Factories;
 using BisUtils.Parsers.ParamParser.Interfaces;
 using BisUtils.Parsers.ParamParser.Statements;
@@ -20,8 +23,8 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         ParentClassname = parentClassname;
         Statements = statements.ToList();
     }
-    
-    internal RapClassDeclaration() {}
+
+    public RapClassDeclaration() {}
 
     public IRapSerializable ReadParseTree(Generated.ParamLang.ParamParser.ClassDeclarationContext ctx) {
         if (ctx.classname is not { } classname) throw new Exception();
@@ -31,22 +34,8 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
         return this;
     }
 
-    public string ToString(int indentation = 0) {
-        var builder = new StringBuilder(string.Join(string.Empty, Enumerable.Repeat("\t", indentation)))
-            .Append("class ").Append(Classname);
-        if (ParentClassname is not null) builder.Append(" : ").Append(ParentClassname);
-        builder.Append(" {\n");
-        
-        var statements = Statements;
-        Statements.Sort((x, y) => x.CompareTo(y));
-        foreach (var s in statements) builder.Append(s.ToString(indentation + 1)).Append('\n');
-        
-        return builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", indentation))).Append("};").ToString();
-    }
-    
     public static RapClassDeclaration FromContext(Generated.ParamLang.ParamParser.ClassDeclarationContext ctx) =>
         (RapClassDeclaration) new RapClassDeclaration().ReadParseTree(ctx);
-
 
     public int CompareTo(RapClassDeclaration? other) {
         if (ReferenceEquals(this, other)) return 0;
@@ -65,5 +54,59 @@ public class RapClassDeclaration : IRapStatement, IRapDeserializable<Generated.P
             RapVariableDeclaration => 5,
             _ => throw new ArgumentOutOfRangeException(nameof(other), other, null)
         };
+    }
+
+    public IBisBinarizable FromString(StringBuilder builder, RapDeserializationOptions deserializationOptions) {
+        var lexer = new ParamLexer(CharStreams.fromString(builder.ToString()));
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new Generated.ParamLang.ParamParser(tokens);
+
+        ReadParseTree(parser.classDeclaration());
+        if (parser.NumberOfSyntaxErrors != 0) throw new Exception();
+        
+        return this;
+    }
+
+    public void Write(StringBuilder builder, RapSerializationOptions serializationOptions) {
+        switch (serializationOptions.Language) {
+            case ParamLanguage.CPP: {
+                builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", serializationOptions.Indentation))).Append("class ").Append(Classname);
+                if (ParentClassname is not null) builder.Append(" : ").Append(ParentClassname);
+                builder.Append(" {\n");
+        
+                var statements = Statements;
+                if(serializationOptions.OrganizeEntries) Statements.Sort((x, y) => x.CompareTo(y));
+
+                foreach (var s in statements) {
+                    s.Write(builder, new RapSerializationOptions() { Indentation = serializationOptions.Indentation + 1});
+                    builder.Append('\n');
+                }
+
+                builder.Append(string.Join(string.Empty, Enumerable.Repeat("\t", serializationOptions.Indentation)))
+                    .Append("};");
+                return;
+            }
+            case ParamLanguage.XML: throw new NotSupportedException();
+            default:
+                throw new ArgumentOutOfRangeException(serializationOptions.Language.ToString());
+        }
+        
+    }
+
+    public IBisBinarizable ReadBinary(BinaryReader reader) {
+        if ( reader.ReadByte() != 0) throw new Exception($"Expected class.");
+        Statements = new List<IRapStatement>();
+        Classname = reader.ReadAsciiZ();
+        BinaryOffsetPosition = reader.BaseStream.Position;
+        BinaryOffset = reader.ReadUInt32();
+
+        return this;
+    }
+
+    public void WriteBinary(BinaryWriter writer) {
+        writer.Write((byte) 0);
+        writer.WriteAsciiZ(Classname);
+        BinaryOffsetPosition = writer.BaseStream.Position;
+        writer.Write((uint) BinaryOffset);
     }
 }

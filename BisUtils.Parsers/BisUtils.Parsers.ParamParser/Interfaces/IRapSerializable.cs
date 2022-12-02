@@ -1,7 +1,9 @@
 using Antlr4.Runtime;
+using BisUtils.Core;
 
-namespace BisUtils.Parsers.ParamParser.Interfaces; 
+namespace BisUtils.Parsers.ParamParser.Interfaces;
 
-public interface IRapSerializable {
-    public string ToString(int indentation = 0);
+
+public interface IRapSerializable : IBisSerializable<RapDeserializationOptions, RapSerializationOptions>, IBisBinarizable {
+    
 }

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\BisUtils.Core\BisUtils.Core.csproj" />
       <ProjectReference Include="..\..\BisUtils.Generated\BisUtils.Generated.ParamLang\BisUtils.Generated.ParamLang.csproj" />
     </ItemGroup>
 

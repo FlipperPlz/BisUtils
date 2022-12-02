@@ -1,5 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Text;
+using BisUtils.Core;
 using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 
@@ -42,6 +43,8 @@ namespace System.IO
             writer.Write(char.MinValue);
         }
         
+        public static void WriteBinarized<T>(this BinaryWriter writer, T binarizable) where T : IBisBinarizable, new() => binarizable.WriteBinary(writer);
+
         
         
         // I wish I didn't have to use reflection for this but alas,

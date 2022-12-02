@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Text;
+using BisUtils.Core;
 using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 
@@ -58,6 +59,8 @@ namespace System.IO
 
             return result;
         }
+
+        public static T ReadBinarized<T>(this BinaryReader reader) where T : IBisBinarizable, new() => (T) new T().ReadBinary(reader);
 
         public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, BisDecompressionOptions options) {
             var decompressedDataStream = new MemoryStream();

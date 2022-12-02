@@ -15,11 +15,11 @@ public abstract class BisCommonSerializationOptions : BisOptions {
 
 public interface IBisSerializable<DSO, SO> where DSO : BisDeserializationOptions where SO : BisSerializationOptions {
     public IBisBinarizable FromString(StringBuilder builder, DSO deserializationOptions);
-    public void WriteBinary(StringBuilder builder, SO serializationOptions);
+    public void Write(StringBuilder builder, SO serializationOptions);
 
     public virtual string ToString(SO options) {
         var builder = new StringBuilder();
-        WriteBinary(builder, options);
+        Write(builder, options);
         return builder.ToString();
     }
 }
