@@ -8,7 +8,7 @@ public struct PboProperty {
     public string PropertyValue { get; set; }
 }
 
-public sealed class PboVersionEntry : BasePboEntry {
+public sealed class PboVersionEntry : PboEntry {
 
     public List<PboProperty> Metadata { get; set; }
     
@@ -75,7 +75,7 @@ public sealed class PboVersionEntry : BasePboEntry {
         writer.WriteAsciiZ();
     }
     
-    public override int CompareTo(BasePboEntry? other) {
+    public override int CompareTo(PboEntry? other) {
         throw new NotImplementedException();
     }
 }

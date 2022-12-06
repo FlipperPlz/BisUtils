@@ -12,18 +12,19 @@ public enum PboEntryMagic {
     Undefined    = -1
 }
 
-public abstract class BasePboEntry : IBisBinarizable, IComparable<BasePboEntry> {
+public abstract class PboEntry : IBisBinarizable, IComparable<PboEntry> {
     public readonly IPboFile EntryParent;
     
-    public PboEntryMagic EntryMagic = PboEntryMagic.Undefined;
+    public PboEntryMagic EntryMagic;
     public string EntryName { get; set; } = string.Empty;
     protected ulong Reserved1 { get; set; }
     protected ulong Reserved2 { get; set; }
     protected ulong Reserved3 { get; set; }
     protected ulong Reserved4 { get; set; }
 
-    protected BasePboEntry(IPboFile entryParent) {
+    protected PboEntry(IPboFile entryParent, PboEntryMagic magic = PboEntryMagic.Undefined) {
         EntryParent = entryParent;
+        EntryMagic = magic;
     }
 
     public virtual IBisBinarizable ReadBinary(BinaryReader reader) {
@@ -49,7 +50,7 @@ public abstract class BasePboEntry : IBisBinarizable, IComparable<BasePboEntry> 
 
     public virtual ulong CalculateMetaLength() => (ulong) (Encoding.UTF8.GetBytes(EntryName).Length + 21);
     
-    public static BasePboEntry ReadPboEntry(PboFile pboFile, BinaryReader reader) {
+    public static PboEntry ReadPboEntry(PboFile pboFile, BinaryReader reader) {
         var startPos = reader.BaseStream.Position;
 
         var entryName = reader.ReadAsciiZ();
@@ -63,18 +64,18 @@ public abstract class BasePboEntry : IBisBinarizable, IComparable<BasePboEntry> 
                     throw new Exception("Data was found in the reserved section of a version entry");
                 reader.BaseStream.Position = startPos;
                 
-                return (BasePboEntry) new PboVersionEntry(pboFile).ReadBinary(reader);
+                return (PboEntry) new PboVersionEntry(pboFile).ReadBinary(reader);
             }
             case PboEntryMagic.Compressed: {
                 reader.BaseStream.Position = startPos;
-                return (BasePboEntry) new PboDataEntry(pboFile).ReadBinary(reader);
+                return (PboEntry) new PboDataEntry(pboFile).ReadBinary(reader);
             }
             case PboEntryMagic.Encrypted: throw new NotImplementedException();
             case PboEntryMagic.Decompressed: {
                 if (entryName == string.Empty && reserved1 == 0 && reserved2 == 0 && reserved3 == 0 && reserved4 == 0)
                     return new PboDummyEntry(pboFile);
                 reader.BaseStream.Position = startPos;
-                return (BasePboEntry) new PboDataEntry(pboFile).ReadBinary(reader); 
+                return (PboEntry) new PboDataEntry(pboFile).ReadBinary(reader); 
             }
 
             case PboEntryMagic.Undefined:
@@ -86,5 +87,5 @@ public abstract class BasePboEntry : IBisBinarizable, IComparable<BasePboEntry> 
 
     
 
-    public abstract int CompareTo(BasePboEntry? other);
+    public abstract int CompareTo(PboEntry? other);
 }

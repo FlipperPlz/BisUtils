@@ -19,7 +19,7 @@ public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinariz
     void SyncToStream();
     void DeSyncStream();
 
-    IEnumerable<BasePboEntry> GetPboEntries();
+    IEnumerable<PboEntry> GetPboEntries();
     IEnumerable<PboVersionEntry>? GetVersionEntries();
     PboVersionEntry? GetVersionEntry();
 
@@ -31,14 +31,14 @@ public class PboFile : IPboFile {
     public readonly Stream PboStream;
     public bool IsWritable => PboStream.CanWrite;
     
-    private List<BasePboEntry> PBOEntries { get; set;}
-    public ulong DataBlockStartOffset => PBOEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<BasePboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
+    private List<PboEntry> PBOEntries { get; set;}
+    public ulong DataBlockStartOffset => PBOEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<PboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
     public ulong DataBlockEndOffset => PBOEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
 
     
     public PboFile(Stream pboStream, PboFileOption option = PboFileOption.Read) {
         PboStream = pboStream;
-        PBOEntries = new List<BasePboEntry>();
+        PBOEntries = new List<PboEntry>();
 
         switch (option) {
             case PboFileOption.Read: {
@@ -61,8 +61,14 @@ public class PboFile : IPboFile {
         if (dataEntry is PboDataEntryDto dto) return dto.EntryData;
 
         using var reader = new BinaryReader(PboStream, Encoding.UTF8, true);
-        reader.BaseStream.Seek((long)DataBlockStartOffset, SeekOrigin.Begin);
-        reader.BaseStream.Position += (long) dataEntry.EntryDataStartOffset;
+        
+        if (!dataEntry.RespectOffsets && !(dataEntry.BinaryOffset <= 0)) {
+            reader.BaseStream.Position = (long) dataEntry.BinaryOffset;
+        } else {
+            reader.BaseStream.Seek((long)DataBlockStartOffset, SeekOrigin.Begin);
+            reader.BaseStream.Position += (long) dataEntry.EntryDataStartOffset;
+        }
+        
         
         return dataEntry.EntryMagic switch {
             PboEntryMagic.Compressed => decompress ? reader.ReadCompressedData<BisLZSSCompressionAlgorithms>(
@@ -101,14 +107,14 @@ public class PboFile : IPboFile {
         }
 
         PboStream.Seek(0, SeekOrigin.Begin);
-        PBOEntries = new List<BasePboEntry>();
+        PBOEntries = new List<PboEntry>();
         ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
         _streamIsSynced = true;
     }
 
     public void DeSyncStream() => _streamIsSynced = false;
     
-    public IEnumerable<BasePboEntry> GetPboEntries() => PBOEntries;
+    public IEnumerable<PboEntry> GetPboEntries() => PBOEntries;
 
     // ReSharper disable once ReturnTypeCanBeNotNullable RedundantAssignment
     public IEnumerable<PboVersionEntry>? GetVersionEntries() {
@@ -176,17 +182,19 @@ public class PboFile : IPboFile {
     public IBisBinarizable<PboDebinarizationOptions, PboBinarizationOptions> ReadBinary(BinaryReader reader, PboDebinarizationOptions? debinarizationOptions = null) {
         debinarizationOptions ??= PboDebinarizationOptions.DefaultOptions;
 
-        BasePboEntry entry;
+        PboEntry entry;
 
         if (debinarizationOptions.StrictVersionEntry) {
-            PBOEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
+            PBOEntries.Add(entry = PboEntry.ReadPboEntry(this, reader));
             if (entry is not PboVersionEntry) throw new Exception($"Expected a starting version entry, instead got {entry.GetType().Name}");
         }
         
         do {
-            PBOEntries.Add(entry = BasePboEntry.ReadPboEntry(this, reader));
+            PBOEntries.Add(entry = PboEntry.ReadPboEntry(this, reader));
             if (debinarizationOptions.StrictVersionEntry && entry is PboVersionEntry)
                 throw new Exception("Only one version entry is allowed in strict mode.");
+            if (debinarizationOptions.UseEntryDataOffsets && entry is PboDataEntry dataEntry)
+                dataEntry.RespectOffsets = true;
 
         } while (entry is not PboDummyEntry);
 
@@ -233,7 +241,6 @@ public class PboFile : IPboFile {
         foreach (var entry in PBOEntries) {
             if (entry is PboDataEntry pboDataEntry && binarizationOptions.UseCommonTimeStamp is { } timeStamp) 
                 pboDataEntry.TimeStamp = timeStamp;
-
             switch (entry) {
                 case PboDataEntryDto: continue;
                 case PboDataEntry dataEntry: {

@@ -1,10 +1,12 @@
-﻿using BisUtils.PBO.Builders;
+﻿using BisUtils.Core;
+using BisUtils.PBO.Builders;
 
 namespace BisUtils.PBO.Entries; 
 
-public class PboDataEntry : BasePboEntry {
+public class PboDataEntry : PboEntry {
 
     private bool _queuedToDelete;
+    internal bool RespectOffsets = false;
     
     public virtual byte[] EntryData {
         get => EntryParent.GetEntryData(this);
@@ -25,6 +27,13 @@ public class PboDataEntry : BasePboEntry {
         get => Reserved4;
         set => Reserved4 = value;
     }
+
+    public ulong BinaryOffset {
+        get => Reserved2;
+        set => value = Reserved2;
+    }
+    
+    
     
 
     public ulong EntryDataStartOffset; //Relative to pbo data block
@@ -55,7 +64,7 @@ public class PboDataEntry : BasePboEntry {
         EntryDataStopOffset = EntryDataStartOffset + PackedSize;
     }
 
-    public override int CompareTo(BasePboEntry? other) {
+    public override int CompareTo(PboEntry? other) {
         throw new NotImplementedException();
     }
 
