@@ -1,4 +1,6 @@
-﻿namespace BisUtils.PBO.Builders; 
+﻿using System.Text;
+
+namespace BisUtils.PBO.Builders; 
 
 public class PboBuilder {
     private readonly PboFile _pboFile;
@@ -16,6 +18,12 @@ public class PboBuilder {
 
     public PboBuilder WithEntry(PboDataEntryDto dtoEntry) {
         _pboFile.AddEntry(dtoEntry, true);
+        return this;
+    } 
+    
+    public PboBuilder WithEntry(string entryName, string entryData, ulong? timestamp = null, bool compress = false) {
+        _pboFile.AddEntry(new PboDataEntryDto(_pboFile, 
+            new MemoryStream(Encoding.UTF8.GetBytes(entryData)), timestamp, compress), true);
         return this;
     } 
 

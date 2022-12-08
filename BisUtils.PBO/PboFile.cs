@@ -20,13 +20,17 @@ public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinariz
     void DeSyncStream();
 
     IEnumerable<PboEntry> GetPboEntries();
+    IEnumerable<PboDataEntry>? GetDataEntries();
+    IEnumerable<PboDataEntryDto>? GetDTOEntries();
+
     IEnumerable<PboVersionEntry>? GetVersionEntries();
     PboVersionEntry? GetVersionEntry();
 
 }
 
-public class PboFile : IPboFile {
+public class PboFile : IPboFile, IDisposable {
     private bool _streamIsSynced;
+    private bool _disposed;
     
     public readonly Stream PboStream;
     public bool IsWritable => PboStream.CanWrite;
@@ -115,12 +119,24 @@ public class PboFile : IPboFile {
     public void DeSyncStream() => _streamIsSynced = false;
     
     public IEnumerable<PboEntry> GetPboEntries() => PBOEntries;
+    
+    public IEnumerable<PboDataEntry> GetDataEntries() {
+        var dataEntries = PBOEntries.Where(b => b is PboDataEntry).Cast<PboDataEntry>();
+        var pboDataEntries = dataEntries as PboDataEntry[] ?? dataEntries.ToArray();
+        return pboDataEntries;
+    }
+
+    public IEnumerable<PboDataEntryDto> GetDTOEntries() {
+        var dtoEntries = PBOEntries.Where(b => b is PboDataEntry).Cast<PboDataEntryDto>();
+        var pboDataEntries = dtoEntries as PboDataEntryDto[] ?? dtoEntries.ToArray();
+        return pboDataEntries;
+    }
 
     // ReSharper disable once ReturnTypeCanBeNotNullable RedundantAssignment
     public IEnumerable<PboVersionEntry>? GetVersionEntries() {
         var versionEntries = PBOEntries.Where(b => b is PboVersionEntry).Cast<PboVersionEntry>();
         var pboVersionEntries = versionEntries as PboVersionEntry[] ?? versionEntries.ToArray();
-        if (!pboVersionEntries.Any()) versionEntries = null;
+
         return pboVersionEntries;
     }
 
@@ -292,4 +308,11 @@ public class PboFile : IPboFile {
         writer.BaseStream.Flush();
     }
 
+    public void Dispose() {
+        if(_disposed) return;
+        PboStream.Dispose();
+        foreach (var dto in GetDTOEntries()) dto.Dispose();
+        GC.SuppressFinalize(this);
+        _disposed = true;
+    }
 }
