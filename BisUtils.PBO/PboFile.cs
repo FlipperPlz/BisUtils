@@ -8,7 +8,7 @@ using BisUtils.PBO.Extensions;
 
 namespace BisUtils.PBO;
 
-public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinarizationOptions> {
+public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinarizationOptions>, IDisposable {
     byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
     void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false, bool syncToStream = true);
 
@@ -28,7 +28,7 @@ public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinariz
 
 }
 
-public class PboFile : IPboFile, IDisposable {
+public class PboFile : IPboFile {
     private bool _streamIsSynced;
     private bool _disposed;
     
