@@ -5,9 +5,11 @@ using BisUtils.PBO.Entries;
 
 namespace BisUtils.PBO.Builders; 
 
-public class PboDataEntryDto : PboDataEntry {
+public class PboDataEntryDto : PboDataEntry, IDisposable {
+    private bool _disposed;
     private Stream _entryStream { get; set; }
     public ulong? EntryMetaStartOffset;
+    
     
     public override byte[] EntryData {
         get {
@@ -93,5 +95,12 @@ public class PboDataEntryDto : PboDataEntry {
         }
         PackedSize = (ulong) (writer.BaseStream.Position - ogPos);
     }
-    
+
+    public void Dispose() {
+        if(_disposed) return;
+        
+        _entryStream.Dispose();
+        GC.SuppressFinalize(this);
+        _disposed = true;
+    }
 }
