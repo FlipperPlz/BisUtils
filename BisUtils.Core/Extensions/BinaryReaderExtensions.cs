@@ -3,9 +3,8 @@
 
 using System.Diagnostics;
 using System.Text;
-using BisUtils.Core;
-using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
+using BisUtils.Core.Serialization;
 
 // ReSharper disable once CheckNamespace
 namespace System.IO 

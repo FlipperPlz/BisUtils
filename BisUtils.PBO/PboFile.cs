@@ -2,6 +2,7 @@
 using BisUtils.Core;
 using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
+using BisUtils.Core.Serialization;
 using BisUtils.PBO.Builders;
 using BisUtils.PBO.Entries;
 using BisUtils.PBO.Extensions;

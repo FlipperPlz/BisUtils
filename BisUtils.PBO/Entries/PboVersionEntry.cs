@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using BisUtils.Core;
+using BisUtils.Core.Serialization;
 
 namespace BisUtils.PBO.Entries;
 

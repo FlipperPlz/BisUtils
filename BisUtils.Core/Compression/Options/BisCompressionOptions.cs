@@ -1,3 +1,5 @@
+using BisUtils.Core.Options;
+
 namespace BisUtils.Core.Compression.Options; 
 
 public abstract class BisDecompressionOptions : BisOptions{
