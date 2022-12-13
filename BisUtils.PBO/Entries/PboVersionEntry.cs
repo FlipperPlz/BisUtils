@@ -12,19 +12,19 @@ public sealed class PboVersionEntry : PboEntry {
 
     public List<PboProperty> Metadata { get; set; }
     
-    public PboVersionEntry(IPboFile entryParent, List<PboProperty>? metadata = null) : base(entryParent) {
+    public PboVersionEntry(PboFile entryParent, List<PboProperty>? metadata = null) : base(entryParent) {
         Metadata = metadata ?? new List<PboProperty>();
         EntryMagic = PboEntryMagic.Version;
     }
 
     public void AddMetadataProperty(string key, string value, bool syncPbo = false) {
-        EntryParent.DeSyncStream();
+        EntryParent.DesynchronizeStream();
         Metadata.Add(new PboProperty() {
             PropertyName = key,
             PropertyValue = value
         });
         
-        if (syncPbo) EntryParent.SyncToStream();
+        if (syncPbo) EntryParent.SynchronizeStream();
     }
 
     public override ulong CalculateMetaLength() {

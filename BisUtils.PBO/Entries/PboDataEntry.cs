@@ -1,7 +1,4 @@
-﻿using BisUtils.Core;
-using BisUtils.PBO.Builders;
-
-namespace BisUtils.PBO.Entries; 
+﻿namespace BisUtils.PBO.Entries; 
 
 public class PboDataEntry : PboEntry {
 
@@ -33,13 +30,10 @@ public class PboDataEntry : PboEntry {
         set => value = Reserved2;
     }
     
-    
-    
-
     public ulong EntryDataStartOffset; //Relative to pbo data block
     public ulong EntryDataStopOffset; //Relative to pbo data block
 
-    public PboDataEntry(IPboFile entryParent) : base(entryParent) {
+    public PboDataEntry(PboFile entryParent) : base(entryParent) {
         
     }
 
@@ -64,9 +58,7 @@ public class PboDataEntry : PboEntry {
         EntryDataStopOffset = EntryDataStartOffset + PackedSize;
     }
 
-    public override int CompareTo(PboEntry? other) {
-        throw new NotImplementedException();
-    }
+    public override int CompareTo(PboEntry? other) => throw new NotSupportedException();
 
     public void QueueDeletion() => _queuedToDelete = true;
 

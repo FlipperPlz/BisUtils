@@ -15,9 +15,6 @@ public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinariz
     void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
     void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false);
     void RenameEntry(PboDataEntry dataEntry, string newName, bool syncStream = false);
-    
-    void SyncToStream();
-    void DeSyncStream();
 
     IEnumerable<PboEntry> GetPboEntries();
     IEnumerable<PboDataEntry>? GetDataEntries();
@@ -28,47 +25,40 @@ public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinariz
 
 }
 
-public class PboFile : IPboFile {
-    private bool _streamIsSynced;
-    private bool _disposed;
-
-
-    public string PboPath;
-    public Stream PboStream;
-    
-    public bool IsWritable => PboStream.CanWrite;
+public class PboFile : BisSynchronizable, IPboFile  {
     
     private List<PboEntry> PBOEntries { get; set;}
     public ulong DataBlockStartOffset => PBOEntries.Where(entry => entry is not PboDataEntryDto).Aggregate<PboEntry, ulong>(0, (current, entry) => current + entry.CalculateMetaLength());
     public ulong DataBlockEndOffset => PBOEntries.Where(e => e is PboDataEntry and not PboDataEntryDto).Cast<PboDataEntry>().Aggregate(DataBlockStartOffset, (current, entry) => current + entry.PackedSize);
-
+    private bool _disposed;
     
-    public PboFile(string pboPath, PboFileOption option = PboFileOption.Read) {
-        PboPath = pboPath;
-        PboStream = File.Open(pboPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+    public PboFile(string pboPath, PboFileOption option = PboFileOption.Read) : base(File.Open(pboPath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
         PBOEntries = new List<PboEntry>();
 
         switch (option) {
             case PboFileOption.Read: {
-                ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
+                ReadBinary(new BinaryReader(BaseStream, Encoding.UTF8, true));
                 break;
             }
             case PboFileOption.Create: {
                 PBOEntries.Add(new PboVersionEntry(this));
                 PBOEntries.Add(new PboDummyEntry(this));
-                WriteBinary(new BinaryWriter(PboStream, Encoding.UTF8, true));
+                WriteBinary(new BinaryWriter(BaseStream, Encoding.UTF8, true));
                 break;
             }
             default: throw new ArgumentOutOfRangeException(option.ToString());
         }
-        _streamIsSynced = true;
+
+        IsSynchronized = true;
     }
+    
+    public bool IsWritable() => BaseStream.CanWrite;
 
     public byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true) {
 
         if (dataEntry is PboDataEntryDto dto) return dto.EntryData;
 
-        using var reader = new BinaryReader(PboStream, Encoding.UTF8, true);
+        using var reader = new BinaryReader(BaseStream, Encoding.UTF8, true);
         
         if (!dataEntry.RespectOffsets && !(dataEntry.BinaryOffset <= 0)) {
             reader.BaseStream.Position = (long) dataEntry.BinaryOffset;
@@ -91,34 +81,32 @@ public class PboFile : IPboFile {
 
 
     public void AddEntry(PboDataEntryDto dataEntryDto, bool syncPbo = false) {
-        _streamIsSynced = false;
+        IsSynchronized = false;
         PBOEntries.Add(dataEntryDto);
         
-        if(syncPbo) SyncToStream();
+        if(syncPbo) SynchronizeStream();
     }
 
-    public void SyncToStream() {
-        if(!IsWritable) throw new Exception("Cannot sync a readonly stream. Try opening the PBO with write access or writing to a new file.");
-
-        if(_streamIsSynced) return;
-        PboStream.Dispose();
+    public override void SynchronizeStream(bool forceSynchronization = false) {
+        base.SynchronizeStream(forceSynchronization);
         using (var newStream = new MemoryStream()) {
             using (var newPboWriter = new BinaryWriter(newStream, Encoding.UTF8, true)) {
                 WriteBinary(newPboWriter);
                 
                 newPboWriter.Flush();
             }
-            File.WriteAllBytes(PboPath, newStream.ToArray());
+            BaseStream.SetLength(0);
+
+            BaseStream.SetLength(newStream.Length);
+            newStream.WriteTo(BaseStream);
         }
 
-        PboStream = File.Open(PboPath, FileMode.Open, FileAccess.ReadWrite);
+        BaseStream.Seek(0, SeekOrigin.Begin);
         PBOEntries = new List<PboEntry>();
-        ReadBinary(new BinaryReader(PboStream, Encoding.UTF8, true));
-        _streamIsSynced = true;
+        ReadBinary(new BinaryReader(BaseStream, Encoding.UTF8, true));
+        IsSynchronized = true;
     }
 
-    public void DeSyncStream() => _streamIsSynced = false;
-    
     public IEnumerable<PboEntry> GetPboEntries() => PBOEntries;
     
     public IEnumerable<PboDataEntry> GetDataEntries() {
@@ -154,7 +142,7 @@ public class PboFile : IPboFile {
         switch (dataEntry) {
             case PboDataEntryDto dataEntryDto:
                 dataEntryDto.EntryName = newName;
-                if(syncStream) SyncToStream();
+                if(syncStream) SynchronizeStream();
                 break;
             case not null:
                 AddEntry(new PboDataEntryDto(this, new MemoryStream(GetEntryData(dataEntry, false)), dataEntry.TimeStamp, dataEntry.EntryMagic is PboEntryMagic.Compressed), syncStream);
@@ -166,11 +154,10 @@ public class PboFile : IPboFile {
         if (dataEntry.EntryParent != this) throw new Exception("Cannot delete an entry outside of the pbo.");
 
         if (!dataEntry.IsQueuedForDeletion()) {
-            DeSyncStream();
+            DesynchronizeStream();
             dataEntry.QueueDeletion();
         }
-        if(syncStream) 
-            SyncToStream();
+        if(syncStream) SynchronizeStream();
     }
 
 
@@ -194,9 +181,9 @@ public class PboFile : IPboFile {
             dto.EntryData = data;
             return;
         }
-        if (!IsWritable && syncStream) throw new Exception("The pbo file you're trying to write to is readonly.");
+        if (!IsWritable() && syncStream) throw new Exception("The pbo file you're trying to write to is readonly.");
         
-        AddEntry(new PboDataEntryDto(this, new MemoryStream(data, true), dataEntry.TimeStamp, compressed), false);
+        AddEntry(new PboDataEntryDto(this, new MemoryStream(data, true), dataEntry.TimeStamp, compressed)); // syncStream is not passed through here purposefully
         DeleteEntry(dataEntry, syncStream);
     }
 
@@ -314,11 +301,10 @@ public class PboFile : IPboFile {
         writer.BaseStream.Flush();
     }
 
-    public void Dispose() {
-        if(_disposed) return;
-        PboStream.Dispose();
+    public override void Dispose() {
+        if (_disposed) return;
         foreach (var dto in GetDTOEntries()) dto.Dispose();
-        GC.SuppressFinalize(this);
         _disposed = true;
+        base.Dispose();
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.PBO.Entries; 
 
 public sealed class PboDummyEntry : PboEntry {
-    public PboDummyEntry(IPboFile entryParent) : base(entryParent) {
+    public PboDummyEntry(PboFile entryParent) : base(entryParent) {
         EntryMagic = PboEntryMagic.Decompressed;
     }
 
