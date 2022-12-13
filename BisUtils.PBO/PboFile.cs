@@ -1,30 +1,13 @@
 ﻿using System.Text;
-using BisUtils.Core;
 using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 using BisUtils.Core.Serialization;
 using BisUtils.PBO.Builders;
 using BisUtils.PBO.Entries;
 using BisUtils.PBO.Extensions;
+using BisUtils.PBO.Interfaces;
 
 namespace BisUtils.PBO;
-
-public interface IPboFile : IBisBinarizable<PboDebinarizationOptions, PboBinarizationOptions>, IDisposable {
-    byte[] GetEntryData(PboDataEntry dataEntry, bool decompress = true);
-    void OverwriteEntryData(PboDataEntry dataEntry, byte[] data, bool compressed = false, bool syncToStream = true);
-
-    void AddEntry(PboDataEntryDto dataEntryDto, bool syncStream = false);
-    void DeleteEntry(PboDataEntry dataEntry, bool syncStream = false);
-    void RenameEntry(PboDataEntry dataEntry, string newName, bool syncStream = false);
-
-    IEnumerable<PboEntry> GetPboEntries();
-    IEnumerable<PboDataEntry>? GetDataEntries();
-    IEnumerable<PboDataEntryDto>? GetDTOEntries();
-
-    IEnumerable<PboVersionEntry>? GetVersionEntries();
-    PboVersionEntry? GetVersionEntry();
-
-}
 
 public class PboFile : BisSynchronizable, IPboFile  {
     
