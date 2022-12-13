@@ -12,7 +12,7 @@ public class PboBuilder {
 
     public PboBuilder(string pboLocation, string? prefix = null) {
         prefix ??= Path.GetFileNameWithoutExtension(pboLocation);
-        _pboFile = new PboFile(File.Create(pboLocation), PboFileOption.Create);
+        _pboFile = new PboFile(pboLocation, PboFileOption.Create);
         _pboFile.GetVersionEntry()!.AddMetadataProperty("prefix", prefix, true);
     }
 

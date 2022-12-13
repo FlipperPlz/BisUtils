@@ -9,7 +9,8 @@ using Microsoft.Win32;
 namespace UnitTests.BisUtils.PBO; 
 
 public class StandardPBOTests {
-    private readonly FileInfo TestConfig;
+    private DirectoryInfo TestingDirectory;
+
     private FileInfo? _bisFileBankExecutable;
 
     
@@ -30,69 +31,75 @@ class CfgMods {
     };
 };";
 
+    [Fact]
+    public void TestPboSyncing_WhenDeletingEntries() {
+        TestingDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "PBOTesting"));
+        if (!TestingDirectory.Exists) TestingDirectory.Create();
+        var testingPBO = Path.Combine(TestingDirectory.FullName, "TestPboSyncing_WhenDeletingEntries.pbo");
+        if(File.Exists(testingPBO)) File.Delete(testingPBO);
+        var pbo = new PboFile(
+            testingPBO,
+            PboFileOption.Create);
+        pbo.AddEntry(new PboDataEntryDto(pbo, new MemoryStream(Encoding.UTF8.GetBytes(TestConfigData))) {
+            EntryName = "config.cpp"
+        }, true);
+        pbo.DeleteEntry(pbo.GetDataEntries().First(), true);
+        pbo.Dispose();
+        pbo = new PboFile(testingPBO);
+        Assert.Empty(pbo.GetDataEntries());
+        pbo.Dispose();
+        File.Delete(testingPBO);
+    }
 
-    public StandardPBOTests() {
-        TestConfig = new FileInfo(Path.Combine(Environment.CurrentDirectory, "TestConfig.cpp"));
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) throw new Exception("Windows Only!");
-        WriteTestData();
+    [Fact]
+    public void TestPboSyncing_WhenAddingEntries() {
+        TestingDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "PBOTesting"));
+        if (!TestingDirectory.Exists) TestingDirectory.Create();
+        var testingPBO = Path.Combine(TestingDirectory.FullName, "TestPboSyncing_WhenAddingEntries.pbo");
+        if(File.Exists(testingPBO)) File.Delete(testingPBO);
+        var pbo = new PboFile(
+            testingPBO,
+            PboFileOption.Create);
+        pbo.AddEntry(new PboDataEntryDto(pbo, new MemoryStream(Encoding.UTF8.GetBytes(TestConfigData))) {
+            EntryName = "config.cpp"
+        }, true);
+        pbo.Dispose();
+        pbo = new PboFile(testingPBO);
+        foreach (var pboDataEntry in pbo.GetDataEntries()) {
+            if(pboDataEntry.EntryName is not "config.cpp") continue;
+            Assert.Equal(Encoding.UTF8.GetBytes(TestConfigData), pboDataEntry.EntryData);
+        }
+        pbo.Dispose();
+        File.Delete(testingPBO);
     }
     
-    [Theory]
-    [InlineData(new[] {(object) 1})]
-    [InlineData(new[] {(object) 2})]
-    [InlineData(new[] {(object) 3})]
-    public void TestPboPacking(int entryCount) {
-        var controlPboFileInfo = CreateControlPbo(entryCount);
-        var createdPboFileInfo = CreateBisUtilsPbo(entryCount);
+    [Fact]
+    public void TestPboSyncing_WhenEditingEntries() {
+        var editedData = new byte[] {0x45, 0x6e, 0x74, 0x72, 0x79, 0x20, 0x45, 0x64, 0x69, 0x74, 0x65, 0x64};
+        TestingDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "PBOTesting"));
+        if (!TestingDirectory.Exists) TestingDirectory.Create();
+        var testingPBO = Path.Combine(TestingDirectory.FullName, "TestPboSyncing_WhenEditingEntries.pbo");
+        if(File.Exists(testingPBO)) File.Delete(testingPBO);
+        var pbo = new PboFile(
+            testingPBO,
+            PboFileOption.Create);
+        var addedEntry = new PboDataEntryDto(pbo, new MemoryStream(Encoding.UTF8.GetBytes(TestConfigData))) {
+            EntryName = "config.cpp"
+        };
+        pbo.AddEntry(addedEntry, true);
+        foreach (var pboDataEntry in pbo.GetDataEntries()) {
+            pbo.OverwriteEntryData(pboDataEntry, editedData, syncStream: true );
+        }
         
-        var controlPbo = new PboFile(controlPboFileInfo.OpenRead());
-        var createdPbo = new PboFile(createdPboFileInfo.OpenRead());
-        Assert.Equal(createdPbo.GetPboEntries().Count(), entryCount + 2);
-        Assert.Equal(createdPbo.GetPboEntries().Count(), controlPbo.GetPboEntries().Count());
-
-        var controlDataEntries = controlPbo.GetPboEntries().Where(e => e is PboDataEntry).Cast<PboDataEntry>().ToList();
-        var createdDataEntries = createdPbo.GetPboEntries().Where(e => e is PboDataEntry).Cast<PboDataEntry>().ToList();
-        
-        for (int i = 0; i < entryCount; i++) {
-            Assert.Equal(createdDataEntries[i].EntryData, controlDataEntries[i].EntryData);
+        pbo.Dispose();
+        pbo = new PboFile(testingPBO);
+        foreach (var pboDataEntry in pbo.GetDataEntries()) {
+            if(pboDataEntry.EntryName is not "config.cpp") continue;
+            Assert.Equal(editedData.Length, pboDataEntry.EntryData.Length);
+            Assert.Equal(editedData, pboDataEntry.EntryData);
         }
     }
 
-    private void WriteTestData() {
-        if (TestConfig.Exists) TestConfig.Delete();
-        using var writer = TestConfig.CreateText();
-        writer.Write(TestConfigData);
-    }
-
-    public FileInfo CreateBisUtilsPbo(int dataCount = 1) {
-        var createdPboFileInfo = new FileInfo(Path.Combine(Path.GetTempPath(), BisUtilsTempDirectory, "BisUtils.pbo"));
-        var pbo = new PboBuilder(Path.GetTempFileName(), "TestMod");
-        for (var i = 0; i < dataCount; i++) pbo.WithEntry($"{i}\\config.cpp", TestConfigData);
-        pbo.GetPboFile().WriteBinary(new BinaryWriter(createdPboFileInfo.Open(FileMode.OpenOrCreate, FileAccess.ReadWrite), Encoding.UTF8), PboBinarizationOptions.DefaultOptions);
-        
-        return createdPboFileInfo;
-    }
-
-    public FileInfo CreateControlPbo(int dataCount = 1) {
-        var modRoot = new DirectoryInfo(Path.Combine(Path.GetTempPath(), BisUtilsTempDirectory, "TestMod"));
-        var outputPbo = new FileInfo(Path.Combine(Path.GetTempPath(), BisUtilsTempDirectory, "control.pbo"));
-
-        if(modRoot.Exists) modRoot.Delete();
-        if(outputPbo.Exists) outputPbo.Delete();
-        
-        modRoot.Create();
-        for (var i = 0; i < dataCount; i++) TestConfig.CopyTo(Path.Combine(modRoot.FullName, $"{i}\\config.cpp"));
-
-        var processStartInfo = new ProcessStartInfo(GetFileBankExecutable().FullName);
-        processStartInfo.Arguments = $"-property prefix=TestMod -dst {outputPbo.FullName} {modRoot.FullName}";
-        var fileBankProcess = Process.Start(processStartInfo) ?? throw new Exception("Failed to execute FileBank.exe");
-        fileBankProcess.WaitForExit();
-
-        if (!outputPbo.Exists) throw new Exception("Failed to create control PBO using DayZ Tools!");
-
-        return outputPbo;
-    }
-    
 #pragma warning disable CA1416
     private FileInfo GetFileBankExecutable() {
         if (_bisFileBankExecutable is not null && _bisFileBankExecutable.Exists) return _bisFileBankExecutable;
