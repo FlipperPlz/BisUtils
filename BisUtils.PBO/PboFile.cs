@@ -167,7 +167,9 @@ public class PboFile : BisSynchronizable, IPboFile  {
         }
         if (!IsWritable() && syncStream) throw new Exception("The pbo file you're trying to write to is readonly.");
         
-        AddEntry(new PboDataEntryDto(this, new MemoryStream(data, true), dataEntry.TimeStamp, compressed)); // syncStream is not passed through here purposefully
+        AddEntry(new PboDataEntryDto(this, new MemoryStream(data, true), dataEntry.TimeStamp, compressed) {
+            EntryName = dataEntry.EntryName
+        }); // syncStream is not passed through here purposefully
         DeleteEntry(dataEntry, syncStream);
     }
 
