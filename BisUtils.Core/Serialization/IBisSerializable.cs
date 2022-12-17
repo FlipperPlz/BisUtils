@@ -47,14 +47,14 @@ public interface IBisSerializable<in CSO> where CSO : BisCommonSerializationOpti
     /// <param name="builder">The string representation to convert.</param>
     /// <param name="deserializationOptions">The deserialization options to use.</param>
     /// <returns>The deserialized object.</returns>
-    public IBisBinarizable FromString(StringBuilder builder, CSO deserializationOptions);
+    public IBisBinarizable ReadString(StringBuilder builder, CSO deserializationOptions);
     
     /// <summary>
     /// Converts the specified object to a string representation.
     /// </summary>
     /// <param name="builder">The string builder to use for storing the string representation.</param>
     /// <param name="serializationOptions">The serialization options to use.</param>
-    public void WriteBinary(StringBuilder builder, CSO serializationOptions);
+    public void WriteString(StringBuilder builder, CSO serializationOptions);
     
     /// <summary>
     /// Converts the current object to a string representation using the specified options.
@@ -63,7 +63,7 @@ public interface IBisSerializable<in CSO> where CSO : BisCommonSerializationOpti
     /// <returns>The string representation of the object.</returns>
     public virtual string ToString(CSO options) {
         var builder = new StringBuilder();
-        WriteBinary(builder, options);
+        WriteString(builder, options);
         return builder.ToString();
     }
 }
@@ -77,13 +77,13 @@ public interface IBisSerializable {
     /// </summary>
     /// <param name="builder">The string representation to convert.</param>
     /// <returns>The deserialized object.</returns>
-    public IBisBinarizable FromString(StringBuilder builder);
+    public IBisBinarizable ReadString(StringBuilder builder);
     
     /// <summary>
     /// Converts the specified object to a string representation.
     /// </summary>
     /// <param name="builder">The string builder to use for storing the string representation.</param>
-    public void WriteBinary(StringBuilder builder);
+    public void WriteString(StringBuilder builder);
 
     /// <summary>
     /// Converts the current object to a string representation using the specified options.
@@ -92,7 +92,7 @@ public interface IBisSerializable {
     /// <returns>The string representation of the object.</returns>
     public virtual string ToString() {
         var builder = new StringBuilder();
-        WriteBinary(builder);
+        WriteString(builder);
         return builder.ToString();
     }
 }

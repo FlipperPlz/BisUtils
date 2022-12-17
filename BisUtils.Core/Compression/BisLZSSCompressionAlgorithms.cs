@@ -135,7 +135,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
             m_CompressionBuffer = buffer;
 
             for (var i = 0; i < m_DataBlockCount && currPos < data.Length; i++) {
-                var blockSize = Math.Min(m_MaxDataBlockSize, data.Length - currPos);
+                var blockSize = System.Math.Min(m_MaxDataBlockSize, data.Length - currPos);
                 if (blockSize < m_MinPackBytes) {
                     currPos += AddUncompressed(i, data, currPos);
                     continue;
@@ -321,7 +321,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
             result.SequenceBytes = 0;
             result.SourceBytes = 0;
 
-            var maxSourceBytes = Math.Min(m_Content.Count, length);
+            var maxSourceBytes = System.Math.Min(m_Content.Count, length);
             for (var i = 1; i < maxSourceBytes; i++) {
                 var sequence = CheckSequenceImpl(buffer, length, i);
                 if (sequence.SourceBytes > result.SourceBytes)

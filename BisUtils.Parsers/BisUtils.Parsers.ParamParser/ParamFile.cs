@@ -1,49 +1,19 @@
 ﻿using System.Text;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using BisUtils.Core;
 using BisUtils.Core.Serialization;
-using BisUtils.Generated.ParamLang;
-using BisUtils.Parsers.ParamParser.Declarations;
-using BisUtils.Parsers.ParamParser.Factories;
-using BisUtils.Parsers.ParamParser.Interfaces;
 using BisUtils.Parsers.ParamParser.Literals;
 using BisUtils.Parsers.ParamParser.Statements;
+using BisUtils.Parsers.ParamParser.Utils.Factories;
+using BisUtils.Parsers.ParamParser.Utils.Interfaces;
 
 namespace BisUtils.Parsers.ParamParser; 
 
-public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.ComputationalStartContext> {
-    public List<IRapStatement> Statements { get; set; } = new();
+public class ParamFile : IParamParsable<Generated.ParamLang.ParamParser.ComputationalStartContext, ParamFile>{
+    public List<ParamStatement> Statements { get; set; } = new();
     public Dictionary<string, int?>? EnumValues { get; set; } = null;
-   
-    public static ParamFile ParseParamFile(Stream stream) {
-        var memStream = new MemoryStream();
-        stream.Seek(0, SeekOrigin.Begin);
-        stream.CopyTo(memStream);
-        memStream.Seek(0, SeekOrigin.Begin);
-        using (var reader = new BinaryReader(memStream, Encoding.UTF8, true)) {
-            var bits = reader.ReadBytes(4);
-            if ((bits[0] == '\0' && bits[1] == 'r' && bits[2] == 'a' && bits[3] == 'P')) {
-                memStream.Seek(0, SeekOrigin.Begin);
-                return (ParamFile) new ParamFile().ReadBinary(reader);
-                
-            }
-                
-            memStream.Seek(0, SeekOrigin.Begin);
-        }
-
-        var lexer = new ParamLexer(CharStreams.fromStream(memStream));
-        var tokens = new CommonTokenStream(lexer);
-        var parser = new Generated.ParamLang.ParamParser(tokens);
-           
-        var computationalStart = parser.computationalStart();
-        if (parser.NumberOfSyntaxErrors != 0) throw new Exception();
-
-        return (ParamFile) new ParamFile().ReadParseTree(computationalStart);
-    }
     
-    public IRapSerializable ReadParseTree(Generated.ParamLang.ParamParser.ComputationalStartContext ctx) {
-        if (ctx.statement() is { } statements) Statements.AddRange(statements.Select(RapStatementFactory.Create));
+    public ParamFile FromParserContext(Generated.ParamLang.ParamParser.ComputationalStartContext ctx) {
+        if (ctx.statement() is { } statements) Statements.AddRange(statements.Select(ParamStatementFactory.Create));
         if (ctx.enumDeclaration() is { } enums) {
             EnumValues = new Dictionary<string, int?>();
             foreach (var e in enums) {
@@ -53,7 +23,7 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
                             enumValueContext.identifier().Start.StartIndex,
                             enumValueContext.identifier().Stop.StopIndex)),
                         enumValueContext.literalInteger() is { } integerContext
-                            ? RapInteger.FromContext(integerContext).Value
+                            ? new ParamLiteralInteger(integerContext).Value
                             : null);
 
                 }
@@ -62,29 +32,17 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
         return this;
     }
 
-    public IBisBinarizable FromString(StringBuilder builder, RapDeserializationOptions deserializationOptions) {
-        var lexer = new ParamLexer(CharStreams.fromString(builder.ToString()));
-        var tokens = new CommonTokenStream(lexer);
-        var parser = new Generated.ParamLang.ParamParser(tokens);
-
-        ReadParseTree(parser.computationalStart());
-        if (parser.NumberOfSyntaxErrors != 0) throw new Exception();
-        
-        return this;
-    }
-
-    public void Write(StringBuilder builder, RapSerializationOptions serializationOptions) {
+    public void WriteString(StringBuilder builder, ParamSerializationOptions serializationOptions) {
         var statements = Statements;
         if(serializationOptions.OrganizeEntries) Statements.Sort((x, y) => x.CompareTo(y));
         foreach (var s in statements) {
-            s.Write(builder, RapSerializationOptions.DefaultOptions);
+            ParamStatementFactory.CreateSerializable(s).WriteString(builder, ParamSerializationOptions.Defaults);
             builder.Append('\n');
         }
     }
 
     public IBisBinarizable ReadBinary(BinaryReader reader) {
-        //TODO: Broken can't be fucked to fix in this commit
-        var bits = reader.ReadBytes(4);
+                var bits = reader.ReadBytes(4);
         if (!(bits[0] == '\0' && bits[1] == 'r' && bits[2] == 'a' && bits[3] == 'P'))
             throw new Exception("Invalid header.");
         if (reader.ReadUInt32() != 0 || reader.ReadUInt32() != 8) throw new Exception("Expected bytes 0 and 8.");
@@ -98,22 +56,22 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
             for (var i = 0; i < parentEntryCount; i++) {
                 switch (reader.PeekChar()) {
                     case 0:
-                        Statements.Add(reader.ReadBinarized<RapClassDeclaration>());
+                        Statements.Add(reader.ReadBinarized<ParamClassDeclaration>());
                         break;
                     case 1:
-                        Statements.Add(reader.ReadBinarized<RapVariableDeclaration>());
+                        Statements.Add(reader.ReadBinarized<ParamVariableDeclaration>());
                         break;
                     case 2:
-                        Statements.Add(reader.ReadBinarized<RapArrayDeclaration>());
+                        Statements.Add(reader.ReadBinarized<ParamArrayDeclaration>());
                         break;
                     case 3:
-                        Statements.Add(reader.ReadBinarized<RapExternalClassStatement>());
+                        Statements.Add(reader.ReadBinarized<ParamExternalClassStatement>());
                         break;
                     case 4:
-                        Statements.Add(reader.ReadBinarized<RapDeleteStatement>());
+                        Statements.Add(reader.ReadBinarized<ParamDeleteStatement>());
                         break;
                     case 5:
-                        Statements.Add(reader.ReadBinarized<RapAppensionStatement>());
+                        Statements.Add(reader.ReadBinarized<ParamAppensionStatement>());
                         break;
                     default: throw new NotSupportedException();
                 }
@@ -122,33 +80,33 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
             return parentEntryCount > 0;
         }
 
-        void AddEntryToClass(RapClassDeclaration clazz) {
+        void AddEntryToClass(ParamClassDeclaration clazz) {
             var entryType = reader.PeekChar();
             switch (entryType) {
                 case 0:
-                    Statements.Add(reader.ReadBinarized<RapClassDeclaration>());
+                    Statements.Add(reader.ReadBinarized<ParamClassDeclaration>());
                     break;
                 case 1:
-                    Statements.Add(reader.ReadBinarized<RapVariableDeclaration>());
+                    Statements.Add(reader.ReadBinarized<ParamVariableDeclaration>());
                     break;
                 case 2:
-                    Statements.Add(reader.ReadBinarized<RapArrayDeclaration>());
+                    Statements.Add(reader.ReadBinarized<ParamArrayDeclaration>());
                     break;
                 case 3:
-                    Statements.Add(reader.ReadBinarized<RapExternalClassStatement>());
+                    Statements.Add(reader.ReadBinarized<ParamExternalClassStatement>());
                     break;
                 case 4:
-                    Statements.Add(reader.ReadBinarized<RapDeleteStatement>());
+                    Statements.Add(reader.ReadBinarized<ParamDeleteStatement>());
                     break;
                 case 5:
-                    Statements.Add(reader.ReadBinarized<RapAppensionStatement>());
+                    Statements.Add(reader.ReadBinarized<ParamAppensionStatement>());
                     break;
                 default: throw new Exception();
             }
         }
 
         bool ReadChildClasses() {
-            void LoadChildClasses(RapClassDeclaration clazz) {
+            void LoadChildClasses(ParamClassDeclaration clazz) {
                 reader.BaseStream.Position = clazz.BinaryOffset;
                 var parent = reader.ReadAsciiZ();
                 clazz.ParentClassname = (parent == string.Empty) ? null : parent;
@@ -156,7 +114,7 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
                 for (var i = 0; i < clazzCount; i++) AddEntryToClass(clazz);
 
                 foreach (var statement in clazz.Statements) {
-                    if (statement is not RapClassDeclaration child) continue;
+                    if (statement is not ParamClassDeclaration child) continue;
                     LoadChildClasses(child);
                 }
             }
@@ -164,7 +122,7 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
 
             var i = 0;
             foreach (var statement in Statements) {
-                if (statement is not RapClassDeclaration clazz) continue;
+                if (statement is not ParamClassDeclaration clazz) continue;
                 LoadChildClasses(clazz);
                 i++;
             }
@@ -184,29 +142,29 @@ public class ParamFile : IRapDeserializable<Generated.ParamLang.ParamParser.Comp
         return this;
     }
 
-    public void WriteBinary(BinaryWriter writer) {
+    public void WriteBinary(BinaryWriter writer) { 
         void WriteParentClasses() {
             writer.WriteAsciiZ();
             writer.WriteCompactInteger(Statements.Count);
-            foreach (var statement in Statements) statement.WriteBinary(writer);
+            foreach (var statement in Statements) ParamStatementFactory.CreateBinarizable(statement).WriteBinary(writer);
         }
 
         void WriteChildClasses() {
-            void SaveChildClasses(RapClassDeclaration childClazz) {
+            void SaveChildClasses(ParamClassDeclaration childClazz) {
                 childClazz.BinaryOffset = (uint)writer.BaseStream.Position;
                 writer.BaseStream.Position = childClazz.BinaryOffsetPosition;
                 writer.Write(BitConverter.GetBytes(childClazz.BinaryOffset), 0, 4);
                 writer.BaseStream.Position = childClazz.BinaryOffset;
                 writer.WriteAsciiZ(childClazz.ParentClassname ?? string.Empty);
                 writer.WriteCompactInteger(childClazz.Statements.ToList().Count);
-                foreach (var rapStatement in childClazz.Statements) rapStatement.WriteBinary(writer);
+                foreach (var rapStatement in childClazz.Statements) ParamStatementFactory.CreateBinarizable(rapStatement).WriteBinary(writer);
                 foreach (var rapClass in childClazz.Statements)
-                    if (rapClass is RapClassDeclaration clazz)
+                    if (rapClass is ParamClassDeclaration clazz)
                         SaveChildClasses(clazz);
             }
 
             foreach (var rapStatement in Statements) {
-                if (rapStatement is not RapClassDeclaration childClazz) continue;
+                if (rapStatement is not ParamClassDeclaration childClazz) continue;
                 SaveChildClasses(childClazz);
             }
         }
