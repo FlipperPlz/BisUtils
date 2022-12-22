@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFrameworks>net6.0;net6.0-windows;net7.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.1</PackageVersion>
+        <PackageVersion>1.0.23</PackageVersion>
         <Title>BisUtils.PBO</Title>
         <Authors>Flipper, Ryann</Authors>
         <Description>Library for interacting with DayZ's pbo files</Description>
@@ -13,6 +13,7 @@
         <RepositoryUrl>https://github.com/FlipperPlz/BisUtils</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>dayz, pbo</PackageTags>
+        <PackageReleaseNotes>Fix OverwriteEntryData Function</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

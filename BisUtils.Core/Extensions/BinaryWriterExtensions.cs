@@ -43,6 +43,11 @@ namespace System.IO
         
         public static void WriteBinarized<T>(this BinaryWriter writer, T binarizable) where T : IBisBinarizable, new() => binarizable.WriteBinary(writer);
 
+        public static void WriteInt32BE(this BinaryWriter writer, int i) {
+            var data = BitConverter.GetBytes(i);
+            Array.Reverse(data);
+            writer.Write(data);
+        } 
         
         
         // I wish I didn't have to use reflection for this but alas,

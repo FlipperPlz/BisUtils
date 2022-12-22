@@ -73,6 +73,16 @@ namespace System.IO
 
             return decompressedDataStream;
         }
+        
+        public static bool AssertMagic(this BinaryReader reader, string magic) => 
+            new string(reader.ReadChars(magic.Length)).Equals(magic);
+
+        public static int ReadInt32BE(this BinaryReader reader) {
+            var data = reader.ReadBytes(4);
+            Array.Reverse(data);
+            
+            return BitConverter.ToInt32(data, 0);
+        } 
 
     }
 }
