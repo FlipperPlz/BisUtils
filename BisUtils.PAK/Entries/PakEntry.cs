@@ -9,6 +9,11 @@ public abstract class PakEntry : IBisBinarizable {
     public readonly IPakEnumerable? EntryParent;
     public string EntryName { get; set; } = null!; //Length <= byte.MaxValue
 
+    public string GetPath() {
+        if (EntryParent is PakDirectoryEntry parentDirectory) return $"{parentDirectory.GetPath()}\\{EntryName}";
+        return EntryName;
+    }
+    
     protected PakEntry(PakEntryType entryType, IPakEnumerable? parent) {
         EntryType = entryType;
         EntryParent = parent;

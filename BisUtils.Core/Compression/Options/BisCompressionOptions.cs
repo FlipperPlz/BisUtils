@@ -2,7 +2,7 @@ using BisUtils.Core.Options;
 
 namespace BisUtils.Core.Compression.Options; 
 
-public abstract class BisDecompressionOptions : BisOptions{
+public class BisDecompressionOptions : BisOptions{
     public int ExpectedSize { get; set; } 
 }
 
