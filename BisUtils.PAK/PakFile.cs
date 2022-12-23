@@ -41,15 +41,8 @@ public class PakFile : BisSynchronizable, IPakEnumerable, IBisBinarizable {
         var EOF = reader.BaseStream.Position + FileSize;
         reader.BaseStream.Seek(2, SeekOrigin.Current);
         var rootCount = reader.ReadInt32();
-        try {
-            do 
-                Children.Add(PakEntry.ReadPakEntry(reader, this));
-            while (reader.BaseStream.Position < EOF);
-        } catch (Exception e) {
-            Console.WriteLine($"CRASHED AT {reader.ReadInt32()}");
-            //TODO FIX
-        }
-        
+        do Children.Add(PakEntry.ReadPakEntry(reader, this));
+        while (reader.BaseStream.Position < EOF);
         
         return this;
     }

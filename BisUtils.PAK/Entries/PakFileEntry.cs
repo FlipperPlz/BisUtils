@@ -24,7 +24,7 @@ public class PakFileEntry : PakEntry {
         CyclicRedundancyCheck = reader.ReadInt32();
         CompressionType = (PakCompressionType) reader.ReadByte();
         CompressionLevel = (PakCompressionLevel) reader.ReadByte();
-
+        reader.BaseStream.Seek(6, SeekOrigin.Current);
         return this;
     }
 
