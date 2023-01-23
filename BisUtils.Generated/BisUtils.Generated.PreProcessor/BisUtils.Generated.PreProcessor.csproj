@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1" />
+      <ProjectReference Include="..\..\BisUtils.Core\BisUtils.Core.csproj" />
     </ItemGroup>
 
 </Project>

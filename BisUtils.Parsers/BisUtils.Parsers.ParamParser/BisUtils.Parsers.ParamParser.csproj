@@ -7,12 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\BisUtils.Core\BisUtils.Core.csproj" />
       <ProjectReference Include="..\..\BisUtils.Generated\BisUtils.Generated.ParamLang\BisUtils.Generated.ParamLang.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1" />
     </ItemGroup>
 
 </Project>
