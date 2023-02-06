@@ -57,7 +57,9 @@ public abstract class PboEntry : IBisBinarizable, IComparable<PboEntry> {
         var entryName = reader.ReadAsciiZ();
         var entryMagic = (PboEntryMagic) reader.ReadInt32();
         ulong reserved1 = reader.ReadUInt32(), reserved2 = reader.ReadUInt32(), reserved3 = reader.ReadUInt32(), reserved4 = reader.ReadUInt32();
+        #if DEBUG
         Console.WriteLine($"Debug: Reading {entryMagic.ToString()} Entry \nName:\"{entryName}\" \nReserved 1-4: ({reserved1}, {reserved2}, {reserved3}, {reserved4})\n");
+        #endif
         switch (entryMagic) {
             case PboEntryMagic.Version: {
                 if (entryName is not "") throw new Exception("Version entries should not be named.");
