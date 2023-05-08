@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <PackageVersion>1.0.34</PackageVersion>
-        <TargetFrameworks>net6.0;net6.0-windows;net7.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <Title>BisUtils.Core</Title>
         <Authors>FlipperPlz, Ryann</Authors>
         <PackageProjectUrl>https://github.com/FlipperPlz/BisUtils</PackageProjectUrl>
