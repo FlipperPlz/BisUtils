@@ -4,10 +4,10 @@ using BisUtils.Core.Compression.Options;
 namespace BisUtils.Core.Compression; 
 
 public class BisLZOCompressionAlgorithms : IBisCompressionAlgorithm<BisLZOCompressionOptions>, IBisDecompressionAlgorithm<BisLZODecompressionOptions> {
-    public static long Compress(MemoryStream input, BinaryWriter output, BisLZOCompressionOptions options) 
-        => throw new NotSupportedException();
+    public long Compress(byte[] input, BinaryWriter output, BisLZOCompressionOptions options) 
+        => throw new NotImplementedException();
     
-    public static long Decompress(MemoryStream input, BinaryWriter output, BisLZODecompressionOptions options) {
+    public long Decompress(Stream input, BinaryWriter output, BisLZODecompressionOptions options) {
         var startPos = output.BaseStream.Position;
 
         var isCompressed = !(!options.ForceDecompression && input.Length > 1024);

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 using BisUtils.Core.Serialization;
 
@@ -47,20 +48,10 @@ namespace System.IO
             var data = BitConverter.GetBytes(i);
             Array.Reverse(data);
             writer.Write(data);
-        } 
-        
-        
-        // I wish I didn't have to use reflection for this but alas,
-        //    .NET doesn't allow you to access static methods on generic types.
-        public static long WriteCompressedData<T>(this BinaryWriter writer, byte[] data,
-            BisCompressionOptions options) {
-            return (long) typeof(T).GetMethod("Compress")!.Invoke(null, new object[] {
-                new MemoryStream(data),
-                writer,
-                options
-            })!;
         }
-            
+
+        public static long WriteCompressedData<T>(this BinaryWriter writer, byte[] data,
+            IBisCompressionAlgorithm<T> compression, T options) where T : BisCompressionOptions => compression.Compress(data, writer, options);
+
     }
 }
-

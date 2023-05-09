@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Text;
+using BisUtils.Core.Compression;
 using BisUtils.Core.Compression.Options;
 using BisUtils.Core.Serialization;
 
@@ -61,15 +62,13 @@ namespace System.IO
 
         public static T ReadBinarized<T>(this BinaryReader reader) where T : IBisBinarizable, new() => (T) new T().ReadBinary(reader);
 
-        public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, BisDecompressionOptions options) {
+        public static MemoryStream ReadCompressedData<T>(this BinaryReader reader, IBisDecompressionAlgorithm<T> decompression,
+            T options) where T: BisDecompressionOptions {
             var decompressedDataStream = new MemoryStream();
             var decompressedDataWriter = new BinaryWriter(decompressedDataStream, Encoding.UTF8);
 
-            typeof(T).GetMethod("Decompress")!.Invoke(null, new object[] {
-                new MemoryStream(reader.ReadBytes(options.ExpectedSize)),
-                decompressedDataWriter,
-                options
-            });
+            decompression.Decompress(new MemoryStream(reader.ReadBytes(options.ExpectedSize)),
+                decompressedDataWriter, options);
 
             return decompressedDataStream;
         }

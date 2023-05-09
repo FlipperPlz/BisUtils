@@ -4,15 +4,17 @@ using BisUtils.Core.Compression.Options;
 namespace BisUtils.Core.Compression; 
 
 public class BisMiniLZOCompressionAlgorithms : IBisCompressionAlgorithm<BisCompressionOptions>, IBisDecompressionAlgorithm<BisDecompressionOptions> {
-    public static long Compress(MemoryStream input, BinaryWriter output, BisCompressionOptions options) {
+    public long Compress(byte[] input, BinaryWriter output, BisCompressionOptions options) {
         var startPos = output.BaseStream.Position;
-        output.Write(MiniLZO.Compress(input.ToArray()));
+        output.Write(MiniLZO.Compress(input));
         return output.BaseStream.Position - startPos;
     }
 
-    public static long Decompress(MemoryStream input, BinaryWriter output, BisDecompressionOptions options) {
+    public long Decompress(Stream input, BinaryWriter output, BisDecompressionOptions options) {
         var decompressed = new byte[options.ExpectedSize];
-        MiniLZO.Decompress(input.ToArray(), decompressed);
+        using var buffer = new MemoryStream();
+        input.CopyTo(buffer);
+        MiniLZO.Decompress(buffer.ToArray(), decompressed);
         output.Write(decompressed);
         return decompressed.Length;
     }

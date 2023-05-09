@@ -10,7 +10,7 @@ public interface IBisDecompressionAlgorithm<T> where T : BisDecompressionOptions
     /// <param name="output">The output writer</param>
     /// <param name="options">Algorithm specific options used for decompression.</param>
     /// <returns>The amount of bytes written to the output stream.</returns>
-    static long Decompress(MemoryStream input, BinaryWriter output, T options) => throw new NotSupportedException();
+    long Decompress(Stream input, BinaryWriter output, T options) ;
 }
 
 public interface IBisCompressionAlgorithm<T> where T : BisCompressionOptions {
@@ -21,5 +21,5 @@ public interface IBisCompressionAlgorithm<T> where T : BisCompressionOptions {
     /// <param name="output"></param>
     /// <param name="options">Algorithm specific options used for compression.</param>
     /// <returns>The amount of bytes written to the output stream.</returns>
-    static long Compress(MemoryStream input, BinaryWriter output, T options) => throw new NotSupportedException();
+    long Compress(byte[] input, BinaryWriter output, T options);
 }

@@ -1,4 +1,6 @@
 using BisUtils.Core.Compression.Options;
+using System;
+using System.Linq;
 
 namespace BisUtils.Core.Compression;
 
@@ -6,11 +8,11 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
     private const int PacketFormatUncompressed = 1;
     private const byte Space = 0x20;
 
-    public static long Compress(MemoryStream input, BinaryWriter output, BisLZSSCompressionOptions options) {
+    public long Compress(byte[] input, BinaryWriter output, BisLZSSCompressionOptions options) {
         var startPos = output.BaseStream.Position;
         
         if (!options.AlwaysCompress && input.Length < 1024) {
-            output.Write(input.ToArray());
+            output.Write(input);
             return output.BaseStream.Position - startPos;
         }
         
@@ -21,7 +23,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         //Generate and add compressed data
         while (readData < dataLength) {
             var packet = new Packet();
-            readData = packet.Pack(input.ToArray(), readData, buffer);
+            readData = packet.Pack(input, readData, buffer);
             output.Write(packet.GetContent());
         }
 
@@ -30,9 +32,11 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         return output.BaseStream.Position - startPos;
     }
 
-    public static long Decompress(MemoryStream input, BinaryWriter output, BisLZSSDecompressionOptions options) {
+    public long Decompress(Stream input, BinaryWriter output, BisLZSSDecompressionOptions options) {
         if (!options.AlwaysDecompress && input.Length < 1024) {
-            output.Write(input.ToArray());
+            using var buffer = new MemoryStream();
+            input.CopyTo(buffer);
+            output.Write(buffer.GetBuffer(), 0, (int)input.Length);
             return options.ExpectedSize;
         }
         const int N = 4096;
@@ -44,9 +48,9 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         if (options.ExpectedSize <= 0) {
             output.Write(outputBytes);
             return options.ExpectedSize;
-        } 
-        
-        using var inputReader = new BinaryReader(new MemoryStream(input.ToArray()));
+        }
+
+        using var inputReader = new BinaryReader(input, System.Text.Encoding.UTF8, true);
         int i; 
         var flags = 0; 
         int cSum = 0, iDst = 0, bytesLeft = options.ExpectedSize;
@@ -117,10 +121,10 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         return outputBytes.Length;
     }
 
-    private static void WriteCRC(MemoryStream input, BinaryWriter output) => 
-        output.Write(BitConverter.GetBytes(input.ToArray().Aggregate<byte, uint>(0, (current, t) => current + t)));
+    private static void WriteCRC(byte[] input, BinaryWriter output) => 
+        output.Write(BitConverter.GetBytes(input.Aggregate<byte, uint>(0, (current, t) => current + t)));
     
-    internal class Packet {
+    private class Packet {
         private const int m_DataBlockCount = 8;
         private const int m_MinPackBytes = 3;
         private const int m_MaxDataBlockSize = m_MinPackBytes + 0b1111;
@@ -217,7 +221,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         }
     }
 
-    internal class CompressionBuffer {
+    private class CompressionBuffer {
         public struct Intersection {
             public int Position;
             public int Length;

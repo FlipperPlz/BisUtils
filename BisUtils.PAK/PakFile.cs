@@ -32,8 +32,9 @@ public class PakFile : BisSynchronizable, IPakEnumerable, IBisBinarizable {
         if (!decompress) goto ReturnDecompressed;
         if (fileEntry.CompressionType is PakCompressionType.ZLib) {
             try {
+                var decompression = new BisZLibCompressionAlgorithms();
                 using var decompressed =
-                    reader.ReadCompressedData<BisZLibCompressionAlgorithms>(new BisDecompressionOptions() {
+                    reader.ReadCompressedData(decompression, new BisDecompressionOptions() {
                             ExpectedSize = fileEntry.OriginalSize
                         }
                     );
