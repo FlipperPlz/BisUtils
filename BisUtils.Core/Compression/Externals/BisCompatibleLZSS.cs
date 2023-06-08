@@ -1,8 +1,14 @@
 ﻿namespace BisUtils.Core.Compression.Externals;
 
 /// <summary>
-/// 
+/// LZSS compression variant compatible with BI games 
 /// </summary>
+/// <remarks>
+/// Based on LZSS.c by Haruhiko Okumura
+/// https://dev.gameres.com/Program/Other/LZSS.C
+/// and its adaptation from bis-file-formats
+/// https://github.com/jetelain/bis-file-formats/blob/master/BIS.Core/Compression/LzssCompression.cs
+/// </remarks>
 internal sealed class BisCompatibleLZSS {
     private const int N = 4096;
     private const int F = 18;
@@ -209,6 +215,7 @@ internal sealed class BisCompatibleLZSS {
             else
             {
                 /* Send position and length pair. Note match_length > THRESHOLD. */
+                // The difference between common compression implementations and the BI variant is the match position format.
                 var encoded_position = r - matchPosition & N - 1;
                 codeBuf[codeBufIdx++] = (byte)encoded_position;
                 codeBuf[codeBufIdx++] = (byte)(encoded_position >> 4 & 0xf0 | matchLength - (THRESHOLD + 1));

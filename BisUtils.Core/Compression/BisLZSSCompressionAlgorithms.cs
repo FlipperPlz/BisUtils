@@ -32,7 +32,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         const int N = 4096;
         const int F = 18;
         const int THRESHOLD = 2;
-        var text_buf = new char[N + F - 1];
+        var text_buf = new byte[N + F - 1];
         var outputBytes = new byte[options.ExpectedSize];
 
         if (options.ExpectedSize <= 0) {
@@ -44,7 +44,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
         int i; 
         var flags = 0; 
         int cSum = 0, iDst = 0, bytesLeft = options.ExpectedSize;
-        for (i = 0; i < N - F; i++) text_buf[i] = ' ';
+        for (i = 0; i < N - F; i++) text_buf[i] = 0x20;
         var r = N - F;
 
         while (bytesLeft > 0) {
@@ -65,9 +65,9 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
                 outputBytes[iDst++] = (byte) c;
                 bytesLeft--;
                 // continue decompression
-                text_buf[r] = (char) c;
+                text_buf[r] = (byte) c;
                 r++;
-                r &= (N - 1);
+                r &= N - 1;
             }
             else {
                 i = inputReader.ReadByte();
@@ -84,7 +84,7 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
                 }
 
                 for (; ii <= jj; ii++) {
-                    c = (byte) text_buf[ii & (N - 1)];
+                    c = text_buf[ii & (N - 1)];
                     if (options.UseSignedChecksum)
                         cSum += (sbyte) c;
                     else
@@ -94,9 +94,9 @@ public class BisLZSSCompressionAlgorithms : IBisCompressionAlgorithm<BisLZSSComp
                     outputBytes[iDst++] = (byte) c;
                     bytesLeft--;
                     // continue decompression
-                    text_buf[r] = (char) c;
+                    text_buf[r] = (byte) c;
                     r++;
-                    r &= (N - 1);
+                    r &= N - 1;
                 }
             }
         }
