@@ -33,6 +33,12 @@ public abstract class PboEntry : PboVFSEntry
     {
     }
 
+    public bool IsEmptyMeta() =>
+        OriginalSize == 0 &&
+        Offset == 0 &&
+        TimeStamp == 0 &&
+        DataSize == 0;
+
     public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
     {
         //TODO: Binarize with options

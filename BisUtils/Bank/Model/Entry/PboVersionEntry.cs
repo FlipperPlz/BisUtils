@@ -6,7 +6,7 @@ namespace BisUtils.Bank.Model.Entry;
 
 public class PboVersionEntry : PboEntry
 {
-    public new string FileName { get; } = "$PROPERTIES$";
+    //public string FileName { get; } = "$PROPERTIES$";
 
     public PboVersionEntry(
         string fileName = "",
@@ -36,14 +36,11 @@ public class PboVersionEntry : PboEntry
         var result = base.Debinarize(reader, options);
         if (result.IsNotValid) return result;
         //TODO: Read version properties
-
-
         return result;
     }
 
-    public override bool Validate(PboOptions options)
-    {
-        //TODO: Validate using options
-        throw new NotImplementedException();
-    }
+    public override bool Validate(PboOptions options) =>
+        !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
+        !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
+        !(options.RequireVersionNotNamed || FileName != string.Empty);
 }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace BisUtils.Error;
+namespace BisUtils.Core.Error;
 
 public static class ExceptionHelpers
 {

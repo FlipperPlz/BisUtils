@@ -1,6 +1,6 @@
 ﻿using System.Text;
+using BisUtils.Core.Error;
 using BisUtils.Core.Extensions;
-using BisUtils.Error;
 
 namespace BisUtils.Core.Parsing;
 

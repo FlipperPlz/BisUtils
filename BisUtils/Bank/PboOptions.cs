@@ -13,7 +13,6 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     public TimeSpan DecompressionTimeout { get; set; } = TimeSpan.FromMinutes(1);
     public bool IgnoreValidation { get; set; } = false;
     public bool CompressionErrorsAreWarnings { get; set; } = false;
-    public bool RespectEntryOffsets { get; set; } = false;
     public bool RequireValidSignature { get; set; } = true;
     public bool RequireEmptyVersionMeta { get; set; } = true;
     public bool RequireFirstEntryIsVersion { get; set; } = false;
@@ -21,6 +20,9 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool AlwaysSeparateOnDummy { get; set; } = true;
     public bool AllowDuplicateFileNames { get; set; } = false;
     public bool RegisterEmptyEntries { get; set; } = true;
-    public bool RemoveBenignProperties { get; set; } = true;
     public bool AllowObfuscated { get; set; } = false;
+    [FunctionallyAccurate] public bool RequireVersionNotNamed { get; set; } = true;
+    [FunctionallyAccurate] public bool RemoveBenignProperties { get; set; } = true;
+    [FunctionallyAccurate] public bool RequireVersionMimeOnVersion { get; set; } = true;
+    [FunctionallyAccurate] public bool RespectEntryOffsets { get; set; } = false;
 }
