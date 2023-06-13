@@ -12,4 +12,6 @@ public readonly struct BinarizationResult
     public IEnumerable<string> Errors { get; init; }
     
     public bool IsValid => !Errors.Any();
+    public bool IsNotValid => Errors.Any();
+
 }

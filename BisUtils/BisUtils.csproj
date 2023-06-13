@@ -7,8 +7,4 @@
         <WarningsAsErrors>Nullable</WarningsAsErrors>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Bank\Model\Entry\" />
-    </ItemGroup>
-
 </Project>
