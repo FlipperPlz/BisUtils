@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.Core.Family;
 
-public interface IFamilyParent : IFamilyMember
+public interface IFamilyParent : IFamilyChild
 {
-    public IReadOnlyList<IFamilyMember> Children { get; set; }
+    public IEnumerable<IFamilyMember> Children { get; }
 
 }

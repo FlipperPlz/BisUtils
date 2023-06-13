@@ -9,5 +9,9 @@ public abstract class StrictBinaryObject<T> : BinaryObject<T>, IStrictBinaryObje
     {
     }
 
+    protected StrictBinaryObject()
+    {
+    }
+
     public abstract bool Validate(T options);
 }
