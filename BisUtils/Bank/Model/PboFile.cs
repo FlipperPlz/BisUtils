@@ -11,7 +11,7 @@ public class PboFile : PboDirectory, IFamilyNode
     public new readonly List<PboEntry> PboEntries = new();
     public new IEnumerable<IFamilyMember> Children => PboEntries;
 
-    public PboFile(List<PboEntry> children) : base(children)
+    public PboFile(List<PboEntry> children) : base(children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
     {
     }
 

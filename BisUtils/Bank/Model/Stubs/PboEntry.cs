@@ -5,7 +5,7 @@ namespace BisUtils.Bank.Model.Stubs;
 
 public abstract class PboEntry : PboVFSEntry
 {
-    public string FileName { get; set; } = "New File";
+    public new string EntryName { get; set; } = "New File";
     public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
     public long OriginalSize { get; set; }
     public long Offset { get; set; }
@@ -19,9 +19,8 @@ public abstract class PboEntry : PboVFSEntry
         long offset,
         long timeStamp,
         long dataSize
-    ) : base()
+    ) : base(fileName)
     {
-        FileName = fileName;
         EntryMime = mime;
         OriginalSize = originalSize;
         Offset = offset;
@@ -42,12 +41,21 @@ public abstract class PboEntry : PboVFSEntry
     public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
     {
         //TODO: Binarize with options
+        
         throw new NotImplementedException();
     }
 
     public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
     {
-        //TODO: Deinarize with options
-        throw new NotImplementedException();
+        
+        var result = base.Debinarize(reader, options);
+        if (result.IsNotValid) return result;
+        //write mime
+        //write originalSize
+        //write offset
+        //write timestamp
+        //write size
+
+        return result;
     }
 }

@@ -15,7 +15,7 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
     public IEnumerable<PboVFSEntry> VfsEntries => PboEntries.OfType<PboVFSEntry>().ToList();
     public IEnumerable<IFamilyMember> Children => VfsEntries;
 
-    public PboDirectory(List<PboEntry> entries) : base() => PboEntries = entries;
+    public PboDirectory(List<PboEntry> entries, string directoryName) : base(directoryName) => PboEntries = entries;
     
     public PboDirectory(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {

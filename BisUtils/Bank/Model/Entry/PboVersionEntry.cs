@@ -42,5 +42,5 @@ public class PboVersionEntry : PboEntry
     public override bool Validate(PboOptions options) =>
         !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
         !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
-        !(options.RequireVersionNotNamed || FileName != string.Empty);
+        !(options.RequireVersionNotNamed || EntryName != string.Empty);
 }

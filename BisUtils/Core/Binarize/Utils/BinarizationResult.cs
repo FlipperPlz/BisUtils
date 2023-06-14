@@ -7,7 +7,8 @@ public readonly struct BinarizationResult
     
     public static readonly BinarizationResult Okay = new BinarizationResult { Errors = Enumerable.Empty<string>() };
     public static readonly BinarizationResult Invalid = new BinarizationResult { Errors = new []{ "There was an error validating the binary structure." } };
-    
+    public static readonly BinarizationResult AsciiZTimeout = new BinarizationResult { Errors = new []{ "There was an error reading a null terminated string (timeout: too long)" } };
+
     
     public IEnumerable<string> Errors { get; init; }
     
