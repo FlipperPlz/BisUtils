@@ -28,7 +28,10 @@ public class PboFile : PboDirectory, IFamilyNode
     public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
     {
         var response = base.Binarize(writer, options);
-        if (!response.IsValid) return response;
+        if (!response.IsValid)
+        {
+            return response;
+        }
         //TODO: Write data and signature
 
         return response;
@@ -36,7 +39,10 @@ public class PboFile : PboDirectory, IFamilyNode
 
     public override bool Validate(PboOptions options)
     {
-        if(!base.Validate(options)) return false;
+        if (!base.Validate(options))
+        {
+            return false;
+        }
         //TODO: File level validation
 
         return true;

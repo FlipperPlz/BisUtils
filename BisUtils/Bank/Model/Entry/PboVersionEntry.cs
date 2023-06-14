@@ -10,10 +10,10 @@ public class PboVersionEntry : PboEntry
 
     public PboVersionEntry(
         string fileName = "",
-        PboEntryMime mime = PboEntryMime.Version, 
+        PboEntryMime mime = PboEntryMime.Version,
         long originalSize = 0,
         long offset = 0,
-        long timeStamp = 0, 
+        long timeStamp = 0,
         long dataSize = 0
     ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize)
     {
@@ -26,7 +26,10 @@ public class PboVersionEntry : PboEntry
     public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
     {
         var result = base.Binarize(writer, options);
-        if (result.IsNotValid) return result;
+        if (result.IsNotValid)
+        {
+            return result;
+        }
         //TODO: Write version properties
         return result;
     }
@@ -34,7 +37,10 @@ public class PboVersionEntry : PboEntry
     public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = base.Debinarize(reader, options);
-        if (result.IsNotValid) return result;
+        if (result.IsNotValid)
+        {
+            return result;
+        }
         //TODO: Read version properties
         return result;
     }

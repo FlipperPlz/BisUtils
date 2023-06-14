@@ -10,12 +10,15 @@ public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarization
     protected BinaryObject(BisBinaryReader reader, T options)
     {
         var result = Debinarize(reader, options);
-        if (!result.IsValid) throw new DebinarizeFailedException(result.Errors);
+        if (!result.IsValid)
+        {
+            throw new DebinarizeFailedException(result.Errors);
+        }
     }
 
     protected BinaryObject()
     {
-        
+
     }
 
     public abstract BinarizationResult Binarize(BisBinaryWriter writer, T options);

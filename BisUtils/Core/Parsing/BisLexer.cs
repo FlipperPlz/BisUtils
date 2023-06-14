@@ -10,7 +10,7 @@ public class BisLexer
     public int Position { get; private set; } = -1;
     public char? CurrentChar { get; private set; } = null;
     public char? PreviousChar { get; private set; } = null;
-    
+
     public BisLexer(string content) => Content = content;
 
     public bool HasNext() => PeekForward() is not null;
@@ -21,7 +21,7 @@ public class BisLexer
     {
         ExceptionHelpers.ThrowArgumentNotPositiveException(count);
         return JumpTo(Position + count);
-    } 
+    }
 
     public char? MoveBackward(int count = 1)
     {
@@ -34,22 +34,26 @@ public class BisLexer
         ExceptionHelpers.ThrowArgumentNotPositiveException(count);
         return Content.GetOrNull(Position + count);
     }
-    
+
     public string ReadChars(int count, bool includeFirst = false)
     {
         var i = 0;
         var builder = new StringBuilder();
-        if (includeFirst && count >= 1) { i++; builder.Append(CurrentChar); }
-        
+        if (includeFirst && count >= 1)
+        {
+            i++;
+            builder.Append(CurrentChar);
+        }
+
         while (i != count)
         {
             i++;
             builder.Append(MoveForward());
         }
-        
+
         return builder.ToString();
     }
-    
+
     public string GetWhile(Func<BisLexer, bool> condition)
     {
         var builder = new StringBuilder();
@@ -64,7 +68,10 @@ public class BisLexer
 
     public void ResetLexer(string? content = null)
     {
-        if (content is not null) Content = content;
+        if (content is not null)
+        {
+            Content = content;
+        }
         Position = -1;
         PreviousChar = null;
         CurrentChar = null;
@@ -76,11 +83,13 @@ public class BisLexer
         var endPosition = Position + count;
 
         if (endPosition > Content.Length)
+        {
             endPosition = Content.Length;
+        }
 
         return Content.Substring(Position, endPosition - Position);
     }
-    
+
     public char? PeekBackWard(int count = 1)
     {
         ExceptionHelpers.ThrowArgumentNotPositiveException(count);
@@ -93,7 +102,9 @@ public class BisLexer
         var startPosition = Position - count;
 
         if (startPosition < 0)
+        {
             startPosition = 0;
+        }
 
         return Content.Substring(startPosition, Position - startPosition);
     }

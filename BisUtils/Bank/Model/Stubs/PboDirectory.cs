@@ -8,15 +8,15 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
 {
     public PboDirectory? ParentDirectory { get; set; }
     public IFamilyParent? Parent => ParentDirectory;
-    
- 
+
+
     public readonly List<PboEntry> PboEntries = new();
 
     public IEnumerable<PboVFSEntry> VfsEntries => PboEntries.OfType<PboVFSEntry>().ToList();
     public IEnumerable<IFamilyMember> Children => VfsEntries;
 
     public PboDirectory(List<PboEntry> entries, string directoryName) : base(directoryName) => PboEntries = entries;
-    
+
     public PboDirectory(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
@@ -25,7 +25,10 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
     {
         var currentResult = BinarizationResult.Okay;
         //TODO: Append errors to current result, crash on non-recoverable errors
-        foreach (var entry in PboEntries) entry.Binarize(writer, options); 
+        foreach (var entry in PboEntries)
+        {
+            entry.Binarize(writer, options);
+        }
 
         return currentResult;
     }

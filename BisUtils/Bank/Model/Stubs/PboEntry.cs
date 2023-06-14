@@ -27,7 +27,7 @@ public abstract class PboEntry : PboVFSEntry
         TimeStamp = timeStamp;
         DataSize = dataSize;
     }
-    
+
     protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
@@ -41,15 +41,18 @@ public abstract class PboEntry : PboVFSEntry
     public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
     {
         //TODO: Binarize with options
-        
+
         throw new NotImplementedException();
     }
 
     public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
     {
-        
+
         var result = base.Debinarize(reader, options);
-        if (result.IsNotValid) return result;
+        if (result.IsNotValid)
+        {
+            return result;
+        }
         //write mime
         //write originalSize
         //write offset

@@ -23,8 +23,11 @@ public abstract class PboVFSEntry : PboElement, IFamilyChild
     public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = reader.ReadAsciiZ(out var readName, options) ; //TODO: Add error
-        if (result.IsNotValid) return result;
-        
+        if (result.IsNotValid)
+        {
+            return result;
+        }
+
         EntryName = readName;
         return result;
     }
