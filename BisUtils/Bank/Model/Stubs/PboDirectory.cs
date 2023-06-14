@@ -4,6 +4,8 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Stubs;
 
+using FluentResults;
+
 public class PboDirectory : PboVFSEntry, IFamilyParent
 {
     public PboDirectory? ParentDirectory { get; set; }
@@ -21,9 +23,9 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
     {
     }
 
-    public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
-        var currentResult = BinarizationResult.Okay;
+        var currentResult = Result.Ok();
         //TODO: Append errors to current result, crash on non-recoverable errors
         foreach (var entry in PboEntries)
         {
@@ -33,7 +35,7 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
         return currentResult;
     }
 
-    public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options) =>
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
         throw new NotSupportedException();
 
     public override bool Validate(PboOptions options) => PboEntries.TrueForAll(e => e.Validate(options));

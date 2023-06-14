@@ -3,6 +3,8 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Stubs;
 
+using FluentResults;
+
 public abstract class PboEntry : PboVFSEntry
 {
     public new string EntryName { get; set; } = "New File";
@@ -38,18 +40,18 @@ public abstract class PboEntry : PboVFSEntry
         TimeStamp == 0 &&
         DataSize == 0;
 
-    public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         //TODO: Binarize with options
 
         throw new NotImplementedException();
     }
 
-    public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
 
         var result = base.Debinarize(reader, options);
-        if (result.IsNotValid)
+        if (result.IsFailed)
         {
             return result;
         }

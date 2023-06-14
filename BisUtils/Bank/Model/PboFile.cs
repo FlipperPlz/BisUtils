@@ -5,6 +5,9 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model;
 
+using Core.Binarize.Exceptions;
+using FluentResults;
+
 public class PboFile : PboDirectory, IFamilyNode
 {
     public new PboFile? Node => this;
@@ -17,18 +20,23 @@ public class PboFile : PboDirectory, IFamilyNode
 
     public PboFile(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
+        var result = Debinarize(reader, options);
+        if (result.IsFailed)
+        {
+            throw new DebinarizeFailedException(result.ToString());
+        }
     }
 
-    public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         //TODO: Read PBO
-        return BinarizationResult.Okay;
+        return Result.Ok();
     }
 
-    public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         var response = base.Binarize(writer, options);
-        if (!response.IsValid)
+        if (response.IsFailed)
         {
             return response;
         }

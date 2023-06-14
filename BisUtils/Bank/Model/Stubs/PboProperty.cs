@@ -1,9 +1,9 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
-using Core.Binarize.Utils;
 using Core.Family;
 using Core.IO;
 using Entry;
+using FluentResults;
 
 public class PboProperty : PboElement, IFamilyChild
 {
@@ -19,18 +19,18 @@ public class PboProperty : PboElement, IFamilyChild
         Value = value;
     }
 
-    public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         writer.WriteAsciiZ(Name, options);
         writer.WriteAsciiZ(Value, options);
-        return BinarizationResult.Okay;
+        return Result.Ok();
     }
 
-    public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = reader.ReadAsciiZ(out var name, options);
 
-        if (result.IsNotValid)
+        if (result.IsFailed)
         {
             return result;
         }

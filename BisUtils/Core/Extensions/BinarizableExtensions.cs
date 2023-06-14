@@ -6,9 +6,11 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Core.Extensions;
 
+using FluentResults;
+
 public static class BinarizableExtensions
 {
-    public static BinarizationResult BinarizeValidated<TBinarizationOptions>(
+    public static Result<TBinarizationOptions> BinarizeValidated<TBinarizationOptions>(
         this IStrictBinarizable<TBinarizationOptions> binarizable,
         BisBinaryWriter writer,
         TBinarizationOptions options
@@ -27,7 +29,8 @@ public static class BinarizableExtensions
                 .FirstOrDefault() is MustBeValidatedAttribute attribute
             )
         {
-            return new BinarizationResult(attribute.ErrorMessage); //TODO: Validation should return its own result
+            binarizable.Validate(options); //TODO: Validation result;; merge
+
         }
         return binarizable.Binarize(writer, options);
 

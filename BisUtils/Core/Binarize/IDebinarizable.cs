@@ -4,7 +4,9 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Core.Binarize;
 
+using FluentResults;
+
 public interface IDebinarizable<in TDebinarizationOptions> where TDebinarizationOptions : IBinarizationOptions
 {
-    public BinarizationResult Debinarize(BisBinaryReader reader, TDebinarizationOptions options);
+    public Result Debinarize(BisBinaryReader reader, TDebinarizationOptions options);
 }

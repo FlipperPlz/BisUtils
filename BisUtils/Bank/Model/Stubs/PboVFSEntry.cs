@@ -4,6 +4,8 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Stubs;
 
+using FluentResults;
+
 public abstract class PboVFSEntry : PboElement, IFamilyChild
 {
     public PboDirectory? ParentDirectory { get; set; }
@@ -20,10 +22,10 @@ public abstract class PboVFSEntry : PboElement, IFamilyChild
     {
     }
 
-    public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = reader.ReadAsciiZ(out var readName, options) ; //TODO: Add error
-        if (result.IsNotValid)
+        if (result.IsFailed)
         {
             return result;
         }
@@ -32,7 +34,7 @@ public abstract class PboVFSEntry : PboElement, IFamilyChild
         return result;
     }
 
-    public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         //TODO: Write AsciiZ
         throw new NotImplementedException();

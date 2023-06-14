@@ -5,6 +5,7 @@ using BisUtils.Core.IO;
 namespace BisUtils.Bank.Model.Entry;
 
 using Core.Family;
+using FluentResults;
 
 public class PboVersionEntry : PboEntry, IFamilyParent
 {
@@ -27,10 +28,10 @@ public class PboVersionEntry : PboEntry, IFamilyParent
     {
     }
 
-    public override BinarizationResult Binarize(BisBinaryWriter writer, PboOptions options)
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         var result = base.Binarize(writer, options);
-        if (result.IsNotValid)
+        if (result.IsFailed)
         {
             return result;
         }
@@ -38,10 +39,10 @@ public class PboVersionEntry : PboEntry, IFamilyParent
         return result;
     }
 
-    public override BinarizationResult Debinarize(BisBinaryReader reader, PboOptions options)
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = base.Debinarize(reader, options);
-        if (result.IsNotValid)
+        if (result.IsFailed)
         {
             return result;
         }

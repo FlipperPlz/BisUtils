@@ -4,6 +4,9 @@ using BisUtils.Core.Options;
 
 namespace BisUtils.Core.IO;
 
+using Binarize.Options;
+using FluentResults;
+
 public class BisBinaryReader : BinaryReader
 {
     public BisBinaryReader(Stream input) : base(input)
@@ -19,7 +22,10 @@ public class BisBinaryReader : BinaryReader
     }
 
 
-    public BinarizationResult ReadAsciiZ(out string read, IAsciizLimiterOptions? options)
+    public Result ReadAsciiZ<TOptions>(
+        out string read,
+        TOptions? options
+    ) where TOptions : IAsciizLimiterOptions, IBinarizationOptions
     {
         int maxLength = options?.AsciiLengthTimeout ?? -1, bytesRead = 0;
         var stringBuffer = new StringBuilder();
@@ -29,7 +35,7 @@ public class BisBinaryReader : BinaryReader
             if (maxLength >= 0 && bytesRead >= maxLength)
             {
                 read = stringBuffer.ToString();
-                return BinarizationResult.AsciiZTimeout;
+                return Result.Fail($"AsciiZ String exceeded maximum read length of {maxLength}.");
             }
 
             var b = ReadByte();
@@ -44,6 +50,6 @@ public class BisBinaryReader : BinaryReader
         }
 
         read = stringBuffer.ToString();
-        return BinarizationResult.Okay;
+        return Result.Ok();
     }
 }
