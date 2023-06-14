@@ -4,9 +4,13 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Entry;
 
-public class PboVersionEntry : PboEntry
+using Core.Family;
+
+public class PboVersionEntry : PboEntry, IFamilyParent
 {
     //public string FileName { get; } = "$PROPERTIES$";
+    public IEnumerable<IFamilyMember> Children => Properties;
+    public List<PboProperty> Properties { get; set; } = new();
 
     public PboVersionEntry(
         string fileName = "",
@@ -14,10 +18,10 @@ public class PboVersionEntry : PboEntry
         long originalSize = 0,
         long offset = 0,
         long timeStamp = 0,
-        long dataSize = 0
-    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize)
-    {
-    }
+        long dataSize = 0,
+        List<PboProperty>? properties = null
+    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize) =>
+        Properties = properties ?? new List<PboProperty>();
 
     public PboVersionEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
@@ -49,4 +53,5 @@ public class PboVersionEntry : PboEntry
         !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
         !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
         !(options.RequireVersionNotNamed || EntryName != string.Empty);
+
 }
