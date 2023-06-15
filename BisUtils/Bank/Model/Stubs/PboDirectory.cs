@@ -1,5 +1,4 @@
-﻿using BisUtils.Core.Binarize.Utils;
-using BisUtils.Core.Family;
+﻿using BisUtils.Core.Family;
 using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Stubs;
@@ -8,11 +7,7 @@ using FResults;
 
 public class PboDirectory : PboVFSEntry, IFamilyParent
 {
-    public PboDirectory? ParentDirectory { get; set; }
-    public IFamilyParent? Parent => ParentDirectory;
-
-
-    public readonly List<PboEntry> PboEntries = new();
+    public List<PboEntry> PboEntries { get; set; } = new();
 
     public IEnumerable<PboVFSEntry> VfsEntries => PboEntries.OfType<PboVFSEntry>().ToList();
     public IEnumerable<IFamilyMember> Children => VfsEntries;
@@ -23,22 +18,12 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
     {
     }
 
-    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
-    {
-        var currentResult = Result.Ok();
-        //TODO: Append errors to current result, crash on non-recoverable errors
-        foreach (var entry in PboEntries)
-        {
-            entry.Binarize(writer, options);
-        }
-
-        return currentResult;
-    }
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
+        Result.Merge(new List<Result> { Result.ImmutableOk() }.Concat(PboEntries.Select(e => e.Binarize(writer, options))));
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
         throw new NotSupportedException();
 
     public override Result Validate(PboOptions options) =>
-        PboEntries.TrueForAll(e => e.Validate(options)) ? Result.Ok() : Result.Fail("");//TODO Get failing validations
-
+        Result.Merge(PboEntries.Select(e => e.Validate(options)));
 }

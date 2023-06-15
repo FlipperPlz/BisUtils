@@ -40,17 +40,14 @@ public class PboVersionEntry : PboEntry, IFamilyParent
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
-        var result = base.Debinarize(reader, options);
-        if (result.IsFailed)
-        {
-            return result;
-        }
+        List<Result> results = new() { base.Debinarize(reader, options) };
+
         //TODO: Read version properties
-        return result;
+        return Result.Merge(results);
     }
 
     public override Result Validate(PboOptions options) =>
         !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
         !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
-        !(options.RequireVersionNotNamed || EntryName != string.Empty) ? Result.Ok() : Result.Fail(""); //TODO: Failure reason
+        !(options.RequireVersionNotNamed || EntryName != string.Empty) ? Result.Ok() : Result.Fail(""); //TODO: Merge results
 }

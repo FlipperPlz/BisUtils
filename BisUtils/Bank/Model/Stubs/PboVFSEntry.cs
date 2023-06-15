@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
-using BisUtils.Core.Family;
-using BisUtils.Core.IO;
+using Core.Family;
+using Core.IO;
 using FResults;
 
 public abstract class PboVFSEntry : PboElement, IFamilyChild
@@ -9,7 +9,12 @@ public abstract class PboVFSEntry : PboElement, IFamilyChild
     public PboDirectory? ParentDirectory { get; set; }
     public IFamilyParent? Parent => ParentDirectory;
 
-    public string EntryName { get; set; } = string.Empty;
+    private string entryName = string.Empty;
+    public string EntryName
+    {
+        get => entryName;
+        set => entryName = value;
+    }
 
     public string Path => ParentDirectory?.Path + "\\" + EntryName;
     public string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
@@ -20,21 +25,12 @@ public abstract class PboVFSEntry : PboElement, IFamilyChild
     {
     }
 
-    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
-    {
-        var result = reader.ReadAsciiZ(out var readName, options) ; //TODO: Add error
-        if (result.IsFailed)
-        {
-            return result;
-        }
-
-        EntryName = readName;
-        return result;
-    }
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
+        reader.ReadAsciiZ(out entryName, options);
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
-        //TODO: Write AsciiZ
-        throw new NotImplementedException();
+        writer.WriteAsciiZ(entryName, options);
+        return Result.ImmutableOk();
     }
 }

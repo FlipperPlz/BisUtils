@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
-using BisUtils.Core.IO;
+using Core.IO;
 using FResults;
 
 public abstract class PboEntry : PboVFSEntry
@@ -47,18 +47,14 @@ public abstract class PboEntry : PboVFSEntry
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+        List<Result> results = new() { base.Debinarize(reader, options) };
 
-        var result = base.Debinarize(reader, options);
-        if (result.IsFailed)
-        {
-            return result;
-        }
         //write mime
         //write originalSize
         //write offset
         //write timestamp
         //write size
 
-        return result;
+        return Result.Merge(results);
     }
 }
