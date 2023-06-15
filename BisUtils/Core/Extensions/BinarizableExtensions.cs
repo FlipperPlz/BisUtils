@@ -16,7 +16,7 @@ public static class BinarizableExtensions
     ) where TBinarizationOptions : IBinarizationOptions
     {
         var validatable = (IValidatable<TBinarizationOptions>) binarizable;
-        if (options.IgnoreValidation || validatable.Validate(options))
+        if (options.IgnoreValidation || validatable.Validate(options).IsSuccess)
         {
             return binarizable.Binarize(writer, options);
         }

@@ -49,8 +49,8 @@ public class PboVersionEntry : PboEntry, IFamilyParent
         return result;
     }
 
-    public override bool Validate(PboOptions options) =>
+    public override Result Validate(PboOptions options) =>
         !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
         !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
-        !(options.RequireVersionNotNamed || EntryName != string.Empty);
+        !(options.RequireVersionNotNamed || EntryName != string.Empty) ? Result.Ok() : Result.Fail(""); //TODO: Failure reason
 }

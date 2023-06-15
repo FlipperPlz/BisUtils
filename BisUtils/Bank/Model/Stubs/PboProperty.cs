@@ -39,5 +39,10 @@ public class PboProperty : PboElement, IFamilyChild
         return reader.ReadAsciiZ(out var value, options);
     }
 
-    public override bool Validate(PboOptions options) => Name.Length != 0 && Value.Length != 0;
+    public override Result Validate(PboOptions options)
+    {
+
+
+        return Result.Ok();
+    }
 }

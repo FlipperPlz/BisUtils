@@ -38,6 +38,7 @@ public class PboDirectory : PboVFSEntry, IFamilyParent
     public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
         throw new NotSupportedException();
 
-    public override bool Validate(PboOptions options) => PboEntries.TrueForAll(e => e.Validate(options));
+    public override Result Validate(PboOptions options) =>
+        PboEntries.TrueForAll(e => e.Validate(options)) ? Result.Ok() : Result.Fail("");//TODO Get failing validations
 
 }

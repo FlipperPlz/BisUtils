@@ -2,7 +2,9 @@
 
 namespace BisUtils.Core.Binarize.Validatable;
 
+using FResults;
+
 public interface IValidatable<in T> where T : IBisOptions
 {
-    public bool Validate(T options);
+    public Result Validate(T options);
 }

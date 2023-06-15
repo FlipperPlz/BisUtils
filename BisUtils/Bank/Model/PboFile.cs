@@ -44,14 +44,15 @@ public class PboFile : PboDirectory, IFamilyNode
         return response;
     }
 
-    public override bool Validate(PboOptions options)
+    public override Result Validate(PboOptions options)
     {
         if (!base.Validate(options))
         {
-            return false;
+            return Result.Fail("");
         }
         //TODO: File level validation
 
-        return true;
+        return Result.Ok();
+
     }
 }
