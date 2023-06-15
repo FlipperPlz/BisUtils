@@ -3,7 +3,7 @@
 using Core.Family;
 using Core.IO;
 using Entry;
-using FluentResults;
+using FResults;
 
 public class PboProperty : PboElement, IFamilyChild
 {

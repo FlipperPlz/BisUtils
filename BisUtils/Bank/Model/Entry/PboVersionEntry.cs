@@ -1,11 +1,10 @@
 ﻿using BisUtils.Bank.Model.Stubs;
-using BisUtils.Core.Binarize.Utils;
 using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Entry;
 
 using Core.Family;
-using FluentResults;
+using FResults;
 
 public class PboVersionEntry : PboEntry, IFamilyParent
 {
@@ -54,5 +53,4 @@ public class PboVersionEntry : PboEntry, IFamilyParent
         !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
         !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
         !(options.RequireVersionNotNamed || EntryName != string.Empty);
-
 }

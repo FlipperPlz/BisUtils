@@ -1,9 +1,7 @@
-﻿using BisUtils.Core.Binarize.Utils;
+﻿namespace BisUtils.Bank.Model.Stubs;
+
 using BisUtils.Core.IO;
-
-namespace BisUtils.Bank.Model.Stubs;
-
-using FluentResults;
+using FResults;
 
 public abstract class PboEntry : PboVFSEntry
 {

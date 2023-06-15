@@ -4,7 +4,7 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Stubs;
 
-using FluentResults;
+using FResults;
 
 public class PboDirectory : PboVFSEntry, IFamilyParent
 {

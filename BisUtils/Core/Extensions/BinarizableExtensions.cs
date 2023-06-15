@@ -1,16 +1,15 @@
-﻿using BisUtils.Core.Binarize;
+﻿namespace BisUtils.Core.Extensions;
+
+using Binarize;
 using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Utils;
-using BisUtils.Core.Binarize.Validatable;
-using BisUtils.Core.IO;
-
-namespace BisUtils.Core.Extensions;
-
-using FluentResults;
+using Binarize.Utils;
+using Binarize.Validatable;
+using IO;
+using FResults;
 
 public static class BinarizableExtensions
 {
-    public static Result<TBinarizationOptions> BinarizeValidated<TBinarizationOptions>(
+    public static Result BinarizeValidated<TBinarizationOptions>(
         this IStrictBinarizable<TBinarizationOptions> binarizable,
         BisBinaryWriter writer,
         TBinarizationOptions options

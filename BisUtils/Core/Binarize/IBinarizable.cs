@@ -4,7 +4,7 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Core.Binarize;
 
-using FluentResults;
+using FResults;
 
 public interface IBinarizable<in TBinarizationOptions> where TBinarizationOptions : IBinarizationOptions
 {

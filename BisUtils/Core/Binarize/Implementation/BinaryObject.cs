@@ -1,11 +1,9 @@
-﻿using BisUtils.Core.Binarize.Exceptions;
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Utils;
+﻿using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.IO;
 
 namespace BisUtils.Core.Binarize.Implementation;
 
-using FluentResults;
+using FResults;
 
 public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarizationOptions
 {

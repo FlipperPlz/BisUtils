@@ -2,7 +2,7 @@
 
 public class DebinarizeFailedException : IOException
 {
-    public DebinarizeFailedException(string message) : base(message)
+    public DebinarizeFailedException(string? message) : base(message)
     {
 
     }

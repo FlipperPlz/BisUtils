@@ -5,7 +5,7 @@ using BisUtils.Core.Options;
 namespace BisUtils.Core.IO;
 
 using Binarize.Options;
-using FluentResults;
+using FResults;
 
 public class BisBinaryReader : BinaryReader
 {
