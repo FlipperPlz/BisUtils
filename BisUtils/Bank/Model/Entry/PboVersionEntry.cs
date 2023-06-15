@@ -3,6 +3,7 @@ using BisUtils.Core.IO;
 
 namespace BisUtils.Bank.Model.Entry;
 
+using Alerts.Warnings;
 using Core.Family;
 using FResults;
 
@@ -30,10 +31,7 @@ public class PboVersionEntry : PboEntry, IFamilyParent
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         var result = base.Binarize(writer, options);
-        if (result.IsFailed)
-        {
-            return result;
-        }
+
         //TODO: Write version properties
         return result;
     }
@@ -47,7 +45,18 @@ public class PboVersionEntry : PboEntry, IFamilyParent
     }
 
     public override Result Validate(PboOptions options) =>
-        !(options.RequireVersionMimeOnVersion && EntryMime is not PboEntryMime.Version) &&
-        !(options.RequireEmptyVersionMeta && !IsEmptyMeta()) &&
-        !(options.RequireVersionNotNamed || EntryName != string.Empty) ? Result.Ok() : Result.Fail(""); //TODO: Merge results
+        Result.Merge(new List<Result>
+        {
+            EntryMime is not PboEntryMime.Version
+                ? Result.Ok().WithWarning(new ImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
+                : Result.ImmutableOk(),
+
+            !IsEmptyMeta()
+                ? Result.Ok().WithWarning(new PboImproperMetaWarning(options.RequireEmptyVersionMeta, typeof(PboVersionEntry)))
+                : Result.ImmutableOk(),
+
+            EntryName != string.Empty
+                ? Result.Ok().WithWarning(new PboNamedVersionEntryWarning(options.RequireVersionNotNamed, typeof(PboVersionEntry)))
+                : Result.ImmutableOk()
+        });
 }

@@ -40,5 +40,5 @@ public class PboProperty : PboElement, IFamilyChild
         Result.Merge(new[] { reader.ReadAsciiZ(out name, options), reader.ReadAsciiZ(out value, options) });
 
     public override Result Validate(PboOptions options) =>
-        Result.FailIf(Name.Length == 0 || Value.Length == 0, EmptyPboPropertyNameWarning.Instance);
+        Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
 }

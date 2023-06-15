@@ -3,14 +3,14 @@
 using FResults.Reasoning;
 using Model;
 
-public class EmptyPboPropertyNameWarning : ErrorBase
+public class PboEmptyPropertyNameError : ErrorBase
 {
-    public static readonly EmptyPboPropertyNameWarning Instance = new();
+    public static readonly PboEmptyPropertyNameError Instance = new();
 
-    public static EmptyPboPropertyNameWarning CreateInstanceWithData(Dictionary<string, object> metadata) =>
+    public static PboEmptyPropertyNameError CreateInstanceWithData(Dictionary<string, object> metadata) =>
         new() { Metadata = metadata };
 
-    private EmptyPboPropertyNameWarning()
+    private PboEmptyPropertyNameError()
     {
     }
 

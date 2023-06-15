@@ -26,33 +26,24 @@ public class PboFile : PboDirectory, IFamilyNode
         }
     }
 
-    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         //TODO: Read PBO
-        return Result.Ok();
+        return Result.ImmutableOk();
     }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
-        var response = base.Binarize(writer, options);
-        if (response.IsFailed)
-        {
-            return response;
-        }
+        var responses = new List<Result> { base.Binarize(writer, options) };
         //TODO: Write data and signature
 
-        return response;
+        return Result.Merge(responses);
     }
 
-    public override Result Validate(PboOptions options)
-    {
-        if (!base.Validate(options))
+    public override Result Validate(PboOptions options) =>
+        Result.Merge(new[]
         {
-            return Result.Fail("");
-        }
-        //TODO: File level validation
-
-        return Result.Ok();
-
-    }
+            base.Validate(options)
+            //TODO: File level validation
+        });
 }

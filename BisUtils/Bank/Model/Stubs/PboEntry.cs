@@ -5,7 +5,6 @@ using FResults;
 
 public abstract class PboEntry : PboVFSEntry
 {
-    public new string EntryName { get; set; } = "New File";
     public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
     public long OriginalSize { get; set; }
     public long Offset { get; set; }

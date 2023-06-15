@@ -12,8 +12,4 @@
       <ProjectReference Include="..\Libraries\FResults\FResults\FResults.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Bank\Alerts\Warnings\" />
-    </ItemGroup>
-
 </Project>
