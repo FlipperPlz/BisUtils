@@ -95,7 +95,7 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
     public override Result Validate(PboOptions options) => Result.Merge(new List<Result>
     {
         EntryMime is not PboEntryMime.Version
-            ? Result.Ok().WithWarning(new ImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
+            ? Result.Ok().WithWarning(new PboImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
             : Result.ImmutableOk(),
 
         !IsEmptyMeta()

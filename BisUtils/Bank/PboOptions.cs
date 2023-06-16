@@ -22,6 +22,8 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool RegisterEmptyEntries { get; set; } = true;
     public bool AllowObfuscated { get; set; } //= false;
     public bool AllowEncrypted { get; set; } //= false;
+    public bool AllowVersionMimeOnData { get; set; }
+    public bool AllowUnnamedDataEntries { get; set; } = true;
 
     [FunctionallyAccurate] public bool RequireVersionNotNamed { get; set; } = true;
     [FunctionallyAccurate] public bool RemoveBenignProperties { get; set; } = true;
