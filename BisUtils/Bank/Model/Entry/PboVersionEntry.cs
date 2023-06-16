@@ -30,10 +30,10 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         IPboFile? file,
         string fileName = "",
         PboEntryMime mime = PboEntryMime.Version,
-        long originalSize = 0,
-        long offset = 0,
-        long timeStamp = 0,
-        long dataSize = 0,
+        int originalSize = 0,
+        int offset = 0,
+        int timeStamp = 0,
+        int dataSize = 0,
         List<IPboProperty>? properties = null
     ) : base(file, file, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
         Properties = properties ?? new List<IPboProperty>();
@@ -51,8 +51,8 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
     {
         var results = new List<Result>();
         var property = new PboProperty(PboFile, this, string.Empty, string.Empty);
-        var result = property.Debinarize(reader, options);
-        while (!result.HasError<PboEmptyPropertyNameError>())
+        Result result;
+        while (!(result = property.Debinarize(reader, options)).HasError<PboEmptyPropertyNameError>())
         {
             results.Add(result);
             if(options.RemoveBenignProperties && !UsedPboProperties.Contains(property.Name))
@@ -73,14 +73,27 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
             Properties.Add(property.BisClone());
         }
 
+        if (!options.IgnoreValidation)
+        {
+            results.Add(Validate(options));
+        }
         return LastResult = Result.Merge(results);
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
         LastResult = Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
 
-    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
-        LastResult = Result.Merge(base.Debinarize(reader, options), ReadPboProperties(reader, options));
+    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
+    {
+        LastResult = base.Debinarize(reader, options);
+        EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
+        OriginalSize = reader.ReadInt32();
+        TimeStamp = reader.ReadInt32();
+        Offset = reader.ReadInt32();
+        DataSize = reader.ReadInt32();
+        return LastResult = Result.Merge(LastResult, ReadPboProperties(reader, options));
+    }
+
 
 
     public Result WritePboProperties(BisBinaryWriter writer, PboOptions options)

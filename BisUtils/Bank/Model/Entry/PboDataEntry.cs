@@ -23,10 +23,10 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         IPboDirectory? parent,
         string fileName,
         PboEntryMime mime,
-        long originalSize,
-        long offset,
-        long timeStamp,
-        long dataSize
+        int originalSize,
+        int offset,
+        int timeStamp,
+        int dataSize
     ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
     {
     }
@@ -112,15 +112,20 @@ public class PboDataEntry : PboEntry, IPboDataEntry
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         LastResult = base.Debinarize(reader, options);
-        EntryMime = (PboEntryMime) reader.ReadInt64();// TODO WARN/ERROR then recover
-        OriginalSize = reader.ReadInt64();
-        TimeStamp = reader.ReadInt64();
-        Offset = reader.ReadInt64();
-        DataSize = reader.ReadInt64();
+        EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
+        OriginalSize = reader.ReadInt32();
+        TimeStamp = reader.ReadInt32();
+        Offset = reader.ReadInt32();
+        DataSize = reader.ReadInt32();
+
+        if (!options.IgnoreValidation)
+        {
+            LastResult = Result.Merge(LastResult, Validate(options));
+        }
 
         return LastResult;
     }
 
-    public void SynchronizeMetaWithStream() => OriginalSize = EntryData.Length;
+    public void SynchronizeMetaWithStream() => OriginalSize = (int) EntryData.Length;
 
 }

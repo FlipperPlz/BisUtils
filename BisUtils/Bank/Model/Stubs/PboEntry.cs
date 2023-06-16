@@ -5,32 +5,42 @@ using FResults;
 
 public interface IPboEntry : IPboVFSEntry
 {
+    Result? LastResult { get; }
     PboEntryMime EntryMime { get; }
-    long OriginalSize { get; }
-    long Offset { get; }
-    long TimeStamp { get; }
-    long DataSize { get; }
-    bool IsEmptyMeta();
+    int OriginalSize { get; }
+    int Offset { get; }
+    int TimeStamp { get; }
+    int DataSize { get; }
+
+    bool IsEmptyMeta() =>
+        OriginalSize == 0 &&
+        Offset == 0 &&
+        TimeStamp == 0 &&
+        DataSize == 0;
+
+    bool IsDummyEntry() =>
+        IsEmptyMeta() &&
+        EntryName == "";
 }
 
 public abstract class PboEntry : PboVFSEntry
 {
     public Result? LastResult { get; protected set; }
     public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
-    public long OriginalSize { get; set; }
-    public long Offset { get; set;  }
-    public long TimeStamp { get; set; }
-    public long DataSize { get; set; }
+    public int OriginalSize { get; set; }
+    public int Offset { get; set;  }
+    public int TimeStamp { get; set; }
+    public int DataSize { get; set; }
 
     protected PboEntry(
         IPboFile? file,
         IPboDirectory? parent,
         string fileName,
         PboEntryMime mime,
-        long originalSize,
-        long offset,
-        long timeStamp,
-        long dataSize
+        int originalSize,
+        int offset,
+        int timeStamp,
+        int dataSize
     ) : base(file, parent, fileName)
     {
         EntryMime = mime;
@@ -40,6 +50,9 @@ public abstract class PboEntry : PboVFSEntry
         DataSize = dataSize;
     }
 
+    protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    {
+    }
 
     public bool IsEmptyMeta() =>
         OriginalSize == 0 &&
@@ -50,9 +63,4 @@ public abstract class PboEntry : PboVFSEntry
     public bool IsDummyEntry() =>
         IsEmptyMeta() &&
         EntryName == "";
-
-    protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
-    {
-    }
-
 }

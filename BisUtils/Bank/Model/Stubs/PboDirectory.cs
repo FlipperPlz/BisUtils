@@ -6,7 +6,7 @@ using FResults;
 
 public interface IPboDirectory : IPboVFSEntry, IFamilyParent
 {
-    List<PboEntry> PboEntries { get; }
+    List<IPboEntry> PboEntries { get; }
 
     IEnumerable<PboVFSEntry> VfsEntries => PboEntries.OfType<PboVFSEntry>().ToList();
 
@@ -15,12 +15,12 @@ public interface IPboDirectory : IPboVFSEntry, IFamilyParent
 
 public class PboDirectory : PboVFSEntry, IPboDirectory
 {
-    public List<PboEntry> PboEntries { get; set; } = new();
+    public List<IPboEntry> PboEntries { get; set; } = new();
 
     public PboDirectory(
         IPboFile? file,
         IPboDirectory? parent,
-        List<PboEntry> entries,
+        List<IPboEntry> entries,
         string directoryName
     ) : base(file, parent, directoryName) => PboEntries = entries;
 

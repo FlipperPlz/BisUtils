@@ -16,7 +16,7 @@ public interface IPboFile : IPboDirectory, IFamilyNode
 
 public class PboFile : PboDirectory, IPboFile
 {
-    public PboFile(List<PboEntry> children) : base(null, null, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
+    public PboFile(List<IPboEntry> children) : base(null, null, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
     {
     }
 
@@ -40,7 +40,7 @@ public class PboFile : PboDirectory, IPboFile
             responses.Add(reader.SkipAsciiZ(options));
             var mime = (PboEntryMime?) reader.ReadInt64();
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
-            PboEntry currentEntry = mime switch
+            IPboEntry currentEntry = mime switch
             {
                 PboEntryMime.Version => new PboVersionEntry(reader, options) { ParentDirectory = this, PboFile = this },
                 _ => new PboDataEntry(reader, options) { ParentDirectory = this, PboFile = this }
@@ -78,10 +78,9 @@ public class PboFile : PboDirectory, IPboFile
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
-        var responses = new List<Result> { base.Binarize(writer, options) };
+        var result = PboEntries.Select(e => e.Binarize(writer, options));
 
-
-        return Result.Merge(responses);
+        return Result.Merge(result);
     }
 
     public override Result Validate(PboOptions options) =>

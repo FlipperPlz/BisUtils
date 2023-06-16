@@ -57,7 +57,7 @@ public class PboProperty : PboElement, IPboProperty
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
-        Result.Merge(new[] { reader.ReadAsciiZ(out name, options), reader.ReadAsciiZ(out value, options) });
+        Result.Merge(reader.ReadAsciiZ(out name, options), reader.ReadAsciiZ(out value, options), Validate(options));
 
     public override Result Validate(PboOptions options) =>
         Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
