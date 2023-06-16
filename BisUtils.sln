@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BisUtils", "BisUtils\BisUtils.csproj", "{19EBF056-FA0A-4A6D-B0C2-8DCB5845DBEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BisUtils", "src\BisUtils\BisUtils.csproj", "{19EBF056-FA0A-4A6D-B0C2-8DCB5845DBEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80DAB5EC-4502-4EBC-876E-089DB0DC8BBA}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FResults", "Libraries\FResults\FResults\FResults.csproj", "{92047CC3-A9D1-4AC2-87FC-4383E9B62D77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FResults", "lib\FResults\FResults\FResults.csproj", "{92047CC3-A9D1-4AC2-87FC-4383E9B62D77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

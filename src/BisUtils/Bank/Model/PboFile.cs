@@ -14,6 +14,7 @@ public interface IPboFile : IPboDirectory, IFamilyNode
     IEnumerable<IFamilyMember> IFamilyParent.Children => PboEntries;
 }
 
+
 public class PboFile : PboDirectory, IPboFile
 {
     public PboFile(List<IPboEntry> children) : base(null, null, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
