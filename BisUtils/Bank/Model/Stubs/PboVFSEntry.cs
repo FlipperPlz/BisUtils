@@ -24,7 +24,11 @@ public abstract class PboVFSEntry : PboElement, IPboVFSEntry
     public string EntryName { get => entryName; set => entryName = value; }
 
 
-    protected PboVFSEntry(string entryName) : base() => EntryName = entryName;
+    protected PboVFSEntry(IPboFile? file, IPboDirectory? parent, string name) : base(file)
+    {
+        ParentDirectory = parent;
+        EntryName = name;
+    }
 
     protected PboVFSEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {

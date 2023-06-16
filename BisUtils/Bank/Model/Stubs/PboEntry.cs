@@ -5,36 +5,32 @@ using FResults;
 
 public interface IPboEntry : IPboVFSEntry
 {
-    public PboEntryMime EntryMime { get; }
-    public long OriginalSize { get; }
-    public long Offset { get; }
-    public long TimeStamp { get; }
-    public long DataSize { get; }
+    PboEntryMime EntryMime { get; }
+    long OriginalSize { get; }
+    long Offset { get; }
+    long TimeStamp { get; }
+    long DataSize { get; }
+    bool IsEmptyMeta();
 }
 
 public abstract class PboEntry : PboVFSEntry
 {
-    public PboEntryMime EntryMime { get; } = PboEntryMime.Decompressed;
-    public long OriginalSize { get; }
-    public long Offset { get; }
-    public long TimeStamp { get; }
-    public long DataSize { get; }
-
-
-    public bool IsEmptyMeta() =>
-        OriginalSize == 0 &&
-        Offset == 0 &&
-        TimeStamp == 0 &&
-        DataSize == 0;
+    public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
+    public long OriginalSize { get; set; }
+    public long Offset { get; set;  }
+    public long TimeStamp { get; set; }
+    public long DataSize { get; set; }
 
     protected PboEntry(
+        IPboFile? file,
+        IPboDirectory? parent,
         string fileName,
         PboEntryMime mime,
         long originalSize,
         long offset,
         long timeStamp,
         long dataSize
-    ) : base(fileName)
+    ) : base(file, parent, fileName)
     {
         EntryMime = mime;
         OriginalSize = originalSize;
@@ -42,6 +38,13 @@ public abstract class PboEntry : PboVFSEntry
         TimeStamp = timeStamp;
         DataSize = dataSize;
     }
+
+
+    public bool IsEmptyMeta() =>
+        OriginalSize == 0 &&
+        Offset == 0 &&
+        TimeStamp == 0 &&
+        DataSize == 0;
 
     protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {

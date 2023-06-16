@@ -9,17 +9,13 @@ using FResults;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
 {
-    IPboFile? Bank { get; }
-
-    IFamilyNode? IFamilyMember.Node => Bank;
+    IFamilyNode? IFamilyMember.Node => PboFile;
     IEnumerable<IFamilyMember> IFamilyParent.Children => PboEntries;
 }
 
 public class PboFile : PboDirectory, IPboFile
 {
-    public IPboFile Bank => this;
-
-    public PboFile(List<PboEntry> children) : base(children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
+    public PboFile(List<PboEntry> children) : base(null, null, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
     {
     }
 
@@ -47,10 +43,6 @@ public class PboFile : PboDirectory, IPboFile
     }
 
     public override Result Validate(PboOptions options) =>
-        Result.Merge(new[]
-        {
-            base.Validate(options)
-            //TODO: File level validation
-        });
+        Result.Merge(base.Validate(options));
 
 }

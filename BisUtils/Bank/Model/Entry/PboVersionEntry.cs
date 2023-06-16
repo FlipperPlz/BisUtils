@@ -27,10 +27,31 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
     public static readonly string[] UsedPboProperties = { "product", "prefix", "version", "encrypted", "obfuscated" };
     public List<IPboProperty> Properties { get; set; } = new();
 
+    public PboVersionEntry(
+        IPboFile? file,
+        string fileName = "",
+        PboEntryMime mime = PboEntryMime.Version,
+        long originalSize = 0,
+        long offset = 0,
+        long timeStamp = 0,
+        long dataSize = 0,
+        List<IPboProperty>? properties = null
+    ) : base(file, file, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
+        Properties = properties ?? new List<IPboProperty>();
+
+    public PboVersionEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    {
+        var result = Debinarize(reader, options);
+        if (result.IsFailed)
+        {
+            throw new DebinarizeFailedException(result.ToString());
+        }
+    }
+
     public Result ReadPboProperties(BisBinaryReader reader, PboOptions options)
     {
         var results = new List<Result>();
-        var property = new PboProperty(string.Empty, string.Empty);
+        var property = new PboProperty(PboFile, this, string.Empty, string.Empty);
         var result = property.Debinarize(reader, options);
         while (!result.HasError<PboEmptyPropertyNameError>())
         {
@@ -69,28 +90,6 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         writer.Write((byte) 0);
         return result;
     }
-
-    public PboVersionEntry(
-        IPboFile? pboFile,
-        string fileName = "",
-        PboEntryMime mime = PboEntryMime.Version,
-        long originalSize = 0,
-        long offset = 0,
-        long timeStamp = 0,
-        long dataSize = 0,
-        List<IPboProperty>? properties = null
-    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize) =>
-        Properties = properties ?? new List<IPboProperty>();
-
-    public PboVersionEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
-    {
-        var result = Debinarize(reader, options);
-        if (result.IsFailed)
-        {
-            throw new DebinarizeFailedException(result.ToString());
-        }
-    }
-
 
     public override Result Validate(PboOptions options) => Result.Merge(new List<Result>
     {

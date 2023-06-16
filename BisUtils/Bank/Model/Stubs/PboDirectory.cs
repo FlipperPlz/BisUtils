@@ -18,7 +18,12 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
 {
     public List<PboEntry> PboEntries { get; set; } = new();
 
-    public PboDirectory(List<PboEntry> entries, string directoryName) : base(directoryName) => PboEntries = entries;
+    public PboDirectory(
+        IPboFile? file,
+        IPboDirectory? parent,
+        List<PboEntry> entries,
+        string directoryName
+    ) : base(file, parent, directoryName) => PboEntries = entries;
 
     public PboDirectory(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {

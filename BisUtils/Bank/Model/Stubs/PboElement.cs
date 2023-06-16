@@ -8,7 +8,7 @@ using Core.Binarize;
 
 public interface IPboElement : IFamilyMember, IStrictBinaryObject<PboOptions>
 {
-    public IPboFile? PboFile { get; }
+    IPboFile? PboFile { get; }
     IFamilyNode? IFamilyMember.Node => PboFile;
 }
 
@@ -17,7 +17,7 @@ public abstract class PboElement : StrictBinaryObject<PboOptions>, IFamilyMember
     public IFamilyNode? Node => PboFile;
     public IPboFile? PboFile { get; set; }
 
-    protected PboElement() : base()
+    protected PboElement(IPboFile? file) : base()
     {
     }
 

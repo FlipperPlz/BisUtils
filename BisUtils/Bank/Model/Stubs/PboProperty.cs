@@ -10,15 +10,15 @@ using FResults;
 
 public interface IPboProperty : IFamilyChild, IPboElement, IBisCloneable<IPboProperty>
 {
-    public PboVersionEntry? VersionEntry { get; }
-    public string Name { get; }
-    public string Value { get; }
+    IPboVersionEntry? VersionEntry { get; }
+    string Name { get; }
+    string Value { get; }
 }
 
 public class PboProperty : PboElement, IPboProperty
 {
     public IFamilyParent? Parent => VersionEntry;
-    public PboVersionEntry? VersionEntry { get; set; }
+    public IPboVersionEntry? VersionEntry { get; set; }
     private string name = string.Empty, value = string.Empty;
     public string Name
     {
@@ -32,8 +32,9 @@ public class PboProperty : PboElement, IPboProperty
         set => this.value = value;
     }
 
-    public PboProperty(string name, string value) : base()
+    public PboProperty(IPboFile? file, IPboVersionEntry? parent, string name, string value) : base(file)
     {
+        VersionEntry = parent;
         this.name = name;
         this.value = value;
     }
@@ -60,5 +61,5 @@ public class PboProperty : PboElement, IPboProperty
     public override Result Validate(PboOptions options) =>
         Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
 
-    public IPboProperty BisClone() => new PboProperty(name, value) { VersionEntry = VersionEntry };
+    public IPboProperty BisClone() => new PboProperty(PboFile, VersionEntry, name, value);
 }

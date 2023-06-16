@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.Bank.Model.Entry;
 
 using Alerts.Warnings;
-using Core.Family;
+using Core.Binarize.Exceptions;
 using Core.IO;
 using FResults;
 using Stubs;
@@ -9,46 +9,49 @@ using Stubs;
 public interface IPboDataEntry : IPboEntry
 {
     Stream EntryData { get; }
-
-    new IFamilyNode? Node => PboFile;
-
-    IFamilyParent? IFamilyChild.Parent => ParentDirectory;
 }
 
-public class PboDataEntry : IPboDataEntry
+public class PboDataEntry : PboEntry, IPboDataEntry
 {
-    public IPboFile? PboFile { get; set; }
-
-    public IPboDirectory? ParentDirectory { get; set; }
-
-    public string EntryName { get; set; } = "";
-
-    public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
-
-    public long OriginalSize { get; set; }
-
-    public long Offset { get; set; }
-
-    public long TimeStamp { get; set; }
-
-    public long DataSize { get; set; }
-
     public Stream EntryData { get; set; } = Stream.Null;
 
-    public Result Binarize(BisBinaryWriter writer, PboOptions options)
+    public PboDataEntry
+    (
+        IPboFile? file,
+        IPboDirectory? parent,
+        string fileName,
+        PboEntryMime mime,
+        long originalSize,
+        long offset,
+        long timeStamp,
+        long dataSize
+    ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
     {
-        writer.WriteAsciiZ(EntryName, options.Charset);
+    }
+
+    public PboDataEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    {
+        var result = Debinarize(reader, options);
+        if (result.IsFailed)
+        {
+            throw new DebinarizeFailedException(result.ToString());
+        }
+    }
+
+    public new Result Binarize(BisBinaryWriter writer, PboOptions options)
+    {
+        var result = base.Binarize(writer, options);
         writer.Write((long) EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
-        return Result.ImmutableOk();
+        return result;
     }
 
-    public Result Validate(PboOptions options)
+    public new Result Validate(PboOptions options)
     {
-        var results = new List<Result>();
+        var results = new List<Result>() { base.Validate(options)};
 
         switch (EntryMime)
         {
@@ -76,8 +79,15 @@ public class PboDataEntry : IPboDataEntry
 
     }
 
-    public Result Debinarize(BisBinaryReader reader, PboOptions options)
+    public new Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
-        throw new NotImplementedException();
+        var result = base.Debinarize(reader, options);
+        EntryMime = (PboEntryMime) reader.ReadInt64();// TODO WARN/ERROR then recover
+        OriginalSize = reader.ReadInt64();
+        TimeStamp = reader.ReadInt64();
+        Offset = reader.ReadInt64();
+        DataSize = reader.ReadInt64();
+
+        return result;
     }
 }
