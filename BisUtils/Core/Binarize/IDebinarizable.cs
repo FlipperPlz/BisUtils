@@ -1,9 +1,7 @@
-﻿using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Utils;
+﻿namespace BisUtils.Core.Binarize;
+
+using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.IO;
-
-namespace BisUtils.Core.Binarize;
-
 using FResults;
 
 public interface IDebinarizable<in TDebinarizationOptions> where TDebinarizationOptions : IBinarizationOptions

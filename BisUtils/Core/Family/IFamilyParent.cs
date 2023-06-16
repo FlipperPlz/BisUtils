@@ -2,6 +2,5 @@
 
 public interface IFamilyParent : IFamilyChild
 {
-    public IEnumerable<IFamilyMember> Children { get; }
-
+    IEnumerable<IFamilyMember> Children { get; }
 }

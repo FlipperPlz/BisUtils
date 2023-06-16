@@ -1,8 +1,7 @@
-﻿using BisUtils.Core.Binarize.Options;
+﻿namespace BisUtils.Core.Binarize.Implementation;
+
+using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.IO;
-
-namespace BisUtils.Core.Binarize.Implementation;
-
 using FResults;
 
 public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarizationOptions

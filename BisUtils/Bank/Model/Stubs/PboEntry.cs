@@ -15,6 +15,7 @@ public interface IPboEntry : IPboVFSEntry
 
 public abstract class PboEntry : PboVFSEntry
 {
+    public Result? LastResult { get; protected set; }
     public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
     public long OriginalSize { get; set; }
     public long Offset { get; set;  }
@@ -46,30 +47,12 @@ public abstract class PboEntry : PboVFSEntry
         TimeStamp == 0 &&
         DataSize == 0;
 
+    public bool IsDummyEntry() =>
+        IsEmptyMeta() &&
+        EntryName == "";
+
     protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
 
-
-    public override Result Binarize(BisBinaryWriter writer, PboOptions options)
-    {
-        //TODO: Binarize with options
-
-        throw new NotImplementedException();
-    }
-
-    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
-    {
-        List<Result> results = new() { base.Debinarize(reader, options) };
-
-        //write mime
-        //write originalSize
-        //write offset
-        //write timestamp
-        //write size
-
-        return Result.Merge(results);
-    }
-
-    public override Result Validate(PboOptions options) => throw new NotImplementedException();
 }

@@ -3,5 +3,4 @@
 public interface IFamilyNode : IFamilyParent
 {
     IFamilyNode? IFamilyMember.Node =>  this;
-
 }

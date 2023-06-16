@@ -2,5 +2,5 @@
 
 public interface IFamilyMember
 {
-    public IFamilyNode? Node { get; }
+    IFamilyNode? Node { get; }
 }

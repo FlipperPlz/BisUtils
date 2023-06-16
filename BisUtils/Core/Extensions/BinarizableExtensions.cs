@@ -1,10 +1,10 @@
 ﻿namespace BisUtils.Core.Extensions;
 
-using Binarize;
+using BisUtils.Core.Binarize;
 using BisUtils.Core.Binarize.Options;
-using Binarize.Utils;
-using Binarize.Validatable;
-using IO;
+using BisUtils.Core.Binarize.Utils;
+using BisUtils.Core.Binarize.Validatable;
+using BisUtils.Core.IO;
 using FResults;
 
 public static class BinarizableExtensions
@@ -15,21 +15,16 @@ public static class BinarizableExtensions
         TBinarizationOptions options
     ) where TBinarizationOptions : IBinarizationOptions
     {
-        var validatable = (IValidatable<TBinarizationOptions>) binarizable;
-        if (options.IgnoreValidation || validatable.Validate(options).IsSuccess)
+        if (options.IgnoreValidation || binarizable.Validate(options).IsSuccess)
         {
-            return binarizable.Binarize(writer, options);
+            return binarizable.Binarize(writer, options); //TODO: get last validation result
         }
 
-        if (binarizable.GetType()
-                .GetMethod(nameof(IBinarizable<TBinarizationOptions>.Binarize))?
-                .GetCustomAttributes(typeof(MustBeValidatedAttribute), true)
-                .FirstOrDefault() is not MustBeValidatedAttribute )
-        {
-            return binarizable.Binarize(writer, options);
-        }
-
-        var result = binarizable.Validate(options); //TODO: Validation result;; merge
-        return result.IsFailed ? result : binarizable.Binarize(writer, options).WithWarnings(result.Warnings);
+        return binarizable.GetType()
+            .GetMethod(nameof(IBinarizable<TBinarizationOptions>.Binarize))?
+            .GetCustomAttributes(typeof(MustBeValidatedAttribute), true)
+            .FirstOrDefault() is not MustBeValidatedAttribute
+            ? binarizable.Binarize(writer, options)
+            : Result.Merge(binarizable.Validate(options), binarizable.Binarize(writer, options));
     }
 }

@@ -2,6 +2,5 @@
 
 public interface IFamilyChild : IFamilyMember
 {
-    public IFamilyParent? Parent { get; }
-    
+    IFamilyParent? Parent { get; }
 }

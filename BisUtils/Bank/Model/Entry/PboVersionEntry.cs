@@ -40,10 +40,10 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
 
     public PboVersionEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
-        var result = Debinarize(reader, options);
-        if (result.IsFailed)
+        LastResult = Debinarize(reader, options);
+        if (LastResult.IsFailed)
         {
-            throw new DebinarizeFailedException(result.ToString());
+            throw new DebinarizeFailedException(LastResult.ToString());
         }
     }
 
@@ -73,21 +73,21 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
             Properties.Add(property.BisClone());
         }
 
-        return Result.Merge(results);
+        return LastResult = Result.Merge(results);
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
-        Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
+        LastResult = Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
-        Result.Merge(base.Debinarize(reader, options), ReadPboProperties(reader, options));
+        LastResult = Result.Merge(base.Debinarize(reader, options), ReadPboProperties(reader, options));
 
 
     public Result WritePboProperties(BisBinaryWriter writer, PboOptions options)
     {
-        var result = Result.Merge(Properties.Select(p => p.Binarize(writer, options)));
+        LastResult = Result.Merge(Properties.Select(p => p.Binarize(writer, options)));
         writer.Write((byte) 0);
-        return result;
+        return LastResult;
     }
 
     public sealed override Result Validate(PboOptions options) => Result.Merge(new List<Result>
