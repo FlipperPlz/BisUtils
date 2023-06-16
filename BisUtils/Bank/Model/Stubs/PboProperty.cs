@@ -1,11 +1,11 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
-using Alerts.Errors;
-using Core.Binarize.Exceptions;
-using Core.Cloning;
-using Core.Family;
-using Core.IO;
-using Entry;
+using BisUtils.Bank.Alerts.Errors;
+using BisUtils.Bank.Model.Entry;
+using BisUtils.Core.Binarize.Exceptions;
+using BisUtils.Core.Cloning;
+using BisUtils.Core.Family;
+using BisUtils.Core.IO;
 using FResults;
 
 public interface IPboProperty : IFamilyChild, IPboElement, IBisCloneable<IPboProperty>
@@ -20,6 +20,7 @@ public class PboProperty : PboElement, IPboProperty
     public IFamilyParent? Parent => VersionEntry;
     public IPboVersionEntry? VersionEntry { get; set; }
     private string name = string.Empty, value = string.Empty;
+
     public string Name
     {
         get => name;

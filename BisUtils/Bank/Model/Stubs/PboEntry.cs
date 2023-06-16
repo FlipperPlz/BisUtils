@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
-using Core.IO;
+using BisUtils.Core.IO;
 using FResults;
 
 public interface IPboEntry : IPboVFSEntry

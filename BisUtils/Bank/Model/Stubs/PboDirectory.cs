@@ -1,8 +1,7 @@
-﻿using BisUtils.Core.Family;
+﻿namespace BisUtils.Bank.Model.Stubs;
+
+using BisUtils.Core.Family;
 using BisUtils.Core.IO;
-
-namespace BisUtils.Bank.Model.Stubs;
-
 using FResults;
 
 public interface IPboDirectory : IPboVFSEntry, IFamilyParent

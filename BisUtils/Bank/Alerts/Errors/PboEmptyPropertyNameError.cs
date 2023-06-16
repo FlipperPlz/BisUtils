@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.Bank.Alerts.Errors;
 
+using BisUtils.Bank.Model;
 using FResults.Reasoning;
-using Model;
 
 public class PboEmptyPropertyNameError : ErrorBase
 {

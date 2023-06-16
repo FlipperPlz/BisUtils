@@ -1,10 +1,9 @@
-﻿using BisUtils.Bank.Model.Stubs;
+﻿namespace BisUtils.Bank.Model;
+
+using BisUtils.Bank.Model.Stubs;
 using BisUtils.Core.Family;
 using BisUtils.Core.IO;
-
-namespace BisUtils.Bank.Model;
-
-using Core.Binarize.Exceptions;
+using BisUtils.Core.Binarize.Exceptions;
 using FResults;
 
 public interface IPboFile : IPboDirectory, IFamilyNode

@@ -1,10 +1,12 @@
 ﻿namespace BisUtils.Bank.Model.Entry;
 
-using Alerts.Warnings;
-using Core.Binarize.Exceptions;
-using Core.IO;
+using BisUtils.Bank.Alerts.Warnings;
+using BisUtils.Core.Binarize.Exceptions;
+using BisUtils.Core.IO;
+using BisUtils.Bank.Model.Stubs;
+
 using FResults;
-using Stubs;
+using FResults.Reasoning;
 
 public interface IPboDataEntry : IPboEntry
 {
@@ -38,7 +40,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         }
     }
 
-    public new Result Binarize(BisBinaryWriter writer, PboOptions options)
+    public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         var result = base.Binarize(writer, options);
         writer.Write((long) EntryMime);
@@ -49,17 +51,17 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         return result;
     }
 
-    public new Result Validate(PboOptions options)
+    public sealed override Result Validate(PboOptions options)
     {
-        var results = new List<Result>() { base.Validate(options)};
+        var result = base.Validate(options);
 
         switch (EntryMime)
         {
             case PboEntryMime.Encrypted:
-                results.Add(new Result().WithWarning(new PboEncryptedEntryWarning(!options.AllowEncrypted)));
+                result.WithWarning(new PboEncryptedEntryWarning(!options.AllowEncrypted));
                 break;
             case PboEntryMime.Version:
-                results.Add(new Result().WithWarning(new PboImproperMimeWarning(!options.AllowVersionMimeOnData, typeof(IPboDataEntry))));
+                result.WithWarning(new PboImproperMimeWarning(!options.AllowVersionMimeOnData, typeof(IPboDataEntry)));
                 break;
             case PboEntryMime.Decompressed:
             case PboEntryMime.Compressed:
@@ -69,17 +71,45 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
         if (EntryName.Length == 0)
         {
-            results.Add(new Result().WithWarning(new PboUnnamedEntryWarning(!options.AllowUnnamedDataEntries, typeof(IPboDataEntry))));
+            result.WithWarning(new PboUnnamedEntryWarning(!options.AllowUnnamedDataEntries, typeof(IPboDataEntry)));
         }
 
-        //TODO: Check Lengths/Sizes
+        if (EntryData.Length != DataSize)
+        {
+            result.WithWarning(new Warning
+            {
+                AlertScope = typeof(IPboDataEntry),
+                AlertName = "EntryReadError",
+                Message = "Incorrect Stream/DataSize Value.",
+                IsError = !options.IgnoreInvalidStreamSize
+            });
+        }
 
+        if (DataSize <= 0)
+        {
+            result.WithWarning(new Warning
+            {
+                AlertScope = typeof(IPboDataEntry),
+                AlertName = "EntryReadError",
+                Message = "Incorrect DataSize Value.",
+                IsError = !options.IgnoreInvalidStreamSize
+            });
+        }
 
-        return Result.Merge(results);
-
+        if (OriginalSize <= 0)
+        {
+            result.WithWarning(new Warning
+            {
+                AlertScope = typeof(IPboDataEntry),
+                AlertName = "EntryReadError",
+                Message = "Incorrect OriginalSize Value.",
+                IsError = !options.IgnoreInvalidStreamSize
+            });
+        }
+        return result;
     }
 
-    public new Result Debinarize(BisBinaryReader reader, PboOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = base.Debinarize(reader, options);
         EntryMime = (PboEntryMime) reader.ReadInt64();// TODO WARN/ERROR then recover
@@ -90,4 +120,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
         return result;
     }
+
+    public void SynchronizeMetaWithStream() => OriginalSize = EntryData.Length;
+
 }

@@ -1,8 +1,7 @@
 ﻿namespace BisUtils.Bank.Alerts.Warnings;
 
+using BisUtils.Bank.Model.Entry;
 using FResults.Reasoning;
-using Model.Entry;
-using Model.Stubs;
 
 public class PboEncryptedEntryWarning : WarningBase
 {

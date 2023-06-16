@@ -1,13 +1,12 @@
-﻿using BisUtils.Bank.Model.Stubs;
+﻿namespace BisUtils.Bank.Model.Entry;
+
+using BisUtils.Bank.Model.Stubs;
+using BisUtils.Bank.Alerts.Errors;
+using BisUtils.Bank.Alerts.Warnings;
 using BisUtils.Core.IO;
-
-namespace BisUtils.Bank.Model.Entry;
-
-using Alerts.Errors;
-using Alerts.Warnings;
-using Core.Binarize.Exceptions;
-using Core.Cloning;
-using Core.Family;
+using BisUtils.Core.Binarize.Exceptions;
+using BisUtils.Core.Cloning;
+using BisUtils.Core.Family;
 using FResults;
 
 public interface IPboVersionEntry : IPboEntry, IFamilyParent, IBisCloneable<IPboVersionEntry>
@@ -77,7 +76,7 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         return Result.Merge(results);
     }
 
-    public override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
+    public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
         Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
@@ -91,7 +90,7 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         return result;
     }
 
-    public override Result Validate(PboOptions options) => Result.Merge(new List<Result>
+    public sealed override Result Validate(PboOptions options) => Result.Merge(new List<Result>
     {
         EntryMime is not PboEntryMime.Version
             ? Result.Ok().WithWarning(new PboImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
