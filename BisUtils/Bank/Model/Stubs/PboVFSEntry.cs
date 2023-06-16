@@ -4,20 +4,25 @@ using Core.Family;
 using Core.IO;
 using FResults;
 
-public abstract class PboVFSEntry : PboElement, IFamilyChild
+public interface IPboVFSEntry : IPboElement, IFamilyChild
 {
-    public PboDirectory? ParentDirectory { get; set; }
-    public IFamilyParent? Parent => ParentDirectory;
+    IPboDirectory? ParentDirectory { get; }
 
+    string EntryName { get; }
+
+    string Path => ParentDirectory?.Path + "\\" + EntryName;
+
+    string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
+
+    IFamilyParent? IFamilyChild.Parent => ParentDirectory;
+}
+
+public abstract class PboVFSEntry : PboElement, IPboVFSEntry
+{
+    public IPboDirectory? ParentDirectory { get; set; }
     private string entryName = string.Empty;
-    public string EntryName
-    {
-        get => entryName;
-        set => entryName = value;
-    }
+    public string EntryName { get => entryName; set => entryName = value; }
 
-    public string Path => ParentDirectory?.Path + "\\" + EntryName;
-    public string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
 
     protected PboVFSEntry(string entryName) : base() => EntryName = entryName;
 

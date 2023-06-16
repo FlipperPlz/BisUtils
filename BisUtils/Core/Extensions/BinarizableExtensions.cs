@@ -21,17 +21,15 @@ public static class BinarizableExtensions
             return binarizable.Binarize(writer, options);
         }
 
-        if (
-            binarizable.GetType()
+        if (binarizable.GetType()
                 .GetMethod(nameof(IBinarizable<TBinarizationOptions>.Binarize))?
                 .GetCustomAttributes(typeof(MustBeValidatedAttribute), true)
-                .FirstOrDefault() is MustBeValidatedAttribute attribute
-            )
+                .FirstOrDefault() is not MustBeValidatedAttribute )
         {
-            binarizable.Validate(options); //TODO: Validation result;; merge
-
+            return binarizable.Binarize(writer, options);
         }
-        return binarizable.Binarize(writer, options);
 
+        var result = binarizable.Validate(options); //TODO: Validation result;; merge
+        return result.IsFailed ? result : binarizable.Binarize(writer, options).WithWarnings(result.Warnings);
     }
 }

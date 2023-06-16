@@ -3,13 +3,29 @@
 using Core.IO;
 using FResults;
 
+public interface IPboEntry : IPboVFSEntry
+{
+    public PboEntryMime EntryMime { get; }
+    public long OriginalSize { get; }
+    public long Offset { get; }
+    public long TimeStamp { get; }
+    public long DataSize { get; }
+}
+
 public abstract class PboEntry : PboVFSEntry
 {
-    public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
-    public long OriginalSize { get; set; }
-    public long Offset { get; set; }
-    public long TimeStamp { get; set; }
-    public long DataSize { get; set; }
+    public PboEntryMime EntryMime { get; } = PboEntryMime.Decompressed;
+    public long OriginalSize { get; }
+    public long Offset { get; }
+    public long TimeStamp { get; }
+    public long DataSize { get; }
+
+
+    public bool IsEmptyMeta() =>
+        OriginalSize == 0 &&
+        Offset == 0 &&
+        TimeStamp == 0 &&
+        DataSize == 0;
 
     protected PboEntry(
         string fileName,
@@ -31,11 +47,6 @@ public abstract class PboEntry : PboVFSEntry
     {
     }
 
-    public bool IsEmptyMeta() =>
-        OriginalSize == 0 &&
-        Offset == 0 &&
-        TimeStamp == 0 &&
-        DataSize == 0;
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
@@ -56,4 +67,6 @@ public abstract class PboEntry : PboVFSEntry
 
         return Result.Merge(results);
     }
+
+    public override Result Validate(PboOptions options) => throw new NotImplementedException();
 }

@@ -7,11 +7,17 @@ namespace BisUtils.Bank.Model;
 using Core.Binarize.Exceptions;
 using FResults;
 
-public class PboFile : PboDirectory, IFamilyNode
+public interface IPboFile : IPboDirectory, IFamilyNode
 {
-    public new PboFile? Node => this;
-    public new readonly List<PboEntry> PboEntries = new();
-    public new IEnumerable<IFamilyMember> Children => PboEntries;
+    PboFile? Bank { get; }
+
+    IFamilyNode? IFamilyMember.Node => Bank;
+    IEnumerable<IFamilyMember> IFamilyParent.Children => PboEntries;
+}
+
+public class PboFile : PboDirectory, IPboFile
+{
+    public PboFile Bank => this;
 
     public PboFile(List<PboEntry> children) : base(children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
     {
@@ -46,4 +52,5 @@ public class PboFile : PboDirectory, IFamilyNode
             base.Validate(options)
             //TODO: File level validation
         });
+
 }

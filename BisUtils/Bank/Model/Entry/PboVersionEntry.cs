@@ -4,13 +4,20 @@ using BisUtils.Core.IO;
 namespace BisUtils.Bank.Model.Entry;
 
 using Alerts.Warnings;
+using Core.Binarize.Exceptions;
 using Core.Family;
 using FResults;
 
-public class PboVersionEntry : PboEntry, IFamilyParent
+public interface IPboVersionEntry : IPboEntry, IFamilyParent
+{
+    IEnumerable<IFamilyMember> IFamilyParent.Children => Properties;
+
+    List<PboProperty> Properties { get; }
+}
+
+public class PboVersionEntry : PboEntry, IPboVersionEntry
 {
     //public string FileName { get; } = "$PROPERTIES$";
-    public IEnumerable<IFamilyMember> Children => Properties;
     public List<PboProperty> Properties { get; set; } = new();
 
     public PboVersionEntry(
@@ -26,6 +33,11 @@ public class PboVersionEntry : PboEntry, IFamilyParent
 
     public PboVersionEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
+        var result = Debinarize(reader, options);
+        if (result.IsFailed)
+        {
+            throw new DebinarizeFailedException(result.ToString());
+        }
     }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
@@ -36,7 +48,7 @@ public class PboVersionEntry : PboEntry, IFamilyParent
         return result;
     }
 
-    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         List<Result> results = new() { base.Debinarize(reader, options) };
 
@@ -44,19 +56,19 @@ public class PboVersionEntry : PboEntry, IFamilyParent
         return Result.Merge(results);
     }
 
-    public override Result Validate(PboOptions options) =>
-        Result.Merge(new List<Result>
-        {
-            EntryMime is not PboEntryMime.Version
-                ? Result.Ok().WithWarning(new ImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
-                : Result.ImmutableOk(),
+    public override Result Validate(PboOptions options) => Result.Merge(new List<Result>
+    {
+        EntryMime is not PboEntryMime.Version
+            ? Result.Ok().WithWarning(new ImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
+            : Result.ImmutableOk(),
 
-            !IsEmptyMeta()
-                ? Result.Ok().WithWarning(new PboImproperMetaWarning(options.RequireEmptyVersionMeta, typeof(PboVersionEntry)))
-                : Result.ImmutableOk(),
+        !IsEmptyMeta()
+            ? Result.Ok().WithWarning(new PboImproperMetaWarning(options.RequireEmptyVersionMeta, typeof(PboVersionEntry)))
+            : Result.ImmutableOk(),
 
-            EntryName != string.Empty
-                ? Result.Ok().WithWarning(new PboNamedVersionEntryWarning(options.RequireVersionNotNamed, typeof(PboVersionEntry)))
-                : Result.ImmutableOk()
-        });
+        EntryName != string.Empty
+            ? Result.Ok().WithWarning(new PboNamedVersionEntryWarning(options.RequireVersionNotNamed, typeof(PboVersionEntry)))
+            : Result.ImmutableOk()
+    });
+
 }

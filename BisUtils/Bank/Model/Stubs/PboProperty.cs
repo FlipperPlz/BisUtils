@@ -1,16 +1,24 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
 using Alerts.Errors;
+using Core.Binarize.Exceptions;
 using Core.Family;
 using Core.IO;
 using Entry;
 using FResults;
 
-public class PboProperty : PboElement, IFamilyChild
+public interface IPboProperty : IFamilyChild, IPboElement
+{
+    public PboVersionEntry? VersionEntry { get; }
+    public string Name { get; }
+    public string Value { get; }
+}
+
+public class PboProperty : PboElement, IPboProperty
 {
     public IFamilyParent? Parent => VersionEntry;
     public PboVersionEntry? VersionEntry { get; set; }
-    private string name, value;
+    private string name = string.Empty, value = string.Empty;
     public string Name
     {
         get => name;
@@ -23,10 +31,19 @@ public class PboProperty : PboElement, IFamilyChild
         set => this.value = value;
     }
 
-    public PboProperty(string name, string value)
+    public PboProperty(string name, string value) : base()
     {
         this.name = name;
         this.value = value;
+    }
+
+    public PboProperty(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    {
+        var result = Debinarize(reader, options);
+        if (result.IsFailed)
+        {
+            throw new DebinarizeFailedException(result.ToString());
+        }
     }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
@@ -36,7 +53,7 @@ public class PboProperty : PboElement, IFamilyChild
         return Result.ImmutableOk();
     }
 
-    public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
+    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
         Result.Merge(new[] { reader.ReadAsciiZ(out name, options), reader.ReadAsciiZ(out value, options) });
 
     public override Result Validate(PboOptions options) =>
