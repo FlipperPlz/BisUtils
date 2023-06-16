@@ -9,7 +9,7 @@ using FResults;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
 {
-    PboFile? Bank { get; }
+    IPboFile? Bank { get; }
 
     IFamilyNode? IFamilyMember.Node => Bank;
     IEnumerable<IFamilyMember> IFamilyParent.Children => PboEntries;
@@ -17,7 +17,7 @@ public interface IPboFile : IPboDirectory, IFamilyNode
 
 public class PboFile : PboDirectory, IPboFile
 {
-    public PboFile Bank => this;
+    public IPboFile Bank => this;
 
     public PboFile(List<PboEntry> children) : base(children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
     {

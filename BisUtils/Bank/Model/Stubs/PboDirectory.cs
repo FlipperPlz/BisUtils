@@ -24,14 +24,13 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
     {
     }
 
-    public override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
-        Result.Merge
-        (
-            new List<Result>
-            {
-                Result.ImmutableOk()
-            }.Concat(PboEntries.Select(e => e.Binarize(writer, options)))
-        );
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options) => Result.Merge
+    (
+        new List<Result>
+        {
+             Result.ImmutableOk()
+        }.Concat(PboEntries.Select(e => e.Binarize(writer, options)))
+    );
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
         throw new NotSupportedException();

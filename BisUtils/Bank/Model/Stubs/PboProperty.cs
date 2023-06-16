@@ -2,12 +2,13 @@
 
 using Alerts.Errors;
 using Core.Binarize.Exceptions;
+using Core.Cloning;
 using Core.Family;
 using Core.IO;
 using Entry;
 using FResults;
 
-public interface IPboProperty : IFamilyChild, IPboElement
+public interface IPboProperty : IFamilyChild, IPboElement, IBisCloneable<IPboProperty>
 {
     public PboVersionEntry? VersionEntry { get; }
     public string Name { get; }
@@ -58,4 +59,6 @@ public class PboProperty : PboElement, IPboProperty
 
     public override Result Validate(PboOptions options) =>
         Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
+
+    public IPboProperty BisClone() => new PboProperty(name, value) { VersionEntry = VersionEntry };
 }

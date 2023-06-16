@@ -1,6 +1,8 @@
 ﻿namespace BisUtils.Bank.Model.Entry;
 
 using Core.Family;
+using Core.IO;
+using FResults;
 using Stubs;
 
 public interface IPboDataEntry : IPboEntry
@@ -14,7 +16,7 @@ public interface IPboDataEntry : IPboEntry
 
 public class PboDataEntry : IPboDataEntry
 {
-    public PboFile? PboFile { get; set; }
+    public IPboFile? PboFile { get; set; }
 
     public IPboDirectory? ParentDirectory { get; set; }
 
@@ -31,4 +33,21 @@ public class PboDataEntry : IPboDataEntry
     public long DataSize { get; set; }
 
     public Stream EntryData { get; set; } = Stream.Null;
+
+    public Result Binarize(BisBinaryWriter writer, PboOptions options)
+    {
+        throw new NotImplementedException();
+
+    }
+
+    public Result Validate(PboOptions options)
+    {
+        throw new NotImplementedException();
+
+    }
+
+    public Result Debinarize(BisBinaryReader reader, PboOptions options)
+    {
+        throw new NotImplementedException();
+    }
 }

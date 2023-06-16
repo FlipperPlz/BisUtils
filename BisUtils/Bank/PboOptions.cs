@@ -21,6 +21,8 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool AllowDuplicateFileNames { get; set; } //= false;
     public bool RegisterEmptyEntries { get; set; } = true;
     public bool AllowObfuscated { get; set; } //= false;
+    public bool AllowEncrypted { get; set; } //= false;
+
     [FunctionallyAccurate] public bool RequireVersionNotNamed { get; set; } = true;
     [FunctionallyAccurate] public bool RemoveBenignProperties { get; set; } = true;
     [FunctionallyAccurate] public bool RequireVersionMimeOnVersion { get; set; } = true;
