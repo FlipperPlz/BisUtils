@@ -6,6 +6,8 @@ using FResults;
 
 public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarizationOptions
 {
+    public Result? LastResult { get; protected set; }
+
     protected BinaryObject(BisBinaryReader reader, T options)
     {
     }

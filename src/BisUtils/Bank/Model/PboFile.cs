@@ -23,10 +23,10 @@ public class PboFile : PboDirectory, IPboFile
 
     public PboFile(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
-        var result = Debinarize(reader, options);
-        if (result.IsFailed)
+        Debinarize(reader, options);
+        if (LastResult!.IsFailed)
         {
-            throw new DebinarizeFailedException(result.ToString());
+            throw new DebinarizeFailedException(LastResult.ToString());
         }
     }
 
@@ -85,7 +85,7 @@ public class PboFile : PboDirectory, IPboFile
     {
         var result = PboEntries.Select(e => e.Binarize(writer, options));
 
-        return Result.Merge(result);
+        return LastResult = Result.Merge(result);
     }
 
     public override Result Validate(PboOptions options) =>

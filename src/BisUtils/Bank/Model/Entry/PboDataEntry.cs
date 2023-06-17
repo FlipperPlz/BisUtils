@@ -33,8 +33,8 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public PboDataEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
-        LastResult = Debinarize(reader, options);
-        if (LastResult.IsFailed)
+        Debinarize(reader, options);
+        if (LastResult!.IsFailed)
         {
             throw new DebinarizeFailedException(LastResult.ToString());
         }

@@ -18,6 +18,7 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool RequireFirstEntryIsVersion { get; set; } //= false;
     public bool WriteValidOffsets { get; set; } //= false;
     public bool AllowMultipleVersion { get; set; } //= false;
+    public bool FlatRead { get; set; } //= false;
     public bool AlwaysSeparateOnDummy { get; set; } = true;
     public bool AllowDuplicateFileNames { get; set; } //= false;
     public bool RegisterEmptyEntries { get; set; } = true;
@@ -30,5 +31,4 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     [FunctionallyAccurate] public bool RemoveBenignProperties { get; set; } = true;
     [FunctionallyAccurate] public bool RequireVersionMimeOnVersion { get; set; } = true;
     [FunctionallyAccurate] public bool RespectEntryOffsets { get; set; } = false;
-
 }

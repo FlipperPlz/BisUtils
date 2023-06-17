@@ -53,17 +53,19 @@ public class PboProperty : PboElement, IPboProperty
     {
         writer.WriteAsciiZ(name, options);
         writer.WriteAsciiZ(value, options);
-        return Result.ImmutableOk();
+        return LastResult = Result.ImmutableOk();
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
         var result = reader.ReadAsciiZ(out name, options);
-        return name.Length == 0 ? Result.Fail(PboEmptyPropertyNameError.Instance) : Result.Merge(result, reader.ReadAsciiZ(out value, options), Validate(options));
+        return LastResult = (name.Length == 0
+            ? Result.Fail(PboEmptyPropertyNameError.Instance)
+            : Result.Merge(result, reader.ReadAsciiZ(out value, options), Validate(options)));
     }
 
     public override Result Validate(PboOptions options) =>
-        Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
+        LastResult = Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
 
     public IPboProperty BisClone() => new PboProperty(PboFile, VersionEntry, name, value);
 }

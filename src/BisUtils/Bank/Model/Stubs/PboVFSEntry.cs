@@ -23,7 +23,6 @@ public abstract class PboVFSEntry : PboElement, IPboVFSEntry
     private string entryName = string.Empty;
     public string EntryName { get => entryName; set => entryName = value; }
 
-
     protected PboVFSEntry(IPboFile? file, IPboDirectory? parent, string name) : base(file)
     {
         ParentDirectory = parent;
@@ -35,11 +34,11 @@ public abstract class PboVFSEntry : PboElement, IPboVFSEntry
     }
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
-        reader.ReadAsciiZ(out entryName, options);
+        LastResult = reader.ReadAsciiZ(out entryName, options);
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
         writer.WriteAsciiZ(entryName, options);
-        return Result.ImmutableOk();
+        return LastResult = Result.ImmutableOk();
     }
 }

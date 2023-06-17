@@ -5,7 +5,6 @@ using FResults;
 
 public interface IPboEntry : IPboVFSEntry
 {
-    Result? LastResult { get; }
     PboEntryMime EntryMime { get; }
     int OriginalSize { get; }
     int Offset { get; }
@@ -25,7 +24,6 @@ public interface IPboEntry : IPboVFSEntry
 
 public abstract class PboEntry : PboVFSEntry
 {
-    public Result? LastResult { get; protected set; }
     public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
     public int OriginalSize { get; set; }
     public int Offset { get; set;  }

@@ -24,11 +24,11 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
         string directoryName
     ) : base(file, parent, directoryName) => PboEntries = entries;
 
-    public PboDirectory(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    protected PboDirectory(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
 
-    public override Result Binarize(BisBinaryWriter writer, PboOptions options) => Result.Merge
+    public override Result Binarize(BisBinaryWriter writer, PboOptions options) => LastResult = Result.Merge
     (
         new List<Result>
         {
@@ -40,5 +40,5 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
         throw new NotSupportedException();
 
     public override Result Validate(PboOptions options) =>
-        Result.Merge(PboEntries.Select(e => e.Validate(options)));
+        LastResult = Result.Merge(PboEntries.Select(e => e.Validate(options)));
 }
