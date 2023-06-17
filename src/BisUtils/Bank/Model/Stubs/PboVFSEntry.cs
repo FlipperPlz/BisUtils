@@ -38,23 +38,33 @@ public abstract class PboVFSEntry : PboElement, IPboVFSEntry
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
-        LastResult = reader.ReadAsciiZ(out entryName, options);
+#endif
 
+        LastResult = reader.ReadAsciiZ(out entryName, options);
+#if DEBUG
         watch.Stop();
         Console.WriteLine($"(PboVFSEntry::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
         return LastResult;
     }
 
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
+
         writer.WriteAsciiZ(entryName, options);
         LastResult = Result.ImmutableOk();
 
+#if DEBUG
         watch.Stop();
         Console.WriteLine($"(PboVFSEntry::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
+
         return LastResult;
     }
 }

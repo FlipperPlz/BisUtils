@@ -68,23 +68,33 @@ public abstract class PboEntry : PboVFSEntry
 
     public bool IsEmptyMeta()
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
         var ret =
             OriginalSize == 0 &&
             Offset == 0 &&
             TimeStamp == 0 &&
             DataSize == 0;
+#if DEBUG
         watch.Stop();
         Console.WriteLine($"(PboEntry::IsEmptyMeta) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
         return ret;
     }
 
     public bool IsDummyEntry()
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
+
         var ret = IsEmptyMeta() && EntryName == "";
+#if DEBUG
         watch.Stop();
-        Console.WriteLine($"(PboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
+                Console.WriteLine($"(PboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
+
         return ret;
     }
 

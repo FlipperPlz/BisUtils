@@ -33,7 +33,9 @@ public class PboFile : PboDirectory, IPboFile
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
         var responses = new List<Result>();
         var first = true;
         options.CurrentSection = PboSection.Header;
@@ -98,8 +100,10 @@ public class PboFile : PboDirectory, IPboFile
         options.CurrentSection = PboSection.Finished;
         LastResult = Result.Merge(responses);
 
+#if DEBUG
         watch.Stop();
         Console.WriteLine($"(PboFile::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
         return LastResult;
     }
 

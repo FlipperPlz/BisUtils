@@ -24,7 +24,9 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public void ExpandDirectoryStructure()
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
         ArgumentNullException.ThrowIfNull(PboFile, "When expanding a Pbo Entry, The node must be established");
 
         var normalizePath = EntryName = PboPathUtilities.NormalizePboPath(EntryName);
@@ -39,8 +41,10 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         ParentDirectory = PboFile.CreateDirectory(PboPathUtilities.GetParent(normalizePath), PboFile);
         ParentDirectory.PboEntries.Add(this);
 
+#if DEBUG
         watch.Stop();
         Console.WriteLine($"(ExpandDirectoryStructure) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
     }
 
     public PboDataEntry
@@ -68,7 +72,10 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
+
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
 
         LastResult = base.Binarize(writer, options);
         writer.Write((long) EntryMime);
@@ -77,16 +84,18 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         writer.Write(TimeStamp);
         writer.Write(DataSize);
 
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboDataEntry::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
         return LastResult;
     }
 
     public sealed override Result Validate(PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
-
+#endif
         LastResult = Result.Ok();
 
         switch (EntryMime)
@@ -141,16 +150,20 @@ public class PboDataEntry : PboEntry, IPboDataEntry
             });
         }
 
-
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboDataEntry::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
+
         return LastResult;
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
+
 
         LastResult = base.Debinarize(reader, options);
         EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
@@ -165,9 +178,10 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         }
 
 
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboDataEntry::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
 
         return LastResult;
     }

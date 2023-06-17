@@ -51,7 +51,9 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
 
     public Result ReadPboProperties(BisBinaryReader reader, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
 
         var results = new List<Result>();
         var property = new PboProperty(PboFile, this, string.Empty, string.Empty);
@@ -81,22 +83,27 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         {
             results.Add(Validate(options));
         }
-
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboVersionEntry::ReadPboProperties) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
 
         return LastResult = Result.Merge(results);
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
+
         LastResult = Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
 
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboVersionEntry::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
+
 
         return LastResult;
     }
@@ -104,7 +111,10 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
+
         LastResult = base.Debinarize(reader, options);
         EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
         OriginalSize = reader.ReadInt32();
@@ -113,9 +123,10 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         DataSize = reader.ReadInt32();
         LastResult = Result.Merge(LastResult, ReadPboProperties(reader, options));
 
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboVersionEntry::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
 
         return LastResult;
     }
@@ -124,20 +135,26 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
 
     public Result WritePboProperties(BisBinaryWriter writer, PboOptions options)
     {
-        var watch = Stopwatch.StartNew();
+#if DEBUG
+                var watch = Stopwatch.StartNew();
+
+#endif
         LastResult = Result.Merge(Properties.Select(p => p.Binarize(writer, options)));
         writer.Write((byte) 0);
 
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboVersionEntry::WritePboProperties) Execution Time: {watch.ElapsedMilliseconds} ms");
-
+#endif
         return LastResult;
     }
 
     public sealed override Result Validate(PboOptions options)
     {
+#if DEBUG
         var watch = Stopwatch.StartNew();
+#endif
+
         LastResult = Result.Merge(new List<Result>
         {
             EntryMime is not PboEntryMime.Version
@@ -156,9 +173,10 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
                 : Result.ImmutableOk()
         });
 
+#if DEBUG
         watch.Stop();
-
         Console.WriteLine($"(PboVersionEntry::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
         return LastResult;
     }
 
