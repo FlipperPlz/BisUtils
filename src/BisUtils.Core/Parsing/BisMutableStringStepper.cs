@@ -2,9 +2,9 @@
 
 namespace BisUtils.Core.Parsing;
 
-public class BisMutableLexer : BisLexer
+public class BisMutableStringStepper : BisStringStepper
 {
-    public BisMutableLexer(string content) : base(content)
+    public BisMutableStringStepper(string content) : base(content)
     {
     }
 

@@ -4,14 +4,14 @@ using BisUtils.Core.Extensions;
 
 namespace BisUtils.Core.Parsing;
 
-public class BisLexer
+public class BisStringStepper
 {
     protected string Content;
     public int Position { get; private set; } = -1;
     public char? CurrentChar { get; private set; } = null;
     public char? PreviousChar { get; private set; } = null;
 
-    public BisLexer(string content) => Content = content;
+    public BisStringStepper(string content) => Content = content;
 
     public bool HasNext() => PeekForward() is not null;
 
@@ -54,7 +54,7 @@ public class BisLexer
         return builder.ToString();
     }
 
-    public string GetWhile(Func<BisLexer, bool> condition)
+    public string GetWhile(Func<BisStringStepper, bool> condition)
     {
         var builder = new StringBuilder();
         while (condition(this))
