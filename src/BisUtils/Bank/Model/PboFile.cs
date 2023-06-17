@@ -50,7 +50,6 @@ public class PboFile : PboDirectory, IPboFile
 
             if (first && currentEntry is not IPboVersionEntry)
             {
-                first = false;
                 response.WithWarning(new Warning
                 {
                     Message = "The first entry in a PBO should always be a version entry.",
@@ -68,6 +67,11 @@ public class PboFile : PboDirectory, IPboFile
                 }
 
                 throw new NotImplementedException("TODO: Recover On Empty Not Implemented");
+            }
+
+            if (first)
+            {
+                first = false;
             }
 
             responses.Add(response);

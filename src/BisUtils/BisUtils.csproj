@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Libraries\FResults\FResults\FResults.csproj" />
+      <ProjectReference Include="..\..\lib\FResults\FResults\FResults.csproj" />
     </ItemGroup>
 
 </Project>
