@@ -8,6 +8,7 @@ using BisUtils.Core.Binarize.Exceptions;
 using BisUtils.Core.Cloning;
 using BisUtils.Core.Family;
 using FResults;
+using FResults.Extensions;
 
 public interface IPboVersionEntry : IPboEntry, IFamilyParent, IBisCloneable<IPboVersionEntry>
 {

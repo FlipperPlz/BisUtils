@@ -6,6 +6,7 @@ using BisUtils.Core.Family;
 using BisUtils.Core.IO;
 using BisUtils.Core.Binarize.Exceptions;
 using FResults;
+using FResults.Extensions;
 using FResults.Reasoning;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
@@ -46,6 +47,12 @@ public class PboFile : PboDirectory, IPboFile
                 PboEntryMime.Version => new PboVersionEntry(reader, options) { ParentDirectory = this, PboFile = this },
                 _ => new PboDataEntry(reader, options) { ParentDirectory = this, PboFile = this }
             };
+
+            if (!options.FlatRead && currentEntry is PboDataEntry dataEntry)
+            {
+                dataEntry.ExpandDirectoryStructure();
+            }
+
             var response = currentEntry.LastResult ?? Result.Fail("Unknown Error Occured");
 
             if (first && currentEntry is not IPboVersionEntry)
@@ -77,7 +84,11 @@ public class PboFile : PboDirectory, IPboFile
             responses.Add(response);
             PboEntries.Add(currentEntry);
         } while (true);
+
+        options.CurrentSection = PboSection.Data;
         //INITIALIZE ENTRY DATA
+
+        options.CurrentSection = PboSection.Signature;
         return Result.Merge(responses);
     }
 

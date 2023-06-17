@@ -6,16 +6,20 @@ using BisUtils.Core.IO;
 using BisUtils.Bank.Model.Stubs;
 
 using FResults;
+using FResults.Extensions;
 using FResults.Reasoning;
 
 public interface IPboDataEntry : IPboEntry
 {
     Stream EntryData { get; }
+
+    void ExpandDirectoryStructure();
 }
 
 public class PboDataEntry : PboEntry, IPboDataEntry
 {
     public Stream EntryData { get; set; } = Stream.Null;
+    public void ExpandDirectoryStructure() => throw new NotImplementedException();
 
     public PboDataEntry
     (
@@ -74,7 +78,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
             LastResult.WithWarning(new PboUnnamedEntryWarning(!options.AllowUnnamedDataEntries, typeof(IPboDataEntry)));
         }
 
-        if (EntryData.Length != DataSize)
+        if (EntryData.Length != DataSize && options.CurrentSection != PboSection.Header)
         {
             LastResult.WithWarning(new Warning
             {
@@ -126,6 +130,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         return LastResult;
     }
 
-    public void SynchronizeMetaWithStream() => OriginalSize = (int) EntryData.Length;
 
+
+    public void SynchronizeMetaWithStream() => OriginalSize = (int) EntryData.Length;
 }

@@ -20,6 +20,7 @@ public interface IPboEntry : IPboVFSEntry
     bool IsDummyEntry() =>
         IsEmptyMeta() &&
         EntryName == "";
+
 }
 
 public abstract class PboEntry : PboVFSEntry
