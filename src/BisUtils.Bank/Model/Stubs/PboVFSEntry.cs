@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
 using System.Diagnostics;
-using BisUtils.Core.Family;
-using BisUtils.Core.IO;
+using Core.Family;
+using Core.IO;
 using FResults;
 using Options;
 
@@ -21,11 +21,7 @@ public interface IPboVFSEntry : IPboElement, IFamilyChild
 
 public abstract class PboVFSEntry : PboElement, IPboVFSEntry
 {
-    public string Path => ParentDirectory?.Path + "\\" + EntryName;
-    public string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
-    public IPboDirectory? ParentDirectory { get; set; }
     private string entryName = string.Empty;
-    public string EntryName { get => entryName; set => entryName = value; }
 
     protected PboVFSEntry(IPboFile? file, IPboDirectory? parent, string name) : base(file)
     {
@@ -36,6 +32,11 @@ public abstract class PboVFSEntry : PboElement, IPboVFSEntry
     protected PboVFSEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
+
+    public string Path => ParentDirectory?.Path + "\\" + EntryName;
+    public string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
+    public IPboDirectory? ParentDirectory { get; set; }
+    public string EntryName { get => entryName; set => entryName = value; }
 
     public override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {

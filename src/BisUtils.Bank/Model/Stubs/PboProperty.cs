@@ -1,12 +1,12 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
 using System.Diagnostics;
-using BisUtils.Bank.Alerts.Errors;
-using BisUtils.Bank.Model.Entry;
-using BisUtils.Core.Binarize.Exceptions;
-using BisUtils.Core.Cloning;
-using BisUtils.Core.Family;
-using BisUtils.Core.IO;
+using Alerts.Errors;
+using Core.Binarize.Exceptions;
+using Core.Cloning;
+using Core.Family;
+using Core.IO;
+using Entry;
 using FResults;
 using Options;
 
@@ -19,21 +19,7 @@ public interface IPboProperty : IFamilyChild, IPboElement, IBisCloneable<IPboPro
 
 public class PboProperty : PboElement, IPboProperty
 {
-    public IFamilyParent? Parent => VersionEntry;
-    public IPboVersionEntry? VersionEntry { get; set; }
     private string name = string.Empty, value = string.Empty;
-
-    public string Name
-    {
-        get => name;
-        set => name = value;
-    }
-
-    public string Value
-    {
-        get => value;
-        set => this.value = value;
-    }
 
     public PboProperty(IPboFile? file, IPboVersionEntry? parent, string name, string value) : base(file)
     {
@@ -49,6 +35,21 @@ public class PboProperty : PboElement, IPboProperty
         {
             throw new DebinarizeFailedException(result.ToString());
         }
+    }
+
+    public IFamilyParent? Parent => VersionEntry;
+    public IPboVersionEntry? VersionEntry { get; set; }
+
+    public string Name
+    {
+        get => name;
+        set => name = value;
+    }
+
+    public string Value
+    {
+        get => value;
+        set => this.value = value;
     }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)

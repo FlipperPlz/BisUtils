@@ -1,11 +1,10 @@
 ﻿namespace BisUtils.Core.Extensions;
 
-using BisUtils.Core.Binarize;
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Utils;
-using BisUtils.Core.Binarize.Validatable;
-using BisUtils.Core.IO;
+using Binarize;
+using Binarize.Options;
+using Binarize.Utils;
 using FResults;
+using IO;
 
 public static class BinarizableExtensions
 {

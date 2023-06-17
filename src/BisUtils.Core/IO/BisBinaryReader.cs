@@ -1,11 +1,9 @@
 ﻿namespace BisUtils.Core.IO;
 
-
-using BisUtils.Core.Options;
-using BisUtils.Core.Binarize.Options;
-using FResults;
 using System.Text;
-
+using Binarize.Options;
+using FResults;
+using Options;
 
 public class BisBinaryReader : BinaryReader
 {
@@ -22,7 +20,8 @@ public class BisBinaryReader : BinaryReader
     }
 
 
-    public Result SkipAsciiZ<TOptions>(TOptions? options) where TOptions : IAsciizLimiterOptions, IBinarizationOptions =>
+    public Result SkipAsciiZ<TOptions>(TOptions? options)
+        where TOptions : IAsciizLimiterOptions, IBinarizationOptions =>
         ReadAsciiZ(out _, options);
 
     public Result ReadAsciiZ<TOptions>(

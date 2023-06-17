@@ -1,17 +1,17 @@
-﻿using System.Text;
-using BisUtils.Core.Error;
-using BisUtils.Core.Extensions;
+﻿namespace BisUtils.Core.Parsing;
 
-namespace BisUtils.Core.Parsing;
+using System.Text;
+using Error;
+using Extensions;
 
 public class BisStringStepper
 {
     protected string Content;
+
+    public BisStringStepper(string content) => Content = content;
     public int Position { get; private set; } = -1;
     public char? CurrentChar { get; private set; } = null;
     public char? PreviousChar { get; private set; } = null;
-
-    public BisStringStepper(string content) => Content = content;
 
     public bool HasNext() => PeekForward() is not null;
 
@@ -61,6 +61,7 @@ public class BisStringStepper
         {
             builder.Append(CurrentChar);
         }
+
         return builder.ToString();
     }
 
@@ -72,6 +73,7 @@ public class BisStringStepper
         {
             Content = content;
         }
+
         Position = -1;
         PreviousChar = null;
         CurrentChar = null;

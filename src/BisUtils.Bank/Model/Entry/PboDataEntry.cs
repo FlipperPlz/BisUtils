@@ -1,15 +1,14 @@
 ﻿namespace BisUtils.Bank.Model.Entry;
 
 using System.Diagnostics;
-using BisUtils.Bank.Alerts.Warnings;
-using BisUtils.Core.Binarize.Exceptions;
-using BisUtils.Core.IO;
-using BisUtils.Bank.Model.Stubs;
-
+using Alerts.Warnings;
+using Core.Binarize.Exceptions;
+using Core.IO;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
+using Stubs;
 using Utils;
 
 public interface IPboDataEntry : IPboEntry
@@ -21,6 +20,29 @@ public interface IPboDataEntry : IPboEntry
 
 public class PboDataEntry : PboEntry, IPboDataEntry
 {
+    public PboDataEntry
+    (
+        IPboFile? file,
+        IPboDirectory? parent,
+        string fileName,
+        PboEntryMime mime,
+        int originalSize,
+        int offset,
+        int timeStamp,
+        int dataSize
+    ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
+    {
+    }
+
+    public PboDataEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    {
+        Debinarize(reader, options);
+        if (LastResult!.IsFailed)
+        {
+            throw new DebinarizeFailedException(LastResult.ToString());
+        }
+    }
+
     public Stream EntryData { get; set; } = Stream.Null;
 
     public void ExpandDirectoryStructure()
@@ -48,38 +70,14 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 #endif
     }
 
-    public PboDataEntry
-    (
-        IPboFile? file,
-        IPboDirectory? parent,
-        string fileName,
-        PboEntryMime mime,
-        int originalSize,
-        int offset,
-        int timeStamp,
-        int dataSize
-    ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
-    {
-    }
-
-    public PboDataEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
-    {
-        Debinarize(reader, options);
-        if (LastResult!.IsFailed)
-        {
-            throw new DebinarizeFailedException(LastResult.ToString());
-        }
-    }
-
     public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
-
 #if DEBUG
         var watch = Stopwatch.StartNew();
 #endif
 
         LastResult = base.Binarize(writer, options);
-        writer.Write((long) EntryMime);
+        writer.Write((long)EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
         writer.Write(TimeStamp);
@@ -105,7 +103,8 @@ public class PboDataEntry : PboEntry, IPboDataEntry
                 LastResult.WithWarning(new PboEncryptedEntryWarning(!options.AllowEncrypted));
                 break;
             case PboEntryMime.Version:
-                LastResult.WithWarning(new PboImproperMimeWarning(!options.AllowVersionMimeOnData, typeof(IPboDataEntry)));
+                LastResult.WithWarning(new PboImproperMimeWarning(!options.AllowVersionMimeOnData,
+                    typeof(IPboDataEntry)));
                 break;
             case PboEntryMime.Decompressed:
             case PboEntryMime.Compressed:
@@ -167,7 +166,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
 
         LastResult = base.Debinarize(reader, options);
-        EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
+        EntryMime = (PboEntryMime)reader.ReadInt32(); // TODO WARN/ERROR then recover
         OriginalSize = reader.ReadInt32();
         TimeStamp = reader.ReadInt32();
         Offset = reader.ReadInt32();
@@ -188,6 +187,5 @@ public class PboDataEntry : PboEntry, IPboDataEntry
     }
 
 
-
-    public void SynchronizeMetaWithStream() => OriginalSize = (int) EntryData.Length;
+    public void SynchronizeMetaWithStream() => OriginalSize = (int)EntryData.Length;
 }

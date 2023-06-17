@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
 using System.Diagnostics;
-using BisUtils.Core.Family;
-using BisUtils.Core.IO;
+using Core.Family;
+using Core.IO;
 using Entry;
 using FResults;
 using Options;
@@ -11,6 +11,14 @@ using Utils;
 public interface IPboDirectory : IPboEntry, IFamilyParent
 {
     List<IPboEntry> PboEntries { get; }
+
+    IEnumerable<IPboDataEntry> FileEntries { get; }
+
+    IEnumerable<IPboDirectory> Directories { get; }
+
+    IEnumerable<IPboVFSEntry> VfsEntries => PboEntries.OfType<IPboVFSEntry>().ToList();
+
+    IEnumerable<IFamilyMember> IFamilyParent.Children => VfsEntries;
 
     int IPboEntry.OriginalSize => PboEntries.Sum(e => e.OriginalSize);
 
@@ -22,14 +30,6 @@ public interface IPboDirectory : IPboEntry, IFamilyParent
 
     PboEntryMime IPboEntry.EntryMime => throw new NotSupportedException();
 
-    IEnumerable<IPboDataEntry> FileEntries { get;  }
-
-    IEnumerable<IPboDirectory> Directories { get; }
-
-    IEnumerable<IPboVFSEntry> VfsEntries => PboEntries.OfType<IPboVFSEntry>().ToList();
-
-    IEnumerable<IFamilyMember> IFamilyParent.Children => VfsEntries;
-
     IPboDirectory? GetDirectory(string name);
 
     IPboDirectory CreateDirectory(string name, IPboFile? node);
@@ -37,10 +37,6 @@ public interface IPboDirectory : IPboEntry, IFamilyParent
 
 public class PboDirectory : PboVFSEntry, IPboDirectory
 {
-    public List<IPboEntry> PboEntries { get; set; } = new();
-    public IEnumerable<IPboDataEntry> FileEntries => PboEntries.OfType<IPboDataEntry>();
-    public IEnumerable<IPboDirectory> Directories => PboEntries.OfType<IPboDirectory>();
-
     public PboDirectory(
         IPboFile? file,
         IPboDirectory? parent,
@@ -52,11 +48,15 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
     {
     }
 
+    public List<IPboEntry> PboEntries { get; set; } = new();
+    public IEnumerable<IPboDataEntry> FileEntries => PboEntries.OfType<IPboDataEntry>();
+    public IEnumerable<IPboDirectory> Directories => PboEntries.OfType<IPboDirectory>();
+
     public IPboDirectory? GetDirectory(string name)
     {
 #if DEBUG
         var watch = Stopwatch.StartNew();
-                Console.WriteLine($"GetDirectory Called On \"{AbsolutePath}\" with {name}");
+        Console.WriteLine($"GetDirectory Called On \"{AbsolutePath}\" with {name}");
 
 #endif
 
@@ -99,10 +99,12 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
 
                 return i;
             }
-            if(!PboEntries.Contains(i))
+
+            if (!PboEntries.Contains(i))
             {
                 PboEntries.Add(i);
             }
+
             ret = i.CreateDirectory(split[1], node);
 #if DEBUG
             watch.Stop();
@@ -121,6 +123,7 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
 #endif
             return directory;
         }
+
         ret = directory.CreateDirectory(split[1], node);
 
 #if DEBUG
@@ -163,10 +166,9 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
         LastResult = Result.Merge(PboEntries.Select(e => e.Validate(options)));
 #if DEBUG
         watch.Stop();
-                Console.WriteLine($"(PboDirectory::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"(PboDirectory::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
 #endif
 
         return LastResult;
     }
-
 }

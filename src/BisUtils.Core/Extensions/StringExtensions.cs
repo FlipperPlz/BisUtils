@@ -8,6 +8,7 @@ public static class StringExtensions
         {
             return str[index];
         }
+
         return null;
     }
 }

@@ -5,7 +5,6 @@ using Binarize.Options;
 
 public class BisBinaryWriter : BinaryWriter
 {
-
     public void WriteAsciiZ(string str, Encoding encoding)
     {
         var bytes = encoding.GetBytes(str);
@@ -15,4 +14,3 @@ public class BisBinaryWriter : BinaryWriter
 
     public void WriteAsciiZ(string str, IBinarizationOptions options) => WriteAsciiZ(str, options.Charset);
 }
-

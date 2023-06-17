@@ -14,16 +14,14 @@ public interface IParamElement : IFamilyMember, IStrictBinaryObject<ParamOptions
 
 public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamElement
 {
-    public IFamilyNode? Node => ParamFile;
-    public IParamFile? ParamFile { get; set; }
-
     protected ParamElement(IParamFile? file) : base()
     {
     }
 
     protected ParamElement(BisBinaryReader reader, ParamOptions options) : base(reader, options)
     {
-
     }
 
+    public IFamilyNode? Node => ParamFile;
+    public IParamFile? ParamFile { get; set; }
 }

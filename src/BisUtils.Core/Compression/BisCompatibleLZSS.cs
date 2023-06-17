@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.Core.Compression;
 
 /// <summary>
-/// Bis Lzss
+///     Bis Lzss
 /// </summary>
 /// Author: https://github.com/rvost Thank You So Much
 public sealed class BisCompatibleLzss
@@ -10,23 +10,23 @@ public sealed class BisCompatibleLzss
     private const byte Fill = 0x20;
 
     /// <summary>
-    /// These constitute binary search trees.
-    /// </summary>
-    private readonly int[] previousChildren, nextChildren, parents;
-
-    /// <summary>
-    /// Index for root of binary search trees
+    ///     Index for root of binary search trees
     /// </summary>
     private readonly int nil;
 
     /// <summary>
-    /// The ring buffer of size N with extra F-1 bytes to facilitate string comparison.
+    ///     These constitute binary search trees.
+    /// </summary>
+    private readonly int[] previousChildren, nextChildren, parents;
+
+    /// <summary>
+    ///     The ring buffer of size N with extra F-1 bytes to facilitate string comparison.
     /// </summary>
     private readonly byte[] textBuffer;
 
     /// <summary>
-    /// The length and position of the longest match found.
-    /// These are set by the InsertNode() procedure.
+    ///     The length and position of the longest match found.
+    ///     These are set by the InsertNode() procedure.
     /// </summary>
     private int matchPosition, matchLength;
 
@@ -64,17 +64,21 @@ public sealed class BisCompatibleLzss
         codeBuf[0] = 0;
 
         // Clear the buffer with any character that will appear often.
-        for (i = s; i < r; i++) {
+        for (i = s; i < r; i++)
+        {
             textBuffer[i] = Fill;
         }
 
-        for (len = 0; len < F && inputIdx < stopPos; len++) {
-            textBuffer[r + len] = input[inputIdx++];  // Read F bytes into the last F bytes of the buffer
+        for (len = 0; len < F && inputIdx < stopPos; len++)
+        {
+            textBuffer[r + len] = input[inputIdx++]; // Read F bytes into the last F bytes of the buffer
         }
 
-        if (len == 0) {
-            return 0;  /* text of size zero */
+        if (len == 0)
+        {
+            return 0; /* text of size zero */
         }
+
         for (i = 1; i <= F; i++)
         {
             /*
@@ -84,20 +88,22 @@ public sealed class BisCompatibleLzss
              */
             InsertNode(r - i);
         }
-        InsertNode(r);  /* Finally, insert the whole string just read.  The
+
+        InsertNode(r); /* Finally, insert the whole string just read.  The
                                   global variables match_length and match_position are set. */
         do
         {
             if (matchLength > len)
             {
-                matchLength = len;  /* match_length
+                matchLength = len; /* match_length
                                                                 may be spuriously long near the end of text. */
             }
+
             if (matchLength <= Threshold)
             {
-                matchLength = 1;  /* Not long enough match.  Send one byte. */
-                codeBuf[0] |= mask;  /* 'send one byte' flag */
-                codeBuf[codeBufIdx++] = textBuffer[r];  /* Send decoded. */
+                matchLength = 1; /* Not long enough match.  Send one byte. */
+                codeBuf[0] |= mask; /* 'send one byte' flag */
+                codeBuf[codeBufIdx++] = textBuffer[r]; /* Send decoded. */
             }
             else
             {
@@ -106,6 +112,7 @@ public sealed class BisCompatibleLzss
                 codeBuf[codeBufIdx++] = (byte)encoded_position;
                 codeBuf[codeBufIdx++] = (byte)(((encoded_position >> 4) & 0xf0) | (matchLength - (Threshold + 1)));
             }
+
             if ((mask <<= 1) == 0) /* Shift mask left one bit. */
             {
                 output.Write(codeBuf[..codeBufIdx]); /* Send at most 8 units of code together */
@@ -113,6 +120,7 @@ public sealed class BisCompatibleLzss
                 codeBuf[0] = 0;
                 codeBufIdx = mask = 1;
             }
+
             var lastMatchLength = matchLength;
             for (i = 0; i < lastMatchLength && inputIdx < stopPos; i++)
             {
@@ -121,12 +129,14 @@ public sealed class BisCompatibleLzss
                 textBuffer[s] = c; // read new bytes
                 if (s < F - 1)
                 {
-                    textBuffer[s + N] = c; // If the position is near the end of buffer, extend the buffer to make  string comparison easier.
+                    textBuffer[s + N] =
+                        c; // If the position is near the end of buffer, extend the buffer to make  string comparison easier.
                 }
+
                 s = (s + 1) & (N - 1);
                 r = (r + 1) & (N - 1);
                 /* Since this is a ring buffer, increment the position modulo N. */
-                InsertNode(r);    /* Register the string in text_buf[r..r+F-1] */
+                InsertNode(r); /* Register the string in text_buf[r..r+F-1] */
             }
 
             while (i++ < lastMatchLength)
@@ -138,7 +148,7 @@ public sealed class BisCompatibleLzss
                 --len;
                 if (len != 0)
                 {
-                    InsertNode(r);        /* buffer may not be empty. */
+                    InsertNode(r); /* buffer may not be empty. */
                 }
             }
         } while (len > 0); /* until length of string to be processed is zero */
@@ -149,12 +159,13 @@ public sealed class BisCompatibleLzss
             output.Write(codeBuf[..codeBufIdx]);
             codeSize += codeBufIdx;
         }
+
         output.Flush();
         return codeSize;
     }
 
     /// <summary>
-    /// Initializes the binary search trees used by the compression algorithm.
+    ///     Initializes the binary search trees used by the compression algorithm.
     /// </summary>
     private void InitTree()
     {
@@ -178,16 +189,14 @@ public sealed class BisCompatibleLzss
         {
             parents[i] = nil;
         }
-
     }
 
     /// <summary>
-    ///
-    /// Inserts string of length F, TextBuffer[node..node+F-1], into one of the
-    /// trees (TextBuffer[node]'th tree) and returns the longest-match position
-    /// and length via the global variables MatchPosition and MatchLength.
-    /// If MatchLength = F, then removes the old node in favor of the new
-    /// one, because the old one will be deleted sooner.
+    ///     Inserts string of length F, TextBuffer[node..node+F-1], into one of the
+    ///     trees (TextBuffer[node]'th tree) and returns the longest-match position
+    ///     and length via the global variables MatchPosition and MatchLength.
+    ///     If MatchLength = F, then removes the old node in favor of the new
+    ///     one, because the old one will be deleted sooner.
     /// </summary>
     /// <param name="node">plays double role, as tree node and position in buffer.</param>
     private void InsertNode(int node)
@@ -198,12 +207,16 @@ public sealed class BisCompatibleLzss
         var p = N + 1 + textBuffer[node];
 
         nextChildren[node] = previousChildren[node] = nil;
-        for (; ; ) {
-            if (cmp >= 0) {
-                if (nextChildren[p] != nil) {
+        for (;;)
+        {
+            if (cmp >= 0)
+            {
+                if (nextChildren[p] != nil)
+                {
                     p = nextChildren[p];
                 }
-                else {
+                else
+                {
                     nextChildren[p] = node;
                     parents[node] = p;
                     return;
@@ -211,10 +224,12 @@ public sealed class BisCompatibleLzss
             }
             else
             {
-                if (previousChildren[p] != nil) {
+                if (previousChildren[p] != nil)
+                {
                     p = previousChildren[p];
                 }
-                else {
+                else
+                {
                     previousChildren[p] = node;
                     parents[node] = p;
                     return;
@@ -222,7 +237,8 @@ public sealed class BisCompatibleLzss
             }
 
             int i;
-            for (i = 1; i < F; i++) {
+            for (i = 1; i < F; i++)
+            {
                 if ((cmp = textBuffer[node + i] - textBuffer[p + i]) != 0)
                 {
                     break;
@@ -240,14 +256,18 @@ public sealed class BisCompatibleLzss
                 break;
             }
         }
+
         parents[node] = parents[p];
         previousChildren[node] = previousChildren[p];
         nextChildren[node] = nextChildren[p];
         parents[previousChildren[p]] = node;
         parents[nextChildren[p]] = node;
-        if (nextChildren[parents[p]] == p) {
+        if (nextChildren[parents[p]] == p)
+        {
             nextChildren[parents[p]] = node;
-        } else {
+        }
+        else
+        {
             previousChildren[parents[p]] = node;
         }
 
@@ -255,46 +275,56 @@ public sealed class BisCompatibleLzss
     }
 
     /// <summary>
-    /// Deletes node n from tree
+    ///     Deletes node n from tree
     /// </summary>
     /// <param name="n">Node to remove from tree</param>
-    private void DeleteNode(int n) {
+    private void DeleteNode(int n)
+    {
         int q;
 
         if (parents[n] == nil)
         {
-            return;  /* not in tree */
+            return; /* not in tree */
         }
 
-        if (nextChildren[n] == nil) {
+        if (nextChildren[n] == nil)
+        {
             q = previousChildren[n];
         }
-        else if (previousChildren[n] == nil) {
+        else if (previousChildren[n] == nil)
+        {
             q = nextChildren[n];
         }
-        else {
+        else
+        {
             q = previousChildren[n];
-            if (nextChildren[q] != nil) {
-                do {
+            if (nextChildren[q] != nil)
+            {
+                do
+                {
                     q = nextChildren[q];
                 } while (nextChildren[q] != nil);
+
                 nextChildren[parents[q]] = previousChildren[q];
                 parents[previousChildren[q]] = parents[q];
                 previousChildren[q] = previousChildren[n];
                 parents[previousChildren[n]] = q;
             }
+
             nextChildren[q] = nextChildren[n];
             parents[nextChildren[n]] = q;
         }
+
         parents[q] = parents[n];
-        if (nextChildren[parents[n]] == n) {
+        if (nextChildren[parents[n]] == n)
+        {
             nextChildren[parents[n]] = q;
         }
-        else {
+        else
+        {
             previousChildren[parents[n]] = q;
         }
+
         parents[n] = nil;
     }
-
-
 }

@@ -1,21 +1,20 @@
 ﻿namespace BisUtils.Core.Binarize.Implementation;
 
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.IO;
 using FResults;
+using IO;
+using Options;
 
 public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarizationOptions
 {
-    public Result? LastResult { get; protected set; }
-
     protected BinaryObject(BisBinaryReader reader, T options)
     {
     }
 
     protected BinaryObject()
     {
-
     }
+
+    public Result? LastResult { get; protected set; }
 
     public abstract Result Binarize(BisBinaryWriter writer, T options);
     public abstract Result Debinarize(BisBinaryReader reader, T options);

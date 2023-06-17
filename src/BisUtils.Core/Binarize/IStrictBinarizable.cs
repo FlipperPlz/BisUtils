@@ -1,8 +1,10 @@
 ﻿namespace BisUtils.Core.Binarize;
 
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Validatable;
+using Options;
+using Validatable;
 
 public interface IStrictBinarizable<in TBinarizationOptions> :
     IBinarizable<TBinarizationOptions>,
-    IValidatable<TBinarizationOptions> where TBinarizationOptions : IBinarizationOptions {}
+    IValidatable<TBinarizationOptions> where TBinarizationOptions : IBinarizationOptions
+{
+}

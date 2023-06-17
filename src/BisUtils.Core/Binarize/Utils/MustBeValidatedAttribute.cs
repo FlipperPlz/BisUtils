@@ -2,7 +2,6 @@
 
 public class MustBeValidatedAttribute : Attribute
 {
-    public string ErrorMessage { get; }
-
     public MustBeValidatedAttribute(string errorMessage) => ErrorMessage = errorMessage;
+    public string ErrorMessage { get; }
 }

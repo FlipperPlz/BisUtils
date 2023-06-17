@@ -1,19 +1,15 @@
 ﻿namespace BisUtils.Bank.Options;
 
 using System.Text;
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Utils;
-using BisUtils.Core.Options;
+using Core.Binarize.Options;
+using Core.Binarize.Utils;
+using Core.Options;
 using Utils;
 
 public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
 {
-    public Encoding Charset { get; set; } = Encoding.UTF8;
-    public Endianness ByteOrder { get; set; } = Endianness.Little;
     public PboSection CurrentSection { get; set; } = PboSection.NotApplicable;
-    public int AsciiLengthTimeout { get; set; } = 250;
     public TimeSpan DecompressionTimeout { get; set; } = TimeSpan.FromMinutes(1);
-    public bool IgnoreValidation { get; set; } //= false;
     public bool CompressionErrorsAreWarnings { get; set; } //= false;
     public bool RequireValidSignature { get; set; } = true;
     public bool RequireEmptyVersionMeta { get; set; } = true;
@@ -33,4 +29,8 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     [FunctionallyAccurate] public bool RemoveBenignProperties { get; set; } = true;
     [FunctionallyAccurate] public bool RequireVersionMimeOnVersion { get; set; } = true;
     [FunctionallyAccurate] public bool RespectEntryOffsets { get; set; } = false;
+    public int AsciiLengthTimeout { get; set; } = 250;
+    public Encoding Charset { get; set; } = Encoding.UTF8;
+    public Endianness ByteOrder { get; set; } = Endianness.Little;
+    public bool IgnoreValidation { get; set; } //= false;
 }

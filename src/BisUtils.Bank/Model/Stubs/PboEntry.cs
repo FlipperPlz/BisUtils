@@ -1,8 +1,7 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
 using System.Diagnostics;
-using BisUtils.Core.IO;
-using FResults;
+using Core.IO;
 using Options;
 using Utils;
 
@@ -35,17 +34,10 @@ public interface IPboEntry : IPboVFSEntry
         Console.WriteLine($"(IPboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
         return ret;
     }
-
 }
 
 public abstract class PboEntry : PboVFSEntry
 {
-    public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
-    public int OriginalSize { get; set; }
-    public int Offset { get; set;  }
-    public int TimeStamp { get; set; }
-    public int DataSize { get; set; }
-
     protected PboEntry(
         IPboFile? file,
         IPboDirectory? parent,
@@ -67,6 +59,12 @@ public abstract class PboEntry : PboVFSEntry
     protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
+
+    public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
+    public int OriginalSize { get; set; }
+    public int Offset { get; set; }
+    public int TimeStamp { get; set; }
+    public int DataSize { get; set; }
 
     public bool IsEmptyMeta()
     {
@@ -94,10 +92,9 @@ public abstract class PboEntry : PboVFSEntry
         var ret = IsEmptyMeta() && EntryName == "";
 #if DEBUG
         watch.Stop();
-                Console.WriteLine($"(PboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"(PboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
 #endif
 
         return ret;
     }
-
 }

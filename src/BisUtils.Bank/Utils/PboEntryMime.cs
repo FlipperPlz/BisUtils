@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Bank.Utils;
 
-public enum PboEntryMime : int
+public enum PboEntryMime
 {
     Decompressed = 0x00000000,
     Compressed = 0x43707273,

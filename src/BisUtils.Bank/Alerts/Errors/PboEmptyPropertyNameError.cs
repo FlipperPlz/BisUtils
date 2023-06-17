@@ -1,14 +1,11 @@
 ﻿namespace BisUtils.Bank.Alerts.Errors;
 
-using BisUtils.Bank.Model;
 using FResults.Reasoning;
+using Model;
 
 public class PboEmptyPropertyNameError : ErrorBase
 {
     public static readonly PboEmptyPropertyNameError Instance = new();
-
-    public static PboEmptyPropertyNameError CreateInstanceWithData(Dictionary<string, object> metadata) =>
-        new() { Metadata = metadata };
 
     private PboEmptyPropertyNameError()
     {
@@ -32,4 +29,6 @@ public class PboEmptyPropertyNameError : ErrorBase
         set => throw new NotSupportedException();
     }
 
+    public static PboEmptyPropertyNameError CreateInstanceWithData(Dictionary<string, object> metadata) =>
+        new() { Metadata = metadata };
 }

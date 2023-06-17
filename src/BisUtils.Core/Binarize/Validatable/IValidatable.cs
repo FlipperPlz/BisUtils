@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Core.Binarize.Validatable;
 
-using BisUtils.Core.Options;
+using Core.Options;
 using FResults;
 
 public interface IValidatable<in T> where T : IBisOptions

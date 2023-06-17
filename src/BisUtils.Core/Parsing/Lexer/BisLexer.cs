@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Core.Parsing;
+﻿namespace BisUtils.Core.Parsing.Lexer;
 
 public abstract class BisLexer : BisStringStepper
 {

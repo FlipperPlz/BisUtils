@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.Core.Binarize;
 
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.IO;
 using FResults;
+using IO;
+using Options;
 
 public interface IDebinarizable<in TDebinarizationOptions> where TDebinarizationOptions : IBinarizationOptions
 {

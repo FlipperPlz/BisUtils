@@ -1,3 +1,5 @@
 ﻿namespace BisUtils.Core.Options;
 
-public interface IBisOptions {}
+public interface IBisOptions
+{
+}

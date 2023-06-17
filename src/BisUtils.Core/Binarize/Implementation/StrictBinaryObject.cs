@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.Core.Binarize.Implementation;
 
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.IO;
 using FResults;
+using IO;
+using Options;
 
 public abstract class StrictBinaryObject<T> : BinaryObject<T>, IStrictBinaryObject<T> where T : IBinarizationOptions
 {

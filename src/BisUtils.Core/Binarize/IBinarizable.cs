@@ -1,9 +1,9 @@
 ﻿namespace BisUtils.Core.Binarize;
 
-using BisUtils.Core.Binarize.Options;
-using BisUtils.Core.Binarize.Utils;
-using BisUtils.Core.IO;
 using FResults;
+using IO;
+using Options;
+using Utils;
 
 public interface IBinarizable<in TBinarizationOptions> : ICachedResult where TBinarizationOptions : IBinarizationOptions
 {

@@ -1,8 +1,8 @@
-﻿using System.Text;
-using BisUtils.Core.Binarize.Utils;
-using BisUtils.Core.Options;
+﻿namespace BisUtils.Core.Binarize.Options;
 
-namespace BisUtils.Core.Binarize.Options;
+using System.Text;
+using Core.Options;
+using Utils;
 
 public interface IBinarizationOptions : IBisOptions
 {

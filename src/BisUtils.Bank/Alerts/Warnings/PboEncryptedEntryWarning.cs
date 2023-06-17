@@ -1,11 +1,10 @@
 ﻿namespace BisUtils.Bank.Alerts.Warnings;
 
-using BisUtils.Bank.Model.Entry;
 using FResults.Reasoning;
+using Model.Entry;
 
 public class PboEncryptedEntryWarning : WarningBase
 {
-
     public PboEncryptedEntryWarning(bool isError = true)
     {
         IsError = isError;

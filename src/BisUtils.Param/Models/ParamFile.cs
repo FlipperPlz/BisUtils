@@ -9,5 +9,4 @@ public interface IParamFile : IParamElement, IFamilyNode
 
 public class ParamFile
 {
-
 }

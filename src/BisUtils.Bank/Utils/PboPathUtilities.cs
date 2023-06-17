@@ -15,7 +15,8 @@ public static class PboPathUtilities
 
         foreach (var c in path)
         {
-            if(c is '/' or '\\') {
+            if (c is '/' or '\\')
+            {
                 if (lastWasSeparator)
                 {
                     continue; // Skip if the last character was a seperator.
@@ -31,7 +32,7 @@ public static class PboPathUtilities
             result[charsWritten++] = char.ToLowerInvariant(c);
         }
 
-        if(charsWritten > 0 && result[charsWritten - 1] == '\\')
+        if (charsWritten > 0 && result[charsWritten - 1] == '\\')
         {
             charsWritten--;
         }

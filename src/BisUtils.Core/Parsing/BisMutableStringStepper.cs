@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿namespace BisUtils.Core.Parsing;
 
-namespace BisUtils.Core.Parsing;
+using System.Text.RegularExpressions;
 
 public class BisMutableStringStepper : BisStringStepper
 {
@@ -38,6 +38,4 @@ public class BisMutableStringStepper : BisStringStepper
     public void ReplaceAll(string from, string to) => Content = Content.Replace(from, to);
 
     public void ReplaceAll(Regex from, string to) => Content = from.Replace(Content, to);
-
-
 }

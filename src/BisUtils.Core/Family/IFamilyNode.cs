@@ -2,5 +2,5 @@
 
 public interface IFamilyNode : IFamilyParent
 {
-    IFamilyNode? IFamilyMember.Node =>  this;
+    IFamilyNode? IFamilyMember.Node => this;
 }

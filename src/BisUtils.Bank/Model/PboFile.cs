@@ -1,15 +1,15 @@
 ﻿namespace BisUtils.Bank.Model;
 
 using System.Diagnostics;
-using BisUtils.Bank.Model.Entry;
-using BisUtils.Bank.Model.Stubs;
-using BisUtils.Core.Family;
-using BisUtils.Core.IO;
-using BisUtils.Core.Binarize.Exceptions;
+using Core.Binarize.Exceptions;
+using Core.Family;
+using Core.IO;
+using Entry;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
+using Stubs;
 using Utils;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
@@ -20,7 +20,8 @@ public interface IPboFile : IPboDirectory, IFamilyNode
 
 public class PboFile : PboDirectory, IPboFile
 {
-    public PboFile(List<IPboEntry> children) : base(null, null, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
+    public PboFile(List<IPboEntry> children) :
+        base(null, null, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
     {
     }
 
@@ -46,7 +47,7 @@ public class PboFile : PboDirectory, IPboFile
         {
             var start = reader.BaseStream.Position;
             responses.Add(reader.SkipAsciiZ(options));
-            var mime = (PboEntryMime?) reader.ReadInt64();
+            var mime = (PboEntryMime?)reader.ReadInt64();
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
             IPboEntry currentEntry = mime switch
             {
@@ -74,7 +75,7 @@ public class PboFile : PboDirectory, IPboFile
 
             if (currentEntry is IPboDataEntry && currentEntry.IsDummyEntry())
             {
-                if(options.AlwaysSeparateOnDummy)
+                if (options.AlwaysSeparateOnDummy)
                 {
                     break;
                 }
@@ -88,7 +89,7 @@ public class PboFile : PboDirectory, IPboFile
             }
 
             responses.Add(response);
-            if(currentEntry.Parent == this)
+            if (currentEntry.Parent == this)
             {
                 PboEntries.Add(currentEntry);
             }
@@ -118,5 +119,4 @@ public class PboFile : PboDirectory, IPboFile
 
     public override Result Validate(PboOptions options) =>
         Result.Merge(base.Validate(options));
-
 }

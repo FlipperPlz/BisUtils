@@ -1,11 +1,10 @@
 ﻿namespace BisUtils.Bank.Alerts.Warnings;
 
-using BisUtils.Bank.Model.Stubs;
 using FResults.Reasoning;
+using Model.Stubs;
 
 public class PboImproperMimeWarning : WarningBase
 {
-
     public PboImproperMimeWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;

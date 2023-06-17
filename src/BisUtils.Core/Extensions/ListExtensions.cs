@@ -8,6 +8,7 @@ public static class ListExtensions
         {
             return list[index];
         }
+
         return null;
     }
 }

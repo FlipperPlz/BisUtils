@@ -1,11 +1,10 @@
 ﻿namespace BisUtils.Bank.Alerts.Warnings;
 
-using BisUtils.Bank.Model.Stubs;
 using FResults.Reasoning;
+using Model.Stubs;
 
 public class PboNamedVersionEntryWarning : WarningBase
 {
-
     public PboNamedVersionEntryWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;
