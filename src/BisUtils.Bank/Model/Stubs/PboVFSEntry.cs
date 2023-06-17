@@ -4,6 +4,7 @@ using System.Diagnostics;
 using BisUtils.Core.Family;
 using BisUtils.Core.IO;
 using FResults;
+using Options;
 
 public interface IPboVFSEntry : IPboElement, IFamilyChild
 {

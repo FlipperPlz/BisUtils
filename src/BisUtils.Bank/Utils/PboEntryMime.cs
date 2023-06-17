@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Bank;
+﻿namespace BisUtils.Bank.Utils;
 
 public enum PboEntryMime : int
 {

@@ -1,9 +1,10 @@
-﻿using System.Text;
+﻿namespace BisUtils.Bank.Options;
+
+using System.Text;
 using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.Binarize.Utils;
 using BisUtils.Core.Options;
-
-namespace BisUtils.Bank;
+using Utils;
 
 public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
 {

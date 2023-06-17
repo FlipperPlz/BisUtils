@@ -8,6 +8,7 @@ using BisUtils.Core.Cloning;
 using BisUtils.Core.Family;
 using BisUtils.Core.IO;
 using FResults;
+using Options;
 
 public interface IPboProperty : IFamilyChild, IPboElement, IBisCloneable<IPboProperty>
 {

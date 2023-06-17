@@ -9,6 +9,8 @@ using BisUtils.Core.Binarize.Exceptions;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Options;
+using Utils;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
 {

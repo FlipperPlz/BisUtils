@@ -10,6 +10,8 @@ using BisUtils.Core.Cloning;
 using BisUtils.Core.Family;
 using FResults;
 using FResults.Extensions;
+using Options;
+using Utils;
 
 public interface IPboVersionEntry : IPboEntry, IFamilyParent, IBisCloneable<IPboVersionEntry>
 {

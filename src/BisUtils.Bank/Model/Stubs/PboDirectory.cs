@@ -5,6 +5,7 @@ using BisUtils.Core.Family;
 using BisUtils.Core.IO;
 using Entry;
 using FResults;
+using Options;
 using Utils;
 
 public interface IPboDirectory : IPboEntry, IFamilyParent

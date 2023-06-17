@@ -3,6 +3,8 @@
 using System.Diagnostics;
 using BisUtils.Core.IO;
 using FResults;
+using Options;
+using Utils;
 
 public interface IPboEntry : IPboVFSEntry
 {
