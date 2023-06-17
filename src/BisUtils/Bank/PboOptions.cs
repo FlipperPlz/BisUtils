@@ -9,7 +9,7 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
 {
     public Encoding Charset { get; set; } = Encoding.UTF8;
     public Endianness ByteOrder { get; set; } = Endianness.Little;
-    public PboSection CurrentSection { get; set; } = PboSection.Header;
+    public PboSection CurrentSection { get; set; } = PboSection.NotApplicable;
     public int AsciiLengthTimeout { get; set; } = 250;
     public TimeSpan DecompressionTimeout { get; set; } = TimeSpan.FromMinutes(1);
     public bool IgnoreValidation { get; set; } //= false;

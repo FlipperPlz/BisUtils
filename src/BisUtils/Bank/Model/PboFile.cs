@@ -35,6 +35,7 @@ public class PboFile : PboDirectory, IPboFile
     {
         var responses = new List<Result>();
         var first = true;
+        options.CurrentSection = PboSection.Header;
 
         do
         {
@@ -89,6 +90,8 @@ public class PboFile : PboDirectory, IPboFile
         //INITIALIZE ENTRY DATA
 
         options.CurrentSection = PboSection.Signature;
+
+        options.CurrentSection = PboSection.Finished;
         return Result.Merge(responses);
     }
 

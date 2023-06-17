@@ -23,10 +23,14 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public void ExpandDirectoryStructure()
     {
+
         ArgumentNullException.ThrowIfNull(PboFile, "When expanding a Pbo Entry, The node must be established");
 
-        EntryName = PboPathUtilities.NormalizePboPath(EntryName);
+        var normalizePath = PboPathUtilities.NormalizePboPath(EntryName);
 
+        EntryName = PboPathUtilities.GetFilename(normalizePath);
+        ParentDirectory = PboFile.CreateDirectory(PboPathUtilities.GetParent(normalizePath));
+        ParentDirectory.PboEntries.Add(this);
     }
 
     public PboDataEntry

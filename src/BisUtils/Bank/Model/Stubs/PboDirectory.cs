@@ -28,6 +28,8 @@ public interface IPboDirectory : IPboEntry, IFamilyParent
     IEnumerable<IFamilyMember> IFamilyParent.Children => VfsEntries;
 
     IPboDirectory? GetDirectory(string name);
+
+    IPboDirectory CreateDirectory(string name);
 }
 
 public class PboDirectory : PboVFSEntry, IPboDirectory
@@ -50,6 +52,21 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
 
     public IPboDirectory? GetDirectory(string name) =>
         Directories.FirstOrDefault(e => e.EntryName == name);
+
+    public IPboDirectory CreateDirectory(string name)
+    {
+        var split = name.Split('\\', 2);
+
+        if (GetDirectory(split[0]) is { } i)
+        {
+            return i.CreateDirectory(split[1]);
+        }
+
+        var directory = new PboDirectory(PboFile, this, new List<IPboEntry>(), split[0]);
+        PboEntries.Add(directory);
+
+        return directory.CreateDirectory(split[1]);
+    }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options) => LastResult = Result.Merge
     (

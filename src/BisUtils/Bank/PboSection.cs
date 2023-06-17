@@ -2,7 +2,9 @@
 
 public enum PboSection
 {
+    NotApplicable,
     Header,
     Data,
-    Signature
+    Signature,
+    Finished
 }
