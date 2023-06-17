@@ -2,20 +2,39 @@
 
 using BisUtils.Core.Family;
 using BisUtils.Core.IO;
+using Entry;
 using FResults;
 
-public interface IPboDirectory : IPboVFSEntry, IFamilyParent
+public interface IPboDirectory : IPboEntry, IFamilyParent
 {
     List<IPboEntry> PboEntries { get; }
 
-    IEnumerable<PboVFSEntry> VfsEntries => PboEntries.OfType<PboVFSEntry>().ToList();
+    int IPboEntry.OriginalSize => PboEntries.Sum(e => e.OriginalSize);
+
+    int IPboEntry.Offset => throw new NotSupportedException();
+
+    int IPboEntry.TimeStamp => throw new NotSupportedException();
+
+    int IPboEntry.DataSize => PboEntries.Sum(e => e.DataSize);
+
+    PboEntryMime IPboEntry.EntryMime => throw new NotSupportedException();
+
+    IEnumerable<IPboDataEntry> FileEntries { get;  }
+
+    IEnumerable<IPboDirectory> Directories { get; }
+
+    IEnumerable<IPboVFSEntry> VfsEntries => PboEntries.OfType<IPboVFSEntry>().ToList();
 
     IEnumerable<IFamilyMember> IFamilyParent.Children => VfsEntries;
+
+    IPboDirectory? GetDirectory(string name);
 }
 
 public class PboDirectory : PboVFSEntry, IPboDirectory
 {
     public List<IPboEntry> PboEntries { get; set; } = new();
+    public IEnumerable<IPboDataEntry> FileEntries => PboEntries.OfType<IPboDataEntry>();
+    public IEnumerable<IPboDirectory> Directories => PboEntries.OfType<IPboDirectory>();
 
     public PboDirectory(
         IPboFile? file,
@@ -27,6 +46,10 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
     protected PboDirectory(BisBinaryReader reader, PboOptions options) : base(reader, options)
     {
     }
+
+
+    public IPboDirectory? GetDirectory(string name) =>
+        Directories.FirstOrDefault(e => e.EntryName == name);
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options) => LastResult = Result.Merge
     (

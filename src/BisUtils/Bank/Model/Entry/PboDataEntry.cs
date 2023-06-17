@@ -8,6 +8,7 @@ using BisUtils.Bank.Model.Stubs;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Utils;
 
 public interface IPboDataEntry : IPboEntry
 {
@@ -19,7 +20,14 @@ public interface IPboDataEntry : IPboEntry
 public class PboDataEntry : PboEntry, IPboDataEntry
 {
     public Stream EntryData { get; set; } = Stream.Null;
-    public void ExpandDirectoryStructure() => throw new NotImplementedException();
+
+    public void ExpandDirectoryStructure()
+    {
+        ArgumentNullException.ThrowIfNull(PboFile, "When expanding a Pbo Entry, The node must be established");
+
+        EntryName = PboPathUtilities.NormalizePboPath(EntryName);
+
+    }
 
     public PboDataEntry
     (
