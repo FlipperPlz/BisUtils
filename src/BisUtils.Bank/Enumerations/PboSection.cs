@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Bank.Utils;
+﻿namespace BisUtils.Bank.Enumerations;
 
 public enum PboSection
 {

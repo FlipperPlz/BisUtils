@@ -5,6 +5,7 @@ using Core.Binarize.Exceptions;
 using Core.Family;
 using Core.IO;
 using Entry;
+using Enumerations;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;

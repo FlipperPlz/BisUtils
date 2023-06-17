@@ -4,6 +4,7 @@ using System.Text;
 using Core.Binarize.Options;
 using Core.Binarize.Utils;
 using Core.Options;
+using Enumerations;
 using Utils;
 
 public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions

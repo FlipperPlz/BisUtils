@@ -7,6 +7,7 @@ using Core.Binarize.Exceptions;
 using Core.Cloning;
 using Core.Family;
 using Core.IO;
+using Enumerations;
 using FResults;
 using FResults.Extensions;
 using Options;

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Alerts.Warnings;
 using Core.Binarize.Exceptions;
 using Core.IO;
+using Enumerations;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
