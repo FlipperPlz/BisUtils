@@ -18,7 +18,7 @@ public interface IParamStatementHolder : IParamElement
            return builder;
        }
 
-       public string StatementsText(ParamOptions options) =>
+       string StatementsText(ParamOptions options) =>
            WriteParam(options).ToString();
 }
 
