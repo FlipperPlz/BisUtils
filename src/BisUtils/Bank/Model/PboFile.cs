@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Bank.Model;
 
+using System.Diagnostics;
 using BisUtils.Bank.Model.Entry;
 using BisUtils.Bank.Model.Stubs;
 using BisUtils.Core.Family;
@@ -14,7 +15,6 @@ public interface IPboFile : IPboDirectory, IFamilyNode
     IFamilyNode? IFamilyMember.Node => PboFile;
     IEnumerable<IFamilyMember> IFamilyParent.Children => PboEntries;
 }
-
 
 public class PboFile : PboDirectory, IPboFile
 {
@@ -33,6 +33,7 @@ public class PboFile : PboDirectory, IPboFile
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
         var responses = new List<Result>();
         var first = true;
         options.CurrentSection = PboSection.Header;
@@ -83,7 +84,10 @@ public class PboFile : PboDirectory, IPboFile
             }
 
             responses.Add(response);
-            PboEntries.Add(currentEntry);
+            if(currentEntry.Parent == this)
+            {
+                PboEntries.Add(currentEntry);
+            }
         } while (true);
 
         options.CurrentSection = PboSection.Data;
@@ -92,7 +96,11 @@ public class PboFile : PboDirectory, IPboFile
         options.CurrentSection = PboSection.Signature;
 
         options.CurrentSection = PboSection.Finished;
-        return Result.Merge(responses);
+        LastResult = Result.Merge(responses);
+
+        watch.Stop();
+        Console.WriteLine($"(PboFile::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return LastResult;
     }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)

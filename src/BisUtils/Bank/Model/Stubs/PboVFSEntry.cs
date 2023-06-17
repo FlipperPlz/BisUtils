@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
+using System.Diagnostics;
 using BisUtils.Core.Family;
 using BisUtils.Core.IO;
 using FResults;
@@ -10,15 +11,17 @@ public interface IPboVFSEntry : IPboElement, IFamilyChild
 
     string EntryName { get; }
 
-    string Path => ParentDirectory?.Path + "\\" + EntryName;
+    string Path { get; }
 
-    string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
+    string AbsolutePath { get; }
 
     IFamilyParent? IFamilyChild.Parent => ParentDirectory;
 }
 
 public abstract class PboVFSEntry : PboElement, IPboVFSEntry
 {
+    public string Path => ParentDirectory?.Path + "\\" + EntryName;
+    public string AbsolutePath => ParentDirectory?.AbsolutePath + "\\" + EntryName;
     public IPboDirectory? ParentDirectory { get; set; }
     private string entryName = string.Empty;
     public string EntryName { get => entryName; set => entryName = value; }
@@ -33,12 +36,25 @@ public abstract class PboVFSEntry : PboElement, IPboVFSEntry
     {
     }
 
-    public override Result Debinarize(BisBinaryReader reader, PboOptions options) =>
+    public override Result Debinarize(BisBinaryReader reader, PboOptions options)
+    {
+        var watch = Stopwatch.StartNew();
         LastResult = reader.ReadAsciiZ(out entryName, options);
+
+        watch.Stop();
+        Console.WriteLine($"(PboVFSEntry::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return LastResult;
+    }
+
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
         writer.WriteAsciiZ(entryName, options);
-        return LastResult = Result.ImmutableOk();
+        LastResult = Result.ImmutableOk();
+
+        watch.Stop();
+        Console.WriteLine($"(PboVFSEntry::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return LastResult;
     }
 }

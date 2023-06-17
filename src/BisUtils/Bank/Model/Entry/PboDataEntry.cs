@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Entry;
 
+using System.Diagnostics;
 using BisUtils.Bank.Alerts.Warnings;
 using BisUtils.Core.Binarize.Exceptions;
 using BisUtils.Core.IO;
@@ -23,14 +24,23 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public void ExpandDirectoryStructure()
     {
-
+        var watch = Stopwatch.StartNew();
         ArgumentNullException.ThrowIfNull(PboFile, "When expanding a Pbo Entry, The node must be established");
 
-        var normalizePath = PboPathUtilities.NormalizePboPath(EntryName);
+        var normalizePath = EntryName = PboPathUtilities.NormalizePboPath(EntryName);
 
-        EntryName = PboPathUtilities.GetFilename(normalizePath);
-        ParentDirectory = PboFile.CreateDirectory(PboPathUtilities.GetParent(normalizePath));
+        if (!EntryName.Contains('\\'))
+        {
+            return;
+        }
+
+        EntryName = PboPathUtilities.GetFilename(EntryName);
+
+        ParentDirectory = PboFile.CreateDirectory(PboPathUtilities.GetParent(normalizePath), PboFile);
         ParentDirectory.PboEntries.Add(this);
+
+        watch.Stop();
+        Console.WriteLine($"(ExpandDirectoryStructure) Execution Time: {watch.ElapsedMilliseconds} ms");
     }
 
     public PboDataEntry
@@ -58,17 +68,25 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
+
         LastResult = base.Binarize(writer, options);
         writer.Write((long) EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboDataEntry::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
         return LastResult;
     }
 
     public sealed override Result Validate(PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
+
         LastResult = Result.Ok();
 
         switch (EntryMime)
@@ -122,11 +140,18 @@ public class PboDataEntry : PboEntry, IPboDataEntry
                 IsError = !options.IgnoreInvalidStreamSize
             });
         }
+
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboDataEntry::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
         return LastResult;
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
+
         LastResult = base.Debinarize(reader, options);
         EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
         OriginalSize = reader.ReadInt32();
@@ -138,6 +163,11 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         {
             LastResult = Result.Merge(LastResult, Validate(options));
         }
+
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboDataEntry::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
 
         return LastResult;
     }

@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Entry;
 
+using System.Diagnostics;
 using BisUtils.Bank.Model.Stubs;
 using BisUtils.Bank.Alerts.Errors;
 using BisUtils.Bank.Alerts.Warnings;
@@ -50,6 +51,8 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
 
     public Result ReadPboProperties(BisBinaryReader reader, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
+
         var results = new List<Result>();
         var property = new PboProperty(PboFile, this, string.Empty, string.Empty);
         Result result;
@@ -78,46 +81,86 @@ public class PboVersionEntry : PboEntry, IPboVersionEntry
         {
             results.Add(Validate(options));
         }
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboVersionEntry::ReadPboProperties) Execution Time: {watch.ElapsedMilliseconds} ms");
+
         return LastResult = Result.Merge(results);
     }
 
-    public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options) =>
+    public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
+    {
+        var watch = Stopwatch.StartNew();
         LastResult = Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboVersionEntry::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+
+        return LastResult;
+    }
+
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
         LastResult = base.Debinarize(reader, options);
         EntryMime = (PboEntryMime) reader.ReadInt32();// TODO WARN/ERROR then recover
         OriginalSize = reader.ReadInt32();
         TimeStamp = reader.ReadInt32();
         Offset = reader.ReadInt32();
         DataSize = reader.ReadInt32();
-        return LastResult = Result.Merge(LastResult, ReadPboProperties(reader, options));
+        LastResult = Result.Merge(LastResult, ReadPboProperties(reader, options));
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboVersionEntry::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+
+        return LastResult;
     }
 
 
 
     public Result WritePboProperties(BisBinaryWriter writer, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
         LastResult = Result.Merge(Properties.Select(p => p.Binarize(writer, options)));
         writer.Write((byte) 0);
+
+        watch.Stop();
+
+        Console.WriteLine($"(PboVersionEntry::WritePboProperties) Execution Time: {watch.ElapsedMilliseconds} ms");
+
         return LastResult;
     }
 
-    public sealed override Result Validate(PboOptions options) => Result.Merge(new List<Result>
+    public sealed override Result Validate(PboOptions options)
     {
-        EntryMime is not PboEntryMime.Version
-            ? Result.Ok().WithWarning(new PboImproperMimeWarning(options.RequireVersionMimeOnVersion, typeof(PboVersionEntry)))
-            : Result.ImmutableOk(),
+        var watch = Stopwatch.StartNew();
+        LastResult = Result.Merge(new List<Result>
+        {
+            EntryMime is not PboEntryMime.Version
+                ? Result.Ok()
+                    .WithWarning(new PboImproperMimeWarning(options.RequireVersionMimeOnVersion,
+                        typeof(PboVersionEntry)))
+                : Result.ImmutableOk(),
+            !IsEmptyMeta()
+                ? Result.Ok()
+                    .WithWarning(new PboImproperMetaWarning(options.RequireEmptyVersionMeta, typeof(PboVersionEntry)))
+                : Result.ImmutableOk(),
+            EntryName != string.Empty
+                ? Result.Ok()
+                    .WithWarning(new PboNamedVersionEntryWarning(options.RequireVersionNotNamed,
+                        typeof(PboVersionEntry)))
+                : Result.ImmutableOk()
+        });
 
-        !IsEmptyMeta()
-            ? Result.Ok().WithWarning(new PboImproperMetaWarning(options.RequireEmptyVersionMeta, typeof(PboVersionEntry)))
-            : Result.ImmutableOk(),
+        watch.Stop();
 
-        EntryName != string.Empty
-            ? Result.Ok().WithWarning(new PboNamedVersionEntryWarning(options.RequireVersionNotNamed, typeof(PboVersionEntry)))
-            : Result.ImmutableOk()
-    });
+        Console.WriteLine($"(PboVersionEntry::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return LastResult;
+    }
 
     public IPboVersionEntry BisClone() => new PboVersionEntry(PboFile, EntryName, EntryMime, OriginalSize, Offset, TimeStamp, DataSize, Properties);
 }

@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
+using System.Diagnostics;
 using BisUtils.Core.IO;
 using FResults;
 
@@ -11,15 +12,27 @@ public interface IPboEntry : IPboVFSEntry
     int TimeStamp { get; }
     int DataSize { get; }
 
-    bool IsEmptyMeta() =>
-        OriginalSize == 0 &&
-        Offset == 0 &&
-        TimeStamp == 0 &&
-        DataSize == 0;
+    bool IsEmptyMeta()
+    {
+        var watch = Stopwatch.StartNew();
+        var ret =
+            OriginalSize == 0 &&
+            Offset == 0 &&
+            TimeStamp == 0 &&
+            DataSize == 0;
+        watch.Stop();
+        Console.WriteLine($"(IPboEntry::IsEmptyMeta) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return ret;
+    }
 
-    bool IsDummyEntry() =>
-        IsEmptyMeta() &&
-        EntryName == "";
+    bool IsDummyEntry()
+    {
+        var watch = Stopwatch.StartNew();
+        var ret = IsEmptyMeta() && EntryName == "";
+        watch.Stop();
+        Console.WriteLine($"(IPboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return ret;
+    }
 
 }
 
@@ -53,13 +66,26 @@ public abstract class PboEntry : PboVFSEntry
     {
     }
 
-    public bool IsEmptyMeta() =>
-        OriginalSize == 0 &&
-        Offset == 0 &&
-        TimeStamp == 0 &&
-        DataSize == 0;
+    public bool IsEmptyMeta()
+    {
+        var watch = Stopwatch.StartNew();
+        var ret =
+            OriginalSize == 0 &&
+            Offset == 0 &&
+            TimeStamp == 0 &&
+            DataSize == 0;
+        watch.Stop();
+        Console.WriteLine($"(PboEntry::IsEmptyMeta) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return ret;
+    }
 
-    public bool IsDummyEntry() =>
-        IsEmptyMeta() &&
-        EntryName == "";
+    public bool IsDummyEntry()
+    {
+        var watch = Stopwatch.StartNew();
+        var ret = IsEmptyMeta() && EntryName == "";
+        watch.Stop();
+        Console.WriteLine($"(PboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return ret;
+    }
+
 }

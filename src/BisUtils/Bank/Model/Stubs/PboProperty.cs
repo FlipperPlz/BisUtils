@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Bank.Model.Stubs;
 
+using System.Diagnostics;
 using BisUtils.Bank.Alerts.Errors;
 using BisUtils.Bank.Model.Entry;
 using BisUtils.Core.Binarize.Exceptions;
@@ -58,14 +59,25 @@ public class PboProperty : PboElement, IPboProperty
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
+        var watch = Stopwatch.StartNew();
         var result = reader.ReadAsciiZ(out name, options);
-        return LastResult = (name.Length == 0
+        LastResult = name.Length == 0
             ? Result.Fail(PboEmptyPropertyNameError.Instance)
-            : Result.Merge(result, reader.ReadAsciiZ(out value, options), Validate(options)));
+            : Result.Merge(result, reader.ReadAsciiZ(out value, options), Validate(options));
+
+        watch.Stop();
+        Console.WriteLine($"(PboProperty::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return LastResult;
     }
 
-    public override Result Validate(PboOptions options) =>
+    public override Result Validate(PboOptions options)
+    {
+        var watch = Stopwatch.StartNew();
         LastResult = Result.FailIf(Name.Length == 0 || Value.Length == 0, PboEmptyPropertyNameError.Instance);
+        watch.Stop();
+        Console.WriteLine($"(PboProperty::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
+        return LastResult;
+    }
 
     public IPboProperty BisClone() => new PboProperty(PboFile, VersionEntry, name, value);
 }

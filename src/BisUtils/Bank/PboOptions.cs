@@ -19,7 +19,7 @@ public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool RequireFirstEntryIsVersion { get; set; } //= false;
     public bool WriteValidOffsets { get; set; } //= false;
     public bool AllowMultipleVersion { get; set; } //= false;
-    public bool FlatRead { get; set; } //= false;
+    public bool FlatRead { get; set; } = true; //= false;
     public bool AlwaysSeparateOnDummy { get; set; } = true;
     public bool AllowDuplicateFileNames { get; set; } //= false;
     public bool RegisterEmptyEntries { get; set; } = true;
