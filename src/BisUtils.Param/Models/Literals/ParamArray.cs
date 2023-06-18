@@ -23,13 +23,23 @@ public struct ParamArray : IParamArray
 
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
+        if (options.WriteLiteralId)
+        {
+            writer.Write(options.LiteralIdFoster(this));
+        }
+        else
+        {
+            options.WriteLiteralId = true;
+        }
+
         writer.WriteCompactInteger(ParamValue.Count);
-        //TODO Write contents
-        return LastResult = Result.ImmutableOk();
+
+        return Result.Merge(ParamValue.Select(v => v.Binarize(writer, options)));
     }
 
     public Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
+
         ParamValue = new List<IParamLiteralBase>(reader.ReadCompactInteger());
         //TODO
         return LastResult = Result.ImmutableOk();
@@ -40,6 +50,7 @@ public struct ParamArray : IParamArray
 
     public Result ToParam(out string str, ParamOptions options)
     {
+
         str = $"{{{string.Join(", ", ParamValue.Select(v => v.ToParam(options)))}}}";
         return LastResult = Result.Merge
         (

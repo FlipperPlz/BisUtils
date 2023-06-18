@@ -15,6 +15,8 @@ public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
     public Encoding Charset { get; set; } = Encoding.UTF8;
     public Endianness ByteOrder { get; set; } = Endianness.Little;
     public bool IgnoreValidation { get; set; }
+    public bool WriteLiteralId { get; set; }
+    public bool WriteStatementId { get; set; }
     public ParamLiteralIdFoster LiteralIdFoster { get; set; } = DefaultLiteralFoster;
     public ParamStatementIdFoster StatementIdFoster { get; set; } = DefaultStatementFoster;
 
