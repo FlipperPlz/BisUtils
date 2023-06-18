@@ -7,19 +7,11 @@ using Options;
 
 public interface IParamStatementHolder : IParamElement
 {
-       List<IParamStatement> Statements { get; }
-
-       Result WriteStatements(StringBuilder builder, ParamOptions options);
-
-       StringBuilder WriteStatements(ParamOptions options)
-       {
-           var builder = new StringBuilder();
-           WriteStatements(builder, options);
-           return builder;
-       }
-
-       string StatementsText(ParamOptions options) =>
-           WriteParam(options).ToString();
+    List<IParamStatement> Statements { get; }
+    Result WriteStatements(StringBuilder builder, ParamOptions options);
+    StringBuilder WriteStatements(out Result result, ParamOptions options);
+    Result GetStatements(out string str, ParamOptions options);
+    string GetStatements(ParamOptions options);
 }
 
 public abstract class ParamStatementHolder : ParamElement, IParamStatementHolder
@@ -35,20 +27,34 @@ public abstract class ParamStatementHolder : ParamElement, IParamStatementHolder
     {
     }
 
-    public override Result WriteParam(StringBuilder builder, ParamOptions options) =>
-        WriteStatements(builder, options);
+    public override Result ToParam(out string str, ParamOptions options) =>
+        GetStatements(out str, options);
 
-    public Result WriteStatements(StringBuilder builder, ParamOptions options) =>
-        Result.Merge(Statements.Select(e => e.WriteParam(builder, options)));
+    public Result GetStatements(out string str, ParamOptions options)
+    {
+        str = string.Join('\n', Statements.Select(s => s.ToParam(options)));
+        return Result.Ok();
+    }
+
+    public string GetStatements(ParamOptions options)
+    {
+        GetStatements(out var str, options);
+        return str;
+    }
 
 
-    public StringBuilder WriteStatements(ParamOptions options)
+    public Result WriteStatements(StringBuilder builder, ParamOptions options)
+    {
+        var result = ToParam(out var str, options);
+        builder.Append(str);
+        return result;
+    }
+
+    public StringBuilder WriteStatements(out Result result, ParamOptions options)
     {
         var builder = new StringBuilder();
-        WriteStatements(builder, options);
+        result = WriteParam(builder, options);
         return builder;
     }
 
-    public string StatementsText(ParamOptions options) =>
-        WriteParam(options).ToString();
 }

@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Param.Models.Stubs;
 
 using System.Text;
+using FResults;
 using Options;
 
 public interface IParamLiteralBase : IParamElement
@@ -14,13 +15,24 @@ public interface IParamLiteral<out T> : IParamLiteralBase
 
     T? ParamValue { get; }
 
-    StringBuilder IParamElement.WriteParam(ParamOptions options)
+    Result IParamElement.WriteParam(StringBuilder builder, ParamOptions options)
+    {
+        var result = ToParam(out var str, options);
+        builder.Append(str);
+        return result;
+    }
+
+    StringBuilder IParamElement.WriteParam(out Result result, ParamOptions options)
     {
         var builder = new StringBuilder();
-        WriteParam(builder, options);
+        result = WriteParam(builder, options);
         return builder;
     }
 
-    string IParamElement.ToParam(ParamOptions options) =>
-        WriteParam(options).ToString();
+    string IParamElement.ToParam(ParamOptions options)
+    {
+        ToParam(out var str, options);
+        return str;
+    }
+
 }

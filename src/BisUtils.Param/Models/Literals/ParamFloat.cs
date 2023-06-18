@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
-using System.Text;
+using System.Globalization;
 using Core.IO;
 using FResults;
 using Options;
@@ -17,12 +17,24 @@ public struct ParamFloat : IParamFloat
     public IParamFile? ParamFile { get; set; }
     public required float ParamValue { get; set; }
 
-    public Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
+    public Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        writer.Write(ParamValue);
+        return LastResult = Result.ImmutableOk();
+    }
 
-    public Result Validate(ParamOptions options) => throw new NotImplementedException();
+    public Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+        ParamValue = reader.ReadSingle();
+        return LastResult = Result.ImmutableOk();
+    }
 
-    public Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
+    public Result Validate(ParamOptions options) =>
+        LastResult = Result.ImmutableOk();
 
-    public Result WriteParam(StringBuilder builder, ParamOptions options) => throw new NotImplementedException();
-
+    public Result ToParam(out string str, ParamOptions options)
+    {
+        str = ParamValue.ToString("D", CultureInfo.CurrentCulture);
+        return LastResult = Result.ImmutableOk();
+    }
 }

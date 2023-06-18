@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
-using System.Text;
+using System.Globalization;
 using Core.IO;
 using FResults;
 using Options;
@@ -20,22 +20,22 @@ public struct ParamInt : IParamInt
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
         writer.Write(ParamValue);
-        return Result.ImmutableOk();
+        return LastResult = Result.ImmutableOk();
     }
 
     public Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         ParamValue = reader.ReadInt32();
-        return Result.ImmutableOk();
+        return LastResult = Result.ImmutableOk();
     }
 
-    public Result Validate(ParamOptions options) => Result.ImmutableOk();
+    public Result Validate(ParamOptions options) =>
+        LastResult = Result.ImmutableOk();
 
 
-    public Result WriteParam(StringBuilder builder, ParamOptions options)
+    public Result ToParam(out string str, ParamOptions options)
     {
-        builder.Append(ParamValue);
-        return Result.ImmutableOk();
+        str = ParamValue.ToString("D", CultureInfo.CurrentCulture);
+        return LastResult = Result.ImmutableOk();
     }
-
 }

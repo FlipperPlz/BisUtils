@@ -14,12 +14,17 @@ public interface IParamElement : IFamilyMember, IStrictBinaryObject<ParamOptions
     IFamilyNode? IFamilyMember.Node => ParamFile;
 
     Result WriteParam(StringBuilder builder, ParamOptions options);
-    StringBuilder WriteParam(ParamOptions options);
+    StringBuilder WriteParam(out Result result, ParamOptions options);
+    Result ToParam(out string str, ParamOptions options);
+
     string ToParam(ParamOptions options);
 }
 
 public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamElement
 {
+    public IParamFile? ParamFile { get; set; }
+    public IFamilyNode? Node => ParamFile;
+
     protected ParamElement(IParamFile? file) : base()
     {
     }
@@ -28,20 +33,26 @@ public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamEle
     {
     }
 
-    public IFamilyNode? Node => ParamFile;
-    public IParamFile? ParamFile { get; set; }
+    public abstract Result ToParam(out string str, ParamOptions options);
 
-    public abstract Result WriteParam(StringBuilder builder, ParamOptions options);
-
-    public StringBuilder WriteParam(ParamOptions options)
+    public string ToParam(ParamOptions options)
     {
-        var builder = new StringBuilder();
-        WriteParam(builder, options);
-        return builder;
+        ToParam(out var str, options);
+        return str;
     }
 
-    public string ToParam(ParamOptions options) =>
-        WriteParam(options).ToString();
 
+    public Result WriteParam(StringBuilder builder, ParamOptions options)
+    {
+        var result = ToParam(out var str, options);
+        builder.Append(str);
+        return result;
+    }
 
+    public StringBuilder WriteParam(out Result result, ParamOptions options)
+    {
+        var builder = new StringBuilder();
+        result = WriteParam(builder, options);
+        return builder;
+    }
 }
