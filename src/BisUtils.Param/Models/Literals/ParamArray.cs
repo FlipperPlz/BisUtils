@@ -1,6 +1,5 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
-using System.Text;
 using Core.IO;
 using FResults;
 using Options;
@@ -14,13 +13,27 @@ public interface IParamArray : IParamLiteral<List<IParamLiteralBase>>
 #pragma warning disable CA1716
 public struct ParamArray : IParamArray
 {
-    public IParamFile? ParamFile { get; set; }
-    public Result? LastResult { get; private set; }
-    public required List<IParamLiteralBase> ParamValue { get; set; }
+    public ParamArray()
+    {
+    }
 
-    public Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
+    public IParamFile? ParamFile { get; set; } = null;
+    public Result? LastResult { get; private set; } = null;
+    public required List<IParamLiteralBase> ParamValue { get; set; } = new();
 
-    public Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
+    public Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        writer.WriteCompactInteger(ParamValue.Count);
+        //TODO Write contents
+        return LastResult = Result.ImmutableOk();
+    }
+
+    public Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+        ParamValue = new List<IParamLiteralBase>(reader.ReadCompactInteger());
+        //TODO
+        return LastResult = Result.ImmutableOk();
+    }
 
     public Result Validate(ParamOptions options) =>
         LastResult = Result.Merge(ParamValue.Select(v => v.Validate(options)));
@@ -28,7 +41,7 @@ public struct ParamArray : IParamArray
     public Result ToParam(out string str, ParamOptions options)
     {
         str = $"{{{string.Join(", ", ParamValue.Select(v => v.ToParam(options)))}}}";
-        return Result.Merge
+        return LastResult = Result.Merge
         (
             ParamValue.Where(v => v.LastResult is not null)
                 .Select(v => v.LastResult!)

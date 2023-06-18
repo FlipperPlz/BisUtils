@@ -54,4 +54,20 @@ public class BisBinaryReader : BinaryReader
         read = stringBuffer.ToString();
         return Result.Ok();
     }
+
+    public int ReadCompactInteger()
+    {
+        var value = 0;
+        for (var i = 0;; ++i)
+        {
+            var v = ReadByte();
+            value |= v & (0x7F << (7 * i));
+            if((v & 0x80) == 0)
+            {
+                break;
+            }
+        }
+
+        return value;
+    }
 }

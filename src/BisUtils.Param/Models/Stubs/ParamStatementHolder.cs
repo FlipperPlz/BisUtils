@@ -1,27 +1,32 @@
 ﻿namespace BisUtils.Param.Models.Stubs;
 
 using System.Text;
+using Core.Family;
 using Core.IO;
 using FResults;
 using Options;
 
-public interface IParamStatementHolder : IParamElement
+public interface IParamStatementHolder : IParamElement, IFamilyParent
 {
+    IParamStatementHolder? ParentClass { get; }
     List<IParamStatement> Statements { get; }
     Result WriteStatements(StringBuilder builder, ParamOptions options);
     StringBuilder WriteStatements(out Result result, ParamOptions options);
     Result GetStatements(out string str, ParamOptions options);
     string GetStatements(ParamOptions options);
+
+
+    IFamilyParent? IFamilyChild.Parent => ParentClass;
+    IEnumerable<IFamilyMember> IFamilyParent.Children => Statements;
 }
 
 public abstract class ParamStatementHolder : ParamElement, IParamStatementHolder
 {
+    public IParamStatementHolder? ParentClass { get; set; }
+    public List<IParamStatement> Statements { get; set; } = new();
 
-    public List<IParamStatement> Statements { get; protected set; } = new();
-
-    protected ParamStatementHolder(IParamFile? file) : base(file)
-    {
-    }
+    protected ParamStatementHolder(IParamFile? file, IParamStatementHolder? parent) : base(file) =>
+        ParentClass = parent;
 
     protected ParamStatementHolder(BisBinaryReader reader, ParamOptions options) : base(reader, options)
     {

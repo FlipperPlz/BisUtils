@@ -41,7 +41,6 @@ public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamEle
         return str;
     }
 
-
     public Result WriteParam(StringBuilder builder, ParamOptions options)
     {
         var result = ToParam(out var str, options);
