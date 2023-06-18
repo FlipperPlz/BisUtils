@@ -15,7 +15,6 @@ public class ParamDelete : ParamStatement, IParamDelete
 {
     public string DeleteTargetName { get; set; } = "";
 
-
     public ParamDelete(IParamFile? file, IParamStatementHolder? parent, string target) : base(file, parent) =>
         DeleteTargetName = target;
 
@@ -23,14 +22,12 @@ public class ParamDelete : ParamStatement, IParamDelete
     {
     }
 
-
     public Result LocateDeleteTarget(out IParamExternalClass? clazz)
     {
-        //TODO
-
-        clazz = null;
+        clazz = null; //TODO
         return LastResult = Result.Fail($"Could not locate target '{DeleteTargetName}'of delete statement");
     }
+
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
     public override Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
