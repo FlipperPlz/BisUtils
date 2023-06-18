@@ -15,7 +15,7 @@ public struct ParamInt : IParamInt
 {
     public IParamFile? ParamFile { get; set; }
     public Result? LastResult { get; private set; }
-    public int ParamValue { get; set; }
+    public required int ParamValue { get; set; }
 
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
