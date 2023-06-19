@@ -1,6 +1,5 @@
-﻿namespace BisUtils.Bank.Model;
+namespace BisUtils.Bank.Model;
 
-using System.Diagnostics;
 using Core.Binarize.Exceptions;
 using Core.Family;
 using Core.IO;
@@ -11,7 +10,6 @@ using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
 using Stubs;
-using Utils;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
 {
@@ -37,9 +35,6 @@ public class PboFile : PboDirectory, IPboFile
 
     public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
     {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-#endif
         var responses = new List<Result>();
         var first = true;
         options.CurrentSection = PboSection.Header;
@@ -104,10 +99,6 @@ public class PboFile : PboDirectory, IPboFile
         options.CurrentSection = PboSection.Finished;
         LastResult = Result.Merge(responses);
 
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboFile::Debinarize) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
         return LastResult;
     }
 
