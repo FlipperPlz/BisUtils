@@ -61,6 +61,11 @@ public class RVPreProcessor : IRVPreProcessor
                     continue;
                 }
             }
+
+            if (lexer.Position == start)
+            {
+                lexer.MoveForward();
+            }
         }
 
         return Result.Merge(results);
