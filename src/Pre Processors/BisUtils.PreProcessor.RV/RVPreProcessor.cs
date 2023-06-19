@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.PreProcessor.RV;
 
 using Core.Parsing;
-using Core.Parsing.Lexer;
 using FResults;
 using Lexer;
 using Models.Directives;
@@ -25,5 +24,55 @@ public class RVPreProcessor : IRVPreProcessor
         IncludeLocator = includeLocator;
     }
 
-    public Result ProcessLexer(RVLexer lexer) => throw new NotImplementedException();
+    public Result ProcessLexer(RVLexer lexer)
+    {
+        var quoted = false;
+        var results = new List<Result>();
+        while (!lexer.IsEOF())
+        {
+            var start = lexer.Position;
+            if (lexer.CurrentChar == '"')
+            {
+                quoted = !quoted;
+            }
+
+            if (quoted)
+            {
+                lexer.MoveForward();
+                continue;
+            }
+
+            switch (lexer.CurrentChar)
+            {
+                case '/':
+                {
+                    results.Add(lexer.TraverseComment(out _, out _, true));
+                    continue;
+                }
+                case '#':
+                {
+                    switch (lexer.ReadWord())
+                    {
+                        case "include":
+                        {
+                            results.Add(RVIncludeDirective.ParseDirective(this, lexer, out var include));
+                            //include//.Process()
+                            break;
+                        }
+                        case "undefine":
+                        {
+                            lexer.TraverseWhitespace(out _, false, false, true, false);
+                            var undefine = new RVUndefineDirective(this, lexer.ReadWord());
+                            break;
+                        }
+                    }
+
+                    //Replace Directive
+                    continue;
+                }
+            }
+        }
+
+        return Result.Merge(results);
+    }
 }

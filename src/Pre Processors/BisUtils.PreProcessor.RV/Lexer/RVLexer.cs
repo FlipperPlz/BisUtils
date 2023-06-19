@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.PreProcessor.RV.Lexer;
 
+using System.Text;
 using Core.Parsing;
 using Core.Parsing.Errors;
 using FResults;
@@ -10,6 +11,7 @@ public class RVLexer : BisMutableStringStepper
 
     public RVLexer(string content) : base(content)
     {
+
     }
 
     public Result TraverseWhitespace(out int charCount, bool allowEOF = false, bool allowEOL = true, bool allowDirectiveEOL = true, bool includeComments = true)
@@ -184,5 +186,21 @@ public class RVLexer : BisMutableStringStepper
             commentText = null;
             return Result.ImmutableOk();
         }
+    }
+
+    public string ReadWord()
+    {
+        var builder = new StringBuilder();
+        while (MoveForward() != null)
+        {
+            if(CurrentChar is not {  } currentChar || Whitespaces.Contains(currentChar))
+            {
+                break;
+            }
+
+            builder.Append(CurrentChar);
+        }
+
+        return builder.ToString();
     }
 }

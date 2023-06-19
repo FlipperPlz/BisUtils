@@ -2,6 +2,7 @@
 
 using Elements;
 using FResults;
+using Lexer;
 using Stubs;
 
 public interface IRVIncludeDirective : IRVDirective
@@ -18,4 +19,11 @@ public class RVIncludeDirective : RVDirective, IRVIncludeDirective
         IncludeTarget = includeTarget;
 
     public override Result ToText(out string str) => throw new NotImplementedException();
+
+    public static Result ParseDirective(IRVPreProcessor processor, RVLexer lexer, out IRVIncludeDirective include)
+    {
+        var result = RVIncludeString.ParseString(processor, lexer, out var includeString);
+        include = new RVIncludeDirective(processor, includeString);
+        return result;
+    }
 }
