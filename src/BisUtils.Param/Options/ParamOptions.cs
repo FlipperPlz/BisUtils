@@ -29,12 +29,12 @@ public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
         _ => throw new NotSupportedException()
     };
 
-    private static byte DefaultLiteralFoster(IParamLiteralBase literal) => literal switch
+    private static byte DefaultLiteralFoster(Type literal) => literal switch
     {
-        ParamString => 0,
-        ParamFloat => 1,
-        ParamInt => 2,
-        ParamArray => 3,
+        not null when literal.IsAssignableTo(typeof(ParamString)) => 0,
+        not null when literal.IsAssignableTo(typeof(ParamFloat)) => 1,
+        not null when literal.IsAssignableTo(typeof(ParamInt)) => 2,
+        not null when literal.IsAssignableTo(typeof(ParamArray)) => 3,
         _ => throw new NotSupportedException()
     };
 

@@ -2,6 +2,7 @@
 
 using Core.IO;
 using FResults;
+using Helpers;
 using Options;
 using Stubs;
 
@@ -23,15 +24,7 @@ public struct ParamArray : IParamArray
 
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        if (options.WriteLiteralId)
-        {
-            writer.Write(options.LiteralIdFoster(this));
-        }
-        else
-        {
-            options.WriteLiteralId = true;
-        }
-
+        writer.Write(options.LiteralIdFoster(GetType()));
         writer.WriteCompactInteger(ParamValue.Count);
 
         return Result.Merge(ParamValue.Select(v => v.Binarize(writer, options)));
@@ -39,10 +32,15 @@ public struct ParamArray : IParamArray
 
     public Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
-
+        var results = new List<Result>();
         ParamValue = new List<IParamLiteralBase>(reader.ReadCompactInteger());
-        //TODO
-        return LastResult = Result.ImmutableOk();
+        for (var i = 0; i < ParamValue.Capacity; ++i)
+        {
+            results.Add(ParamLiteralDebinarizer.DebinarizeLiteral(out var literal, reader, options));
+            ParamValue.Add(literal);
+        }
+
+        return LastResult = Result.Merge(results);
     }
 
     public Result Validate(ParamOptions options) =>

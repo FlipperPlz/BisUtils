@@ -53,10 +53,8 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        if (options.WriteStatementId)
-        {
-            writer.Write(options.StatementIdFoster(this));
-        }
+        writer.Write(options.StatementIdFoster(this));
+
 
         return Result.Ok();
     }

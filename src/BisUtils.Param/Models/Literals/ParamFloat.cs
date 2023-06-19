@@ -19,11 +19,7 @@ public struct ParamFloat : IParamFloat
 
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        if (options.WriteLiteralId)
-        {
-            writer.Write(options.LiteralIdFoster(this));
-        }
-
+        writer.Write(options.LiteralIdFoster(GetType()));
         writer.Write(ParamValue);
         return LastResult = Result.ImmutableOk();
     }
