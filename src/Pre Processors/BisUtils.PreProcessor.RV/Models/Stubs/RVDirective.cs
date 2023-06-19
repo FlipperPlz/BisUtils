@@ -6,8 +6,6 @@ using Lexer;
 public interface IRVDirective : IRVElement
 {
     public string DirectiveName { get; }
-
-    Result Process(RVLexer lexer, int startPosition);
 }
 
 public abstract class RVDirective : RVElement, IRVDirective

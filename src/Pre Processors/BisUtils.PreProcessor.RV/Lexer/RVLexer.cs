@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.PreProcessor.RV.Lexer;
 
+using System.Collections.Immutable;
 using System.Text;
 using Core.Parsing;
 using Core.Parsing.Errors;
@@ -14,7 +15,8 @@ public class RVLexer : BisMutableStringStepper
 
     }
 
-    public Result TraverseWhitespace(out int charCount, bool allowEOF = false, bool allowEOL = true, bool allowDirectiveEOL = true, bool includeComments = true)
+    public Result TraverseWhitespace(out int charCount, bool allowEOF = false, bool allowEOL = true,
+        bool allowDirectiveEOL = true, bool includeComments = true)
     {
         charCount = 0;
         while (true)
@@ -34,13 +36,13 @@ public class RVLexer : BisMutableStringStepper
                 case null: goto CurrentIsNull;
                 case '\\':
                 {
-                    if(!allowDirectiveEOL)
+                    if (!allowDirectiveEOL)
                     {
                         break;
                     }
 
                     var next = PeekForward();
-                    if(next != '\r' && next != '\n')
+                    if (next != '\r' && next != '\n')
                     {
                         break;
                     }
@@ -50,7 +52,7 @@ public class RVLexer : BisMutableStringStepper
                 }
                 case '\r':
                 {
-                    if(!allowEOL)
+                    if (!allowEOL)
                     {
                         return BisEndOfLineError.Instance;
                     }
@@ -60,7 +62,7 @@ public class RVLexer : BisMutableStringStepper
                 }
                 case '\n':
                 {
-                    if(!allowEOL)
+                    if (!allowEOL)
                     {
                         return BisEndOfLineError.Instance;
                     }
@@ -71,7 +73,7 @@ public class RVLexer : BisMutableStringStepper
                 }
                 default:
                 {
-                    if(CurrentChar is {} current)
+                    if (CurrentChar is { } current)
                     {
                         if (!Whitespaces.Contains(current))
                         {
@@ -89,17 +91,21 @@ public class RVLexer : BisMutableStringStepper
                                 return result;
                             }
                         }
+
                         continue;
                     }
+
                     goto CurrentIsNull;
                 }
             }
+
             CurrentIsNull:
             {
                 if (!allowEOF)
                 {
                     return BisEndOfFileError.Instance;
                 }
+
                 break;
             }
         }
@@ -151,11 +157,11 @@ public class RVLexer : BisMutableStringStepper
             case '*':
             {
                 var length = instructionStart;
-                while (!(PreviousChar == '*' && CurrentChar =='/'))
+                while (!(PreviousChar == '*' && CurrentChar == '/'))
                 {
                     if (IsEOF())
                     {
-                        if(allowEOF)
+                        if (allowEOF)
                         {
                             break;
                         }
@@ -168,6 +174,7 @@ public class RVLexer : BisMutableStringStepper
                     charCount++;
                     MoveForward();
                 }
+
                 RemoveRange(instructionStart..length, out commentText);
                 JumpTo(instructionStart);
                 return Result.ImmutableOk();
@@ -182,7 +189,8 @@ public class RVLexer : BisMutableStringStepper
 
         }
 
-        NoComment: {
+        NoComment:
+        {
             commentText = null;
             return Result.ImmutableOk();
         }
@@ -193,7 +201,7 @@ public class RVLexer : BisMutableStringStepper
         var builder = new StringBuilder();
         while (MoveForward() != null)
         {
-            if(CurrentChar is not {  } currentChar || Whitespaces.Contains(currentChar))
+            if (CurrentChar is not { } currentChar || Whitespaces.Contains(currentChar))
             {
                 break;
             }
@@ -202,5 +210,72 @@ public class RVLexer : BisMutableStringStepper
         }
 
         return builder.ToString();
+    }
+
+
+    private static bool IsMacroChar(char? c) => c is { } notNullC && (char.IsLetter(notNullC) || notNullC == '_');
+
+    public string ReadMacroId(bool throwOnNone = false)
+    {
+        if (CurrentChar is { } currentChar && (char.IsLetter(currentChar) || currentChar == '_'))
+        {
+            var builder = new StringBuilder();
+            builder.Append(CurrentChar);
+            while (IsMacroChar(MoveForward()))
+            {
+                builder.Append(CurrentChar);
+            }
+
+            return builder.ToString();
+        }
+
+        if (throwOnNone)
+        {
+            throw new IOException();
+        }
+
+        return "";
+    }
+
+    public IEnumerable<string> ReadMacroArguments()
+    {
+        if(CurrentChar != '(')
+        {
+            return ImmutableArray<string>.Empty;
+        }
+
+        var builder = new StringBuilder();
+        var args = new List<string>();
+
+        while (true)
+        {
+            switch (CurrentChar)
+            {
+                case ',':
+                {
+                    if (builder.Length >= 1)
+                    {
+                        args.Add(builder.ToString());
+                        builder.Clear();
+                    }
+
+                    break;
+                }
+                case ')': break;
+                default:
+                {
+                    builder.Append(CurrentChar);
+                    break;
+                }
+            }
+            if(CurrentChar == ')')
+            {
+                break;
+            }
+
+            MoveForward();
+        }
+
+        return args;
     }
 }

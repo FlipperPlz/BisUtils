@@ -54,6 +54,8 @@ public class BisStringStepper
         return builder.ToString();
     }
 
+    public string GetRange(Range range) => Content[range];
+
     public string GetWhile(Func<BisStringStepper, bool> condition)
     {
         var builder = new StringBuilder();

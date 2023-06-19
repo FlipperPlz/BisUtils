@@ -53,7 +53,11 @@ public class RVPreProcessor : IRVPreProcessor
                 case '#':
                 {
                     results.Add(ParseDirective(lexer, out var directive));
-                    directive?.Process(lexer, start);
+                    if (directive != null)
+                    {
+                        results.Add(EvaluateDirective(directive, out var text));
+                        lexer.RemoveRange(start..lexer.Position, out _);
+                    }
                     continue;
                 }
             }
@@ -62,25 +66,48 @@ public class RVPreProcessor : IRVPreProcessor
         return Result.Merge(results);
     }
 
+    private Result EvaluateDirective(IRVDirective directive, out string evaluated)
+    {
+        throw new NotImplementedException();
+    }
+
     public Result ParseDirective(RVLexer lexer, out IRVDirective? directive)
     {
+        var results = new List<Result>();
+
         switch (lexer.ReadWord())
         {
             case "include":
             {
-                var result = RVIncludeDirective.ParseDirective(this, lexer, out var include);
+                results.Add(RVIncludeDirective.ParseDirective(this, lexer, out var include));
                 directive = include;
-                return result;
+                break;
             }
             case "undefine":
             {
-                lexer.TraverseWhitespace(out _, false, false, true, false);
+                results.Add(lexer.TraverseWhitespace(out _, false, false, true, false));
                 directive = new RVUndefineDirective(this, lexer.ReadWord());
-                return Result.ImmutableOk();
+                break;
+            }
+            case "define":
+            {
+                results.Add(lexer.TraverseWhitespace(out _, false, false, true, false));
+                var macroName = lexer.ReadMacroId(true);
+                var macroArguments = lexer.ReadMacroArguments().ToList();
+                results.Add(lexer.TraverseWhitespace(out _, false, false, true, false));
+                var start = lexer.Position;
+                results.Add(lexer.TraverseLine(out var lineLength, true, true));
+                var macroValue = lexer.GetRange(start..(start + lineLength));
+
+                directive = new RVDefineDirective(this, macroName, macroValue, macroArguments);
+                return Result.Merge(results);
             }
             default:
                 directive = null;
-                return Result.Fail("Invalid Directive");
+                results.Add(Result.Fail("Invalid Directive"));
+                break;
         }
+
+        return Result.Merge(results);
     }
 }
