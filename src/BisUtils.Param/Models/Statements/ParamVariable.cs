@@ -51,7 +51,15 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
         VariableValue = variableValue;
     }
 
-    public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        if (options.WriteStatementId)
+        {
+            writer.Write(options.StatementIdFoster(this));
+        }
+
+        return Result.Ok();
+    }
 
     public override Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
 

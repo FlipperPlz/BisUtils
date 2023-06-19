@@ -24,8 +24,14 @@ public struct ParamString : IParamString
     {
     }
 
+
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
+        if (options.WriteLiteralId)
+        {
+            writer.Write(options.LiteralIdFoster(this));
+        }
+
         writer.WriteAsciiZ(ParamValue, options);
         return LastResult = Result.ImmutableOk();
     }
