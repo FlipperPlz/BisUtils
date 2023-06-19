@@ -3,17 +3,25 @@
 using Core.Parsing;
 using FResults;
 using Models.Directives;
+using Utils;
 
 public interface IRVPreProcessor : IBisPreProcessor
 {
-    public List<IRVDefineDirective> MacroDefinitions { get; }
+    List<IRVDefineDirective> MacroDefinitions { get; }
+
+    RVIncludeFinder IncludeLocator { get; }
 }
 
 public class RVPreProcessor : IRVPreProcessor
 {
     public List<IRVDefineDirective> MacroDefinitions { get; }
+    public RVIncludeFinder IncludeLocator { get; }
 
-    public RVPreProcessor(List<IRVDefineDirective> macroDefinitions) => MacroDefinitions = macroDefinitions;
+    public RVPreProcessor(List<IRVDefineDirective> macroDefinitions, RVIncludeFinder includeLocator)
+    {
+        MacroDefinitions = macroDefinitions;
+        IncludeLocator = includeLocator;
+    }
 
     public Result ProcessLexer(BisMutableStringStepper lexer)
     {

@@ -1,7 +1,7 @@
-﻿namespace BisUtils.PreProcessor.RV.Models;
+﻿namespace BisUtils.PreProcessor.RV.Models.Elements;
 
+using BisUtils.PreProcessor.RV.Models.Stubs;
 using FResults;
-using Stubs;
 
 public interface IRVMacro : IRVElement
 {
