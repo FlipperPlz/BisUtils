@@ -56,7 +56,7 @@ public class RVPreProcessor : IRVPreProcessor
                     if (directive != null)
                     {
                         results.Add(EvaluateDirective(directive, out var text));
-                        lexer.RemoveRange(start..lexer.Position, out _);
+                        lexer.ReplaceRange(start..lexer.Position, text);
                     }
                     continue;
                 }
@@ -68,8 +68,54 @@ public class RVPreProcessor : IRVPreProcessor
 
     private Result EvaluateDirective(IRVDirective directive, out string evaluated)
     {
-        throw new NotImplementedException();
+        switch (directive)
+        {
+            case IRVIncludeDirective includeDirective:
+                return IncludeLocator(includeDirective, out evaluated);
+            case IRVDefineDirective macro:
+            {
+                evaluated = "";
+                MacroDefinitions.Add(macro);
+                return Result.ImmutableOk();
+            }
+            case IRVUndefineDirective undefineDirective:
+            {
+                evaluated = "";
+
+                var macro = FindMacro(undefineDirective.MacroName);
+                if (macro is null)
+                {
+                    return Result.Fail($"Couldn't locate macro named '{undefineDirective.MacroName}'");
+                }
+
+                MacroDefinitions.Remove(macro);
+                return Result.ImmutableOk();
+            }
+            case IRVIfNotDefinedDirective ifNotDefinedDirective:
+            {
+
+                evaluated = MacroDefinitions.All(e => e.MacroName != ifNotDefinedDirective.MacroName)
+                    ? ifNotDefinedDirective.IfBody
+                    : ifNotDefinedDirective.ElseBody ?? "";
+                return Result.Ok();
+            }
+            case IRVIfDefinedDirective ifDefinedDirective:
+            {
+                evaluated = MacroDefinitions.Any(e => e.MacroName == ifDefinedDirective.MacroName)
+                    ? ifDefinedDirective.IfBody
+                    : ifDefinedDirective.ElseBody ?? "";
+                return Result.Ok();
+            }
+            default:
+            {
+                evaluated = "";
+                return Result.Fail($"Evaluation isn't implemented for this directive type.'");
+            }
+        }
     }
+
+    public IRVDefineDirective? FindMacro(string name) =>
+        MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
     public Result ParseDirective(RVLexer lexer, out IRVDirective? directive)
     {
@@ -100,7 +146,7 @@ public class RVPreProcessor : IRVPreProcessor
                 var macroValue = lexer.GetRange(start..(start + lineLength));
 
                 directive = new RVDefineDirective(this, macroName, macroValue, macroArguments);
-                return Result.Merge(results);
+                break;
             }
             default:
                 directive = null;
