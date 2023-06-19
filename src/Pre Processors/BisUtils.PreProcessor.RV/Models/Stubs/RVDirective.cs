@@ -1,5 +1,7 @@
 ﻿namespace BisUtils.PreProcessor.RV.Models.Stubs;
 
+using FResults;
+
 public interface IRVDirective : IRVElement
 {
     public string DirectiveName { get; }
@@ -7,8 +9,12 @@ public interface IRVDirective : IRVElement
 
 public abstract class RVDirective : RVElement, IRVDirective
 {
-    protected RVDirective(IRVPreProcessor processor, string directiveName) : base(processor) =>
-        DirectiveName = directiveName;
-
     public string DirectiveName { get; }
+    public string DirectiveKeyword { get; }
+
+    protected RVDirective(IRVPreProcessor processor, string directiveName) : base(processor)
+    {
+        DirectiveName = directiveName;
+        DirectiveKeyword = $"#{DirectiveName}";
+    }
 }

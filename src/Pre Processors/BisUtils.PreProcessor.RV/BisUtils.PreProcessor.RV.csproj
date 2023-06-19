@@ -10,8 +10,4 @@
       <ProjectReference Include="..\..\BisUtils.Core\BisUtils.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\Directives\" />
-    </ItemGroup>
-
 </Project>
