@@ -2,7 +2,12 @@
 
 using FResults;
 
-public interface IBisPreProcessor
+public interface IBisPreProcessor<in TLexer> where TLexer : BisMutableStringStepper
 {
-    Result ProcessLexer(BisMutableStringStepper lexer);
+    Result ProcessLexer(TLexer lexer);
+}
+
+public interface IBisPreProcessor : IBisPreProcessor<BisMutableStringStepper>
+{
+
 }

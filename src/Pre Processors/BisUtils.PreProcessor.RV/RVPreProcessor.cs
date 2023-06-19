@@ -1,11 +1,13 @@
 ﻿namespace BisUtils.PreProcessor.RV;
 
 using Core.Parsing;
+using Core.Parsing.Lexer;
 using FResults;
+using Lexer;
 using Models.Directives;
 using Utils;
 
-public interface IRVPreProcessor : IBisPreProcessor
+public interface IRVPreProcessor : IBisPreProcessor<RVLexer>
 {
     List<IRVDefineDirective> MacroDefinitions { get; }
 
@@ -23,9 +25,5 @@ public class RVPreProcessor : IRVPreProcessor
         IncludeLocator = includeLocator;
     }
 
-    public Result ProcessLexer(BisMutableStringStepper lexer)
-    {
-        throw new NotImplementedException();
-    }
-
+    public Result ProcessLexer(RVLexer lexer) => throw new NotImplementedException();
 }

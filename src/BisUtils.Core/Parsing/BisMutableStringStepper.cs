@@ -25,6 +25,23 @@ public class BisMutableStringStepper : BisStringStepper
         Content = string.Concat(Content.AsSpan(0, start), replacement, Content.AsSpan(end));
     }
 
+    public void RemoveRange(Range range, out string removedText)
+    {
+        int start = range.Start.Value, end = range.End.Value;
+
+        if (start < 0 || start > Content.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(range), "Starting index is out of bounds.");
+        }
+
+        if (end < start || end > Content.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(range), "Ending index is out of bounds.");
+        }
+        removedText = Content[start..end];
+        Content = Content.Remove(start, end - start);
+    }
+
     public void ReplaceUntil(int until, string from, string to)
     {
         var substring = Content.Substring(Position, until - Position);
