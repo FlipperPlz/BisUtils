@@ -4,6 +4,7 @@ using Core.Parsing;
 using FResults;
 using Lexer;
 using Models.Directives;
+using Models.Stubs;
 using Utils;
 
 public interface IRVPreProcessor : IBisPreProcessor<RVLexer>
@@ -51,28 +52,35 @@ public class RVPreProcessor : IRVPreProcessor
                 }
                 case '#':
                 {
-                    switch (lexer.ReadWord())
-                    {
-                        case "include":
-                        {
-                            results.Add(RVIncludeDirective.ParseDirective(this, lexer, out var include));
-                            //include//.Process()
-                            break;
-                        }
-                        case "undefine":
-                        {
-                            lexer.TraverseWhitespace(out _, false, false, true, false);
-                            var undefine = new RVUndefineDirective(this, lexer.ReadWord());
-                            break;
-                        }
-                    }
-
-                    //Replace Directive
+                    results.Add(ParseDirective(lexer, out var directive));
+                    directive?.Process(lexer, start);
                     continue;
                 }
             }
         }
 
         return Result.Merge(results);
+    }
+
+    public Result ParseDirective(RVLexer lexer, out IRVDirective? directive)
+    {
+        switch (lexer.ReadWord())
+        {
+            case "include":
+            {
+                var result = RVIncludeDirective.ParseDirective(this, lexer, out var include);
+                directive = include;
+                return result;
+            }
+            case "undefine":
+            {
+                lexer.TraverseWhitespace(out _, false, false, true, false);
+                directive = new RVUndefineDirective(this, lexer.ReadWord());
+                return Result.ImmutableOk();
+            }
+            default:
+                directive = null;
+                return Result.Fail("Invalid Directive");
+        }
     }
 }

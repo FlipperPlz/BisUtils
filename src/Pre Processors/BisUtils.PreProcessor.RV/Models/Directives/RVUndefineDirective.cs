@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.PreProcessor.RV.Models.Directives;
 
 using FResults;
+using Lexer;
 using Stubs;
 
 public interface IRVUndefineDirective : IRVDirective
@@ -21,4 +22,5 @@ public class RVUndefineDirective: RVDirective, IRVUndefineDirective
         return Result.ImmutableOk();
     }
 
+    public override Result Process(RVLexer lexer, int startPosition) => throw new NotImplementedException();
 }

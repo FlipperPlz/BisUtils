@@ -2,6 +2,7 @@
 
 using System.Text;
 using FResults;
+using Lexer;
 using Stubs;
 
 public interface IRVIfDefinedDirective : IRVDirective
@@ -45,4 +46,5 @@ public class RVIfDefinedDirective : RVDirective, IRVIfDefinedDirective
         return Result.ImmutableOk();
     }
 
+    public override Result Process(RVLexer lexer, int startPosition) => throw new NotImplementedException();
 }

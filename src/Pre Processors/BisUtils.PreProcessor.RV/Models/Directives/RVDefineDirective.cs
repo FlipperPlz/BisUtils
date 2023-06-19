@@ -3,6 +3,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using FResults;
+using Lexer;
 using Stubs;
 
 public interface IRVDefineDirective : IRVDirective
@@ -61,4 +62,6 @@ public class RVDefineDirective : RVDirective, IRVDefineDirective
 
         return Result.ImmutableOk();
     }
+
+    public override Result Process(RVLexer lexer, int startPosition) => throw new NotImplementedException();
 }

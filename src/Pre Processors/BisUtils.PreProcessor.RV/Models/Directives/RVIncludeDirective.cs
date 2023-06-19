@@ -26,4 +26,6 @@ public class RVIncludeDirective : RVDirective, IRVIncludeDirective
         include = new RVIncludeDirective(processor, includeString);
         return result;
     }
+
+    public override Result Process(RVLexer lexer, int startPosition) => throw new NotImplementedException();
 }
