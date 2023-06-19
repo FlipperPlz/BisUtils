@@ -15,9 +15,9 @@ public interface IRVDefineDirective : IRVDirective
 
 public class RVDefineDirective : RVDirective, IRVDefineDirective
 {
-    public string MacroName { get; }
-    public string? MacroValue { get; }
-    public List<string> MacroArguments { get; }
+    public string MacroName { get; set; }
+    public string? MacroValue { get; set; }
+    public List<string> MacroArguments { get; set; }
 
     public RVDefineDirective
     (

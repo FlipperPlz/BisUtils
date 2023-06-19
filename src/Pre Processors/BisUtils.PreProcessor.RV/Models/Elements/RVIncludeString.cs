@@ -21,7 +21,6 @@ public class RVIncludeString: RVElement, IRVIncludeString
         StringType = stringType;
     }
 
-
     public override Result ToText(out string str) => throw new NotImplementedException();
 
 }

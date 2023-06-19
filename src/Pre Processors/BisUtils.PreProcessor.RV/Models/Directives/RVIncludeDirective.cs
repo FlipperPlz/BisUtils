@@ -14,7 +14,8 @@ public class RVIncludeDirective : RVDirective, IRVIncludeDirective
 {
     public IRVIncludeString IncludeTarget { get; set; }
 
-    public RVIncludeDirective(IRVPreProcessor processor, string directiveName, IRVIncludeString includeTarget) : base(processor, directiveName) => IncludeTarget = includeTarget;
+    public RVIncludeDirective(IRVPreProcessor processor, IRVIncludeString includeTarget) : base(processor, "include") =>
+        IncludeTarget = includeTarget;
 
     public override Result ToText(out string str) => throw new NotImplementedException();
 }
