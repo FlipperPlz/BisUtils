@@ -9,6 +9,10 @@ using Stubs;
 public interface IParamString : IParamLiteral<string>
 {
     ParamStringType StringType { get; }
+
+
+    public Result ToInt(out IParamInt? paramInt);
+    public Result ToFloat(out IParamFloat? paramFloat);
 }
 
 public struct ParamString : IParamString
@@ -17,6 +21,7 @@ public struct ParamString : IParamString
     public IParamFile? ParamFile { get; set; }
 
     public required ParamStringType StringType { get; set; } = ParamStringType.Unquoted;
+
     public required string ParamValue { get => paramValue; set => paramValue = value; }
     private string paramValue = "";
 
@@ -55,6 +60,30 @@ public struct ParamString : IParamString
     }
 
 
+#pragma warning disable CA1305 //TODO: Options with locale
+    public Result ToInt(out IParamInt? paramInt)
+    {
+        paramInt = new ParamInt() { ParamValue = int.Parse(ParamValue), ParamFile = ParamFile };
+        return Result.Fail("String is null, cannot Convert");
+    }
 
+    public Result ToFloat(out IParamFloat paramFloat)
+    {
+        paramFloat = new ParamFloat() { ParamValue = float.Parse(ParamValue), ParamFile = ParamFile };
+        return Result.Fail("String is null, cannot Convert");
+    }
+
+    public IParamFloat? ToFloat()
+    {
+        ToFloat(out var paramFloat);
+        return paramFloat;
+    }
+
+    public IParamInt? ToInt()
+    {
+        ToInt(out var paramInt);
+        return paramInt;
+    }
+#pragma warning restore CA1305
 
 }

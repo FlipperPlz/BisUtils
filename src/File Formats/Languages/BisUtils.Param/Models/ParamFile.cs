@@ -49,6 +49,5 @@ public class ParamFile : ParamElement, IParamFile
 
     public override Result Validate(ParamOptions options) => throw new NotImplementedException();
 
-    public override Result ToParam(out string str, ParamOptions options) => throw new NotImplementedException();
-
+    public override Result ToParam(out string str, ParamOptions options) => ((IParamClass)this).GetStatements(out str, options);
 }

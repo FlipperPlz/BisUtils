@@ -2,13 +2,15 @@
 
 using BisUtils.Param.Models.Stubs;
 using Core.Parsing.Errors;
+using Enumerations;
 using FResults;
 using Lexer;
 using Models;
+using Models.Literals;
 using Models.Statements;
 using PreProcessor.RV;
 
-public static class ParamLiteralParser
+public static class ParamParser
 {
 
     public static Result Parse(string contents, string filename, IRVPreProcessor preProcessor, out ParamFile file)
@@ -65,14 +67,14 @@ public static class ParamLiteralParser
 
             results.Add(lexer.ReadIdentifier(out var keyword, true));
 
-            var skipped = -1;
+            int skipped;
             switch (keyword)
             { //TODO: Parse Statements
                 case "delete":
                 {
                     results.Add(lexer.TraverseWhitespace(out skipped));
                     results.Add(Result.FailIf(skipped <= 1, "Expected whitespace."));
-                    results.Add(lexer.ReadIdentifier(out keyword, false));
+                    results.Add(lexer.ReadIdentifier(out keyword));
                     context.Statements.Add(new ParamDelete(file, context, keyword));
                     continue;
                 }
@@ -80,7 +82,7 @@ public static class ParamLiteralParser
                 {
                     results.Add(lexer.TraverseWhitespace(out skipped));
                     results.Add(Result.FailIf(skipped <= 1, "Expected whitespace."));
-                    results.Add(lexer.ReadIdentifier(out keyword, false));
+                    results.Add(lexer.ReadIdentifier(out keyword));
                     results.Add(lexer.TraverseWhitespace(out skipped));
                     string? baseClass = null;
                     switch (lexer.CurrentChar)
@@ -120,8 +122,53 @@ public static class ParamLiteralParser
                 case "enum":
                     //TODO
                 default:
-                    results.Add(lexer.TraverseWhitespace(out skipped));
+                    results.Add(lexer.TraverseWhitespace(out _));
+                    if (lexer.CurrentChar == '[')
+                    {
+                        if (lexer.CurrentChar != ']')
+                        {
+                            results.Add(Result.Fail("Unexpected char"));
+                        }
 
+                        lexer.MoveForward();
+                        results.Add(lexer.TraverseWhitespace(out _));
+                        results.Add(lexer.ReadOperator(out var operatorType));
+                        var arrayVariable = new ParamVariable<IParamArray>(file, context, keyword, null)
+                        {
+                            VariableOperator = operatorType
+                        };
+                        results.Add(lexer.ReadArray(out var value, arrayVariable, file));
+                        arrayVariable.VariableValue = value;
+                        while (lexer.CurrentChar == ';')
+                        {
+                            lexer.MoveForward();
+                        }
+                        context.Statements.Add(arrayVariable);
+
+                        continue;
+                    }
+
+                    if (lexer.CurrentChar != '=')
+                    {
+                        lexer.MoveForward();
+                        results.Add(lexer.TraverseWhitespace(out _));
+                        var variable = new ParamVariable<IParamLiteralBase>(file, context, keyword, null)
+                        {
+                            VariableOperator = ParamOperatorType.Assign
+                        };
+                        results.Add(lexer.ReadLiteral(out var literal, variable, file, ';'));
+                        variable.VariableValue = literal;
+                        results.Add(lexer.TraverseWhitespace(out _));
+                        if (lexer.CurrentChar != ';')
+                        {
+                            results.Add(Result.Fail("Unexpected char"));
+                        }
+
+                        lexer.MoveForward();
+                        context.Statements.Add(variable);
+                        continue;
+                    }
+                    results.Add(Result.Fail("Unexpected char"));
                     break;
             }
         }

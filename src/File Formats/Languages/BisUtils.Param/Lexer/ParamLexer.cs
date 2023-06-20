@@ -2,7 +2,11 @@
 
 using System.Text;
 using Core.Parsing.Errors;
+using Enumerations;
 using FResults;
+using Models;
+using Models.Literals;
+using Models.Stubs;
 using PreProcessor.RV.Lexer;
 
 public class ParamLexer : RVLexer
@@ -99,5 +103,123 @@ public class ParamLexer : RVLexer
             return Result.Merge(results);
         }
 
+    }
+
+    public Result ReadString(out ParamString paramStr, IParamElement parent, IParamFile file, params char[] delimiters)
+    {
+        var result = ReadString(out var str);
+        var type = str.StartsWith('"') switch
+        {
+            true => ParamStringType.Quoted,
+            false => ParamStringType.Unquoted
+        };
+        if (type == ParamStringType.Quoted)
+        {
+            str = str.TrimStart('"').TrimEnd('"');
+        }
+
+        paramStr = new ParamString { ParamValue = str, StringType = type };
+        return result;
+    }
+
+    public Result ReadLiteral(out IParamLiteralBase literal, IParamElement parent, IParamFile file, params char[] delimiters)
+    {
+        var result = ReadString(out var str, parent, file, delimiters);
+        if (str.StringType is ParamStringType.Quoted)
+        {
+            literal = str;
+            return result;
+        }
+
+        if (float.TryParse(str.ParamValue, out var floatValue))
+        {
+            var alg = floatValue / 3;
+            if (Math.Abs(Math.Ceiling(alg) - Math.Floor(alg)) < 10E-6)
+            {
+                var paramInt = str.ToInt();
+                if (paramInt is null)
+                {
+                    literal = str;
+                }
+                else
+                {
+                    literal = paramInt;
+                }
+
+                return result;
+            }
+            var paramFloat = str.ToFloat();
+            if (paramFloat is null)
+            {
+                literal = str;
+            }
+            else
+            {
+                literal = paramFloat;
+            }
+
+            return result;
+
+        }
+
+        literal = str;
+        return result;
+    }
+
+    public Result ReadArray(out ParamArray array, IParamElement parent, IParamFile file)
+    {
+        var results = new List<Result>();
+        array = new ParamArray { ParamValue = new List<IParamLiteralBase>() };
+        var stack = new Stack<IParamArray>();
+        stack.Push(array);
+        results.Add(TraverseWhitespace(out _));
+        if(CurrentChar != '{')
+        {
+            results.Add(Result.Fail("Couldn't find array start."));
+        }
+
+        while (stack.Any())
+        {
+            var context = stack.Peek();
+            MoveForward();
+            results.Add(TraverseWhitespace(out _));
+            switch (CurrentChar)
+            {
+                case '{':
+                {
+                    MoveBackward();
+                    results.Add(ReadArray(out var child, array, file));
+                    stack.Push(child);
+                    context.ParamValue!.Add(child);
+                    continue;
+                }
+                case ',': continue;
+                case '}': {
+                    stack.Pop();
+                    continue;
+                }
+                default:
+                {
+                    results.Add(ReadLiteral(out var child, context, file, ';', '}'));
+                    context.ParamValue!.Add(child);
+                    continue;
+                }
+            }
+        }
+
+
+        return Result.Merge(results);
+    }
+
+    public Result ReadOperator(out ParamOperatorType operatorType)
+    {
+        operatorType = CurrentChar switch
+        {
+            '+' => ParamOperatorType.AddAssign,
+            '-' => ParamOperatorType.SubAssign,
+            _ => ParamOperatorType.Assign
+        };
+
+        return MoveForward() == '=' ? Result.Ok() : Result.Fail("Could not parse operator");
     }
 }

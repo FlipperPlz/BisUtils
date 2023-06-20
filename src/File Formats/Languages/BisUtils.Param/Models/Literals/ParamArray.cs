@@ -6,13 +6,13 @@ using Helpers;
 using Options;
 using Stubs;
 
-public interface IParamArray : IParamLiteral<List<IParamLiteralBase>>
+public interface IParamArray : IParamLiteral<List<IParamLiteralBase>>, IParamLiteralBase
 {
 
 }
 // ParamArray is reserved? why...
 #pragma warning disable CA1716
-public struct ParamArray : IParamArray
+public struct ParamArray : IParamLiteralBase, IParamArray
 {
     public ParamArray()
     {

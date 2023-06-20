@@ -11,15 +11,15 @@ public interface IParamVariableBase : IParamStatement
 {
     string VariableName { get; }
     ParamOperatorType VariableOperator { get; }
-    IParamLiteralBase UnboxedVariableValue { get; }
+    IParamLiteralBase? UnboxedVariableValue { get; }
 
     byte GetStatementId();
 }
 
 public interface IParamVariable<out TParamType> : IParamVariableBase where TParamType : IParamLiteralBase
 {
-    IParamLiteralBase IParamVariableBase.UnboxedVariableValue => VariableValue;
-    TParamType VariableValue { get; }
+    IParamLiteralBase? IParamVariableBase.UnboxedVariableValue => VariableValue;
+    TParamType? VariableValue { get; }
 }
 
 public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamType> where TParamType : IParamLiteralBase
@@ -37,19 +37,20 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
         return VariableValue is IParamArray ? (byte)2 : (byte)1;
     }
 
-    public TParamType VariableValue { get; set; }
+    public TParamType? VariableValue { get; set; }
 
-    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, TParamType variableValue) : base(file, parent)
+    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, TParamType? variableValue) : base(file, parent)
     {
         VariableName = variableName;
         VariableValue = variableValue;
     }
 
-    public ParamVariable(BisBinaryReader reader, ParamOptions options, string variableName, TParamType variableValue) : base(reader, options)
+    public ParamVariable(BisBinaryReader reader, ParamOptions options, string variableName, TParamType? variableValue) : base(reader, options)
     {
         VariableName = variableName;
         VariableValue = variableValue;
     }
+
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
