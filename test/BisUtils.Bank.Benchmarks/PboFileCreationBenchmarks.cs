@@ -20,7 +20,7 @@ public class PboFileCreationBenchmarks
     [IterationSetup(Target = nameof(DebinarizeFlatRead))]
     public void DebinarizeFlatReadSetup() => reader.BaseStream.Position = 0;
 
-    [Benchmark(Baseline = true, OperationsPerInvoke = 100)]
+    [Benchmark(Baseline = true)]
     public PboFile DebinarizeFlatRead() => new(reader, flatReadOptions);
 
     [IterationSetup(Target = nameof(Debinarize))]
