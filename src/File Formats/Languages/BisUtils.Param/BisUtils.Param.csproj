@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BisUtils.Core\BisUtils.Core.csproj" />
+    <ProjectReference Include="..\..\..\Pre Processors\BisUtils.PreProcessor.RV\BisUtils.PreProcessor.RV.csproj" />
   </ItemGroup>
 
 </Project>
