@@ -180,6 +180,7 @@ public class ParamLexer : RVLexer
 
         while (stack.Any())
         {
+
             var context = stack.Peek();
             MoveForward();
             results.Add(TraverseWhitespace(out _));
@@ -194,7 +195,9 @@ public class ParamLexer : RVLexer
                     continue;
                 }
                 case ',': continue;
-                case '}': {
+                case '}':
+                {
+                    MoveForward();
                     stack.Pop();
                     continue;
                 }

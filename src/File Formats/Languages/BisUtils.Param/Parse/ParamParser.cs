@@ -35,9 +35,10 @@ public static class ParamParser
 
         while (stack.Any())
         {
+
             var context = stack.Peek();
             lexer.MoveForward();
-            results.Add(lexer.TraverseWhitespace(out _));
+            results.Add(lexer.TraverseWhitespace(out _, allowEOL: true));
 
             switch (lexer.CurrentChar)
             {
@@ -64,8 +65,16 @@ public static class ParamParser
                     continue;
                 }
             }
+            results.Add(lexer.TraverseWhitespace(out _));
 
             results.Add(lexer.ReadIdentifier(out var keyword, true));
+            if (keyword == string.Empty)
+            {
+                if(TryEnd())
+                {
+                    break;
+                }
+            }
 
             int skipped;
             switch (keyword)
@@ -125,6 +134,8 @@ public static class ParamParser
                     results.Add(lexer.TraverseWhitespace(out _));
                     if (lexer.CurrentChar == '[')
                     {
+                        lexer.MoveForward();
+                        results.Add(lexer.TraverseWhitespace(out _));
                         if (lexer.CurrentChar != ']')
                         {
                             results.Add(Result.Fail("Unexpected char"));

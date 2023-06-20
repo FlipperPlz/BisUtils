@@ -33,7 +33,6 @@ public class RVLexer : BisMutableStringStepper
 
             switch (CurrentChar)
             {
-                case null: goto CurrentIsNull;
                 case '\\':
                 {
                     if (!allowDirectiveEOL)
@@ -77,36 +76,24 @@ public class RVLexer : BisMutableStringStepper
                     {
                         if (!Whitespaces.Contains(current))
                         {
-                            break;
+                            return Result.ImmutableOk();
                         }
 
                         MoveForward();
                         charCount++;
                         if (includeComments)
                         {
-                            var result = TraverseComment(out var commentLength, out _, allowEOF);
+                            TraverseComment(out var commentLength, out _, allowEOF);
                             charCount += commentLength;
-                            if (commentLength == 0)
-                            {
-                                return result;
-                            }
                         }
-
-                        continue;
+                    }
+                    else
+                    {
+                        return Result.ImmutableOk();
                     }
 
-                    goto CurrentIsNull;
+                    break;
                 }
-            }
-
-            CurrentIsNull:
-            {
-                if (!allowEOF)
-                {
-                    return BisEndOfFileError.Instance;
-                }
-
-                break;
             }
         }
 
