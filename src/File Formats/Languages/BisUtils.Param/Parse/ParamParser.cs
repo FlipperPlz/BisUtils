@@ -148,12 +148,13 @@ public static class ParamParser
                         {
                             VariableOperator = operatorType
                         };
-                        results.Add(lexer.ReadArray(out var value, arrayVariable, file));
+                        results.Add(lexer.ReadArray(out var value, file));
                         arrayVariable.VariableValue = value;
-                        while (lexer.CurrentChar == ';')
+
+                        while (lexer.MoveForward() != ';')
                         {
-                            lexer.MoveForward();
                         }
+
                         context.Statements.Add(arrayVariable);
 
                         continue;
@@ -167,7 +168,7 @@ public static class ParamParser
                         {
                             VariableOperator = ParamOperatorType.Assign
                         };
-                        results.Add(lexer.ReadLiteral(out var literal, variable, file, ';'));
+                        results.Add(lexer.ReadLiteral(out var literal, file, ';'));
                         variable.VariableValue = literal;
                         results.Add(lexer.TraverseWhitespace(out _));
                         if (lexer.CurrentChar != ';')

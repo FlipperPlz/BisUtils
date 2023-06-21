@@ -89,7 +89,12 @@ public class RVLexer : BisMutableStringStepper
                     }
                     else
                     {
-                        return Result.ImmutableOk();
+                        if (allowEOF)
+                        {
+                            break;
+                        }
+
+                        return BisEndOfFileError.Instance;
                     }
 
                     break;

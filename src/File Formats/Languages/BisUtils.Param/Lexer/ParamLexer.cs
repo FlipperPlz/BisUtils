@@ -48,7 +48,7 @@ public class ParamLexer : RVLexer
 
         var builder = new StringBuilder();
 
-        while (CurrentChar is { } currentChar && !delimiters.Contains(currentChar))
+        while (CurrentChar is { } currentChar && (quoted || !delimiters.Contains(currentChar)))
         {
             if (currentChar is '\n' or '\r')
             {
@@ -105,9 +105,9 @@ public class ParamLexer : RVLexer
 
     }
 
-    public Result ReadString(out ParamString paramStr, IParamElement parent, IParamFile file, params char[] delimiters)
+    public Result ReadString(out ParamString paramStr, IParamFile file, params char[] delimiters)
     {
-        var result = ReadString(out var str);
+        var result = ReadString(out var str, delimiters);
         var type = str.StartsWith('"') switch
         {
             true => ParamStringType.Quoted,
@@ -118,13 +118,18 @@ public class ParamLexer : RVLexer
             str = str.TrimStart('"').TrimEnd('"');
         }
 
-        paramStr = new ParamString { ParamValue = str, StringType = type };
+        paramStr = new ParamString
+        {
+            ParamFile = file,
+            ParamValue = str,
+            StringType = type
+        };
         return result;
     }
 
-    public Result ReadLiteral(out IParamLiteralBase literal, IParamElement parent, IParamFile file, params char[] delimiters)
+    public Result ReadLiteral(out IParamLiteralBase literal, IParamFile file, params char[] delimiters)
     {
-        var result = ReadString(out var str, parent, file, delimiters);
+        var result = ReadString(out var str, file, delimiters);
         if (str.StringType is ParamStringType.Quoted)
         {
             literal = str;
@@ -166,10 +171,10 @@ public class ParamLexer : RVLexer
         return result;
     }
 
-    public Result ReadArray(out ParamArray array, IParamElement parent, IParamFile file)
+    public Result ReadArray(out ParamArray array, IParamFile file)
     {
         var results = new List<Result>();
-        array = new ParamArray { ParamValue = new List<IParamLiteralBase>() };
+        array = new ParamArray { ParamFile = file, ParamValue = new List<IParamLiteralBase>() };
         var stack = new Stack<IParamArray>();
         stack.Push(array);
         results.Add(TraverseWhitespace(out _));
@@ -188,28 +193,26 @@ public class ParamLexer : RVLexer
             {
                 case '{':
                 {
-                    MoveBackward();
-                    results.Add(ReadArray(out var child, array, file));
-                    stack.Push(child);
+                    results.Add(ReadArray(out var child, file));
                     context.ParamValue!.Add(child);
                     continue;
                 }
                 case ',': continue;
                 case '}':
                 {
-                    MoveForward();
                     stack.Pop();
                     continue;
                 }
                 default:
                 {
-                    results.Add(ReadLiteral(out var child, context, file, ';', '}'));
+                    results.Add(ReadLiteral(out var child, file, ';', '}', ','));
                     context.ParamValue!.Add(child);
                     continue;
                 }
             }
         }
 
+        MoveBackward();
 
         return Result.Merge(results);
     }
