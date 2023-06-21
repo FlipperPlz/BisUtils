@@ -1,10 +1,9 @@
-﻿namespace BisUtils.Bank.Model.Stubs;
+namespace BisUtils.Bank.Model.Stubs;
 
 using System.Diagnostics;
 using Core.IO;
 using Enumerations;
 using Options;
-using Utils;
 
 public interface IPboEntry : IPboVFSEntry
 {
@@ -14,27 +13,10 @@ public interface IPboEntry : IPboVFSEntry
     int TimeStamp { get; }
     int DataSize { get; }
 
-    bool IsEmptyMeta()
-    {
-        var watch = Stopwatch.StartNew();
-        var ret =
-            OriginalSize == 0 &&
-            Offset == 0 &&
-            TimeStamp == 0 &&
-            DataSize == 0;
-        watch.Stop();
-        Console.WriteLine($"(IPboEntry::IsEmptyMeta) Execution Time: {watch.ElapsedMilliseconds} ms");
-        return ret;
-    }
+    bool IsEmptyMeta() =>
+        OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
 
-    bool IsDummyEntry()
-    {
-        var watch = Stopwatch.StartNew();
-        var ret = IsEmptyMeta() && EntryName == "";
-        watch.Stop();
-        Console.WriteLine($"(IPboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
-        return ret;
-    }
+    bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
 }
 
 public abstract class PboEntry : PboVFSEntry
@@ -67,35 +49,8 @@ public abstract class PboEntry : PboVFSEntry
     public int TimeStamp { get; set; }
     public int DataSize { get; set; }
 
-    public bool IsEmptyMeta()
-    {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-#endif
-        var ret =
-            OriginalSize == 0 &&
-            Offset == 0 &&
-            TimeStamp == 0 &&
-            DataSize == 0;
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboEntry::IsEmptyMeta) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-        return ret;
-    }
+    public bool IsEmptyMeta() =>
+        OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
 
-    public bool IsDummyEntry()
-    {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-#endif
-
-        var ret = IsEmptyMeta() && EntryName == "";
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboEntry::IsDummyEntry) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-
-        return ret;
-    }
+    public bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
 }
