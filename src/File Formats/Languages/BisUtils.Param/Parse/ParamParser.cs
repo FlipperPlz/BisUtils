@@ -17,7 +17,7 @@ public static class ParamParser
     {
         var results = new List<Result>();
         file = new ParamFile(filename, new List<IParamStatement>());
-        var lexer = new ParamLexer(contents);
+        var lexer = new ParamLexerOld(contents);
         var stack = new Stack<IParamStatementHolder>();
         stack.Push(file);
         results.Add(preProcessor.ProcessLexer(lexer));
