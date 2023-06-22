@@ -19,6 +19,11 @@ public class ParamLexer : BisLexer<ParamTypes>
         DebugName = "param.IntegerLiteral", TokenType = ParamTypes.AbsInteger, TokenWeight = 1
     };
 
+    private static readonly IBisLexer<ParamTypes>.TokenDefinition WhitespaceDefinition = new()
+    {
+        DebugName = "param.whitespace", TokenType = ParamTypes.AbsWhitespace, TokenWeight = 1
+    };
+
     private static readonly IBisLexer<ParamTypes>.TokenDefinition FloatDefinition = new()
     {
         DebugName = "param.FloatLiteral", TokenType = ParamTypes.AbsFloat, TokenWeight = 1
@@ -104,8 +109,10 @@ public class ParamLexer : BisLexer<ParamTypes>
         ErrorDefinition, StringDefinition, IntegerDefinition, FloatDefinition, PreProcessDefinition,
         ClassDefinition, EnumDefinition, DeleteDefinition, LCurlyDefinition, RCurlyDefinition,
         LSquareDefinition, RSquareDefinition, SeparatorDefinition, ColonDefinition, CommaDefinition,
-        AssignDefinition, AddAssignDefinition, SubAssignDefinition, IdentifierDefinition
+        AssignDefinition, AddAssignDefinition, SubAssignDefinition, IdentifierDefinition, WhitespaceDefinition
     };
+
+    private ParamLexerState CurrentLexerState = ParamLexerState.Statement;
 
     public override IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
     public override IBisLexer<ParamTypes>.TokenDefinition ErrorToken => ErrorDefinition;
@@ -114,5 +121,40 @@ public class ParamLexer : BisLexer<ParamTypes>
     {
     }
 
-    protected override IBisLexer<ParamTypes>.TokenMatch GetNextToken() => throw new NotImplementedException();
+    protected override IBisLexer<ParamTypes>.TokenMatch GetNextToken()
+    {
+        var start = Position;
+
+        if (IsWhitespace())
+        {
+            while (IsWhitespace(PeekForward()))
+            {
+                MoveForward();
+            }
+
+            return new IBisLexer<ParamTypes>.TokenMatch()
+            {
+                Success = true,
+                TokenLength = Position - start,
+                TokenPosition = start,
+                TokenText = GetRange(start..Position),
+                TokenType = WhitespaceDefinition
+            };
+        }
+        //TODO
+        throw new NotImplementedException();
+    }
+
+    private bool IsWhitespace(char? c = null)
+    {
+        switch (c ?? CurrentChar)
+        {
+            case '\t':
+            case '\u000B':
+            case '\u000C':
+            case ' ': return true;
+        }
+
+        return false;
+    }
 }

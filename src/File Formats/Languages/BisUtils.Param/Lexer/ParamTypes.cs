@@ -7,6 +7,7 @@ public enum ParamTypes
     AbsString = 2,
     AbsFloat = 3,
     AbsInteger = 4,
+    AbsWhitespace = 5,
     KwClass,
     KwEnum,
     KwDelete,
