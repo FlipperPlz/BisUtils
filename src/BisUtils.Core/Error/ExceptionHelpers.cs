@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 public static class ExceptionHelpers
 {
-    public static void ThrowArgumentNotPositiveException([NotNull] int? number,
+    public static void ThrowArgumentNotPositiveException([NotNull] long? number,
         [CallerArgumentExpression("number")] string? paramName = null)
     {
         ArgumentNullException.ThrowIfNull(number, paramName);

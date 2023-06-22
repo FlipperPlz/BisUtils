@@ -16,8 +16,8 @@ public class BisEndOfFileError : ErrorBase
 
     public override Type? AlertScope
     {
-        get => typeof(BisLexer);
-        init => throw new NotSupportedException();
+        get => null;
+        init => throw new NotImplementedException();
     }
 
     public override string? Message

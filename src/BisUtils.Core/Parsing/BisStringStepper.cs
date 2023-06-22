@@ -4,14 +4,37 @@ using System.Text;
 using Error;
 using Extensions;
 
-public class BisStringStepper
+public interface IBisStringStepper
 {
-    protected string Content;
+    protected string Content { get; }
+    public int Position { get; }
+    public char? CurrentChar { get; }
+    public char? PreviousChar { get; }
+
+    public bool HasNext();
+    public bool IsEOF();
+    public char? MoveForward(int count = 1);
+    public char? MoveBackward(int count = 1);
+    public char? PeekForward(int count = 1);
+    public char? PeekBackWard(int count = 1);
+    public char? JumpTo(int position);
+    public char? PeekAt(int position);
+    public void ResetLexer(string? content = null);
+    public string ReadChars(int count, bool includeFirst = false);
+    public string GetRange(Range range);
+    public string PeekForwardMulti(int count = 1);
+    public string PeekBackwardMulti(int count = 1);
+}
+
+public class BisStringStepper : IBisStringStepper
+{
+    public string Content { get; protected set; }
 
     public BisStringStepper(string content) => Content = content;
+
     public int Position { get; private set; } = -1;
-    public char? CurrentChar { get; private set; } = null;
-    public char? PreviousChar { get; private set; } = null;
+    public char? CurrentChar { get; private set; }
+    public char? PreviousChar { get; private set; }
 
     public bool HasNext() => PeekForward() is not null;
 
@@ -99,7 +122,6 @@ public class BisStringStepper
         ExceptionHelpers.ThrowArgumentNotPositiveException(count);
         return Content.GetOrNull(Position - count);
     }
-
     public string PeekBackwardMulti(int count = 1)
     {
         ExceptionHelpers.ThrowArgumentNotPositiveException(count);

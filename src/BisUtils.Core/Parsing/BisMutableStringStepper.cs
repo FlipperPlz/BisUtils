@@ -2,7 +2,17 @@
 
 using System.Text.RegularExpressions;
 
-public class BisMutableStringStepper : BisStringStepper
+public interface IBisMutableStringStepper : IBisStringStepper
+{
+    public void ReplaceRange(Range range, string replacement);
+    public void RemoveRange(Range range, out string removedText);
+    public void ReplaceUntil(int until, string from, string to);
+    public bool RegionMatches(string text);
+    public void ReplaceAll(string from, string to);
+    public void ReplaceAll(Regex from, string to);
+}
+
+public class BisMutableStringStepper : BisStringStepper, IBisMutableStringStepper
 {
     public BisMutableStringStepper(string content) : base(content)
     {
@@ -51,8 +61,6 @@ public class BisMutableStringStepper : BisStringStepper
 
     //TODO: Localize
     public bool RegionMatches(string text) => Content[Position..].StartsWith(text);
-
     public void ReplaceAll(string from, string to) => Content = Content.Replace(from, to);
-
     public void ReplaceAll(Regex from, string to) => Content = from.Replace(Content, to);
 }
