@@ -121,6 +121,16 @@ public class ParamLexer : BisLexer<ParamTypes>
     {
     }
 
+    protected IBisLexer<ParamTypes>.TokenMatch CreateTokenMatch(Range tokenRange, IBisLexer<ParamTypes>.TokenDefinition tokenDef) =>
+        new()
+        {
+            Success = true,
+            TokenLength = tokenRange.End.Value - tokenRange.Start.Value,
+            TokenPosition = tokenRange.Start.Value,
+            TokenText = GetRange(tokenRange),
+            TokenType = tokenDef
+        };
+
     protected override IBisLexer<ParamTypes>.TokenMatch GetNextToken()
     {
         var start = Position;
@@ -132,29 +142,60 @@ public class ParamLexer : BisLexer<ParamTypes>
                 MoveForward();
             }
 
-            return new IBisLexer<ParamTypes>.TokenMatch()
-            {
-                Success = true,
-                TokenLength = Position - start,
-                TokenPosition = start,
-                TokenText = GetRange(start..Position),
-                TokenType = WhitespaceDefinition
-            };
+            return CreateTokenMatch(start..Position, WhitespaceDefinition);
         }
-        //TODO
-        throw new NotImplementedException();
-    }
 
-    private bool IsWhitespace(char? c = null)
-    {
-        switch (c ?? CurrentChar)
+
+        switch (CurrentChar)
         {
-            case '\t':
-            case '\u000B':
-            case '\u000C':
-            case ' ': return true;
+            case ';': return CreateTokenMatch(start..Position, SeparatorDefinition);
+            case '[': return CreateTokenMatch(start..Position, LSquareDefinition);
+            case ']': return CreateTokenMatch(start..Position, RSquareDefinition);
+            case '=': return CreateTokenMatch(start..Position, AssignDefinition);
+            case ':': return CreateTokenMatch(start..Position, ColonDefinition);
+            case '/':
+            {
+                switch (PeekForward())
+                {
+                    case '/':
+                    {
+                        while (CurrentChar != '\n')
+                        {
+                            MoveForward();
+                        }
+                        return CreateTokenMatch(start..Position, PreProcessDefinition);
+                    }
+                    case '*':
+                    {
+                        while (!(PreviousChar == '*' && CurrentChar == '/'))
+                        {
+                            MoveForward();
+                        }
+                        return CreateTokenMatch(start..Position, PreProcessDefinition);
+                    }
+                }
+                break;
+            }
+            case '#':
+            {
+                while (CurrentChar != '\n' && PreviousChar != '\\')
+                {
+                    MoveForward();
+                }
+                return CreateTokenMatch(start..Position, PreProcessDefinition);
+            }
+
         }
 
-        return false;
+        return CreateTokenMatch(start..Position, ErrorToken);
     }
+
+    private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
+    {
+        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
+        _ => false
+    };
+
+    private bool IsAlphanum(char? c = null) =>
+        char.IsLetterOrDigit(c ?? CurrentChar ?? '\0');
 }
