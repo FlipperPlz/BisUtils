@@ -2,6 +2,7 @@
 
 public enum ParamTypes
 {
+    EOF = -1,
     Invalid = 0,
     AbsPreprocess = 1,
     AbsString = 2,
