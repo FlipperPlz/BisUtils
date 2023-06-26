@@ -1,10 +1,22 @@
-﻿namespace BisUtils.Core.IO;
+namespace BisUtils.Core.IO;
 
 using System.Text;
 using Binarize.Options;
 
 public class BisBinaryWriter : BinaryWriter
 {
+    public BisBinaryWriter(Stream output) : base(output)
+    {
+    }
+
+    public BisBinaryWriter(Stream output, Encoding encoding) : base(output, encoding)
+    {
+    }
+
+    public BisBinaryWriter(Stream output, Encoding encoding, bool leaveOpen) : base(output, encoding, leaveOpen)
+    {
+    }
+
     public void WriteAsciiZ(string str, Encoding encoding)
     {
         var bytes = encoding.GetBytes(str);

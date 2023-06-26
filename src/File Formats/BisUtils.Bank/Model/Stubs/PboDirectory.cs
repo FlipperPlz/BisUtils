@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Bank.Model.Stubs;
+namespace BisUtils.Bank.Model.Stubs;
 
 using System.Diagnostics;
 using Core.Family;
@@ -53,39 +53,16 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
     public IEnumerable<IPboDataEntry> FileEntries => PboEntries.OfType<IPboDataEntry>();
     public IEnumerable<IPboDirectory> Directories => PboEntries.OfType<IPboDirectory>();
 
-    public IPboDirectory? GetDirectory(string name)
-    {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-        Console.WriteLine($"GetDirectory Called On \"{AbsolutePath}\" with {name}");
-
-#endif
-
-        var ret = Directories.FirstOrDefault(e => e.EntryName == name);
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboDirectory::GetDirectory) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-        return ret;
-    }
+    public IPboDirectory? GetDirectory(string name) =>
+        Directories.FirstOrDefault(e => e.EntryName == name);
 
     public IPboDirectory CreateDirectory(string name, IPboFile? node)
     {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-        Console.WriteLine($"CreateDirectory Called On \"{AbsolutePath}\" with {name}");
-#endif
-
         var split = name.Split('\\', 2);
         IPboDirectory ret;
 
         if (split[0].Length == 0)
         {
-#if DEBUG
-            watch.Stop();
-            Console.WriteLine($"(PboDirectory::CreateDirectory) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-
             return this;
         }
 
@@ -93,11 +70,6 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
         {
             if (split[1].Length == 0)
             {
-#if DEBUG
-                watch.Stop();
-                Console.WriteLine($"(PboDirectory::CreateDirectory) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-
                 return i;
             }
 
@@ -107,10 +79,7 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
             }
 
             ret = i.CreateDirectory(split[1], node);
-#if DEBUG
-            watch.Stop();
-            Console.WriteLine($"(PboDirectory::CreateDirectory) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
+
             return ret;
         }
 
@@ -118,39 +87,20 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
         PboEntries.Add(directory);
         if (split[1].Length == 0)
         {
-#if DEBUG
-            watch.Stop();
-            Console.WriteLine($"(PboDirectory::CreateDirectory) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
             return directory;
         }
 
         ret = directory.CreateDirectory(split[1], node);
-
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboDirectory::CreateDirectory) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
 
         return ret;
     }
 
     public override Result Binarize(BisBinaryWriter writer, PboOptions options)
     {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-#endif
-
-
         LastResult = Result.Merge
         (
             new List<Result> { Result.ImmutableOk() }.Concat(PboEntries.Select(e => e.Binarize(writer, options)))
         );
-
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboDirectory::Binarize) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
 
         return LastResult;
     }
@@ -160,16 +110,7 @@ public class PboDirectory : PboVFSEntry, IPboDirectory
 
     public override Result Validate(PboOptions options)
     {
-#if DEBUG
-        var watch = Stopwatch.StartNew();
-#endif
-
         LastResult = Result.Merge(PboEntries.Select(e => e.Validate(options)));
-#if DEBUG
-        watch.Stop();
-        Console.WriteLine($"(PboDirectory::Validate) Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-
         return LastResult;
     }
 }
