@@ -25,69 +25,71 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         CreateTokenDefinition("rv.text", RvTypes.Text, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition DHashDefinition =
-        CreateTokenDefinition("rv.hash.double", RvTypes.DoubleHash, 1);
+        CreateTokenDefinition("rv.hash.double", RvTypes.SymDoubleHash, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition HashDefinition =
-        CreateTokenDefinition("rv.hash.single", RvTypes.Hash, 1);
+        CreateTokenDefinition("rv.hash.single", RvTypes.SymHash, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition CommaDefinition =
-        CreateTokenDefinition("rv.comma", RvTypes.Comma, 1);
+        CreateTokenDefinition("rv.comma", RvTypes.SymComma, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition DefineDefinition =
-        CreateTokenDefinition("rv.directive.define", RvTypes.Define, 1);
+        CreateTokenDefinition("rv.directive.define", RvTypes.KwDefine, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition IncludeDefinition =
-        CreateTokenDefinition("rv.directive.include", RvTypes.Include, 1);
+        CreateTokenDefinition("rv.directive.include", RvTypes.KwInclude, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition NewLineDefinition =
-        CreateTokenDefinition("rv.newLine", RvTypes.NewLine, 1);
+        CreateTokenDefinition("rv.newLine", RvTypes.AbsNewLine, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition DirectiveNewLineDefinition =
-        CreateTokenDefinition("rv.newLine.directive", RvTypes.DirectiveNewLine, 1);
+        CreateTokenDefinition("rv.newLine.directive", RvTypes.AbsDirectiveNewLine, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition LineCommentDefinition =
-        CreateTokenDefinition("rv.comment.line", RvTypes.LineComment, 1);
+        CreateTokenDefinition("rv.comment.line", RvTypes.AbsLineComment, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition BlockCommentDefinition =
-        CreateTokenDefinition("rv.comment.block", RvTypes.BlockComment, 1);
+        CreateTokenDefinition("rv.comment.block", RvTypes.AbsBlockComment, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition ElseDefinition =
-        CreateTokenDefinition("rv.directive.else", RvTypes.Else, 1);
+        CreateTokenDefinition("rv.directive.else", RvTypes.KwElse, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition UndefDefinition =
+        CreateTokenDefinition("rv.directive.undef", RvTypes.KwUndef, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition IfDefDefinition =
-        CreateTokenDefinition("rv.directive.ifdef", RvTypes.IfDef, 1);
+        CreateTokenDefinition("rv.directive.ifdef", RvTypes.KwIfDef, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition IfNDefDefinition =
-        CreateTokenDefinition("rv.directive.ifdef.not", RvTypes.IfNDef, 1);
+        CreateTokenDefinition("rv.directive.ifdef.not", RvTypes.KwIfNDef, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition EndifDefinition =
-        CreateTokenDefinition("rv.directive.endif", RvTypes.EndIf, 1);
+        CreateTokenDefinition("rv.directive.endif", RvTypes.KwEndIf, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition LeftParenthesisDefinition =
-        CreateTokenDefinition("rv.parenthesis.left", RvTypes.LeftParenthesis, 1);
+        CreateTokenDefinition("rv.parenthesis.left", RvTypes.SymLParenthesis, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition RightParenthesisDefinition =
-        CreateTokenDefinition("rv.parenthesis.right", RvTypes.RightParenthesis, 1);
+        CreateTokenDefinition("rv.parenthesis.right", RvTypes.SymRParenthesis, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition LeftAngleDefinition =
-        CreateTokenDefinition("rv.angle.left", RvTypes.LeftAngle, 1);
+        CreateTokenDefinition("rv.angle.left", RvTypes.SymLeftAngle, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition RightAngleDefinition =
-        CreateTokenDefinition("rv.angle.right", RvTypes.RightAngle, 1);
+        CreateTokenDefinition("rv.angle.right", RvTypes.SymRightAngle, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition DoubleQuoteDefinition =
-        CreateTokenDefinition("rv.quote.double", RvTypes.DoubleQuote, 1);
+        CreateTokenDefinition("rv.quote.double", RvTypes.SymDoubleQuote, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition WhitespaceDefinition =
-        CreateTokenDefinition("rv.whitespace", RvTypes.Whitespace, 1);
+        CreateTokenDefinition("rv.whitespace", RvTypes.AbsWhitespace, 1);
 
     private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
-        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition,
-        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition,
-        IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition, ElseDefinition
-
+        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition, UndefDefinition,
+        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition, ElseDefinition,
+        IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition
     };
 
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
@@ -143,6 +145,16 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
                 return CreateTokenMatch(start..Position, "\r\n", NewLineDefinition);
             }
+            case 'u':
+            {
+                if (PeekForwardMulti(5) == "undef")
+                {
+                    MoveForward(4);
+                    return CreateTokenMatch(start..Position,"undef", UndefDefinition);
+                }
+
+                break;
+            }
             case '/':
             {
                 switch (PeekForward())
@@ -150,11 +162,13 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                     case '/':
                         return CreateTokenMatch(start..(Position + TraverseLine()), LineCommentDefinition);
                     case '*':
+                    {
                         while (!(PreviousChar == '*' && CurrentChar == '/') && CurrentChar != null)
                         {
                         }
 
                         return CreateTokenMatch(start..(Position + TraverseLine()), BlockCommentDefinition);
+                    }
                 }
 
                 break;
