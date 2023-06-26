@@ -10,17 +10,11 @@ public class ParamLexer : BisLexer<ParamTypes>
     private static readonly IBisLexer<ParamTypes>.TokenDefinition EOFDefinition =
         CreateTokenDefinition("param.eof", ParamTypes.EOF, 200);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition StringDefinition =
-        CreateTokenDefinition("param.abs.literal.string", ParamTypes.AbsString, 1);
-
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition IntegerDefinition =
-        CreateTokenDefinition("param.abs.literal.integer", ParamTypes.AbsInteger, 1);
+    private static readonly IBisLexer<ParamTypes>.TokenDefinition LiteralDefinition =
+        CreateTokenDefinition("param.abs.literal", ParamTypes.AbsLiteral, 1);
 
     private static readonly IBisLexer<ParamTypes>.TokenDefinition WhitespaceDefinition =
         CreateTokenDefinition("param.abs.whitespace", ParamTypes.AbsWhitespace, 1);
-
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition FloatDefinition =
-        CreateTokenDefinition("param.abs.literal.float", ParamTypes.AbsFloat, 1);
 
     private static readonly IBisLexer<ParamTypes>.TokenDefinition PreProcessDefinition =
         CreateTokenDefinition("param.abs.preprocess", ParamTypes.AbsPreprocess, 1);
@@ -69,10 +63,10 @@ public class ParamLexer : BisLexer<ParamTypes>
 
     private static readonly IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenDefinitions = new[]
     {
-        ErrorDefinition, StringDefinition, IntegerDefinition, FloatDefinition, PreProcessDefinition,
-        ClassDefinition, EnumDefinition, DeleteDefinition, LCurlyDefinition, RCurlyDefinition, EOFDefinition,
-        LSquareDefinition, RSquareDefinition, SeparatorDefinition, ColonDefinition, CommaDefinition,
-        AssignDefinition, AddAssignDefinition, SubAssignDefinition, IdentifierDefinition, WhitespaceDefinition
+        ErrorDefinition, LiteralDefinition, PreProcessDefinition, ClassDefinition, EnumDefinition,
+        DeleteDefinition, LCurlyDefinition, RCurlyDefinition, EOFDefinition, LSquareDefinition,
+        RSquareDefinition, SeparatorDefinition, ColonDefinition, CommaDefinition, AssignDefinition,
+        AddAssignDefinition, SubAssignDefinition, IdentifierDefinition, WhitespaceDefinition
     };
 
     public override IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
@@ -87,9 +81,64 @@ public class ParamLexer : BisLexer<ParamTypes>
             Success = true,
             TokenLength = tokenRange.End.Value - tokenRange.Start.Value + 1,
             TokenPosition = tokenRange.Start.Value,
-            TokenText = GetRange((tokenRange.Start.Value)..(tokenRange.End.Value + 1)),
+            TokenText = GetRange(tokenRange.Start.Value..(tokenRange.End.Value + 1)),
             TokenType = tokenDef
         };
+
+
+    public IBisLexer<ParamTypes>.TokenMatch NextLiteral(params char[] delimiters)
+    {
+        MoveForward();
+        var quoted = false;
+        var start = Position;
+
+        if (CurrentChar == '"')
+        {
+            quoted = true;
+            MoveForward();
+        }
+
+        while (CurrentChar is { } currentChar && (quoted || !delimiters.Contains(currentChar)))
+        {
+            if (currentChar is '\n' or '\r')
+            {
+                goto Finish;
+            }
+
+            if (currentChar == '"' && quoted)
+            {
+                if (MoveForward() != '"')
+                {
+                    TraverseWhitespace();
+                    if (currentChar != '\\')
+                    {
+                        goto Finish;
+                    }
+
+                    if (MoveForward() != 'n')
+                    {
+                        goto Finish;
+                    }
+                    TraverseWhitespace();
+                    if (CurrentChar != '"')
+                    {
+                        goto Finish;
+                    }
+
+                    MoveForward();
+                }
+            }
+
+            MoveForward();
+        }
+        Finish:
+        {
+            var match = CreateTokenMatch(start..Position, LiteralDefinition);
+            OnTokenMatchedHandler(match, this);
+            return match;
+        }
+    }
+
 
     protected override IBisLexer<ParamTypes>.TokenMatch GetNextToken()
     {
@@ -171,7 +220,6 @@ public class ParamLexer : BisLexer<ParamTypes>
             }
             case 'd':
             {
-                // ReSharper disable once StringLiteralTypo
                 if (PeekForwardMulti(6) == "delete")
                 {
                     MoveForward(5);
@@ -181,7 +229,6 @@ public class ParamLexer : BisLexer<ParamTypes>
             }
             case 'e':
             {
-                // ReSharper disable once StringLiteralTypo
                 if (PeekForwardMulti(4) == "enum")
                 {
                     MoveForward(5);
@@ -202,6 +249,37 @@ public class ParamLexer : BisLexer<ParamTypes>
         }
 
         return CreateTokenMatch(start..Position, ErrorToken);
+    }
+
+    public void TraverseWhitespace()
+    {
+        while (true)
+        {
+
+            switch (CurrentChar)
+            {
+                case '\r':
+                case '\n':
+                {
+                    MoveForward();
+                    break;
+                }
+                default:
+                {
+                    if (CurrentChar is { } current)
+                    {
+                        if (!IsWhitespace(current))
+                        {
+                            return;
+                        }
+
+                        MoveForward();
+                    }
+
+                    break;
+                }
+            }
+        }
     }
 
     private static IBisLexer<ParamTypes>.TokenDefinition CreateTokenDefinition(string debugName, ParamTypes tokenType, short tokenWeight) =>
