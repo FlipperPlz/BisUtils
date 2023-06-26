@@ -10,6 +10,7 @@ public enum RvTypes
     IfNDef,
     Else,
     EndIf,
+    Undef,
     LeftParenthesis,
     RightParenthesis,
     Comma,
@@ -22,6 +23,5 @@ public enum RvTypes
     LeftAngle,
     RightAngle,
     DoubleHash,
-    Undef
 
 }

@@ -33,6 +33,15 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IBisLexer<RvTypes>.TokenDefinition CommaDefinition =
         CreateTokenDefinition("rv.comma", RvTypes.Comma, 1);
 
+    private static readonly IBisLexer<RvTypes>.TokenDefinition DefineDefinition =
+        CreateTokenDefinition("rv.directive.define", RvTypes.Define, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition NewLineDefinition =
+        CreateTokenDefinition("rv.newLine", RvTypes.NewLine, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition DirectiveNewLineDefinition =
+        CreateTokenDefinition("rv.newLine.directive", RvTypes.DirectiveNewLine, 1);
+
     private static readonly IBisLexer<RvTypes>.TokenDefinition LineCommentDefinition =
         CreateTokenDefinition("rv.comment.line", RvTypes.LineComment, 1);
 
@@ -58,7 +67,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
         RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition,
-        LineCommentDefinition, BlockCommentDefinition
+        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition
 
     };
 
@@ -83,18 +92,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         {
             case null:
                 return CreateTokenMatch(..0, "", EOFDefinition);
-            case '#':
-            {
-                if (PeekForward() != '#')
-                {
-                    return CreateTokenMatch(start..Position, HashDefinition);
-                }
-
-                MoveForward();
-                return CreateTokenMatch(start..Position, DHashDefinition);
-            }
             case ',':
-                return CreateTokenMatch(start..Position, ",", EOFDefinition);
+                return CreateTokenMatch(start..Position, ",", CommaDefinition);
             case '(':
                 return CreateTokenMatch(start..Position, "(", LeftParenthesisDefinition);
             case ')':
@@ -105,7 +104,19 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 return CreateTokenMatch(start..Position, ">", RightAngleDefinition);
             case '"':
                 return CreateTokenMatch(start..Position, "\"", DoubleQuoteDefinition);
+            case '\n':
+                return CreateTokenMatch(start..Position, "\n", NewLineDefinition);
+            case '\r':
+            {
+                if (PeekForward() == '\n')
+                {
+                    MoveForward();
+                }
+
+                return CreateTokenMatch(start..Position, "\r\n", NewLineDefinition);
+            }
             case '/':
+            {
                 switch (PeekForward())
                 {
                     case '/':
@@ -114,12 +125,47 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                         while (!(PreviousChar == '*' && CurrentChar == '/') && CurrentChar != null)
                         {
                         }
+
                         return CreateTokenMatch(start..(Position + TraverseLine()), BlockCommentDefinition);
                 }
-                break;
-        }
 
-        //TODO
+                break;
+            }
+            case '#':
+            {
+                if (PeekForward() != '#')
+                {
+                    return CreateTokenMatch(start..Position, "#", HashDefinition);
+                }
+
+                MoveForward();
+                return CreateTokenMatch(start..Position, "##", DHashDefinition);
+            }
+            case '\\':
+            {
+                if (PeekForward() == '\r')
+                {
+                    MoveForward();
+                }
+
+                if (PeekForward() == '\n')
+                {
+                    MoveForward();
+                    return CreateTokenMatch(start..Position,"\\\n", DirectiveNewLineDefinition);
+                }
+                break;
+            }
+            case 'd':
+            {
+                if (PeekForwardMulti(6) == "define")
+                {
+                    MoveForward(5);
+                    return CreateTokenMatch(start..Position, DefineDefinition);
+                }
+
+                break;
+            }
+        }
         throw new IOException();
     }
 
