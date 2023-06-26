@@ -70,7 +70,8 @@ public class ParamLexer : BisLexer<ParamTypes>
     };
 
     public override IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
-    public override IBisLexer<ParamTypes>.TokenDefinition ErrorToken => ErrorDefinition;
+    public override IBisLexer<ParamTypes>.TokenDefinition? ErrorToken => ErrorDefinition;
+    public override IBisLexer<ParamTypes>.TokenDefinition EOFToken => EOFDefinition;
 
     public ParamLexer(string content) : base(content)
     {
@@ -139,6 +140,17 @@ public class ParamLexer : BisLexer<ParamTypes>
         }
     }
 
+
+    public int SkipWhitespace()
+    {
+        var i = 0;
+        while (NextToken() is { } nextToken &&  nextToken == ParamTypes.AbsWhitespace)
+        {
+            i++;
+        }
+
+        return i;
+    }
 
     protected override IBisLexer<ParamTypes>.TokenMatch GetNextToken()
     {
@@ -248,7 +260,7 @@ public class ParamLexer : BisLexer<ParamTypes>
             return CreateTokenMatch(start..Position, IdentifierDefinition);
         }
 
-        return CreateTokenMatch(start..Position, ErrorToken);
+        return CreateTokenMatch(start..Position, ErrorDefinition);
     }
 
     public void TraverseWhitespace()
@@ -283,7 +295,7 @@ public class ParamLexer : BisLexer<ParamTypes>
     }
 
     private static IBisLexer<ParamTypes>.TokenDefinition CreateTokenDefinition(string debugName, ParamTypes tokenType, short tokenWeight) =>
-        new() { DebugName = debugName, TokenType = tokenType, TokenWeight = tokenWeight };
+        new() { DebugName = debugName, TokenId = tokenType, TokenWeight = tokenWeight };
 
 
     private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
@@ -300,7 +312,6 @@ public class ParamLexer : BisLexer<ParamTypes>
         var check = c ?? CurrentChar ?? '\0';
         return IsAlphanum(check) || check is '_';
     }
-
 
     private bool IsAlpha(char? c = null) =>
         char.IsLetter(c ?? CurrentChar ?? '\0');

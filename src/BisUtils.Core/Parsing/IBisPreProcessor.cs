@@ -1,13 +1,13 @@
 ﻿namespace BisUtils.Core.Parsing;
 
-using FResults;
+using Lexer;
 
-public interface IBisPreProcessor<in TLexer> where TLexer : BisMutableStringStepper
+public interface IBisPreProcessor<TPreProcTypes> : IBisLexer<TPreProcTypes> where TPreProcTypes : Enum
 {
-    Result ProcessLexer(TLexer lexer);
 }
 
-public interface IBisPreProcessor : IBisPreProcessor<BisMutableStringStepper>
+public abstract class BisPreProcessor<TPreProcTypes> : BisLexer<TPreProcTypes>, IBisPreProcessor<TPreProcTypes> where TPreProcTypes : Enum
 {
-
+    public override IBisLexer<TPreProcTypes>.TokenDefinition? ErrorToken => null;
+    protected BisPreProcessor(string content) : base(content) => TokenizeUntilEnd();
 }

@@ -1,164 +1,45 @@
 ﻿namespace BisUtils.PreProcessor.RV;
 
 using Core.Parsing;
-using FResults;
-using Lexer;
+using Core.Parsing.Lexer;
+using Enumerations;
 using Models.Directives;
-using Models.Stubs;
 using Utils;
 
-public interface IRVPreProcessor : IBisPreProcessor<RVLexer>
+public interface IRVPreProcessor : IBisPreProcessor<RvTypes>
 {
     List<IRVDefineDirective> MacroDefinitions { get; }
 
     RVIncludeFinder IncludeLocator { get; }
 }
 
-public class RVPreProcessor : IRVPreProcessor
+public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
-    public List<IRVDefineDirective> MacroDefinitions { get; }
-    public RVIncludeFinder IncludeLocator { get; }
+    public List<IRVDefineDirective> MacroDefinitions { get; } = new ();
+    public required RVIncludeFinder IncludeLocator { get; init; }
 
-    public RVPreProcessor(List<IRVDefineDirective> macroDefinitions, RVIncludeFinder includeLocator)
+    private static readonly IBisLexer<RvTypes>.TokenDefinition EOFDefinition =
+        CreateTokenDefinition("rv.eof", RvTypes.EOF, 200);
+
+    private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
-        MacroDefinitions = macroDefinitions;
-        IncludeLocator = includeLocator;
+        EOFDefinition
+    };
+
+    public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
+    public override IBisLexer<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
+
+    public RVPreProcessor(string content, List<IRVDefineDirective> macroDefinitions) : base(content)
+    {
+
     }
 
-    public Result ProcessLexer(RVLexer lexer)
+    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken()
     {
-        var quoted = false;
-        var results = new List<Result>();
-        while (!lexer.IsEOF())
-        {
-            var start = lexer.Position;
-            if (lexer.CurrentChar == '"')
-            {
-                quoted = !quoted;
-            }
-
-            if (quoted)
-            {
-                lexer.MoveForward();
-                continue;
-            }
-
-            switch (lexer.CurrentChar)
-            {
-                case '/':
-                {
-                    results.Add(lexer.TraverseComment(out _, out _, true));
-                    continue;
-                }
-                case '#':
-                {
-                    results.Add(ParseDirective(lexer, out var directive));
-                    if (directive != null)
-                    {
-                        results.Add(EvaluateDirective(directive, out var text));
-                        lexer.ReplaceRange(start..lexer.Position, text);
-                    }
-                    continue;
-                }
-            }
-
-            if (lexer.Position == start)
-            {
-                lexer.MoveForward();
-            }
-        }
-
-        return Result.Merge(results);
+        throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 
-    private Result EvaluateDirective(IRVDirective directive, out string evaluated)
-    {
-        switch (directive)
-        {
-            case IRVIncludeDirective includeDirective:
-                return IncludeLocator(includeDirective, out evaluated);
-            case IRVDefineDirective macro:
-            {
-                evaluated = "";
-                MacroDefinitions.Add(macro);
-                return Result.ImmutableOk();
-            }
-            case IRVUndefineDirective undefineDirective:
-            {
-                evaluated = "";
-
-                var macro = FindMacro(undefineDirective.MacroName);
-                if (macro is null)
-                {
-                    return Result.Fail($"Couldn't locate macro named '{undefineDirective.MacroName}'");
-                }
-
-                MacroDefinitions.Remove(macro);
-                return Result.ImmutableOk();
-            }
-            case IRVIfNotDefinedDirective ifNotDefinedDirective:
-            {
-
-                evaluated = MacroDefinitions.All(e => e.MacroName != ifNotDefinedDirective.MacroName)
-                    ? ifNotDefinedDirective.IfBody
-                    : ifNotDefinedDirective.ElseBody ?? "";
-                return Result.Ok();
-            }
-            case IRVIfDefinedDirective ifDefinedDirective:
-            {
-                evaluated = MacroDefinitions.Any(e => e.MacroName == ifDefinedDirective.MacroName)
-                    ? ifDefinedDirective.IfBody
-                    : ifDefinedDirective.ElseBody ?? "";
-                return Result.Ok();
-            }
-            default:
-            {
-                evaluated = "";
-                return Result.Fail($"Evaluation isn't implemented for this directive type.'");
-            }
-        }
-    }
-
-    public IRVDefineDirective? FindMacro(string name) =>
-        MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
-
-    public Result ParseDirective(RVLexer lexer, out IRVDirective? directive)
-    {
-        var results = new List<Result>();
-
-        switch (lexer.ReadWord())
-        {
-            case "include":
-            {
-                results.Add(RVIncludeDirective.ParseDirective(this, lexer, out var include));
-                directive = include;
-                break;
-            }
-            case "undefine":
-            {
-                results.Add(lexer.TraverseWhitespace(out _, false, false, true, false));
-                directive = new RVUndefineDirective(this, lexer.ReadWord());
-                break;
-            }
-            case "define":
-            {
-                results.Add(lexer.TraverseWhitespace(out _, false, false, true, false));
-                var macroName = lexer.ReadMacroId(true);
-                var macroArguments = lexer.ReadMacroArguments().ToList();
-                results.Add(lexer.TraverseWhitespace(out _, false, false, true, false));
-                var start = lexer.Position;
-                results.Add(lexer.TraverseLine(out var lineLength, true, true));
-                var macroValue = lexer.GetRange(start..(start + lineLength));
-
-                directive = new RVDefineDirective(this, macroName, macroValue, macroArguments);
-                break;
-            }
-            default:
-                directive = null;
-                results.Add(Result.Fail("Invalid Directive"));
-                break;
-        }
-
-        return Result.Merge(results);
-    }
+    private static IBisLexer<RvTypes>.TokenDefinition CreateTokenDefinition(string debugName, RvTypes tokenType, short tokenWeight) =>
+        new() { DebugName = debugName, TokenId = tokenType, TokenWeight = tokenWeight };
 }
