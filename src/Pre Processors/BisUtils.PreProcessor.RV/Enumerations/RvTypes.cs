@@ -4,6 +4,7 @@ public enum RvTypes
 {
     EOF,
     Text,
+    Whitespace,
     Include,
     Define,
     IfDef,

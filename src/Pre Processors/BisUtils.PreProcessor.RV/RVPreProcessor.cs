@@ -36,6 +36,9 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IBisLexer<RvTypes>.TokenDefinition DefineDefinition =
         CreateTokenDefinition("rv.directive.define", RvTypes.Define, 1);
 
+    private static readonly IBisLexer<RvTypes>.TokenDefinition IncludeDefinition =
+        CreateTokenDefinition("rv.directive.include", RvTypes.Include, 1);
+
     private static readonly IBisLexer<RvTypes>.TokenDefinition NewLineDefinition =
         CreateTokenDefinition("rv.newLine", RvTypes.NewLine, 1);
 
@@ -47,6 +50,18 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition BlockCommentDefinition =
         CreateTokenDefinition("rv.comment.block", RvTypes.BlockComment, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition ElseDefinition =
+        CreateTokenDefinition("rv.directive.else", RvTypes.Else, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition IfDefDefinition =
+        CreateTokenDefinition("rv.directive.ifdef", RvTypes.IfDef, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition IfNDefDefinition =
+        CreateTokenDefinition("rv.directive.ifdef.not", RvTypes.IfNDef, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition EndifDefinition =
+        CreateTokenDefinition("rv.directive.endif", RvTypes.EndIf, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition LeftParenthesisDefinition =
         CreateTokenDefinition("rv.parenthesis.left", RvTypes.LeftParenthesis, 1);
@@ -63,11 +78,15 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IBisLexer<RvTypes>.TokenDefinition DoubleQuoteDefinition =
         CreateTokenDefinition("rv.quote.double", RvTypes.DoubleQuote, 1);
 
+    private static readonly IBisLexer<RvTypes>.TokenDefinition WhitespaceDefinition =
+        CreateTokenDefinition("rv.whitespace", RvTypes.Whitespace, 1);
+
     private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
         RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition,
-        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition
+        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition,
+        IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition, ElseDefinition
 
     };
 
@@ -86,6 +105,15 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         var start = Position;
         if (IsEOF() || CurrentChar is null)
         {
+        }
+        if (IsWhitespace())
+        {
+            while (IsWhitespace(PeekForward()))
+            {
+                MoveForward();
+            }
+
+            return CreateTokenMatch(start..Position, WhitespaceDefinition);
         }
 
         switch (CurrentChar)
@@ -165,9 +193,89 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
                 break;
             }
+            case 'e':
+            {
+                switch (PeekForward())
+                {
+                    case 'l':
+                    {
+                        if (PeekForwardMulti(4) == "else")
+                        {
+                            MoveForward(3);
+                            return CreateTokenMatch(start..Position, "else", ElseDefinition);
+                        }
+
+                        break;
+                    }
+                    case 'n':
+                    {
+                        if (PeekForwardMulti(5) == "endif")
+                        {
+                            MoveForward(4);
+                            return CreateTokenMatch(start..Position, "endif", ElseDefinition);
+                        }
+
+                        break;
+                    }
+
+                }
+
+                break;
+            }
+            case 'i':
+            {
+                switch (PeekForward())
+                {
+                    case 'f':
+                    {
+                        MoveForward();
+                        switch (MoveForward())
+                        {
+                            case 'n':
+                            {
+                                if (PeekForwardMulti(4) == "ndef")
+                                {
+                                    MoveForward(3);
+                                    return CreateTokenMatch(start..Position, "ifndef", IfNDefDefinition);
+                                }
+                                break;
+                            }
+                            case 'd':
+                            {
+                                if (PeekForwardMulti(3) == "def")
+                                {
+                                    MoveForward(2);
+                                    return CreateTokenMatch(start..Position, "ifdef", IfDefDefinition);
+                                }
+
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case 'n':
+                    {
+                        if (PeekForwardMulti(7) == "include")
+                        {
+                            MoveForward(6);
+                            return CreateTokenMatch(start..Position, "include", IncludeDefinition);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+
         }
         throw new IOException();
     }
+
+
+    private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
+    {
+        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
+        _ => false
+    };
 
     public int TraverseLine()
     {
