@@ -77,16 +77,6 @@ public class ParamLexer : BisLexer<ParamTypes>
     {
     }
 
-    protected IBisLexer<ParamTypes>.TokenMatch CreateTokenMatch(Range tokenRange, IBisLexer<ParamTypes>.TokenDefinition tokenDef) =>
-        new() {
-            Success = true,
-            TokenLength = tokenRange.End.Value - tokenRange.Start.Value + 1,
-            TokenPosition = tokenRange.Start.Value,
-            TokenText = GetRange(tokenRange.Start.Value..(tokenRange.End.Value + 1)),
-            TokenType = tokenDef
-        };
-
-
     public IBisLexer<ParamTypes>.TokenMatch NextLiteral(params char[] delimiters)
     {
         MoveForward();
@@ -293,10 +283,6 @@ public class ParamLexer : BisLexer<ParamTypes>
             }
         }
     }
-
-    private static IBisLexer<ParamTypes>.TokenDefinition CreateTokenDefinition(string debugName, ParamTypes tokenType, short tokenWeight) =>
-        new() { DebugName = debugName, TokenId = tokenType, TokenWeight = tokenWeight };
-
 
     private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
     {

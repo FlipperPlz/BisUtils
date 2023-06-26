@@ -22,5 +22,5 @@ public class RVUndefineDirective: RVDirective, IRVUndefineDirective
         return Result.ImmutableOk();
     }
 
-    public override Result Process(RVLexer lexer, int startPosition) => throw new NotImplementedException();
+    public override Result Process(RVLexerOld lexerOld, int startPosition) => throw new NotImplementedException();
 }

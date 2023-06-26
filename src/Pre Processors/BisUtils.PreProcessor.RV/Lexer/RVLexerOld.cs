@@ -6,11 +6,11 @@ using Core.Parsing;
 using Core.Parsing.Errors;
 using FResults;
 
-public class RVLexer : BisMutableStringStepper
+public class RVLexerOld : BisMutableStringStepper
 {
     public static readonly char[] Whitespaces = { ' ', '\t', '\u000B', '\u000C' };
 
-    public RVLexer(string content) : base(content)
+    public RVLexerOld(string content) : base(content)
     {
 
     }

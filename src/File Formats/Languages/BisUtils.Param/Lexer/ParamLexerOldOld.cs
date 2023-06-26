@@ -9,9 +9,9 @@ using Models.Literals;
 using Models.Stubs;
 using PreProcessor.RV.Lexer;
 
-public class ParamLexerOld : RVLexer
+public class ParamLexerOldOld : RVLexerOld
 {
-    public ParamLexerOld(string content) : base(content)
+    public ParamLexerOldOld(string content) : base(content)
     {
     }
 

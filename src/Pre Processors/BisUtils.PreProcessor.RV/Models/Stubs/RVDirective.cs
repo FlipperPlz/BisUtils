@@ -19,6 +19,6 @@ public abstract class RVDirective : RVElement, IRVDirective
         DirectiveKeyword = $"#{DirectiveName}";
     }
 
-    public abstract Result Process(RVLexer lexer, int startPosition);
+    public abstract Result Process(RVLexerOld lexerOld, int startPosition);
 
 }

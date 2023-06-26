@@ -27,11 +27,11 @@ public class RVIncludeString: RVElement, IRVIncludeString
 
     public override Result ToText(out string str) => throw new NotImplementedException();
 
-    public static Result ParseString(IRVPreProcessor processor, RVLexer lexer, out IRVIncludeString str)
+    public static Result ParseString(IRVPreProcessor processor, RVLexerOld lexerOld, out IRVIncludeString str)
     {
-        lexer.TraverseWhitespace(out _);
-        var stringType = DetectStringType(lexer);
-        str = new RVIncludeString(processor, ReadString(lexer, stringType), stringType);
+        lexerOld.TraverseWhitespace(out _);
+        var stringType = DetectStringType(lexerOld);
+        str = new RVIncludeString(processor, ReadString(lexerOld, stringType), stringType);
         return Result.ImmutableOk();
     }
 

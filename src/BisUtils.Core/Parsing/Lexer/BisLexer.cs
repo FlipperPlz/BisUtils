@@ -94,6 +94,28 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
         OnTokenMatched?.Invoke(match, lexer);
     }
 
+    protected static IBisLexer<TTokenEnum>.TokenDefinition CreateTokenDefinition(string debugName, TTokenEnum tokenType, short tokenWeight) =>
+        new() { DebugName = debugName, TokenId = tokenType, TokenWeight = tokenWeight };
+
+    protected IBisLexer<TTokenEnum>.TokenMatch CreateTokenMatch(Range tokenRange, IBisLexer<TTokenEnum>.TokenDefinition tokenDef) =>
+        new() {
+            Success = true,
+            TokenLength = tokenRange.End.Value - tokenRange.Start.Value + 1,
+            TokenPosition = tokenRange.Start.Value,
+            TokenText = GetRange(tokenRange.Start.Value..(tokenRange.End.Value + 1)),
+            TokenType = tokenDef
+        };
+
+    protected static IBisLexer<TTokenEnum>.TokenMatch CreateTokenMatch(Range tokenRange, string str, IBisLexer<TTokenEnum>.TokenDefinition tokenDef) =>
+        new() {
+            Success = true,
+            TokenLength = tokenRange.End.Value - tokenRange.Start.Value + 1,
+            TokenPosition = tokenRange.Start.Value,
+            TokenText = str,
+            TokenType = tokenDef
+        };
+
+
     protected abstract IBisLexer<TTokenEnum>.TokenMatch GetNextToken();
 
 }
