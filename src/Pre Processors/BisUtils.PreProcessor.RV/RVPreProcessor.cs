@@ -1,8 +1,10 @@
 ﻿namespace BisUtils.PreProcessor.RV;
 
+using System.Text;
 using Core.Parsing;
 using Core.Parsing.Lexer;
 using Enumerations;
+using FResults;
 using Models.Directives;
 using Utils;
 
@@ -118,6 +120,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             {
                 MoveForward();
             }
+            return CreateTokenMatch(..0, WhitespaceDefinition);
         }
 
         switch (CurrentChar)
@@ -135,6 +138,24 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
                 return CreateTokenMatch(start..Position, "\r\n", NewLineDefinition);
             }
+            case '/':
+            {
+                switch (PeekForward())
+                {
+                    case '/':
+                        return CreateTokenMatch(start..(Position + TraverseLine()), LineCommentDefinition);
+                    case '*':
+                    {
+                        while (!(PreviousChar == '*' && CurrentChar == '/') && CurrentChar != null)
+                        {
+                        }
+
+                        return CreateTokenMatch(start..(Position + TraverseLine()), BlockCommentDefinition);
+                    }
+                }
+
+                break;
+            }
             case '#':
             {
                 if (PeekForward() != '#')
@@ -145,6 +166,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 MoveForward();
                 return CreateTokenMatch(start..Position, "##", DHashDefinition);
             }
+            case '"':
+                return CreateTokenMatch(start..Position, "\"", DoubleQuoteDefinition);
             case '\\':
             {
                 if (PeekForward() == '\r')
@@ -159,6 +182,98 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 }
                 break;
             }
+            case 'd':
+            {
+                if (PeekForwardMulti(6) == "define")
+                {
+                    MoveForward(5);
+                    return CreateTokenMatch(start..Position, DefineDefinition);
+                }
+
+                break;
+            }
+            case 'e':
+            {
+                switch (PeekForward())
+                {
+                    case 'l':
+                    {
+                        if (PeekForwardMulti(4) == "else")
+                        {
+                            MoveForward(3);
+                            return CreateTokenMatch(start..Position, "else", ElseDefinition);
+                        }
+
+                        break;
+                    }
+                    case 'n':
+                    {
+                        if (PeekForwardMulti(5) == "endif")
+                        {
+                            MoveForward(4);
+                            return CreateTokenMatch(start..Position, "endif", ElseDefinition);
+                        }
+
+                        break;
+                    }
+
+                }
+
+                break;
+            }
+            case 'i':
+            {
+                switch (PeekForward())
+                {
+                    case 'f':
+                    {
+                        MoveForward();
+                        switch (MoveForward())
+                        {
+                            case 'n':
+                            {
+                                if (PeekForwardMulti(4) == "ndef")
+                                {
+                                    MoveForward(3);
+                                    return CreateTokenMatch(start..Position, "ifndef", IfNDefDefinition);
+                                }
+                                break;
+                            }
+                            case 'd':
+                            {
+                                if (PeekForwardMulti(3) == "def")
+                                {
+                                    MoveForward(2);
+                                    return CreateTokenMatch(start..Position, "ifdef", IfDefDefinition);
+                                }
+
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case 'n':
+                    {
+                        if (PeekForwardMulti(7) == "include")
+                        {
+                            MoveForward(6);
+                            return CreateTokenMatch(start..Position, "include", IncludeDefinition);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            case 'u':
+            {
+                if (PeekForwardMulti(5) == "undef")
+                {
+                    MoveForward(4);
+                    return CreateTokenMatch(start..Position,"undef", UndefDefinition);
+                }
+
+                break;
+            }
         }
 
         if (!IsIdentifierChar(isFirst: true))
@@ -168,22 +283,123 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
 
         var id = ScanUntil(e => !IsIdentifierChar(e), true);
-        if (LocateMacro(id) is { } macro)
+        return CreateTokenMatch(start..Position, id, LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
+    }
+
+    public override Result PreProcessLexer(StringBuilder? builder)
+    {
+        var result = new List<Result>();
+        var quoted = false;
+
+        IBisLexer<RvTypes>.TokenMatch token;
+        while ((token = GetNextToken()) != RvTypes.SimEOF)
         {
-            return CreateTokenMatch(start..Position, id, IdentifierDefinition);
+            if (token == RvTypes.SymDoubleQuote)
+            {
+                quoted = !quoted;
+            }
+
+            if (quoted)
+            {
+                var next = GetNextToken();
+                builder?.Append(next.TokenText);
+                continue;
+            }
+            var isStart = token == RvTypes.AbsNewLine || PreviousMatch() is null;
+
+            if (isStart)
+            {
+                builder?.Append('\n');
+            }
+            SkipWhitespaces();
+            if (GetNextToken() == RvTypes.SimHash)
+            {
+                SkipWhitespaces();
+                switch (GetNextToken().TokenType.TokenId)
+                {
+                    case RvTypes.KwInclude:
+                    {
+                        SkipWhitespaces();
+                        token = GetNextToken();
+                        if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
+                        {
+                            result.Add(Result.Fail("Unknown character for include string, expected '<' or '\"'"));
+                            goto End;
+                        }
+
+                        var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
+                        var path = ScanUntil(e => e == end);
+                        var includeLocatorResult = IncludeLocator(path, builder);
+                        result.Add(includeLocatorResult);
+
+                        if (includeLocatorResult.IsFailed)
+                        {
+                            goto End;
+                        }
+
+                        break;
+                    }
+                    case RvTypes.KwDefine:
+                    case RvTypes.KwIfDef:
+                    case RvTypes.KwIfNDef:
+                    case RvTypes.KwElse:
+                    case RvTypes.KwEndIf:
+                    case RvTypes.KwUndef:
+                    {
+                        //TODO:
+                        throw new NotImplementedException();
+                    }
+                    case RvTypes.SimEOF:
+                    case RvTypes.SimText:
+                    case RvTypes.SimIdentifier:
+                    case RvTypes.SimHash:
+                    case RvTypes.SimDoubleHash:
+                    case RvTypes.AbsWhitespace:
+                    case RvTypes.SymLParenthesis:
+                    case RvTypes.SymRParenthesis:
+                    case RvTypes.SymComma:
+                    case RvTypes.AbsNewLine:
+                    case RvTypes.AbsLineComment:
+                    case RvTypes.AbsBlockComment:
+                    case RvTypes.AbsDirectiveNewLine:
+                    case RvTypes.SymDoubleQuote:
+                    case RvTypes.SymLeftAngle:
+                    case RvTypes.SymRightAngle:
+                    default:
+                    {
+                        result.Add(Result.Fail("Unknown preprocessor directive!"));
+                        goto End;
+                    }
+                }
+
+            }
+
+
         }
 
 
-        return CreateTokenMatch(start..Position, id, TextDefinition);
+
+        End:
+        {
+            return Result.Merge(result);
+        }
     }
 
 
+    private void SkipWhitespaces()
+    {
+        while (PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
+        {
+            MoveForward();
+        }
+    }
 
     private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
     {
         '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
         _ => false
     };
+
 
     public bool IsIdentifierChar(char? c = null, bool isFirst = false)
     {
@@ -199,7 +415,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
         return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
-
 
     public int TraverseLine()
     {

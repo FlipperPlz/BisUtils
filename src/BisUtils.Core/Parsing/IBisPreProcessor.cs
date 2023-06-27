@@ -1,9 +1,12 @@
 ﻿namespace BisUtils.Core.Parsing;
 
+using System.Text;
+using FResults;
 using Lexer;
 
 public interface IBisPreProcessor<TPreProcTypes> : IBisLexer<TPreProcTypes> where TPreProcTypes : Enum
 {
+    public Result PreProcessLexer(StringBuilder? builder);
 }
 
 public abstract class BisPreProcessor<TPreProcTypes> : BisLexer<TPreProcTypes>, IBisPreProcessor<TPreProcTypes> where TPreProcTypes : Enum
@@ -14,4 +17,6 @@ public abstract class BisPreProcessor<TPreProcTypes> : BisLexer<TPreProcTypes>, 
     {
 
     }
+
+    public abstract Result PreProcessLexer(StringBuilder? builder);
 }
