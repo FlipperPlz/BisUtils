@@ -20,7 +20,7 @@ public interface IRVPreProcessor : IBisPreProcessor<RvTypes>
 
 public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
-    public List<IRVDefineDirective> MacroDefinitions { get; } = new ();
+    public List<IRVDefineDirective> MacroDefinitions { get; } = new();
     public required RVIncludeFinder IncludeLocator { get; init; }
     public IRVDefineDirective? LocateMacro(string name) => MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
@@ -90,15 +90,20 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IBisLexer<RvTypes>.TokenDefinition DoubleQuoteDefinition =
         CreateTokenDefinition("rv.quote.double", RvTypes.SymDoubleQuote, 1);
 
+    private static readonly IBisLexer<RvTypes>.TokenDefinition QuotedStringDefinition =
+        CreateTokenDefinition("rv.string.quoted", RvTypes.AbsQuotedString, 1);
+
+
     private static readonly IBisLexer<RvTypes>.TokenDefinition WhitespaceDefinition =
         CreateTokenDefinition("rv.whitespace", RvTypes.AbsWhitespace, 1);
 
     private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
-        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition, UndefDefinition,
-        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition, ElseDefinition,
-        IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition, IdentifierDefinition
+        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition,
+        UndefDefinition, LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition,
+        NewLineDefinition, ElseDefinition, IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition,
+        IdentifierDefinition, QuotedStringDefinition
     };
 
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
@@ -106,7 +111,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
     public RVPreProcessor(string content, List<IRVDefineDirective> macroDefinitions)
     {
-
     }
 
     protected override IBisLexer<RvTypes>.TokenMatch GetNextToken<T>(BisLexer<T> lexer)
@@ -122,7 +126,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 builder.Append(lexer.MoveForward());
             }
 
-            return CreateTokenMatch(start..lexer.Position,builder.Remove(builder.Length, 1).ToString(), WhitespaceDefinition);
+            return CreateTokenMatch(start..lexer.Position, builder.Remove(builder.Length, 1).ToString(),
+                WhitespaceDefinition);
         }
 
         switch (lexer.CurrentChar)
@@ -146,15 +151,17 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 {
                     case '/':
                         var lineEnd = lexer.Position + TraverseLine(lexer);
-                        return CreateTokenMatch(start..lineEnd, lexer.GetRange(start..(lineEnd + 1)), LineCommentDefinition);
+                        return CreateTokenMatch(start..lineEnd, lexer.GetRange(start..(lineEnd + 1)),
+                            LineCommentDefinition);
                     case '*':
                     {
-                        while (!(lexer.PreviousChar == '*' && lexer.CurrentChar == '/') && lexer.CurrentChar != null)
+                        while (lexer is not { PreviousChar: '*', CurrentChar: '/' } && lexer.CurrentChar != null)
                         {
                         }
 
                         var blockEnd = lexer.Position;
-                        return CreateTokenMatch(start..blockEnd, lexer.GetRange(start..(blockEnd + 1)), LineCommentDefinition);
+                        return CreateTokenMatch(start..blockEnd, lexer.GetRange(start..(blockEnd + 1)),
+                            LineCommentDefinition);
                     }
                 }
 
@@ -182,8 +189,9 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 if (lexer.PeekForward() == '\n')
                 {
                     lexer.MoveForward();
-                    return CreateTokenMatch(start..lexer.Position,"\\\n", DirectiveNewLineDefinition);
+                    return CreateTokenMatch(start..lexer.Position, "\\\n", DirectiveNewLineDefinition);
                 }
+
                 break;
             }
             case 'd':
@@ -220,7 +228,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
                         break;
                     }
-
                 }
 
                 break;
@@ -241,6 +248,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                                     lexer.MoveForward(3);
                                     return CreateTokenMatch(start..lexer.Position, "ifndef", IfNDefDefinition);
                                 }
+
                                 break;
                             }
                             case 'd':
@@ -254,6 +262,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                                 break;
                             }
                         }
+
                         break;
                     }
                     case 'n':
@@ -263,9 +272,11 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                             lexer.MoveForward(6);
                             return CreateTokenMatch(start..lexer.Position, "include", IncludeDefinition);
                         }
+
                         break;
                     }
                 }
+
                 break;
             }
             case 'u':
@@ -273,7 +284,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 if (lexer.PeekForwardMulti(5) == "undef")
                 {
                     lexer.MoveForward(4);
-                    return CreateTokenMatch(start..lexer.Position,"undef", UndefDefinition);
+                    return CreateTokenMatch(start..lexer.Position, "undef", UndefDefinition);
                 }
 
                 break;
@@ -287,7 +298,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
 
         var id = lexer.ScanUntil(e => !IsIdentifierChar(lexer, e), true);
-        return CreateTokenMatch(start..lexer.Position, id, LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
+        return CreateTokenMatch(start..lexer.Position, id,
+            LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
     }
 
     public override Result EvaluateLexer<T>(BisLexer<T> lexer, StringBuilder? builder)
@@ -305,82 +317,112 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
             if (quoted)
             {
-                var next = GetNextToken(lexer);
+                var next = TokenizeUntil(lexer, match => match.TokenType == RvTypes.SymDoubleQuote,
+                    QuotedStringDefinition);
                 builder?.Append(next.TokenText);
                 continue;
             }
+
             var isStart = token == RvTypes.AbsNewLine || PreviousMatch() is null;
 
             if (isStart)
             {
                 builder?.Append('\n');
             }
+
             SkipWhitespaces(lexer);
-            if (GetNextToken(lexer) == RvTypes.SimHash)
+
+            switch ((token = GetNextToken(lexer)).TokenType.TokenId)
             {
-                SkipWhitespaces(lexer);
-                switch (GetNextToken(lexer).TokenType.TokenId)
+                case RvTypes.SimHash:
                 {
-                    case RvTypes.KwInclude:
+                    SkipWhitespaces(lexer);
+                    switch (GetNextToken(lexer).TokenType.TokenId)
                     {
-                        SkipWhitespaces(lexer);
-                        token = GetNextToken(lexer);
-                        if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
+                        case RvTypes.KwInclude:
                         {
-                            result.Add(Result.Fail("Unknown character for include string, expected '<' or '\"'"));
-                            goto End;
+                            SkipWhitespaces(lexer);
+                            token = GetNextToken(lexer);
+                            if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
+                            {
+                                result.Add(Result.Fail("Unknown character for include string, expected '<' or '\"'"));
+                                goto End;
+                            }
+
+                            var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
+                            var path = lexer.ScanUntil(e => e == end);
+                            var includeLocatorResult = IncludeLocator(path, builder);
+                            result.Add(includeLocatorResult);
+
+                            if (includeLocatorResult.IsFailed)
+                            {
+                                goto End;
+                            }
+
+                            break;
                         }
-
-                        var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
-                        var path = lexer.ScanUntil(e => e == end);
-                        var includeLocatorResult = IncludeLocator(path, builder);
-                        result.Add(includeLocatorResult);
-
-                        if (includeLocatorResult.IsFailed)
+                        case RvTypes.KwDefine:
+                        case RvTypes.KwIfDef:
+                        case RvTypes.KwIfNDef:
+                        case RvTypes.KwElse:
+                        case RvTypes.KwEndIf:
+                        case RvTypes.KwUndef:
                         {
-                            goto End;
+                            //TODO:
+                            throw new NotImplementedException();
                         }
+                        case RvTypes.SimEOF:
+                        case RvTypes.SimText:
+                        case RvTypes.SimIdentifier:
+                        case RvTypes.SimHash:
+                        case RvTypes.SimDoubleHash:
+                        case RvTypes.AbsWhitespace:
+                        case RvTypes.SymLParenthesis:
+                        case RvTypes.SymRParenthesis:
+                        case RvTypes.SymComma:
+                        case RvTypes.AbsNewLine:
+                        case RvTypes.AbsLineComment:
+                        case RvTypes.AbsBlockComment:
+                        case RvTypes.AbsDirectiveNewLine:
+                        case RvTypes.SymDoubleQuote:
+                        case RvTypes.SymLeftAngle:
+                        case RvTypes.SymRightAngle:
+                        case RvTypes.AbsQuotedString:
+                        default: break;
+                    }
 
-                        break;
-                    }
-                    case RvTypes.KwDefine:
-                    case RvTypes.KwIfDef:
-                    case RvTypes.KwIfNDef:
-                    case RvTypes.KwElse:
-                    case RvTypes.KwEndIf:
-                    case RvTypes.KwUndef:
-                    {
-                        //TODO:
-                        throw new NotImplementedException();
-                    }
-                    case RvTypes.SimEOF:
-                    case RvTypes.SimText:
-                    case RvTypes.SimIdentifier:
-                    case RvTypes.SimHash:
-                    case RvTypes.SimDoubleHash:
-                    case RvTypes.AbsWhitespace:
-                    case RvTypes.SymLParenthesis:
-                    case RvTypes.SymRParenthesis:
-                    case RvTypes.SymComma:
-                    case RvTypes.AbsNewLine:
-                    case RvTypes.AbsLineComment:
-                    case RvTypes.AbsBlockComment:
-                    case RvTypes.AbsDirectiveNewLine:
-                    case RvTypes.SymDoubleQuote:
-                    case RvTypes.SymLeftAngle:
-                    case RvTypes.SymRightAngle:
-                    default:
-                    {
-                        result.Add(Result.Fail("Unknown preprocessor directive!"));
-                        goto End;
-                    }
+                    result.Add(Result.Fail("Unknown preprocessor directive!"));
+                    goto End;
                 }
-
+                case RvTypes.SimText:
+                default:
+                    builder?.Append(token.TokenText);
+                    break;
+                case RvTypes.SimEOF:
+                case RvTypes.SimIdentifier:
+                case RvTypes.SimDoubleHash:
+                case RvTypes.AbsWhitespace:
+                case RvTypes.KwInclude:
+                case RvTypes.KwDefine:
+                case RvTypes.KwIfDef:
+                case RvTypes.KwIfNDef:
+                case RvTypes.KwElse:
+                case RvTypes.KwEndIf:
+                case RvTypes.KwUndef:
+                case RvTypes.SymLParenthesis:
+                case RvTypes.SymRParenthesis:
+                case RvTypes.SymComma:
+                case RvTypes.AbsQuotedString:
+                case RvTypes.AbsNewLine:
+                case RvTypes.AbsLineComment:
+                case RvTypes.AbsBlockComment:
+                case RvTypes.AbsDirectiveNewLine:
+                case RvTypes.SymDoubleQuote:
+                case RvTypes.SymLeftAngle:
+                case RvTypes.SymRightAngle:
+                    break;
             }
-
-
         }
-
 
 
         End:
@@ -389,7 +431,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
-    private void SkipWhitespaces(IBisStringStepper stepper)
+    private static void SkipWhitespaces(IBisStringStepper stepper)
     {
         while (stepper.PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
         {
@@ -397,16 +439,16 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
-    private bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
+    private static bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
     {
         '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
         _ => false
     };
 
 
-    public bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
+    public static bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
     {
-        if ((c ?? stepper.CurrentChar) is not { } currentChar )
+        if ((c ?? stepper.CurrentChar) is not { } currentChar)
         {
             return false;
         }
@@ -419,7 +461,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
 
-    public int TraverseLine(IBisStringStepper stepper)
+    public static int TraverseLine(IBisStringStepper stepper)
     {
         var charCount = 0;
         while (true)
@@ -438,5 +480,4 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             }
         }
     }
-
 }

@@ -18,6 +18,7 @@ public enum RvTypes
     SymLParenthesis,
     SymRParenthesis,
     SymComma,
+    AbsQuotedString,
     AbsNewLine,
     AbsLineComment,
     AbsBlockComment,

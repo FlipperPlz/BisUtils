@@ -37,11 +37,28 @@ public abstract class BisPreProcessor<TPreProcTypes> : IBisPreProcessor<TPreProc
         }
     }
 
+    public IBisLexer<TPreProcTypes>.TokenMatch TokenizeUntil<TTypes>(
+        BisLexer<TTypes> lexer,
+        Func<IBisLexer<TPreProcTypes>.TokenMatch, bool> until, IBisLexer<TPreProcTypes>.TokenDefinition asToken) where TTypes : Enum
+    {
+        var start = lexer.Position;
+        var builder = new StringBuilder();
+        IBisLexer<TPreProcTypes>.TokenMatch token;
+        while (!until(token = NextToken(lexer)))
+        {
+            builder.Append(token.TokenText);
+        }
+
+        return CreateTokenMatch(start..lexer.Position, builder.ToString(), asToken);
+    }
+
     protected virtual void OnTokenMatchedHandler(IBisLexer<TPreProcTypes>.TokenMatch match, IBisLexer<TPreProcTypes> lexer)
     {
         previousMatches.Add(match);
         OnTokenMatched?.Invoke(match, lexer);
     }
+
+
 
     protected static IBisLexer<TPreProcTypes>.TokenDefinition CreateTokenDefinition(string debugName, TPreProcTypes tokenType, short tokenWeight) =>
         new() { DebugName = debugName, TokenId = tokenType, TokenWeight = tokenWeight };
