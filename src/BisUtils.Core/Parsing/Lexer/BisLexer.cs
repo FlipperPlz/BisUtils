@@ -48,16 +48,14 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
     public event TokenMatched? OnTokenMatched;
 
     protected IEnumerable<TokenDefinition> TokenTypes { get; }
-    protected List<TokenMatch> PreviousMatches { get; }
+    protected IEnumerable<TokenMatch> PreviousMatches { get; }
 
     protected TokenDefinition? ErrorToken { get; }
     protected TokenDefinition EOFToken { get; }
 
 
     public TokenMatch? PreviousMatch();
-    public TokenMatch NextToken();
 
-    public void TokenizeUntilEnd();
 }
 
 public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<TTokenEnum> where TTokenEnum : Enum
@@ -66,7 +64,8 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
     public abstract IEnumerable<IBisLexer<TTokenEnum>.TokenDefinition> TokenTypes { get; }
     public abstract IBisLexer<TTokenEnum>.TokenDefinition? ErrorToken { get; }
     public abstract IBisLexer<TTokenEnum>.TokenDefinition EOFToken { get; }
-    public List<IBisLexer<TTokenEnum>.TokenMatch> PreviousMatches { get; } = new();
+    public IEnumerable<IBisLexer<TTokenEnum>.TokenMatch> PreviousMatches => previousMatches;
+    private readonly List<IBisLexer<TTokenEnum>.TokenMatch> previousMatches = new();
 
     protected BisLexer(string content) : base(content)
     {
@@ -90,7 +89,7 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
 
     protected virtual void OnTokenMatchedHandler(IBisLexer<TTokenEnum>.TokenMatch match, IBisLexer<TTokenEnum> lexer)
     {
-        PreviousMatches.Add(match);
+        previousMatches.Add(match);
         OnTokenMatched?.Invoke(match, lexer);
     }
 

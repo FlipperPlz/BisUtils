@@ -104,53 +104,57 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
     public override IBisLexer<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
 
-    public RVPreProcessor(string content, List<IRVDefineDirective> macroDefinitions) : base(content)
+    public RVPreProcessor(string content, List<IRVDefineDirective> macroDefinitions)
     {
 
     }
 
-    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken()
+    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken<T>(BisLexer<T> lexer)
     {
-        MoveForward();
+        lexer.MoveForward();
 
-        var start = Position;
-        if (IsWhitespace())
+        var start = lexer.Position;
+        if (IsWhitespace(lexer))
         {
-            while (IsWhitespace(PeekForward()))
+            var builder = new StringBuilder(lexer.CurrentChar.ToString() ?? "");
+            while (IsWhitespace(lexer, lexer.PeekForward()))
             {
-                MoveForward();
+                builder.Append(lexer.MoveForward());
             }
-            return CreateTokenMatch(..0, WhitespaceDefinition);
+
+            return CreateTokenMatch(start..lexer.Position,builder.Remove(builder.Length, 1).ToString(), WhitespaceDefinition);
         }
 
-        switch (CurrentChar)
+        switch (lexer.CurrentChar)
         {
             case null:
                 return CreateTokenMatch(..0, "", EOFDefinition);
             case '\n':
-                return CreateTokenMatch(start..Position, "\n", NewLineDefinition);
+                return CreateTokenMatch(start..lexer.Position, "\n", NewLineDefinition);
             case '\r':
             {
-                if (PeekForward() == '\n')
+                if (lexer.PeekForward() == '\n')
                 {
-                    MoveForward();
+                    lexer.MoveForward();
                 }
 
-                return CreateTokenMatch(start..Position, "\r\n", NewLineDefinition);
+                return CreateTokenMatch(start..lexer.Position, "\r\n", NewLineDefinition);
             }
             case '/':
             {
-                switch (PeekForward())
+                switch (lexer.PeekForward())
                 {
                     case '/':
-                        return CreateTokenMatch(start..(Position + TraverseLine()), LineCommentDefinition);
+                        var lineEnd = lexer.Position + TraverseLine(lexer);
+                        return CreateTokenMatch(start..lineEnd, lexer.GetRange(start..(lineEnd + 1)), LineCommentDefinition);
                     case '*':
                     {
-                        while (!(PreviousChar == '*' && CurrentChar == '/') && CurrentChar != null)
+                        while (!(lexer.PreviousChar == '*' && lexer.CurrentChar == '/') && lexer.CurrentChar != null)
                         {
                         }
 
-                        return CreateTokenMatch(start..(Position + TraverseLine()), BlockCommentDefinition);
+                        var blockEnd = lexer.Position;
+                        return CreateTokenMatch(start..blockEnd, lexer.GetRange(start..(blockEnd + 1)), LineCommentDefinition);
                     }
                 }
 
@@ -158,60 +162,60 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             }
             case '#':
             {
-                if (PeekForward() != '#')
+                if (lexer.PeekForward() != '#')
                 {
-                    return CreateTokenMatch(start..Position, "#", HashDefinition);
+                    return CreateTokenMatch(start..lexer.Position, "#", HashDefinition);
                 }
 
-                MoveForward();
-                return CreateTokenMatch(start..Position, "##", DHashDefinition);
+                lexer.MoveForward();
+                return CreateTokenMatch(start..lexer.Position, "##", DHashDefinition);
             }
             case '"':
-                return CreateTokenMatch(start..Position, "\"", DoubleQuoteDefinition);
+                return CreateTokenMatch(start..lexer.Position, "\"", DoubleQuoteDefinition);
             case '\\':
             {
-                if (PeekForward() == '\r')
+                if (lexer.PeekForward() == '\r')
                 {
-                    MoveForward();
+                    lexer.MoveForward();
                 }
 
-                if (PeekForward() == '\n')
+                if (lexer.PeekForward() == '\n')
                 {
-                    MoveForward();
-                    return CreateTokenMatch(start..Position,"\\\n", DirectiveNewLineDefinition);
+                    lexer.MoveForward();
+                    return CreateTokenMatch(start..lexer.Position,"\\\n", DirectiveNewLineDefinition);
                 }
                 break;
             }
             case 'd':
             {
-                if (PeekForwardMulti(6) == "define")
+                if (lexer.PeekForwardMulti(6) == "define")
                 {
-                    MoveForward(5);
-                    return CreateTokenMatch(start..Position, DefineDefinition);
+                    lexer.MoveForward(5);
+                    return CreateTokenMatch(start..lexer.Position, "define", DefineDefinition);
                 }
 
                 break;
             }
             case 'e':
             {
-                switch (PeekForward())
+                switch (lexer.PeekForward())
                 {
                     case 'l':
                     {
-                        if (PeekForwardMulti(4) == "else")
+                        if (lexer.PeekForwardMulti(4) == "else")
                         {
-                            MoveForward(3);
-                            return CreateTokenMatch(start..Position, "else", ElseDefinition);
+                            lexer.MoveForward(3);
+                            return CreateTokenMatch(start..lexer.Position, "else", ElseDefinition);
                         }
 
                         break;
                     }
                     case 'n':
                     {
-                        if (PeekForwardMulti(5) == "endif")
+                        if (lexer.PeekForwardMulti(5) == "endif")
                         {
-                            MoveForward(4);
-                            return CreateTokenMatch(start..Position, "endif", ElseDefinition);
+                            lexer.MoveForward(4);
+                            return CreateTokenMatch(start..lexer.Position, "endif", ElseDefinition);
                         }
 
                         break;
@@ -223,28 +227,28 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             }
             case 'i':
             {
-                switch (PeekForward())
+                switch (lexer.PeekForward())
                 {
                     case 'f':
                     {
-                        MoveForward();
-                        switch (MoveForward())
+                        lexer.MoveForward();
+                        switch (lexer.MoveForward())
                         {
                             case 'n':
                             {
-                                if (PeekForwardMulti(4) == "ndef")
+                                if (lexer.PeekForwardMulti(4) == "ndef")
                                 {
-                                    MoveForward(3);
-                                    return CreateTokenMatch(start..Position, "ifndef", IfNDefDefinition);
+                                    lexer.MoveForward(3);
+                                    return CreateTokenMatch(start..lexer.Position, "ifndef", IfNDefDefinition);
                                 }
                                 break;
                             }
                             case 'd':
                             {
-                                if (PeekForwardMulti(3) == "def")
+                                if (lexer.PeekForwardMulti(3) == "def")
                                 {
-                                    MoveForward(2);
-                                    return CreateTokenMatch(start..Position, "ifdef", IfDefDefinition);
+                                    lexer.MoveForward(2);
+                                    return CreateTokenMatch(start..lexer.Position, "ifdef", IfDefDefinition);
                                 }
 
                                 break;
@@ -254,10 +258,10 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                     }
                     case 'n':
                     {
-                        if (PeekForwardMulti(7) == "include")
+                        if (lexer.PeekForwardMulti(7) == "include")
                         {
-                            MoveForward(6);
-                            return CreateTokenMatch(start..Position, "include", IncludeDefinition);
+                            lexer.MoveForward(6);
+                            return CreateTokenMatch(start..lexer.Position, "include", IncludeDefinition);
                         }
                         break;
                     }
@@ -266,33 +270,33 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             }
             case 'u':
             {
-                if (PeekForwardMulti(5) == "undef")
+                if (lexer.PeekForwardMulti(5) == "undef")
                 {
-                    MoveForward(4);
-                    return CreateTokenMatch(start..Position,"undef", UndefDefinition);
+                    lexer.MoveForward(4);
+                    return CreateTokenMatch(start..lexer.Position,"undef", UndefDefinition);
                 }
 
                 break;
             }
         }
 
-        if (!IsIdentifierChar(isFirst: true))
+        if (!IsIdentifierChar(lexer, isFirst: true))
         {
-            ScanUntil(e => IsIdentifierChar(e), true);
-            return CreateTokenMatch(start..Position, TextDefinition);
+            var text = lexer.ScanUntil(e => IsIdentifierChar(lexer, e), true);
+            return CreateTokenMatch(start..lexer.Position, text, TextDefinition);
         }
 
-        var id = ScanUntil(e => !IsIdentifierChar(e), true);
-        return CreateTokenMatch(start..Position, id, LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
+        var id = lexer.ScanUntil(e => !IsIdentifierChar(lexer, e), true);
+        return CreateTokenMatch(start..lexer.Position, id, LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
     }
 
-    public override Result PreProcessLexer(StringBuilder? builder)
+    public override Result EvaluateLexer<T>(BisLexer<T> lexer, StringBuilder? builder)
     {
         var result = new List<Result>();
         var quoted = false;
 
         IBisLexer<RvTypes>.TokenMatch token;
-        while ((token = GetNextToken()) != RvTypes.SimEOF)
+        while ((token = GetNextToken(lexer)) != RvTypes.SimEOF)
         {
             if (token == RvTypes.SymDoubleQuote)
             {
@@ -301,7 +305,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
             if (quoted)
             {
-                var next = GetNextToken();
+                var next = GetNextToken(lexer);
                 builder?.Append(next.TokenText);
                 continue;
             }
@@ -311,16 +315,16 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             {
                 builder?.Append('\n');
             }
-            SkipWhitespaces();
-            if (GetNextToken() == RvTypes.SimHash)
+            SkipWhitespaces(lexer);
+            if (GetNextToken(lexer) == RvTypes.SimHash)
             {
-                SkipWhitespaces();
-                switch (GetNextToken().TokenType.TokenId)
+                SkipWhitespaces(lexer);
+                switch (GetNextToken(lexer).TokenType.TokenId)
                 {
                     case RvTypes.KwInclude:
                     {
-                        SkipWhitespaces();
-                        token = GetNextToken();
+                        SkipWhitespaces(lexer);
+                        token = GetNextToken(lexer);
                         if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
                         {
                             result.Add(Result.Fail("Unknown character for include string, expected '<' or '\"'"));
@@ -328,7 +332,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                         }
 
                         var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
-                        var path = ScanUntil(e => e == end);
+                        var path = lexer.ScanUntil(e => e == end);
                         var includeLocatorResult = IncludeLocator(path, builder);
                         result.Add(includeLocatorResult);
 
@@ -385,25 +389,24 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
-
-    private void SkipWhitespaces()
+    private void SkipWhitespaces(IBisStringStepper stepper)
     {
-        while (PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
+        while (stepper.PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
         {
-            MoveForward();
+            stepper.MoveForward();
         }
     }
 
-    private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
+    private bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
     {
         '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
         _ => false
     };
 
 
-    public bool IsIdentifierChar(char? c = null, bool isFirst = false)
+    public bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
     {
-        if ((c ?? CurrentChar) is not { } currentChar )
+        if ((c ?? stepper.CurrentChar) is not { } currentChar )
         {
             return false;
         }
@@ -416,21 +419,21 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
 
-    public int TraverseLine()
+    public int TraverseLine(IBisStringStepper stepper)
     {
         var charCount = 0;
         while (true)
         {
-            switch (CurrentChar)
+            switch (stepper.CurrentChar)
             {
                 case null:
                     return charCount;
                 case '\n':
-                    MoveForward();
+                    stepper.MoveForward();
                     return ++charCount;
                 default:
                     charCount++;
-                    MoveForward();
+                    stepper.MoveForward();
                     break;
             }
         }
