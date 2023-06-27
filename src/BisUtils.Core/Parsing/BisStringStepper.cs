@@ -24,6 +24,9 @@ public interface IBisStringStepper
     public string GetRange(Range range);
     public string PeekForwardMulti(int count = 1);
     public string PeekBackwardMulti(int count = 1);
+
+    public string ScanUntil(Func<char, bool> until, bool consumeCurrent = false);
+
 }
 
 public class BisStringStepper : IBisStringStepper
@@ -133,6 +136,23 @@ public class BisStringStepper : IBisStringStepper
         }
 
         return Content.Substring(startPosition, Position - startPosition);
+    }
+
+    public string ScanUntil(Func<char, bool> until, bool consumeCurrent = false)
+    {
+        var builder = new StringBuilder();
+        if (consumeCurrent)
+        {
+            builder.Append(CurrentChar);
+        }
+
+        while (MoveForward() is {} current && !until(current))
+        {
+            builder.Append(current);
+            MoveForward();
+        }
+
+        return builder.ToString();
     }
 
     public char? JumpTo(int position)

@@ -2,8 +2,11 @@
 
 public enum RvTypes
 {
-    EOF,
-    Text,
+    SimEOF,
+    SimText,
+    SimIdentifier,
+    SimHash,
+    SimDoubleHash,
     AbsWhitespace,
     KwInclude,
     KwDefine,
@@ -15,14 +18,12 @@ public enum RvTypes
     SymLParenthesis,
     SymRParenthesis,
     SymComma,
-    SymHash,
     AbsNewLine,
     AbsLineComment,
     AbsBlockComment,
     AbsDirectiveNewLine,
     SymDoubleQuote,
     SymLeftAngle,
-    SymRightAngle,
-    SymDoubleHash,
+    SymRightAngle
 
 }

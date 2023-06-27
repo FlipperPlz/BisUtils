@@ -11,24 +11,31 @@ public interface IRVPreProcessor : IBisPreProcessor<RvTypes>
     List<IRVDefineDirective> MacroDefinitions { get; }
 
     RVIncludeFinder IncludeLocator { get; }
+
+
+    IRVDefineDirective? LocateMacro(string name);
 }
 
 public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
     public List<IRVDefineDirective> MacroDefinitions { get; } = new ();
     public required RVIncludeFinder IncludeLocator { get; init; }
+    public IRVDefineDirective? LocateMacro(string name) => MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition EOFDefinition =
-        CreateTokenDefinition("rv.eof", RvTypes.EOF, 200);
+        CreateTokenDefinition("rv.eof", RvTypes.SimEOF, 200);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition TextDefinition =
-        CreateTokenDefinition("rv.text", RvTypes.Text, 1);
+        CreateTokenDefinition("rv.text", RvTypes.SimText, 1);
+
+    private static readonly IBisLexer<RvTypes>.TokenDefinition IdentifierDefinition =
+        CreateTokenDefinition("rv.identifier", RvTypes.SimIdentifier, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition DHashDefinition =
-        CreateTokenDefinition("rv.hash.double", RvTypes.SymDoubleHash, 1);
+        CreateTokenDefinition("rv.hash.double", RvTypes.SimDoubleHash, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition HashDefinition =
-        CreateTokenDefinition("rv.hash.single", RvTypes.SymHash, 1);
+        CreateTokenDefinition("rv.hash.single", RvTypes.SimHash, 1);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition CommaDefinition =
         CreateTokenDefinition("rv.comma", RvTypes.SymComma, 1);
@@ -89,7 +96,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
         RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition, UndefDefinition,
         LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition, ElseDefinition,
-        IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition
+        IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition, IdentifierDefinition
     };
 
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
@@ -105,35 +112,18 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         MoveForward();
 
         var start = Position;
-        if (IsEOF() || CurrentChar is null)
-        {
-        }
         if (IsWhitespace())
         {
             while (IsWhitespace(PeekForward()))
             {
                 MoveForward();
             }
-
-            return CreateTokenMatch(start..Position, WhitespaceDefinition);
         }
 
         switch (CurrentChar)
         {
             case null:
                 return CreateTokenMatch(..0, "", EOFDefinition);
-            case ',':
-                return CreateTokenMatch(start..Position, ",", CommaDefinition);
-            case '(':
-                return CreateTokenMatch(start..Position, "(", LeftParenthesisDefinition);
-            case ')':
-                return CreateTokenMatch(start..Position, ")", RightParenthesisDefinition);
-            case '<':
-                return CreateTokenMatch(start..Position, "<", LeftAngleDefinition);
-            case '>':
-                return CreateTokenMatch(start..Position, ">", RightAngleDefinition);
-            case '"':
-                return CreateTokenMatch(start..Position, "\"", DoubleQuoteDefinition);
             case '\n':
                 return CreateTokenMatch(start..Position, "\n", NewLineDefinition);
             case '\r':
@@ -144,34 +134,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 }
 
                 return CreateTokenMatch(start..Position, "\r\n", NewLineDefinition);
-            }
-            case 'u':
-            {
-                if (PeekForwardMulti(5) == "undef")
-                {
-                    MoveForward(4);
-                    return CreateTokenMatch(start..Position,"undef", UndefDefinition);
-                }
-
-                break;
-            }
-            case '/':
-            {
-                switch (PeekForward())
-                {
-                    case '/':
-                        return CreateTokenMatch(start..(Position + TraverseLine()), LineCommentDefinition);
-                    case '*':
-                    {
-                        while (!(PreviousChar == '*' && CurrentChar == '/') && CurrentChar != null)
-                        {
-                        }
-
-                        return CreateTokenMatch(start..(Position + TraverseLine()), BlockCommentDefinition);
-                    }
-                }
-
-                break;
             }
             case '#':
             {
@@ -197,92 +159,24 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 }
                 break;
             }
-            case 'd':
-            {
-                if (PeekForwardMulti(6) == "define")
-                {
-                    MoveForward(5);
-                    return CreateTokenMatch(start..Position, DefineDefinition);
-                }
-
-                break;
-            }
-            case 'e':
-            {
-                switch (PeekForward())
-                {
-                    case 'l':
-                    {
-                        if (PeekForwardMulti(4) == "else")
-                        {
-                            MoveForward(3);
-                            return CreateTokenMatch(start..Position, "else", ElseDefinition);
-                        }
-
-                        break;
-                    }
-                    case 'n':
-                    {
-                        if (PeekForwardMulti(5) == "endif")
-                        {
-                            MoveForward(4);
-                            return CreateTokenMatch(start..Position, "endif", ElseDefinition);
-                        }
-
-                        break;
-                    }
-
-                }
-
-                break;
-            }
-            case 'i':
-            {
-                switch (PeekForward())
-                {
-                    case 'f':
-                    {
-                        MoveForward();
-                        switch (MoveForward())
-                        {
-                            case 'n':
-                            {
-                                if (PeekForwardMulti(4) == "ndef")
-                                {
-                                    MoveForward(3);
-                                    return CreateTokenMatch(start..Position, "ifndef", IfNDefDefinition);
-                                }
-                                break;
-                            }
-                            case 'd':
-                            {
-                                if (PeekForwardMulti(3) == "def")
-                                {
-                                    MoveForward(2);
-                                    return CreateTokenMatch(start..Position, "ifdef", IfDefDefinition);
-                                }
-
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    case 'n':
-                    {
-                        if (PeekForwardMulti(7) == "include")
-                        {
-                            MoveForward(6);
-                            return CreateTokenMatch(start..Position, "include", IncludeDefinition);
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-
         }
-        throw new IOException();
+
+        if (!IsIdentifierChar(isFirst: true))
+        {
+            ScanUntil(e => IsIdentifierChar(e), true);
+            return CreateTokenMatch(start..Position, TextDefinition);
+        }
+
+        var id = ScanUntil(e => !IsIdentifierChar(e), true);
+        if (LocateMacro(id) is { } macro)
+        {
+            return CreateTokenMatch(start..Position, id, IdentifierDefinition);
+        }
+
+
+        return CreateTokenMatch(start..Position, id, TextDefinition);
     }
+
 
 
     private bool IsWhitespace(char? c = null) => (c ?? CurrentChar) switch
@@ -290,6 +184,22 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
         _ => false
     };
+
+    public bool IsIdentifierChar(char? c = null, bool isFirst = false)
+    {
+        if ((c ?? CurrentChar) is not { } currentChar )
+        {
+            return false;
+        }
+
+        if (isFirst && char.IsAsciiDigit(currentChar))
+        {
+            return false;
+        }
+
+        return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
+    }
+
 
     public int TraverseLine()
     {

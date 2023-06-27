@@ -9,5 +9,9 @@ public interface IBisPreProcessor<TPreProcTypes> : IBisLexer<TPreProcTypes> wher
 public abstract class BisPreProcessor<TPreProcTypes> : BisLexer<TPreProcTypes>, IBisPreProcessor<TPreProcTypes> where TPreProcTypes : Enum
 {
     public override IBisLexer<TPreProcTypes>.TokenDefinition? ErrorToken => null;
-    protected BisPreProcessor(string content) : base(content) => TokenizeUntilEnd();
+
+    protected BisPreProcessor(string content) : base(content)
+    {
+
+    }
 }
