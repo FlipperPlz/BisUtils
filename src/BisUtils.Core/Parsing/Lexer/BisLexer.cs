@@ -12,8 +12,8 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
         public override int GetHashCode() => HashCode.Combine(TokenType, TokenPosition, TokenLength, TokenText, Success);
 
         public required TokenDefinition TokenType { get; init; }
-        public required long TokenPosition { get; init; }
-        public required long TokenLength { get; init; }
+        public required int TokenPosition { get; init; }
+        public required int TokenLength { get; init; }
         public required string TokenText { get; init; }
         public required bool Success { get; init; }
 

@@ -109,7 +109,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
     public override IBisLexer<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
 
-    public RVPreProcessor(string content, List<IRVDefineDirective> macroDefinitions)
+    public RVPreProcessor(List<IRVDefineDirective> macroDefinitions)
     {
     }
 
@@ -356,138 +356,93 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     public override Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder)
     {
         var result = new List<Result>();
-        var quoted = false;
 
         IBisLexer<RvTypes>.TokenMatch token;
         while ((token = GetNextToken(lexer)) != RvTypes.SimEOF)
         {
-            if (token == RvTypes.SymDoubleQuote)
-            {
-                quoted = !quoted;
-            }
-
-            if (quoted)
-            {
-                var start = lexer.Position;
-                var stringBuilder = new StringBuilder();
-
-                while ((token = GetNextToken(lexer)) != RvTypes.SymDoubleQuote)
-                {
-                    stringBuilder.Append(token.TokenText);
-                }
-
-                builder?.Append(stringBuilder);
-
-                CreateTokenMatch(start..lexer.Position, stringBuilder.ToString(), QuotedStringDefinition);
-                continue;
-            }
-
             var isStart = token == RvTypes.AbsNewLine || PreviousMatch() is null;
-
+            SkipWhitespaces(lexer);
             if (isStart)
             {
                 builder?.Append('\n');
             }
 
-            SkipWhitespaces(lexer);
-
-            switch ((token = GetNextToken(lexer)).TokenType.TokenId)
+            switch (token.TokenType.TokenId)
             {
+                case RvTypes.SymDoubleQuote:
+                    ProcessQuotedString(lexer, builder, token.TokenPosition);
+                    break;
                 case RvTypes.SimHash:
-                {
-                    SkipWhitespaces(lexer);
-                    switch (GetNextToken(lexer).TokenType.TokenId)
-                    {
-                        case RvTypes.KwInclude:
-                        {
-                            SkipWhitespaces(lexer);
-                            token = GetNextToken(lexer);
-                            if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
-                            {
-                                result.Add(Result.Fail("Unknown character for include string, expected '<' or '\"'"));
-                                goto End;
-                            }
-
-                            var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
-                            var path = lexer.ScanUntil(e => e == end);
-                            var includeLocatorResult = IncludeLocator(path, builder);
-                            result.Add(includeLocatorResult);
-
-                            if (includeLocatorResult.IsFailed)
-                            {
-                                goto End;
-                            }
-
-                            break;
-                        }
-                        case RvTypes.KwDefine:
-                        case RvTypes.KwIfDef:
-                        case RvTypes.KwIfNDef:
-                        case RvTypes.KwElse:
-                        case RvTypes.KwEndIf:
-                        case RvTypes.KwUndef:
-                        {
-                            //TODO:
-                            throw new NotImplementedException();
-                        }
-                        case RvTypes.SimEOF:
-                        case RvTypes.SimText:
-                        case RvTypes.SimIdentifier:
-                        case RvTypes.SimHash:
-                        case RvTypes.SimDoubleHash:
-                        case RvTypes.AbsWhitespace:
-                        case RvTypes.SymLParenthesis:
-                        case RvTypes.SymRParenthesis:
-                        case RvTypes.SymComma:
-                        case RvTypes.AbsNewLine:
-                        case RvTypes.AbsLineComment:
-                        case RvTypes.AbsBlockComment:
-                        case RvTypes.AbsDirectiveNewLine:
-                        case RvTypes.SymDoubleQuote:
-                        case RvTypes.SymLeftAngle:
-                        case RvTypes.SymRightAngle:
-                        case RvTypes.AbsQuotedString:
-                        default: break;
-                    }
-
-                    result.Add(Result.Fail("Unknown preprocessor directive!"));
-                    goto End;
-                }
+                    result.Add(ProcessDirective(lexer, builder));
+                    break;
+                case RvTypes.AbsWhitespace:
+                    ProcessWhitespace(lexer, builder);
+                    break;
+                case RvTypes.AbsDirectiveNewLine:
+                    ProcessNewLine(lexer, builder, true);
+                    break;
+                case RvTypes.AbsNewLine:
+                    ProcessNewLine(lexer, builder, false);
+                    break;
                 case RvTypes.SimText:
                 default:
                     builder?.Append(token.TokenText);
                     break;
-                case RvTypes.SimEOF:
-                case RvTypes.SimIdentifier:
-                case RvTypes.SimDoubleHash:
-                case RvTypes.AbsWhitespace:
-                case RvTypes.KwInclude:
-                case RvTypes.KwDefine:
-                case RvTypes.KwIfDef:
-                case RvTypes.KwIfNDef:
-                case RvTypes.KwElse:
-                case RvTypes.KwEndIf:
-                case RvTypes.KwUndef:
-                case RvTypes.SymLParenthesis:
-                case RvTypes.SymRParenthesis:
-                case RvTypes.SymComma:
-                case RvTypes.AbsQuotedString:
-                case RvTypes.AbsNewLine:
-                case RvTypes.AbsLineComment:
-                case RvTypes.AbsBlockComment:
-                case RvTypes.AbsDirectiveNewLine:
-                case RvTypes.SymDoubleQuote:
-                case RvTypes.SymLeftAngle:
-                case RvTypes.SymRightAngle:
-                    break;
+
             }
+
         }
 
+        return Result.Merge(result);
+    }
 
-        End:
+    private Result ProcessDirective(BisMutableStringStepper lexer, StringBuilder? builder)
+    {
+        SkipWhitespaces(lexer);
+        return GetNextToken(lexer).TokenType.TokenId switch
         {
-            return Result.Merge(result);
+            RvTypes.KwInclude => ProcessIncludeDirective(lexer, builder),
+            //TODO:
+            _ => Result.Fail("Unknown preprocessor directive!")
+        };
+    }
+
+    private Result ProcessIncludeDirective(BisMutableStringStepper lexer, StringBuilder? builder)
+    {
+        SkipWhitespaces(lexer);
+        var token = GetNextToken(lexer);
+        if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
+        {
+            return Result.Fail("Unknown character for include string, expected '<' or '\"'");
+        }
+
+        var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
+        var path = lexer.ScanUntil(e => e == end);
+        return IncludeLocator(path, builder);
+    }
+
+    private static void ProcessWhitespace(BisMutableStringStepper lexer, StringBuilder? builder) => builder?.Append(' ');
+
+    private static void ProcessNewLine(BisMutableStringStepper lexer, StringBuilder? builder, bool directiveNewLine)
+    {
+        if(!directiveNewLine)
+        {
+            builder?.Append('\n');
         }
     }
 
+    private void ProcessQuotedString(BisMutableStringStepper lexer, StringBuilder? builder, int tokenStart)
+    {
+        var stringBuilder = new StringBuilder();
+
+        IBisLexer<RvTypes>.TokenMatch token;
+        while ((token = GetNextToken(lexer)) != RvTypes.SymDoubleQuote)
+        {
+            stringBuilder.Append(token.TokenText);
+        }
+
+        builder?.Append(stringBuilder);
+
+        CreateTokenMatch(tokenStart..lexer.Position, stringBuilder.ToString(), QuotedStringDefinition);
+    }
 }
