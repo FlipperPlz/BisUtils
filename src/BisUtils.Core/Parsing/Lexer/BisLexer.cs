@@ -5,6 +5,9 @@ using FResults;
 
 public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
 {
+    /// <summary>
+    /// Represents a token match instance.
+    /// </summary>
     public readonly struct TokenMatch {
 
         public override bool Equals(object? obj) => obj is TokenMatch other && Equals(other);
@@ -27,6 +30,10 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
             !(left == right);
     }
 
+    /// <summary>
+    /// Defines a token within the lexer.
+    /// Note: There should only be one instance of each token
+    /// </summary>
     public readonly struct TokenDefinition
     {
         public bool Equals(TokenDefinition other) =>
@@ -47,7 +54,14 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
             !(left == right);
     }
 
+    /// <summary>
+    /// Delegate for a lexing event when a token is matched.
+    /// </summary>
     public delegate void TokenMatched(TokenMatch match, IBisLexer<TTokenEnum> lexer);
+
+    /// <summary>
+    /// Event triggered when a token is matched.
+    /// </summary>
     public event TokenMatched? OnTokenMatched;
 
     protected IEnumerable<TokenDefinition> TokenTypes { get; }
@@ -61,6 +75,9 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
 
 }
 
+/// <summary>
+/// A basic implementation of the IBisLexer interface.
+/// </summary>
 public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<TTokenEnum> where TTokenEnum : Enum
 {
     public event IBisLexer<TTokenEnum>.TokenMatched? OnTokenMatched;
