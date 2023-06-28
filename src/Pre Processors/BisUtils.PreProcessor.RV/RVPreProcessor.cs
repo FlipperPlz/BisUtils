@@ -109,25 +109,26 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
     public override IBisLexer<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
 
-    public RVPreProcessor(List<IRVDefineDirective> macroDefinitions)
-    {
-    }
+    public RVPreProcessor() => OnTokenMatched += HandlePreviousMatch;
+
+    private void HandlePreviousMatch(IBisLexer<RvTypes>.TokenMatch match, IBisLexer<RvTypes> lexer) => AddPreviousMatch(match);
 
     protected override IBisLexer<RvTypes>.TokenMatch GetNextToken(BisMutableStringStepper lexer)
     {
+        if (lexer.Length <= lexer.Position)
+        {
+            return CreateTokenMatch(..0, "", EOFDefinition);
+        }
         lexer.MoveForward();
-
         var start = lexer.Position;
         if (IsWhitespace(lexer))
         {
-            var builder = new StringBuilder(lexer.CurrentChar.ToString() ?? "");
             while (IsWhitespace(lexer, lexer.PeekForward()))
             {
-                builder.Append(lexer.MoveForward());
+                lexer.MoveForward();
             }
 
-            return CreateTokenMatch(start..lexer.Position, builder.Remove(builder.Length, 1).ToString(),
-                WhitespaceDefinition);
+            return CreateTokenMatch(start..lexer.Position, "",WhitespaceDefinition);
         }
 
         switch (lexer.CurrentChar)
@@ -358,7 +359,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         var result = new List<Result>();
 
         IBisLexer<RvTypes>.TokenMatch token;
-        while ((token = GetNextToken(lexer)) != RvTypes.SimEOF)
+        while ((token = NextToken(lexer)) != RvTypes.SimEOF)
         {
             var isStart = token == RvTypes.AbsNewLine || PreviousMatch() is null;
             SkipWhitespaces(lexer);
@@ -399,7 +400,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private Result ProcessDirective(BisMutableStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
-        return GetNextToken(lexer).TokenType.TokenId switch
+        return NextToken(lexer).TokenType.TokenId switch
         {
             RvTypes.KwInclude => ProcessIncludeDirective(lexer, builder),
             //TODO:
@@ -410,7 +411,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private Result ProcessIncludeDirective(BisMutableStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
-        var token = GetNextToken(lexer);
+        var token = NextToken(lexer);
         if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
         {
             return Result.Fail("Unknown character for include string, expected '<' or '\"'");
@@ -431,12 +432,15 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
+//False positive `NextToken` has static and member declaration
+#pragma warning disable CA1822
     private void ProcessQuotedString(BisMutableStringStepper lexer, StringBuilder? builder, int tokenStart)
+#pragma warning restore CA1822
     {
         var stringBuilder = new StringBuilder();
 
         IBisLexer<RvTypes>.TokenMatch token;
-        while ((token = GetNextToken(lexer)) != RvTypes.SymDoubleQuote)
+        while ((token = NextToken(lexer)) != RvTypes.SymDoubleQuote)
         {
             stringBuilder.Append(token.TokenText);
         }
@@ -445,4 +449,5 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
         CreateTokenMatch(tokenStart..lexer.Position, stringBuilder.ToString(), QuotedStringDefinition);
     }
+
 }

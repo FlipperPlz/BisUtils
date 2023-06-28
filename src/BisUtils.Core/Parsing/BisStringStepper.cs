@@ -134,6 +134,8 @@ public class BisStringStepper : IBisStringStepper
 
     public BisStringStepper(string content) => Content = content;
 
+    public int Length => Content.Length;
+
     /// <inheritdoc />
     public int Position { get; private set; } = -1;
 

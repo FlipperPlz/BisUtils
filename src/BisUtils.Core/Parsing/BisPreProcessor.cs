@@ -30,7 +30,7 @@ public abstract class BisPreProcessor<TPreProcTypes> : BisPreProcessorBase, IBis
     public IEnumerable<IBisLexer<TPreProcTypes>.TokenMatch> PreviousMatches => previousMatches;
     private readonly List<IBisLexer<TPreProcTypes>.TokenMatch> previousMatches = new();
     public IBisLexer<TPreProcTypes>.TokenMatch? PreviousMatch() => previousMatches.LastOrDefault();
-    public IBisLexer<TPreProcTypes>.TokenMatch NextToken<T>(BisLexer<T> lexer) where T : Enum
+    public IBisLexer<TPreProcTypes>.TokenMatch NextToken(BisMutableStringStepper lexer)
     {
         var value = GetNextToken(lexer);
         OnTokenMatchedHandler(value, this);
@@ -61,12 +61,9 @@ public abstract class BisPreProcessor<TPreProcTypes> : BisPreProcessorBase, IBis
         return CreateTokenMatch(start..lexer.Position, builder.ToString(), asToken);
     }
 
-    protected virtual void OnTokenMatchedHandler(IBisLexer<TPreProcTypes>.TokenMatch match, IBisLexer<TPreProcTypes> lexer)
-    {
-        previousMatches.Add(match);
-        OnTokenMatched?.Invoke(match, lexer);
-    }
+    protected virtual void OnTokenMatchedHandler(IBisLexer<TPreProcTypes>.TokenMatch match, IBisLexer<TPreProcTypes> lexer) => OnTokenMatched?.Invoke(match, lexer);
 
+    protected void AddPreviousMatch(IBisLexer<TPreProcTypes>.TokenMatch match) => previousMatches.Add(match);
 
 
     protected static IBisLexer<TPreProcTypes>.TokenDefinition CreateTokenDefinition(string debugName, TPreProcTypes tokenType, short tokenWeight) =>

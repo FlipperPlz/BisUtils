@@ -99,6 +99,7 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
         var builder = new StringBuilder();
         var preprocessResult = preprocessor.EvaluateLexer(this, builder);
         ResetLexer(builder.ToString());
+
         return preprocessResult;
     }
 
