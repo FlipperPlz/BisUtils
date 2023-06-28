@@ -8,7 +8,7 @@ using FResults;
 using Models.Directives;
 using Utils;
 
-public interface IRVPreProcessor : IBisPreProcessor<RvTypes>
+public interface IRVPreProcessor : IBisPreProcessorBase
 {
     List<IRVDefineDirective> MacroDefinitions { get; }
 
@@ -113,7 +113,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     {
     }
 
-    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken<T>(BisLexer<T> lexer)
+    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken(BisMutableStringStepper lexer)
     {
         lexer.MoveForward();
 
@@ -302,7 +302,58 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
     }
 
-    public override Result EvaluateLexer<T>(BisLexer<T> lexer, StringBuilder? builder)
+
+    private static void SkipWhitespaces(IBisStringStepper stepper)
+    {
+        while (stepper.PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
+        {
+            stepper.MoveForward();
+        }
+    }
+
+    private static bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
+    {
+        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
+        _ => false
+    };
+
+
+    public static bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
+    {
+        if ((c ?? stepper.CurrentChar) is not { } currentChar)
+        {
+            return false;
+        }
+
+        if (isFirst && char.IsAsciiDigit(currentChar))
+        {
+            return false;
+        }
+
+        return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
+    }
+
+    public static int TraverseLine(IBisStringStepper stepper)
+    {
+        var charCount = 0;
+        while (true)
+        {
+            switch (stepper.CurrentChar)
+            {
+                case null:
+                    return charCount;
+                case '\n':
+                    stepper.MoveForward();
+                    return ++charCount;
+                default:
+                    charCount++;
+                    stepper.MoveForward();
+                    break;
+            }
+        }
+    }
+
+    public override Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder)
     {
         var result = new List<Result>();
         var quoted = false;
@@ -317,9 +368,17 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
             if (quoted)
             {
-                var next = TokenizeUntil(lexer, match => match.TokenType == RvTypes.SymDoubleQuote,
-                    QuotedStringDefinition);
-                builder?.Append(next.TokenText);
+                var start = lexer.Position;
+                var stringBuilder = new StringBuilder();
+
+                while ((token = GetNextToken(lexer)) != RvTypes.SymDoubleQuote)
+                {
+                    stringBuilder.Append(token.TokenText);
+                }
+
+                builder?.Append(stringBuilder);
+
+                CreateTokenMatch(start..lexer.Position, stringBuilder.ToString(), QuotedStringDefinition);
                 continue;
             }
 
@@ -431,53 +490,4 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
-    private static void SkipWhitespaces(IBisStringStepper stepper)
-    {
-        while (stepper.PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
-        {
-            stepper.MoveForward();
-        }
-    }
-
-    private static bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
-    {
-        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
-        _ => false
-    };
-
-
-    public static bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
-    {
-        if ((c ?? stepper.CurrentChar) is not { } currentChar)
-        {
-            return false;
-        }
-
-        if (isFirst && char.IsAsciiDigit(currentChar))
-        {
-            return false;
-        }
-
-        return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
-    }
-
-    public static int TraverseLine(IBisStringStepper stepper)
-    {
-        var charCount = 0;
-        while (true)
-        {
-            switch (stepper.CurrentChar)
-            {
-                case null:
-                    return charCount;
-                case '\n':
-                    stepper.MoveForward();
-                    return ++charCount;
-                default:
-                    charCount++;
-                    stepper.MoveForward();
-                    break;
-            }
-        }
-    }
 }

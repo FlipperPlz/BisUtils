@@ -4,12 +4,24 @@ using System.Text;
 using FResults;
 using Lexer;
 
-public interface IBisPreProcessor<TPreProcTypes> : IBisLexer<TPreProcTypes> where TPreProcTypes : Enum
+public interface IBisPreProcessorBase
 {
-    public Result EvaluateLexer<T>(BisLexer<T> lexer, StringBuilder? builder) where T : Enum;
+    public Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder);
+
 }
 
-public abstract class BisPreProcessor<TPreProcTypes> : IBisPreProcessor<TPreProcTypes> where TPreProcTypes : Enum
+public abstract class BisPreProcessorBase : IBisPreProcessorBase
+{
+    protected BisPreProcessorBase()
+    {
+
+    }
+
+    public abstract Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder);
+}
+
+
+public abstract class BisPreProcessor<TPreProcTypes> : BisPreProcessorBase, IBisLexer<TPreProcTypes> where TPreProcTypes : Enum
 {
     public event IBisLexer<TPreProcTypes>.TokenMatched? OnTokenMatched;
     public abstract IEnumerable<IBisLexer<TPreProcTypes>.TokenDefinition> TokenTypes { get; }
@@ -17,8 +29,6 @@ public abstract class BisPreProcessor<TPreProcTypes> : IBisPreProcessor<TPreProc
     public IBisLexer<TPreProcTypes>.TokenDefinition? ErrorToken => null;
     public IEnumerable<IBisLexer<TPreProcTypes>.TokenMatch> PreviousMatches => previousMatches;
     private readonly List<IBisLexer<TPreProcTypes>.TokenMatch> previousMatches = new();
-
-
     public IBisLexer<TPreProcTypes>.TokenMatch? PreviousMatch() => previousMatches.LastOrDefault();
     public IBisLexer<TPreProcTypes>.TokenMatch NextToken<T>(BisLexer<T> lexer) where T : Enum
     {
@@ -27,8 +37,7 @@ public abstract class BisPreProcessor<TPreProcTypes> : IBisPreProcessor<TPreProc
         return value;
     }
 
-    public abstract Result EvaluateLexer<T>(BisLexer<T> lexer, StringBuilder? builder) where T : Enum;
-    protected abstract IBisLexer<TPreProcTypes>.TokenMatch GetNextToken<T>(BisLexer<T> lexer) where T : Enum;
+    protected abstract IBisLexer<TPreProcTypes>.TokenMatch GetNextToken(BisMutableStringStepper lexer);
 
     public void TokenizeUntilEnd<T>(BisLexer<T> lexer) where T : Enum
     {

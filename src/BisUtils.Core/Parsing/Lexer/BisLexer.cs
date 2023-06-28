@@ -1,5 +1,8 @@
 ﻿namespace BisUtils.Core.Parsing.Lexer;
 
+using System.Text;
+using FResults;
+
 public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
 {
     public readonly struct TokenMatch {
@@ -72,6 +75,15 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
     }
 
     public IBisLexer<TTokenEnum>.TokenMatch? PreviousMatch() => PreviousMatches.LastOrDefault();
+
+    public Result ProcessLexer<TPreprocessor>(TPreprocessor? preprocessor) where TPreprocessor : BisPreProcessorBase, new()
+    {
+        preprocessor ??= new TPreprocessor();
+        var builder = new StringBuilder();
+        var preprocessResult = preprocessor.EvaluateLexer(this, builder);
+        ResetLexer(builder.ToString());
+        return preprocessResult;
+    }
 
     public IBisLexer<TTokenEnum>.TokenMatch NextToken()
     {

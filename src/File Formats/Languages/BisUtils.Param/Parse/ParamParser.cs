@@ -1,30 +1,20 @@
 ﻿namespace BisUtils.Param.Parse;
 
-using System.Text;
 using BisUtils.Param.Models.Stubs;
+using Core.Parsing;
 using FResults;
 using Lexer;
 using Models;
-using PreProcessor.RV;
 
-public static class ParamParser
+public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes>
 {
 
-    public static Result Parse(string contents, string filename, out ParamFile file, IRVPreProcessor? preProcessor = null)
+    public static Result Parse(out ParamFile? node, ParamLexer lexer)
     {
         var results = new List<Result>();
-        file = new ParamFile(filename, new List<IParamStatement>());
-        var lexer = new ParamLexer(contents);
+        node = new ParamFile("config", new List<IParamStatement>());
         var stack = new Stack<IParamStatementHolder>();
-        stack.Push(file);
-        if (preProcessor is { } processor)
-        {
-
-            var builder = new StringBuilder();
-            var result = processor.EvaluateLexer(lexer, builder);
-
-        }
-
+        stack.Push(node);
         while (stack.Any())
         {
             var context = stack.Peek();
