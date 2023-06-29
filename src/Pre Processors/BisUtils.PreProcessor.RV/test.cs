@@ -17,13 +17,18 @@ public class test
         };
         var lexer = new BisMutableStringStepper("""
                                                 class    CfgPatches {
-                                                    string="MyString #define";
-                                                    please     fuck me  d  a d  d y
+                                                    //My Comment :))
+
+                                                    /**/
+                                                    string="MyString #define"/**/;
+                                                    please      d  a d  d y
                                                     #include <mememememememe>
                                                                               pappp\
                                                                               iiii
                                                 }
                                                 """);
+
+        Console.WriteLine(lexer.ToString());
         var builder = new StringBuilder();
         preprocessor.OnTokenMatched += (match, bisLexer) => Console.WriteLine($"{match.TokenType.TokenId} = \"{match.TokenText}\"");
         preprocessor.EvaluateLexer(lexer, builder);

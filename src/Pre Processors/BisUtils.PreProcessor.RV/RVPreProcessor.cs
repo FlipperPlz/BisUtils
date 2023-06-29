@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.PreProcessor.RV;
 
 using System.Text;
+using System.Text.RegularExpressions;
 using Core.Parsing;
 using Core.Parsing.Lexer;
 using Enumerations;
@@ -18,10 +19,14 @@ public interface IRVPreProcessor : IBisPreProcessorBase
     IRVDefineDirective? LocateMacro(string name);
 }
 
-public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
+public partial class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
     public List<IRVDefineDirective> MacroDefinitions { get; } = new();
     public required RVIncludeFinder IncludeLocator { get; init; }
+
+    [GeneratedRegex(@"(\r\n){2,}")]
+    private static partial Regex ExtraNewLineRegex();
+
     public IRVDefineDirective? LocateMacro(string name) => MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition EOFDefinition =
@@ -97,10 +102,10 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
-        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition,
-        UndefDefinition, LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition,
-        NewLineDefinition, ElseDefinition, IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition,
-        IdentifierDefinition, QuotedStringDefinition
+        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, UndefDefinition,
+        LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition, NewLineDefinition,
+        ElseDefinition, IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition, IdentifierDefinition,
+        QuotedStringDefinition
     };
 
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
@@ -108,7 +113,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
     public RVPreProcessor() => OnTokenMatched += HandlePreviousMatch;
 
-    private void HandlePreviousMatch(IBisLexer<RvTypes>.TokenMatch match, IBisLexer<RvTypes> lexer) => AddPreviousMatch(match);
+    private void HandlePreviousMatch(IBisLexer<RvTypes>.TokenMatch match, IBisLexer<RvTypes> lexer) =>
+        AddPreviousMatch(match);
 
     protected override IBisLexer<RvTypes>.TokenMatch GetNextToken(IBisMutableStringStepper lexer)
     {
@@ -116,17 +122,9 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         {
             return CreateTokenMatch(..0, "", EOFDefinition);
         }
+
         lexer.MoveForward();
         var start = lexer.Position;
-        if (IsWhitespace(lexer))
-        {
-            while (IsWhitespace(lexer, lexer.PeekForward()))
-            {
-                lexer.MoveForward();
-            }
-
-            return CreateTokenMatch(start..lexer.Position, "",WhitespaceDefinition);
-        }
 
         switch (lexer.CurrentChar)
         {
@@ -155,6 +153,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                     {
                         while (lexer is not { PreviousChar: '*', CurrentChar: '/' } && lexer.CurrentChar != null)
                         {
+                            lexer.MoveForward();
                         }
 
                         var blockEnd = lexer.Position;
@@ -290,84 +289,32 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
                 break;
             }
+            case ' ' or '\t':
+            {
+                var builder = new StringBuilder().Append(lexer.CurrentChar);
+                while (lexer.PeekForward() is ' ' or '\t')
+                {
+                    builder.Append(lexer.MoveForward());
+                }
+
+                return CreateTokenMatch(start..lexer.Position, builder.ToString(), WhitespaceDefinition);
+            }
         }
+
+        if (IsWhitespace(lexer))
+        {
+            while (IsWhitespace(lexer, lexer.PeekForward()))
+            {
+                lexer.MoveForward();
+            }
+
+            return CreateTokenMatch(start..lexer.Position, "", WhitespaceDefinition);
+        }
+
 
         var id = lexer.ScanUntil(e => !IsIdentifierChar(lexer, e), true);
         return CreateTokenMatch(start..lexer.Position, id,
             LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
-    }
-
-    private static string ScanRVString(IBisStringStepper lexer)
-    {
-        var builder = new StringBuilder().Append('"');
-        do
-        {
-            var next = lexer.MoveForward();
-            if (next == '\\')
-            {
-                if (lexer.PeekForward() == '\r')
-                {
-                    lexer.MoveForward();
-                }
-
-                builder.Append(lexer.PeekForward() != '\n' ? '\\' : '\n');
-                continue;
-            }
-            builder.Append(next);
-        } while (lexer.CurrentChar != '"' && lexer.CurrentChar != null);
-
-        return builder.ToString();
-    }
-
-
-    private static void SkipWhitespaces(IBisStringStepper stepper)
-    {
-        while (stepper.PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
-        {
-            stepper.MoveForward();
-        }
-    }
-
-    private static bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
-    {
-        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
-        _ => false
-    };
-
-
-    public static bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
-    {
-        if ((c ?? stepper.CurrentChar) is not { } currentChar)
-        {
-            return false;
-        }
-
-        if (isFirst && char.IsAsciiDigit(currentChar))
-        {
-            return false;
-        }
-
-        return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
-    }
-
-    private static int TraverseLine(IBisStringStepper stepper)
-    {
-        var charCount = 0;
-        while (true)
-        {
-            switch (stepper.CurrentChar)
-            {
-                case null:
-                    return charCount;
-                case '\n':
-                    stepper.MoveForward();
-                    return ++charCount;
-                default:
-                    charCount++;
-                    stepper.MoveForward();
-                    break;
-            }
-        }
     }
 
     public override Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder)
@@ -377,12 +324,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         IBisLexer<RvTypes>.TokenMatch token;
         while ((token = NextToken(lexer)) != RvTypes.SimEOF)
         {
-            var isStart = token == RvTypes.AbsNewLine || PreviousMatch() is null;
-            if (isStart)
-            {
-                builder?.Append('\n');
-            }
-
             switch (token.TokenType.TokenId)
             {
                 case RvTypes.SimHash:
@@ -421,15 +362,91 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 case RvTypes.SymRightAngle:
                 case RvTypes.SimText:
                 case RvTypes.SimEOF:
+                case RvTypes.SymLParenthesis:
+                case RvTypes.SymRParenthesis:
                 default:
                     builder?.Append(token.TokenText);
                     break;
-
             }
-
         }
 
+        builder?.Replace("\n\n", "\n").Replace("\r\n\r\n", "\n");
+
         return Result.Merge(result);
+    }
+
+    private static string ScanRVString(IBisStringStepper lexer)
+    {
+        var builder = new StringBuilder().Append('"');
+        do
+        {
+            var next = lexer.MoveForward();
+            if (next == '\\')
+            {
+                if (lexer.PeekForward() == '\r')
+                {
+                    lexer.MoveForward();
+                }
+
+                builder.Append(lexer.PeekForward() != '\n' ? '\\' : '\n');
+                continue;
+            }
+
+            builder.Append(next);
+        } while (lexer.CurrentChar != '"' && lexer.CurrentChar != null);
+
+        return builder.ToString();
+    }
+
+
+    private static void SkipWhitespaces(IBisStringStepper stepper)
+    {
+        while (stepper.PeekForward() is { } peeked && peeked < 33 && peeked != '\n')
+        {
+            stepper.MoveForward();
+        }
+    }
+
+    private static bool IsWhitespace(IBisStringStepper stepper, char? c = null) => (c ?? stepper.CurrentChar) switch
+    {
+        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
+        _ => false
+    };
+
+
+    private static bool IsIdentifierChar(IBisStringStepper stepper, char? c = null, bool isFirst = false)
+    {
+        if ((c ?? stepper.CurrentChar) is not { } currentChar)
+        {
+            return false;
+        }
+
+        if (isFirst && char.IsAsciiDigit(currentChar))
+        {
+            return false;
+        }
+
+        return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
+    }
+
+    private static int TraverseLine(IBisStringStepper stepper)
+    {
+        var charCount = 0;
+        while (true)
+        {
+            switch (stepper.CurrentChar)
+            {
+                case null:
+                    return charCount;
+                case '\n':
+                    stepper.MoveForward();
+                    return ++charCount;
+                default:
+                    charCount++;
+                    stepper.MoveForward();
+                    break;
+            }
+        }
     }
 
     protected virtual void ProcessComment(StringBuilder? builder, bool lineComment, string commentText)
@@ -463,11 +480,11 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         return IncludeLocator(path, builder);
     }
 
-    private static void ProcessWhitespace(StringBuilder? builder) => builder?.Append(' ');
+    protected virtual void ProcessWhitespace(StringBuilder? builder) => builder?.Append(' ');
 
-    private static void ProcessNewLine(StringBuilder? builder, bool directiveNewLine)
+    protected virtual void ProcessNewLine(StringBuilder? builder, bool directiveNewLine)
     {
-        if(!directiveNewLine)
+        if (!directiveNewLine)
         {
             builder?.Append('\n');
         }
