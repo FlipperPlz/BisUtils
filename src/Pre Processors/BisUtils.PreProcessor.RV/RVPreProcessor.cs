@@ -292,12 +292,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             }
         }
 
-        if (!IsIdentifierChar(lexer, isFirst: true))
-        {
-            var text = lexer.ScanUntil(e => IsIdentifierChar(lexer, e), true);
-            return CreateTokenMatch(start..lexer.Position, text, TextDefinition);
-        }
-
         var id = lexer.ScanUntil(e => !IsIdentifierChar(lexer, e), true);
         return CreateTokenMatch(start..lexer.Position, id,
             LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);

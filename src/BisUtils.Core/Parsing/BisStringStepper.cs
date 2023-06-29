@@ -270,7 +270,6 @@ public class BisStringStepper : IBisStringStepper
         while (MoveForward() is { } current && !until(current))
         {
             builder.Append(current);
-            MoveForward();
         }
 
         return builder.ToString();
