@@ -23,7 +23,6 @@ public enum RvTypes
     AbsLineComment,
     AbsBlockComment,
     AbsDirectiveNewLine,
-    SymDoubleQuote,
     SymLeftAngle,
     SymRightAngle
 

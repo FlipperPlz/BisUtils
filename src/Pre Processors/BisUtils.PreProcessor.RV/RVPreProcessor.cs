@@ -87,9 +87,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IBisLexer<RvTypes>.TokenDefinition RightAngleDefinition =
         CreateTokenDefinition("rv.angle.right", RvTypes.SymRightAngle, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition DoubleQuoteDefinition =
-        CreateTokenDefinition("rv.quote.double", RvTypes.SymDoubleQuote, 1);
-
     private static readonly IBisLexer<RvTypes>.TokenDefinition QuotedStringDefinition =
         CreateTokenDefinition("rv.string.quoted", RvTypes.AbsQuotedString, 1);
 
@@ -100,7 +97,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
-        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, DoubleQuoteDefinition,
+        RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition,
         UndefDefinition, LineCommentDefinition, BlockCommentDefinition, DirectiveNewLineDefinition,
         NewLineDefinition, ElseDefinition, IfDefDefinition, IfNDefDefinition, EndifDefinition, IncludeDefinition,
         IdentifierDefinition, QuotedStringDefinition
@@ -179,7 +176,10 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 return CreateTokenMatch(start..lexer.Position, "##", DHashDefinition);
             }
             case '"':
-                return CreateTokenMatch(start..lexer.Position, "\"", DoubleQuoteDefinition);
+            {
+                var text = ScanRVString(lexer);
+                return CreateTokenMatch(start..lexer.Position, text, QuotedStringDefinition);
+            }
             case '\\':
             {
                 if (lexer.PeekForward() == '\r')
@@ -297,6 +297,28 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
     }
 
+    private static string ScanRVString(IBisStringStepper lexer)
+    {
+        var builder = new StringBuilder().Append('"');
+        do
+        {
+            var next = lexer.MoveForward();
+            if (next == '\\')
+            {
+                if (lexer.PeekForward() == '\r')
+                {
+                    lexer.MoveForward();
+                }
+
+                builder.Append(lexer.PeekForward() != '\n' ? '\\' : '\n');
+                continue;
+            }
+            builder.Append(next);
+        } while (lexer.CurrentChar != '"' && lexer.CurrentChar != null);
+
+        return builder.ToString();
+    }
+
 
     private static void SkipWhitespaces(IBisStringStepper stepper)
     {
@@ -356,7 +378,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         while ((token = NextToken(lexer)) != RvTypes.SimEOF)
         {
             var isStart = token == RvTypes.AbsNewLine || PreviousMatch() is null;
-            SkipWhitespaces(lexer);
             if (isStart)
             {
                 builder?.Append('\n');
@@ -364,21 +385,20 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
             switch (token.TokenType.TokenId)
             {
-                case RvTypes.SymDoubleQuote:
-                    ProcessQuotedString(lexer, builder, token.TokenPosition);
-                    break;
                 case RvTypes.SimHash:
                     result.Add(ProcessDirective(lexer, builder));
                     break;
                 case RvTypes.AbsWhitespace:
-                    ProcessWhitespace(lexer, builder);
+                    ProcessWhitespace(builder);
                     break;
                 case RvTypes.AbsDirectiveNewLine:
-                    ProcessNewLine(lexer, builder, true);
+                    ProcessNewLine(builder, true);
                     break;
                 case RvTypes.AbsNewLine:
-                    ProcessNewLine(lexer, builder, false);
+                    ProcessNewLine(builder, false);
                     break;
+                case RvTypes.AbsQuotedString:
+
                 case RvTypes.SimText:
                 default:
                     builder?.Append(token.TokenText);
@@ -405,43 +425,25 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     private Result ProcessIncludeDirective(BisMutableStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
-        var token = NextToken(lexer);
-        if (token != RvTypes.SymDoubleQuote && token != RvTypes.SymLeftAngle)
+        var token = lexer.CurrentChar;
+        if (token != '"' && token != '<')
         {
             return Result.Fail("Unknown character for include string, expected '<' or '\"'");
         }
 
-        var end = token == RvTypes.SymDoubleQuote ? '"' : '>';
+        var end = token == '"' ? '"' : '>';
         var path = lexer.ScanUntil(e => e == end);
         return IncludeLocator(path, builder);
     }
 
-    private static void ProcessWhitespace(BisMutableStringStepper lexer, StringBuilder? builder) => builder?.Append(' ');
+    private static void ProcessWhitespace(StringBuilder? builder) => builder?.Append(' ');
 
-    private static void ProcessNewLine(BisMutableStringStepper lexer, StringBuilder? builder, bool directiveNewLine)
+    private static void ProcessNewLine(StringBuilder? builder, bool directiveNewLine)
     {
         if(!directiveNewLine)
         {
             builder?.Append('\n');
         }
-    }
-
-//False positive `NextToken` has static and member declaration
-#pragma warning disable CA1822
-    private void ProcessQuotedString(BisMutableStringStepper lexer, StringBuilder? builder, int tokenStart)
-#pragma warning restore CA1822
-    {
-        var stringBuilder = new StringBuilder();
-
-        IBisLexer<RvTypes>.TokenMatch token;
-        while ((token = NextToken(lexer)) != RvTypes.SymDoubleQuote)
-        {
-            stringBuilder.Append(token.TokenText);
-        }
-
-        builder?.Append(stringBuilder);
-
-        CreateTokenMatch(tokenStart..lexer.Position, stringBuilder.ToString(), QuotedStringDefinition);
     }
 
 }

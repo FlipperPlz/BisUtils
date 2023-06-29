@@ -25,7 +25,7 @@ public class test
                                                 }
                                                 """);
         var builder = new StringBuilder();
-        preprocessor.OnTokenMatched += (match, bisLexer) => Console.WriteLine(match.TokenType.TokenId);
+        preprocessor.OnTokenMatched += (match, bisLexer) => Console.WriteLine($"{match.TokenType.TokenId} = \"{match.TokenText}\"");
         preprocessor.EvaluateLexer(lexer, builder);
         Console.WriteLine(builder.ToString());
     }
