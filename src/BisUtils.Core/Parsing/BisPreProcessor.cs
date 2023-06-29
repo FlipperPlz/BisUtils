@@ -6,7 +6,7 @@ using Lexer;
 
 public interface IBisPreProcessorBase
 {
-    public Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder);
+    public Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder);
 
 }
 
@@ -17,7 +17,7 @@ public abstract class BisPreProcessorBase : IBisPreProcessorBase
 
     }
 
-    public abstract Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder);
+    public abstract Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder);
 }
 
 
@@ -30,14 +30,14 @@ public abstract class BisPreProcessor<TPreProcTypes> : BisPreProcessorBase, IBis
     public IEnumerable<IBisLexer<TPreProcTypes>.TokenMatch> PreviousMatches => previousMatches;
     private readonly List<IBisLexer<TPreProcTypes>.TokenMatch> previousMatches = new();
     public IBisLexer<TPreProcTypes>.TokenMatch? PreviousMatch() => previousMatches.LastOrDefault();
-    public IBisLexer<TPreProcTypes>.TokenMatch NextToken(BisMutableStringStepper lexer)
+    public IBisLexer<TPreProcTypes>.TokenMatch NextToken(IBisMutableStringStepper lexer)
     {
         var value = GetNextToken(lexer);
         OnTokenMatchedHandler(value, this);
         return value;
     }
 
-    protected abstract IBisLexer<TPreProcTypes>.TokenMatch GetNextToken(BisMutableStringStepper lexer);
+    protected abstract IBisLexer<TPreProcTypes>.TokenMatch GetNextToken(IBisMutableStringStepper lexer);
 
     public void TokenizeUntilEnd<T>(BisLexer<T> lexer) where T : Enum
     {

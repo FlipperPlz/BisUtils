@@ -118,6 +118,9 @@ public interface IBisStringStepper
     /// <returns>The string at the peeked range.</returns>
     public string PeekBackwardMulti(int count = 1);
 
+    public int Length => Content.Length;
+
+
     /// <summary>
     /// Scans content forward until specified condition is met.
     /// </summary>
@@ -134,7 +137,6 @@ public class BisStringStepper : IBisStringStepper
 
     public BisStringStepper(string content) => Content = content;
 
-    public int Length => Content.Length;
 
     /// <inheritdoc />
     public int Position { get; private set; } = -1;
@@ -267,9 +269,9 @@ public class BisStringStepper : IBisStringStepper
             builder.Append(CurrentChar);
         }
 
-        while (MoveForward() is { } current && !until(current))
+        while (PeekForward() is { } current && !until(current))
         {
-            builder.Append(current);
+            builder.Append(MoveForward());
         }
 
         return builder.ToString();

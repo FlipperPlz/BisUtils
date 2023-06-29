@@ -110,7 +110,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
     private void HandlePreviousMatch(IBisLexer<RvTypes>.TokenMatch match, IBisLexer<RvTypes> lexer) => AddPreviousMatch(match);
 
-    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken(BisMutableStringStepper lexer)
+    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken(IBisMutableStringStepper lexer)
     {
         if (lexer.Length <= lexer.Position)
         {
@@ -350,7 +350,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
 
-    public static int TraverseLine(IBisStringStepper stepper)
+    private static int TraverseLine(IBisStringStepper stepper)
     {
         var charCount = 0;
         while (true)
@@ -370,7 +370,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
-    public override Result EvaluateLexer(BisMutableStringStepper lexer, StringBuilder? builder)
+    public override Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder)
     {
         var result = new List<Result>();
 
@@ -397,9 +397,30 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 case RvTypes.AbsNewLine:
                     ProcessNewLine(builder, false);
                     break;
+                case RvTypes.AbsLineComment:
+                    ProcessComment(builder, true, token.TokenText);
+                    break;
+                case RvTypes.AbsBlockComment:
+                    ProcessComment(builder, false, token.TokenText);
+                    break;
+                case RvTypes.SimIdentifier:
+                    break; //TODO: look for arguments; Evaluate macro
+                case RvTypes.SimDoubleHash:
+                    break; //TODO process next token as macro
+                // DEFAULT WRITE TO OUTPUT
+                case RvTypes.KwInclude:
+                case RvTypes.KwDefine:
+                case RvTypes.KwIfDef:
+                case RvTypes.KwIfNDef:
+                case RvTypes.KwElse:
+                case RvTypes.KwEndIf:
+                case RvTypes.KwUndef:
+                case RvTypes.SymComma:
                 case RvTypes.AbsQuotedString:
-
+                case RvTypes.SymLeftAngle:
+                case RvTypes.SymRightAngle:
                 case RvTypes.SimText:
+                case RvTypes.SimEOF:
                 default:
                     builder?.Append(token.TokenText);
                     break;
@@ -411,7 +432,11 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         return Result.Merge(result);
     }
 
-    private Result ProcessDirective(BisMutableStringStepper lexer, StringBuilder? builder)
+    protected virtual void ProcessComment(StringBuilder? builder, bool lineComment, string commentText)
+    {
+    }
+
+    protected virtual Result ProcessDirective(IBisMutableStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
         return NextToken(lexer).TokenType.TokenId switch
@@ -422,9 +447,10 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         };
     }
 
-    private Result ProcessIncludeDirective(BisMutableStringStepper lexer, StringBuilder? builder)
+    protected virtual Result ProcessIncludeDirective(IBisStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
+        lexer.MoveForward();
         var token = lexer.CurrentChar;
         if (token != '"' && token != '<')
         {
@@ -433,6 +459,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 
         var end = token == '"' ? '"' : '>';
         var path = lexer.ScanUntil(e => e == end);
+        lexer.MoveForward();
         return IncludeLocator(path, builder);
     }
 
