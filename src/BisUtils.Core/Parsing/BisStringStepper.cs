@@ -135,7 +135,7 @@ public class BisStringStepper : IBisStringStepper
     /// <inheritdoc />
     public string Content { get; protected set; }
 
-    public BisStringStepper(string content) => Content = content;
+    protected BisStringStepper(string content) => Content = content;
 
 
     /// <inheritdoc />
