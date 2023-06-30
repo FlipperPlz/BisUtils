@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Param.Parse;
 
-using BisUtils.Param.Models.Stubs;
+using Models.Stubs;
 using Core.Parsing;
 using FResults;
 using Lexer;
@@ -25,6 +25,34 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
             var next = lexer.NextToken();
             switch ((ParamTypes) next)
             {
+                case ParamTypes.AbsWhitespace:
+                {
+                    continue;
+                }
+                case ParamTypes.EOF:
+                {
+                    if (stack.Count > 1)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+                    goto Done;
+                }
+                case ParamTypes.SymRCurly:
+                {
+                    if ((next = lexer.NextToken()) != ParamTypes.SymSeparator)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+
+                    if (stack.Count == 1)
+                    {
+                        throw new NotSupportedException(); //TODO: Error no class to end
+                    }
+
+                    stack.Pop();
+                    context = stack.Peek();
+                    continue;
+                }
                 case ParamTypes.KwClass:
                 {
                     next = lexer.NextToken();
@@ -75,11 +103,10 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                     stack.Push(context);
                     continue;
                 }
-
-                case ParamTypes.AbsWhitespace:
-                    break;
-                case ParamTypes.EOF:
-
+                case ParamTypes.AbsIdentifier:
+                {
+                    throw new NotImplementedException();
+                }
                 default: throw new NotSupportedException(); //TODO: Error
             }
 
