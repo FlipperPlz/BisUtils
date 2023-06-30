@@ -70,8 +70,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                         throw new NotSupportedException(); //TODO: Error
                     }
                     var classname = next.TokenText;
-                    next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
-                    switch ((ParamTypes) next)
+                    switch ((ParamTypes) (next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)))
                     {
                         case ParamTypes.SymSeparator:
                         {
@@ -87,8 +86,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                     var superName = "";
                     if (next == ParamTypes.SymColon)
                     {
-                        next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
-                        if (next != ParamTypes.AbsIdentifier)
+                        if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.AbsIdentifier)
                         {
                             throw new NotSupportedException(); //TODO: Error
                         }
@@ -105,6 +103,40 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                     context = new ParamClass(node, context, classname, superName, new List<IParamStatement>());
                     stack.Push(context);
                     continue;
+                }
+                case ParamTypes.KwDelete:
+                {
+                    next = lexer.NextToken();
+                    if (next != ParamTypes.AbsWhitespace)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+                    if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.AbsIdentifier)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+
+                    if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.SymSeparator)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+                    context.Statements.Add(new ParamDelete(node, context, next.TokenText));
+
+                    continue;
+                }
+                case ParamTypes.KwEnum:
+                {
+                    if (lexer.NextToken() != ParamTypes.SymLCurly)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+                    //TODO: Handle Enum:
+                    lexer.TokenizeWhile(ParamTypes.SymRCurly);
+                    if (lexer.TokenizeWhile(ParamTypes.AbsWhitespace) != ParamTypes.SymSeparator)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+                    break;
                 }
                 case ParamTypes.AbsIdentifier:
                 {
@@ -125,16 +157,14 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                         next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
                     }
 
-                    var op = ((ParamTypes) next) switch
+                    context.Statements.Add(ParamVariable.CreateVariable(node, context, name, (ParamTypes) next switch
                     {
                         ParamTypes.OpAssign => ParamOperatorType.Assign,
-                        ParamTypes.OpAddAssign => OperatorOf(foundSquare, true),
-                        ParamTypes.OpSubAssign => OperatorOf(foundSquare, false),
+                        ParamTypes.OpAddAssign => foundSquare ? OperatorOf(true) : throw new NotSupportedException(), //TODO ERROR
+                        ParamTypes.OpSubAssign => foundSquare ? OperatorOf(false): throw new NotSupportedException(),//TODO ERROR
                         _ => throw new NotSupportedException() //TODO: Error
-                    };
-                    context.Statements.Add(ParamVariable.CreateVariable(node, context, name, op,
-                        ParseLiteral(lexer, out next)));
-                    if ((next = lexer.NextToken()) != ParamTypes.SymSeparator)
+                    },ParseLiteral(lexer, out next)));
+                    if (lexer.NextToken() != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
@@ -142,7 +172,6 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 default: throw new NotSupportedException(); //TODO: Error
             }
-
         }
         Done:
         {
@@ -164,13 +193,6 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
             : value;
     }
 
-    private static ParamOperatorType OperatorOf(bool isArray, bool isAddAssign)
-    {
-        if (!isArray)
-        {
-            throw new NotSupportedException(); //TODO: Error
-        }
-        return isAddAssign ? ParamOperatorType.AddAssign : ParamOperatorType.SubAssign;
-    }
+    private static ParamOperatorType OperatorOf(bool isAddAssign) => isAddAssign ? ParamOperatorType.AddAssign : ParamOperatorType.SubAssign;
 }
 

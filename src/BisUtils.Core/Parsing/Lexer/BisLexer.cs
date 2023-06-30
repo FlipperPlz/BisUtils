@@ -120,11 +120,20 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
         }
     }
 
-    public IBisLexer<TTokenEnum>.TokenMatch TokenizeWhile(TTokenEnum type)
+    public IBisLexer<TTokenEnum>.TokenMatch TokenizeWhile(TTokenEnum type, bool reverse = false)
     {
         IBisLexer<TTokenEnum>.TokenMatch token;
-        while ((token = NextToken()) == type)
+        if (reverse)
         {
+            while ((token = NextToken()) != type )
+            {
+            }
+        }
+        else
+        {
+            while ((token = NextToken()) == type )
+            {
+            }
         }
 
         return token;
