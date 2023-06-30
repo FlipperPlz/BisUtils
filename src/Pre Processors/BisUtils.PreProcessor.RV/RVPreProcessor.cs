@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.PreProcessor.RV;
 
 using System.Text;
-using System.Text.RegularExpressions;
 using Core.Parsing;
 using Core.Parsing.Lexer;
 using Enumerations;
@@ -9,21 +8,49 @@ using FResults;
 using Models.Directives;
 using Utils;
 
+/// <summary>
+/// Interface for a preprocessor specifically designed for RV programming language.
+/// </summary>
 public interface IRVPreProcessor : IBisPreProcessorBase
 {
+    /// <summary>
+    /// A list of macro definitions available in the preprocessor.
+    /// </summary>
     List<IRVDefineDirective> MacroDefinitions { get; }
 
+    /// <summary>
+    /// Responsible for locating include files.
+    /// </summary>
     RVIncludeFinder IncludeLocator { get; }
 
-
+    /// <summary>
+    /// Locates a macro by its name.
+    /// </summary>
+    /// <param name="name">Name of the macro to locate.</param>
+    /// <returns>The macro if it was found, otherwise null.</returns>
     IRVDefineDirective? LocateMacro(string name);
 }
-
+/// <summary>
+/// Implementation of a preprocessor for the RV programming language.
+/// <see cref="BisPreProcessor{TPreProcTypes}"/>
+/// </summary>
 public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
+    /// <summary>
+    /// A list of macro definitions available in the preprocessor.
+    /// </summary>
     public List<IRVDefineDirective> MacroDefinitions { get; } = new();
+
+    /// <summary>
+    /// Responsible for locating include files.
+    /// </summary>
     public RVIncludeFinder IncludeLocator { get; init; } = DefaultIncludeLocator;
 
+    /// <summary>
+    /// Locates a macro by its name.
+    /// </summary>
+    /// <param name="name">Name of the macro to locate.</param>
+    /// <returns>The macro if it was found, otherwise null.</returns>
     public IRVDefineDirective? LocateMacro(string name) => MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
     private static readonly IBisLexer<RvTypes>.TokenDefinition EOFDefinition =
@@ -108,8 +135,16 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
     public override IBisLexer<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RVPreProcessor"/> class.
+    /// </summary>
     public RVPreProcessor() => OnTokenMatched += HandlePreviousMatch;
 
+    /// <summary>
+    /// Handles the event of a token match.
+    /// </summary>
+    /// <param name="match">matched token</param>
+    /// <param name="lexer">lexer instance</param>
     private void HandlePreviousMatch(IBisLexer<RvTypes>.TokenMatch match, IBisLexer<RvTypes> lexer) =>
         AddPreviousMatch(match);
 
@@ -314,6 +349,12 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             LocateMacro(id) is not null ? IdentifierDefinition : TextDefinition);
     }
 
+    /// <summary>
+    /// Evaluates the lexer and performs respective actions based on the type of token found.
+    /// </summary>
+    /// <param name="lexer">The active lexer to analyze.</param>
+    /// <param name="builder">A StringBuilder instance which may be used to create/modify strings during the evaluation process.</param>
+    /// <returns>Result object containing the results of the lexer evaluation.</returns>
     public override Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder)
     {
         var result = new List<Result>();
@@ -487,6 +528,12 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         }
     }
 
-    protected static Result DefaultIncludeLocator(string filepath, StringBuilder? builder) => Result.Ok();
+    /// <summary>
+    /// Provides a default implementation of the `IncludeLocator` function.
+    /// </summary>
+    /// <param name="filepath">Path to the file to include.</param>
+    /// <param name="builder">A StringBuilder instance to append extracted information to.</param>
+    /// <returns>A Result object representing the success or failure of the process. In this default implementation, it always returns ok.</returns>
+    protected static Result DefaultIncludeLocator(string filepath, StringBuilder? builder) => Result.ImmutableOk();
 
 }
