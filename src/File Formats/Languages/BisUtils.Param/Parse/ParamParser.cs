@@ -5,11 +5,14 @@ using Core.Parsing;
 using FResults;
 using Lexer;
 using Models;
+using PreProcessor.RV;
 
-public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes>
+public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPreProcessor>
 {
+    public static readonly ParamParser Instance = new();
 
-    public static Result Parse(out ParamFile? node, ParamLexer lexer)
+#pragma warning disable CA1822
+    public Result Parse(out ParamFile? node, ParamLexer lexer)
     {
         var results = new List<Result>();
         node = new ParamFile("config", new List<IParamStatement>());
@@ -18,12 +21,14 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes>
         while (stack.Any())
         {
             var context = stack.Peek();
+
+
         }
         Done:
         {
-
             return Result.Merge(results);
         }
+
     }
 }
 

@@ -19,13 +19,10 @@ public interface IRVPreProcessor : IBisPreProcessorBase
     IRVDefineDirective? LocateMacro(string name);
 }
 
-public partial class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
+public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
     public List<IRVDefineDirective> MacroDefinitions { get; } = new();
-    public required RVIncludeFinder IncludeLocator { get; init; }
-
-    [GeneratedRegex(@"(\r\n){2,}")]
-    private static partial Regex ExtraNewLineRegex();
+    public RVIncludeFinder IncludeLocator { get; init; } = DefaultIncludeLocator;
 
     public IRVDefineDirective? LocateMacro(string name) => MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
@@ -489,5 +486,7 @@ public partial class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             builder?.Append('\n');
         }
     }
+
+    protected static Result DefaultIncludeLocator(string filepath, StringBuilder? builder) => Result.Ok();
 
 }
