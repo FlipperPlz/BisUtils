@@ -5,7 +5,10 @@ using Core.Parsing;
 using Core.Parsing.Lexer;
 using Enumerations;
 using FResults;
+using FResults.Reasoning;
 using Models.Directives;
+using Models.Elements;
+using Models.Stubs;
 using Utils;
 
 /// <summary>
@@ -13,6 +16,24 @@ using Utils;
 /// </summary>
 public interface IRVPreProcessor : IBisPreProcessorBase
 {
+    /// <summary>
+    /// Event that fires when a token match occurs.
+    /// </summary>
+    public event DirectiveMatched OnDirectiveMatched;
+
+    /// <summary>
+    /// Delegate for a parsing event fired when a directive is matched.
+    /// </summary>
+    /// <param name="directive">The directive matched.</param>
+    /// <param name="replacement">What the directive should be replaced with (may already be set)</param>
+    /// <param name="processor">The processor instance handling the input.</param>
+    public delegate IEnumerable<IReason> DirectiveMatched(IRVDirective directive, IRVPreProcessor processor, ref string replacement);
+
+    /// <summary>
+    /// A list of directives that have been matched
+    /// </summary>
+    Dictionary<bool, IRVDirective> MatchedDirectives { get; }
+
     /// <summary>
     /// A list of macro definitions available in the preprocessor.
     /// </summary>
@@ -30,16 +51,23 @@ public interface IRVPreProcessor : IBisPreProcessorBase
     /// <returns>The macro if it was found, otherwise null.</returns>
     IRVDefineDirective? LocateMacro(string name);
 }
+
 /// <summary>
 /// Implementation of a preprocessor for the RV programming language.
 /// <see cref="BisPreProcessor{TPreProcTypes}"/>
 /// </summary>
 public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
 {
+    public event IRVPreProcessor.DirectiveMatched? OnDirectiveMatched;
+
+    public Dictionary<bool, IRVDirective> MatchedDirectives { get; } = new();
+
     /// <summary>
     /// A list of macro definitions available in the preprocessor.
     /// </summary>
     public List<IRVDefineDirective> MacroDefinitions { get; } = new();
+
+
 
     /// <summary>
     /// Responsible for locating include files.
@@ -138,7 +166,21 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     /// <summary>
     /// Initializes a new instance of the <see cref="RVPreProcessor"/> class.
     /// </summary>
-    public RVPreProcessor() => OnTokenMatched += HandlePreviousMatch;
+    public RVPreProcessor()
+    {
+        OnTokenMatched += HandlePreviousMatch;
+        OnDirectiveMatched += EvaluateDirective;
+    }
+
+
+    private IEnumerable<IReason> EvaluateDirective(IRVDirective directive, IRVPreProcessor processor,
+        ref string replacement) =>
+        directive switch
+        {
+            IRVIncludeDirective includeDirective => IncludeLocator(includeDirective, ref replacement),
+            _ => new[] { new Error() }
+        };
+
 
     /// <summary>
     /// Handles the event of a token match.
@@ -357,7 +399,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     /// <returns>Result object containing the results of the lexer evaluation.</returns>
     public override Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder)
     {
-        var result = new List<Result>();
+        var result = Result.Ok();
 
         IBisLexer<RvTypes>.TokenMatch token;
         while ((token = NextToken(lexer)) != RvTypes.SimEOF)
@@ -365,7 +407,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
             switch (token.TokenType.TokenId)
             {
                 case RvTypes.SimHash:
-                    result.Add(ProcessDirective(lexer, builder));
+                    result.Reasons.AddRange(ProcessDirective(lexer, builder));
                     break;
                 case RvTypes.AbsWhitespace:
                     ProcessWhitespace(builder);
@@ -491,31 +533,53 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     {
     }
 
-    protected virtual Result ProcessDirective(IBisMutableStringStepper lexer, StringBuilder? builder)
+    protected virtual IEnumerable<IReason> ProcessDirective(IBisMutableStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
         return NextToken(lexer).TokenType.TokenId switch
         {
             RvTypes.KwInclude => ProcessIncludeDirective(lexer, builder),
-            //TODO:
-            _ => Result.Fail("Unknown preprocessor directive!")
+            _ => new[] { new Error() { Message = "Unknown preprocessor directive!" } }
         };
     }
 
-    protected virtual Result ProcessIncludeDirective(IBisStringStepper lexer, StringBuilder? builder)
+    protected virtual IEnumerable<IReason> ProcessIncludeDirective(IBisStringStepper lexer, StringBuilder? builder)
     {
         SkipWhitespaces(lexer);
         lexer.MoveForward();
         var token = lexer.CurrentChar;
         if (token != '"' && token != '<')
         {
-            return Result.Fail("Unknown character for include string, expected '<' or '\"'");
+            return new[] { new Error() { Message = "Unknown character for include string, expected '<' or '\"'" } };
         }
 
         var end = token == '"' ? '"' : '>';
         var path = lexer.ScanUntil(e => e == end);
-        lexer.MoveForward();
-        return IncludeLocator(path, builder);
+        var replacement = "";
+        return OnDirectiveMatchedHandler
+        (
+            new RVIncludeDirective
+            (
+                this,
+                new RVIncludeString
+                (
+                    this,
+                    path,
+                    end == '"' ? RVStringType.Quoted : RVStringType.Angled
+                )
+            ),
+            ref replacement,
+            builder
+        );
+    }
+
+
+    protected virtual IEnumerable<IReason> OnDirectiveMatchedHandler(IRVDirective directive, ref string replacement,
+        StringBuilder? builder)
+    {
+        var result = OnDirectiveMatched?.Invoke(directive, this, ref replacement);
+        builder?.Append(replacement);
+        return result ?? new IReason[] { new Success() };
     }
 
     protected virtual void ProcessWhitespace(StringBuilder? builder) => builder?.Append(' ');
@@ -526,14 +590,10 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         {
             builder?.Append('\n');
         }
+
     }
 
-    /// <summary>
-    /// Provides a default implementation of the `IncludeLocator` function.
-    /// </summary>
-    /// <param name="filepath">Path to the file to include.</param>
-    /// <param name="builder">A StringBuilder instance to append extracted information to.</param>
-    /// <returns>A Result object representing the success or failure of the process. In this default implementation, it always returns ok.</returns>
-    protected static Result DefaultIncludeLocator(string filepath, StringBuilder? builder) => Result.ImmutableOk();
+    private static IEnumerable<IReason>
+        DefaultIncludeLocator(IRVIncludeDirective include, ref string includeContents) => new[] { new Success() };
 
 }

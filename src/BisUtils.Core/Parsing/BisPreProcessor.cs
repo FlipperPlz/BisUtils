@@ -37,6 +37,7 @@ public abstract class BisPreProcessorBase : IBisPreProcessorBase
 /// <typeparam name="TPreProcTypes">A set of types which the PreProcessor will work with, represented as an enumeration.</typeparam>
 public abstract class BisPreProcessor<TPreProcTypes> : BisPreProcessorBase, IBisLexer<TPreProcTypes> where TPreProcTypes : Enum
 {
+
     /// <summary>
     /// Event that fires when a token match occurs.
     /// </summary>

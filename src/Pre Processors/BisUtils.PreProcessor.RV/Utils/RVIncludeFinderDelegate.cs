@@ -2,6 +2,8 @@
 
 using System.Text;
 using FResults;
+using FResults.Reasoning;
+using Models.Directives;
 
-public delegate Result RVIncludeFinder(string filePath, StringBuilder? builder);
+public delegate IEnumerable<IReason> RVIncludeFinder(IRVIncludeDirective include, ref string includeContents);
 

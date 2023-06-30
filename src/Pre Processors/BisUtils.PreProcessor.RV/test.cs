@@ -8,13 +8,7 @@ public class test
 {
     public static void Main()
     {
-        var preprocessor = new RVPreProcessor() {
-            IncludeLocator = (path, builder) =>
-            {
-                Console.WriteLine(path);
-                return Result.Ok();
-            }
-        };
+        var preprocessor = new RVPreProcessor();
         var lexer = new BisMutableStringStepper("""
                                                 class    CfgPatches {
                                                     //My Comment :))
