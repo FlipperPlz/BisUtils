@@ -23,6 +23,8 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
         public bool Equals(TokenMatch other) =>
             TokenType.Equals(other.TokenType) && TokenPosition == other.TokenPosition && TokenLength == other.TokenLength && TokenText == other.TokenText && Success == other.Success;
 
+        public static implicit operator TTokenEnum(TokenMatch d) => d.TokenType;
+
         public static bool operator ==(TokenMatch left, TTokenEnum? right) =>
             EqualityComparer<TTokenEnum>.Default.Equals(left.TokenType.TokenId, right);
 
@@ -46,6 +48,7 @@ public interface IBisLexer<TTokenEnum> where TTokenEnum : Enum
         public required string? DebugName { get; init; }
         public required TTokenEnum TokenId { get; init; }
         public required short TokenWeight { get; init; }
+        public static implicit operator TTokenEnum(TokenDefinition d) => d.TokenId;
 
         public static bool operator ==(TokenDefinition left, TTokenEnum? right) =>
             EqualityComparer<TTokenEnum>.Default.Equals(left.TokenId, right);
@@ -115,6 +118,16 @@ public abstract class BisLexer<TTokenEnum> : BisMutableStringStepper, IBisLexer<
         while (NextToken() != EOFToken.TokenId)
         {
         }
+    }
+
+    public IBisLexer<TTokenEnum>.TokenMatch TokenizeWhile(TTokenEnum type)
+    {
+        IBisLexer<TTokenEnum>.TokenMatch token;
+        while ((token = NextToken()) == type)
+        {
+        }
+
+        return token;
     }
 
     protected virtual void OnTokenMatchedHandler(IBisLexer<TTokenEnum>.TokenMatch match, IBisLexer<TTokenEnum> lexer)
