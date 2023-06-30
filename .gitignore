@@ -247,6 +247,8 @@ ServiceFabricBackup/
 .localhistory/
 
 # Visual Studio History (VSHistory) files
+
+docs/gen/*
 .vshistory/
 
 # VS Code files for those working on multiple tools
