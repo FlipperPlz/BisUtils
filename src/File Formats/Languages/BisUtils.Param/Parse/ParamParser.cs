@@ -2,9 +2,12 @@
 
 using Models.Stubs;
 using Core.Parsing;
+using Core.Parsing.Lexer;
+using Enumerations;
 using FResults;
 using Lexer;
 using Models;
+using Models.Literals;
 using Models.Statements;
 using PreProcessor.RV;
 
@@ -105,7 +108,37 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 case ParamTypes.AbsIdentifier:
                 {
-                    throw new NotImplementedException();
+                    var name = next.TokenText;
+                    next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
+                    var foundSquare = false;
+                    if (next == ParamTypes.SymLSquare)
+                    {
+                        foundSquare = true;
+                        if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.SymRSquare)
+                        {
+                            throw new NotSupportedException(); //TODO: Error
+                        }
+                    }
+
+                    if (next == ParamTypes.AbsWhitespace)
+                    {
+                        next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
+                    }
+
+                    var op = ((ParamTypes) next) switch
+                    {
+                        ParamTypes.OpAssign => ParamOperatorType.Assign,
+                        ParamTypes.OpAddAssign => OperatorOf(foundSquare, true),
+                        ParamTypes.OpSubAssign => OperatorOf(foundSquare, false),
+                        _ => throw new NotSupportedException() //TODO: Error
+                    };
+                    context.Statements.Add(ParamVariable.CreateVariable(node, context, name, op,
+                        ParseLiteral(lexer, out next)));
+                    if ((next = lexer.NextToken()) != ParamTypes.SymSeparator)
+                    {
+                        throw new NotSupportedException(); //TODO: Error
+                    }
+                    continue;
                 }
                 default: throw new NotSupportedException(); //TODO: Error
             }
@@ -116,6 +149,28 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
             return Result.Merge(results);
         }
 
+    }
+
+    private static IParamLiteralBase ParseLiteral(ParamLexer lexer, out IBisLexer<ParamTypes>.TokenMatch next)
+    {
+        var value = new ParamString((next = lexer.NextLiteral()).TokenText);
+        if (next != ParamTypes.AbsLiteral)
+        {
+            throw new NotSupportedException(); //TODO: Error
+        }
+
+        return value.ToFloat(out var paramFloat) ? paramFloat
+            : value.ToInt(out var paramInt) ? paramInt
+            : value;
+    }
+
+    private static ParamOperatorType OperatorOf(bool isArray, bool isAddAssign)
+    {
+        if (!isArray)
+        {
+            throw new NotSupportedException(); //TODO: Error
+        }
+        return isAddAssign ? ParamOperatorType.AddAssign : ParamOperatorType.SubAssign;
     }
 }
 

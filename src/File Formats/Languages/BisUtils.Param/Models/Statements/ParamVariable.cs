@@ -22,6 +22,16 @@ public interface IParamVariable<out TParamType> : IParamVariableBase where TPara
     TParamType? VariableValue { get; }
 }
 
+public static class ParamVariable
+{
+    public static ParamVariable<TLiteralType> CreateVariable<TLiteralType>(IParamFile? file,
+        IParamStatementHolder? parent, string name, ParamOperatorType operatorType, TLiteralType value) where TLiteralType : IParamLiteralBase =>
+        new(file, parent, name, value)
+        {
+            VariableOperator = operatorType
+        };
+}
+
 public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamType> where TParamType : IParamLiteralBase
 {
     public string VariableName { get; set; }

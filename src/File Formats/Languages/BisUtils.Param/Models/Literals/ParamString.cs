@@ -20,13 +20,15 @@ public struct ParamString : IParamString
     public Result? LastResult { get; private set; } = null;
     public IParamFile? ParamFile { get; set; }
 
-    public required ParamStringType StringType { get; set; } = ParamStringType.Unquoted;
+    public ParamStringType StringType { get; set; } = ParamStringType.Unquoted;
 
-    public required string ParamValue { get => paramValue; set => paramValue = value; }
+    public string ParamValue { get => paramValue; set => paramValue = value; }
     private string paramValue = "";
 
-    public ParamString()
+    public ParamString(string value, ParamStringType type = ParamStringType.Quoted)
     {
+        paramValue = value;
+        StringType = type;
     }
 
     public Result Binarize(BisBinaryWriter writer, ParamOptions options)
@@ -61,7 +63,7 @@ public struct ParamString : IParamString
 
 
 #pragma warning disable CA1305 //TODO: Options with locale
-    public Result ToInt(out IParamInt? paramInt)
+    public Result ToInt(out IParamInt paramInt)
     {
         paramInt = new ParamInt() { ParamValue = int.Parse(ParamValue), ParamFile = ParamFile };
         return Result.Fail("String is null, cannot Convert");

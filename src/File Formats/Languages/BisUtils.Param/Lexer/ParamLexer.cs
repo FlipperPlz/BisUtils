@@ -91,37 +91,41 @@ public class ParamLexer : BisLexer<ParamTypes>
 
         while (CurrentChar is { } currentChar && (quoted || !delimiters.Contains(currentChar)))
         {
-            if (currentChar is '\n' or '\r')
+            switch (currentChar)
             {
-                goto Finish;
-            }
-
-            if (currentChar == '"' && quoted)
-            {
-                if (MoveForward() != '"')
+                case '\n' or '\r':
+                    goto Finish;
+                case '"' when quoted:
                 {
-                    TraverseWhitespace();
-                    if (currentChar != '\\')
+                    if (MoveForward() != '"')
                     {
-                        goto Finish;
+                        TraverseWhitespace();
+                        if (currentChar != '\\')
+                        {
+                            goto Finish;
+                        }
+
+                        if (MoveForward() != 'n')
+                        {
+                            goto Finish;
+                        }
+                        TraverseWhitespace();
+                        if (CurrentChar != '"')
+                        {
+                            goto Finish;
+                        }
+
+                        MoveForward();
                     }
 
-                    if (MoveForward() != 'n')
-                    {
-                        goto Finish;
-                    }
-                    TraverseWhitespace();
-                    if (CurrentChar != '"')
-                    {
-                        goto Finish;
-                    }
-
-                    MoveForward();
+                    break;
                 }
             }
 
             MoveForward();
         }
+
+        MoveBackward();
         Finish:
         {
             var match = CreateTokenMatch(start..Position, LiteralDefinition);
@@ -253,7 +257,7 @@ public class ParamLexer : BisLexer<ParamTypes>
         return CreateTokenMatch(start..Position, ErrorDefinition);
     }
 
-    public void TraverseWhitespace()
+    private void TraverseWhitespace()
     {
         while (true)
         {
