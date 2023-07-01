@@ -539,8 +539,32 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         return NextToken(lexer).TokenType.TokenId switch
         {
             RvTypes.KwInclude => ProcessIncludeDirective(lexer, builder),
+            RvTypes.KwUndef => ProcessUndefineDirective(lexer, builder),
+            //TODO: Include remaining directives
             _ => new[] { new Error() { Message = "Unknown preprocessor directive!" } }
         };
+    }
+
+    private IEnumerable<IReason> ProcessUndefineDirective(IBisMutableStringStepper lexer, StringBuilder? builder)
+    {
+        var next = NextToken(lexer);
+        while (next == RvTypes.AbsWhitespace)
+        {
+            next = NextToken(lexer);
+        }
+
+        if (next != RvTypes.SimIdentifier)
+        {
+            return new[] { new Error() { Message = "Unable to read '#undef' an identifier wasn't found!" } };
+        }
+
+        var replacement = "";
+        return OnDirectiveMatchedHandler
+        (
+            new RVUndefineDirective(this, next.TokenText),
+            ref replacement,
+            builder
+        );
     }
 
     protected virtual IEnumerable<IReason> ProcessIncludeDirective(IBisStringStepper lexer, StringBuilder? builder)
@@ -574,8 +598,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     }
 
 
-    protected virtual IEnumerable<IReason> OnDirectiveMatchedHandler(IRVDirective directive, ref string replacement,
-        StringBuilder? builder)
+    protected virtual IEnumerable<IReason> OnDirectiveMatchedHandler(IRVDirective directive, ref string replacement, StringBuilder? builder)
     {
         var result = OnDirectiveMatched?.Invoke(directive, this, ref replacement);
         builder?.Append(replacement);
