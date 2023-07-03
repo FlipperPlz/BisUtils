@@ -30,7 +30,7 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
     public override Result Debinarize(BisBinaryReader reader, ParamOptions options) =>
         LastResult = reader.ReadAsciiZ(out className, options);
 
-    public override Result Validate(ParamOptions options) => throw new NotImplementedException();
+    public override Result Validate(ParamOptions options) => Result.Ok();
 
     public override Result ToParam(out string str, ParamOptions options)
     {

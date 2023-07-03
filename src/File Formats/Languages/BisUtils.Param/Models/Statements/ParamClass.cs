@@ -4,6 +4,7 @@ using System.Text;
 using Core.Family;
 using Core.IO;
 using FResults;
+using FResults.Extensions;
 using Options;
 using Stubs;
 
@@ -60,6 +61,22 @@ public class ParamClass : ParamExternalClass, IParamClass
 
     public ParamClass(BisBinaryReader reader, ParamOptions options) : base(reader, options)
     {
+    }
+
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        var value = base.Binarize(writer, options);
+        writer.Write(writer.BaseStream.Position);
+        return value;
+    }
+
+    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+        var value = base.Debinarize(reader, options);
+        reader.BaseStream.Seek(reader.ReadInt32(), SeekOrigin.Begin);
+        //TODO read class children
+
+        return value;
     }
 
     public Result LocateParamParent(out IParamExternalClass? clazz)

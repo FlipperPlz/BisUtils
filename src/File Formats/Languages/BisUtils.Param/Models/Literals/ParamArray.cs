@@ -2,6 +2,7 @@
 
 using Core.IO;
 using FResults;
+using FResults.Extensions;
 using Helpers;
 using Options;
 using Stubs;
@@ -32,15 +33,15 @@ public struct ParamArray : IParamLiteralBase, IParamArray
 
     public Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
-        var results = new List<Result>();
+        var results = Result.Ok();
         ParamValue = new List<IParamLiteralBase>(reader.ReadCompactInteger());
         for (var i = 0; i < ParamValue.Capacity; ++i)
         {
-            results.Add(ParamLiteralDebinarizer.DebinarizeLiteral(out var literal, reader, options));
+            results.WithReasons(ParamLiteralDebinarizer.DebinarizeLiteral(out var literal, reader, options).Reasons);
             ParamValue.Add(literal);
         }
 
-        return LastResult = Result.Merge(results);
+        return LastResult = results;
     }
 
     public Result Validate(ParamOptions options) =>

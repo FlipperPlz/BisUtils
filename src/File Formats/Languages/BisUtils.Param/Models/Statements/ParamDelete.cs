@@ -25,14 +25,27 @@ public class ParamDelete : ParamStatement, IParamDelete
     public Result LocateDeleteTarget(out IParamExternalClass? clazz)
     {
         clazz = null; //TODO
-        return LastResult = Result.Fail($"Could not locate target '{DeleteTargetName}'of delete statement");
+        return LastResult = Result.Fail($"Could not locate target '{DeleteTargetName}' of delete statement");
     }
 
-    public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        writer.WriteAsciiZ(DeleteTargetName, options);
+        return Result.Ok();
+    }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
+    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+        var result = reader.ReadAsciiZ(out var target, options);
+        DeleteTargetName = target;
+        return result;
+    }
 
-    public override Result Validate(ParamOptions options) => throw new NotImplementedException();
+    public override Result Validate(ParamOptions options) => throw new NotImplementedException(); //TODO: LocateDeleteTarget
 
-    public override Result ToParam(out string str, ParamOptions options) => throw new NotImplementedException();
+    public override Result ToParam(out string str, ParamOptions options)
+    {
+        str = $"delete {DeleteTargetName};";
+        return Result.Ok();
+    }
 }
