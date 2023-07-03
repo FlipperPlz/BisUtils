@@ -170,6 +170,8 @@ public class ParamLexer : BisLexer<ParamTypes>
         {
             case ',': return CreateTokenMatch(start..Position, CommaDefinition);
             case ';': return CreateTokenMatch(start..Position, SeparatorDefinition);
+            case '{': return CreateTokenMatch(start..Position, LCurlyDefinition);
+            case '}': return CreateTokenMatch(start..Position, RCurlyDefinition);
             case '[': return CreateTokenMatch(start..Position, LSquareDefinition);
             case ']': return CreateTokenMatch(start..Position, RSquareDefinition);
             case '=': return CreateTokenMatch(start..Position, AssignDefinition);
