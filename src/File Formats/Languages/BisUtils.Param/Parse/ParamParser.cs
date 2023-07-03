@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Parse;
 
+using System.Text;
 using Models.Stubs;
 using Core.Parsing;
 using Core.Parsing.Lexer;
@@ -177,6 +178,8 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                         {
                             throw new NotSupportedException(); //TODO: Error
                         }
+
+                        next = lexer.NextToken();
                     }
 
                     if (next == ParamTypes.AbsWhitespace)
@@ -190,7 +193,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                         ParamTypes.OpAddAssign => foundSquare ? OperatorOf(true) : throw new NotSupportedException(), //TODO ERROR
                         ParamTypes.OpSubAssign => foundSquare ? OperatorOf(false): throw new NotSupportedException(),//TODO ERROR
                         _ => throw new NotSupportedException() //TODO: Error
-                    },ParseLiteral(lexer, out next)));
+                    },ParseLiteral(lexer, ref next)));
                     if (lexer.NextToken() != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
@@ -215,17 +218,186 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
     /// <param name="lexer">The `ParamLexer` providing the literal to parse.</param>
     /// <param name="next">Output parameter to hand back the next token after parsing the literal.</param>
     /// <returns>An `IParamLiteralBase` instance representing the parsed literal.</returns>
-    private static IParamLiteralBase ParseLiteral(ParamLexer lexer, out IBisLexer<ParamTypes>.TokenMatch next)
+    private static IParamLiteralBase ParseLiteral(ParamLexer lexer, ref IBisLexer<ParamTypes>.TokenMatch next)
     {
-        var value = new ParamString((next = lexer.NextLiteral()).TokenText);
-        if (next != ParamTypes.AbsLiteral)
+        do
         {
-            throw new NotSupportedException(); //TODO: Error
+            lexer.MoveForward();
+        } while (lexer.IsCurrentWhitespace);
+
+        return lexer.CurrentChar == '{' ? ParseParamArray(lexer) : ParseParamPrimitive(lexer);
+    }
+
+    private static IParamLiteralBase ParseParamPrimitive(IBisStringStepper lexer, params char[] delimiters)
+    {
+        var value = ParseParamString(lexer, delimiters);
+        return value.ToFloat(out var paramFloat) ? paramFloat : value.ToInt(out var paramInt) ? paramInt : value;
+    }
+
+    private static ParamString ParseParamString(IBisStringStepper lexer, params char[] delimiters)
+    {
+        var quoted = false;
+        if (lexer.CurrentChar == '"')
+        {
+            quoted = true;
+            lexer.MoveForward();
         }
 
-        return value.ToFloat(out var paramFloat) ? paramFloat
-            : value.ToInt(out var paramInt) ? paramInt
-            : value;
+        var builder = new StringBuilder();
+
+        while (lexer.CurrentChar is { } currentChar && !delimiters.Contains(currentChar))
+        {
+            switch (currentChar)
+            {
+                case '\n' or '\r':
+                    goto Finish;
+                case '"' when quoted:
+                {
+                    if (lexer.MoveForward() != '"')
+                    {
+                        if (currentChar != '\\')
+                        {
+                            goto Finish;
+                        }
+
+                        if (lexer.MoveForward() != 'n')
+                        {
+
+                            goto Finish;
+                        }
+                        if (lexer.CurrentChar != '"')
+                        {
+                            goto Finish;
+                        }
+
+                        builder.Append('\n');
+                        lexer.MoveForward();
+                    }
+
+                    break;
+                }
+            }
+
+            builder.Append(lexer.CurrentChar);
+            lexer.MoveForward();
+        }
+        Finish:
+        {
+            return new ParamString(builder.ToString(), quoted ? ParamStringType.Quoted : ParamStringType.Unquoted);
+        }
+    }
+
+    private static IParamLiteralBase ParseParamArray(ParamLexer lexer)
+    {
+        var results = new List<Result>();
+        var array = new ParamArray { ParamValue = new List<IParamLiteralBase>() };
+        var stack = new Stack<IParamArray>();
+        stack.Push(array);
+        TraverseWhitespace(lexer);
+        if(lexer.CurrentChar != '{')
+        {
+            results.Add(Result.Fail("Couldn't find array start."));
+        }
+
+        while (stack.Any())
+        {
+
+            var context = stack.Peek();
+            lexer.MoveForward();
+            TraverseWhitespace(lexer);
+            switch (lexer.CurrentChar)
+            {
+                case '{':
+                {
+                    context.ParamValue!.Add(ParseParamArray(lexer));
+                    continue;
+                }
+                case ',': continue;
+                case '}':
+                {
+                    stack.Pop();
+                    continue;
+                }
+                default:
+                {
+                    context.ParamValue!.Add(ParseParamPrimitive(lexer, ';', '}', ','));
+                    continue;
+                }
+            }
+        }
+
+        lexer.MoveBackward();
+
+        return array;
+    }
+
+    private static readonly char[] Whitespaces = { ' ', '\t', '\u000B', '\u000C' };
+    private static int TraverseWhitespace(IBisStringStepper stepper, bool allowEOF = false, bool allowEOL = true)
+    {
+        var charCount = 0;
+        while (true)
+        {
+            if (stepper.IsEOF())
+            {
+                if (allowEOF)
+                {
+                    break;
+                }
+
+                return charCount;
+            }
+
+            switch (stepper.CurrentChar)
+            {
+                case '\r':
+                {
+                    if (!allowEOL)
+                    {
+                        return charCount;
+                    }
+
+                    charCount += stepper.MoveForward() == '\n' ? 2 : 1;
+                    break;
+                }
+                case '\n':
+                {
+                    if (!allowEOL)
+                    {
+                        return charCount;
+                    }
+
+                    charCount++;
+                    stepper.MoveForward();
+                    break;
+                }
+                default:
+                {
+                    if (stepper.CurrentChar is { } current)
+                    {
+                        if (!Whitespaces.Contains(current))
+                        {
+                            return charCount;
+                        }
+
+                        stepper.MoveForward();
+                        charCount++;
+                    }
+                    else
+                    {
+                        if (allowEOF)
+                        {
+                            break;
+                        }
+
+                        return charCount;
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return charCount;
     }
 
     /// <summary>

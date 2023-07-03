@@ -72,6 +72,7 @@ public class ParamLexer : BisLexer<ParamTypes>
     public override IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
     public override IBisLexer<ParamTypes>.TokenDefinition? ErrorToken => ErrorDefinition;
     public override IBisLexer<ParamTypes>.TokenDefinition EOFToken => EOFDefinition;
+    public bool IsCurrentWhitespace => IsWhitespace();
 
     public ParamLexer(string content) : base(content)
     {
