@@ -17,26 +17,10 @@ public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool IgnoreValidation { get; set; }
     public bool WriteLiteralId { get; set; }
     public bool WriteStatementId { get; set; }
-    public ParamLiteralIdFoster LiteralIdFoster { get; set; } = DefaultLiteralFoster;
-    public ParamStatementIdFoster StatementIdFoster { get; set; } = DefaultStatementFoster;
+    public byte LastLiteralId { get; set; }
+    public byte LastStatementId { get; set; }
 
-    private static byte DefaultStatementFoster(IParamStatement statement) => statement switch
-    {
-        ParamClass => 0,
-        IParamVariableBase variable => variable.GetStatementId(),
-        ParamExternalClass => 3,
-        ParamDelete => 4,
-        _ => throw new NotSupportedException()
-    };
 
-    private static byte DefaultLiteralFoster(Type literal) => literal switch
-    {
-        not null when literal.IsAssignableTo(typeof(ParamString)) => 0,
-        not null when literal.IsAssignableTo(typeof(ParamFloat)) => 1,
-        not null when literal.IsAssignableTo(typeof(ParamInt)) => 2,
-        not null when literal.IsAssignableTo(typeof(ParamArray)) => 3,
-        _ => throw new NotSupportedException()
-    };
 
 
 }

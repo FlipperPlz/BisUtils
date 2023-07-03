@@ -1,10 +1,9 @@
-﻿namespace BisUtils.Param.Models.Helpers;
+﻿namespace BisUtils.Param.Helpers;
 
-using Core.IO;
+using BisUtils.Core.IO;
+using BisUtils.Param.Models.Stubs;
+using BisUtils.Param.Options;
 using FResults;
-using Options;
-using Stubs;
-
 
 public class ParamLiteralDebinarizer
 {

@@ -3,6 +3,7 @@
 using Core.IO;
 using Enumerations;
 using FResults;
+using Helpers;
 using Literals;
 using Options;
 using Stubs;
@@ -22,17 +23,8 @@ public interface IParamVariable<out TParamType> : IParamVariableBase where TPara
     TParamType? VariableValue { get; }
 }
 
-public static class ParamVariable
-{
-    public static ParamVariable<TLiteralType> CreateVariable<TLiteralType>(IParamFile? file,
-        IParamStatementHolder? parent, string name, ParamOperatorType operatorType, TLiteralType value) where TLiteralType : IParamLiteralBase =>
-        new(file, parent, name, value)
-        {
-            VariableOperator = operatorType
-        };
-}
 
-public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamType> where TParamType : IParamLiteralBase
+public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamType> where TParamType : IParamLiteralBase, new()
 {
     public string VariableName { get; set; }
     public ParamOperatorType VariableOperator { get; set; }
@@ -64,13 +56,27 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        writer.Write(options.StatementIdFoster(this));
-
-
-        return Result.Ok();
+        if (GetStatementId() is 5)
+        {
+            writer.Write((byte) VariableOperator);
+        }
+        writer.WriteAsciiZ(VariableName, options);
+        return VariableValue?.Binarize(writer, options) ?? Result.Fail($"Failed to write value of variable {VariableName}");
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
+    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+        VariableOperator = ParamOperatorType.Assign;
+        if (options.LastStatementId == 5)
+        {
+            VariableOperator = (ParamOperatorType) reader.ReadByte();
+        }
+
+        reader.ReadAsciiZ(out var name, options); //TODO: Delegate factory to options
+        VariableName = name;
+        VariableValue = new TParamType();
+        return VariableValue.Debinarize(reader, options);
+    }
 
     public override Result Validate(ParamOptions options) => throw new NotImplementedException();
 
