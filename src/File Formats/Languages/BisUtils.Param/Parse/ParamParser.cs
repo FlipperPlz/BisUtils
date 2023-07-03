@@ -92,7 +92,12 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                         throw new NotSupportedException(); //TODO: Error
                     }
                     var classname = next.TokenText;
-                    switch ((ParamTypes) (next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)))
+                    do
+                    {
+                        next = lexer.NextToken();
+                    } while (next == ParamTypes.AbsWhitespace);
+
+                    switch ((ParamTypes) next)
                     {
                         case ParamTypes.SymSeparator:
                         {

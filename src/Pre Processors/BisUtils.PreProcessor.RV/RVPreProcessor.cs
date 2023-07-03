@@ -221,7 +221,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
                 {
                     case '/':
                         var lineEnd = lexer.Position + TraverseLine(lexer);
-                        return CreateTokenMatch(start..lineEnd, lexer.GetRange(start..(lineEnd + 1)),
+                        lexer.MoveBackward();
+                        return CreateTokenMatch(start..lineEnd, lexer.GetRange(start..lineEnd),
                             LineCommentDefinition);
                     case '*':
                     {
@@ -399,7 +400,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     /// <returns>Result object containing the results of the lexer evaluation.</returns>
     public override Result EvaluateLexer(IBisMutableStringStepper lexer, StringBuilder? builder)
     {
-        var result = Result.Ok();
+        var result = Result.ImmutableOk();
 
         IBisLexer<RvTypes>.TokenMatch token;
         while ((token = NextToken(lexer)) != RvTypes.SimEOF)
@@ -602,7 +603,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     {
         var result = OnDirectiveMatched?.Invoke(directive, this, ref replacement);
         builder?.Append(replacement);
-        return result ?? new IReason[] { new Success() };
+        return result ?? Array.Empty<IReason>();
     }
 
     protected virtual void ProcessWhitespace(StringBuilder? builder) => builder?.Append(' ');
@@ -617,6 +618,6 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     }
 
     private static IEnumerable<IReason>
-        DefaultIncludeLocator(IRVIncludeDirective include, ref string includeContents) => new[] { new Success() };
+        DefaultIncludeLocator(IRVIncludeDirective include, ref string includeContents) => Array.Empty<IReason>();
 
 }

@@ -1,10 +1,13 @@
 ﻿namespace BisUtils.Core.Extensions;
 
+using System.Text;
 using Binarize;
 using Binarize.Options;
 using Binarize.Utils;
 using FResults;
 using IO;
+using Parsing;
+using Parsing.Lexer;
 
 /// <summary>
 /// Provides extension methods for objects that implement <see cref="IStrictBinarizable{TBinarizationOptions}"/>
@@ -41,4 +44,6 @@ public static class BinarizableExtensions
             ? binarizable.Binarize(writer, options)
             : Result.Merge(binarizable.Validate(options), binarizable.Binarize(writer, options));
     }
+
+
 }
