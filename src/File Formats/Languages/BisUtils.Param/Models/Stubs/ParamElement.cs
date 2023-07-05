@@ -25,13 +25,9 @@ public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamEle
     public IParamFile? ParamFile { get; set; }
     public IFamilyNode? Node => ParamFile;
 
-    protected ParamElement(IParamFile? file) : base()
-    {
-    }
+    protected ParamElement(IParamFile? file) : base() => ParamFile = file;
 
-    protected ParamElement(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(reader, options)
-    {
-    }
+    protected ParamElement(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(reader, options) => ParamFile = file;
 
     public abstract Result ToParam(out string str, ParamOptions options);
 

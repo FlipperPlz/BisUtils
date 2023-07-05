@@ -4,7 +4,6 @@ using Core.IO;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
-using Helpers;
 using Options;
 using Stubs;
 
@@ -42,7 +41,11 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
         var contents = new List<IParamLiteral>(reader.ReadCompactInteger());
         for (var i = 0; i < contents.Capacity ; ++i)
         {
-            results.WithReasons(ParamLiteralDebinarizer.DebinarizeLiteral(out var literal, reader, options).Reasons);
+            results.WithReasons(ParamLiteral.DebinarizeLiteral(ParamFile, reader, options, out var literal).Reasons);
+            if (literal is null)
+            {
+                return results;
+            }
             contents.Add(literal);
         }
         Value = contents;

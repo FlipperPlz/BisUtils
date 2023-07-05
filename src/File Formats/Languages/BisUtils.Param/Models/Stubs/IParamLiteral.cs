@@ -3,12 +3,36 @@
 using System.Text;
 using Core.IO;
 using FResults;
+using Literals;
 using Options;
 
 public interface IParamLiteral : IParamElement
 {
     object? ParamValue { get; }
     byte LiteralId { get; }
+}
+
+
+public static class ParamLiteral
+{
+    public static Result DebinarizeLiteral(IParamFile? file, BisBinaryReader reader, ParamOptions options, out IParamLiteral? literal)
+    {
+        var id = reader.ReadByte();
+        literal = id switch
+        {
+            0 => new ParamString(file, reader, options),
+            1 => new ParamFloat(file, reader, options),
+            2 => new ParamInt(file, reader, options),
+            3 => new ParamArray(file, reader, options),
+            _ => null
+        };
+        if (literal is null)
+        {
+            return Result.Fail($"Unknown Literal ID '{id}'.");
+        }
+
+        return literal.LastResult ?? Result.Ok();
+    }
 }
 
 public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
@@ -45,5 +69,6 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
         }
         return Result.Ok();
     }
+
     public abstract override Result Debinarize(BisBinaryReader reader, ParamOptions options);
 }
