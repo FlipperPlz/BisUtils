@@ -6,36 +6,40 @@ using FResults;
 using Options;
 using Stubs;
 
-public interface IParamFloat : IParamNumericLiteral<float>
+public interface IParamFloat : IParamLiteral
 {
 
 }
 
-public struct ParamFloat : IParamFloat
+public class ParamFloat : ParamLiteral<float>, IParamFloat
 {
-    public Result? LastResult { get; private set; }
-    public IParamFile? ParamFile { get; set; }
-    public required float ParamValue { get; set; }
+    public override byte LiteralId => 1;
+    public override float Value { get; set; }
 
-    public Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    public ParamFloat(IParamFile? file, float value) : base(file, value)
     {
-        writer.Write(options.LiteralIdFoster(GetType()));
-        writer.Write(ParamValue);
-        return LastResult = Result.ImmutableOk();
     }
 
-    public Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public ParamFloat(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    {
+    }
+
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        var result = base.Binarize(writer, options);
+        writer.Write(Value);
+        return LastResult = result;
+    }
+
+    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         ParamValue = reader.ReadSingle();
         return LastResult = Result.ImmutableOk();
     }
 
-    public Result Validate(ParamOptions options) =>
-        LastResult = Result.ImmutableOk();
-
-    public Result ToParam(out string str, ParamOptions options)
+    public override Result ToParam(out string str, ParamOptions options)
     {
-        str = ParamValue.ToString("D", CultureInfo.CurrentCulture);
+        str = ParamValue?.ToString() ?? "";
         return LastResult = Result.ImmutableOk();
     }
 }

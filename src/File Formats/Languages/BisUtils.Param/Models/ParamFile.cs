@@ -39,7 +39,7 @@ public class ParamFile : ParamElement, IParamFile
         Statements = statements ?? new List<IParamStatement>();
     }
 
-    public ParamFile(BisBinaryReader reader, ParamOptions options) : base(reader, options)
+    public ParamFile(BisBinaryReader reader, ParamOptions options) : base(null, reader, options)
     {
     }
 

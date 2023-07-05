@@ -17,8 +17,12 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
 
     public ParamExternalClass(IParamFile? file, IParamStatementHolder? parent, string className) : base(file, parent) => ClassName = className;
 
-    public ParamExternalClass(BisBinaryReader reader, ParamOptions options) : base(reader, options)
+    public ParamExternalClass(IParamFile file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
     {
+        if (!Debinarize(reader, options))
+        {
+            throw new Exception(); //TODO: ERROR
+        }
     }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
@@ -27,7 +31,7 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
         return LastResult = Result.ImmutableOk();
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options) =>
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options) =>
         LastResult = reader.ReadAsciiZ(out className, options);
 
     public override Result Validate(ParamOptions options) => Result.Ok();

@@ -18,8 +18,12 @@ public class ParamDelete : ParamStatement, IParamDelete
     public ParamDelete(IParamFile? file, IParamStatementHolder? parent, string target) : base(file, parent) =>
         DeleteTargetName = target;
 
-    public ParamDelete(BisBinaryReader reader, ParamOptions options) : base(reader, options)
+    public ParamDelete(IParamFile file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
     {
+        if (!Debinarize(reader, options))
+        {
+            throw new Exception(); //TODO: ERROR
+        }
     }
 
     public Result LocateDeleteTarget(out IParamExternalClass? clazz)
@@ -34,7 +38,7 @@ public class ParamDelete : ParamStatement, IParamDelete
         return Result.Ok();
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         var result = reader.ReadAsciiZ(out var target, options);
         DeleteTargetName = target;

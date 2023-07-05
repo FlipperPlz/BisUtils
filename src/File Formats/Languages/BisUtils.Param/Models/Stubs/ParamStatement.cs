@@ -18,7 +18,7 @@ public abstract class ParamStatement : ParamElement, IParamStatement
     protected ParamStatement(IParamFile? file, IParamStatementHolder? parent) : base(file) =>
         ParentClass = parent;
 
-    protected ParamStatement(BisBinaryReader reader, ParamOptions options) : base(reader, options)
+    protected ParamStatement(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
     {
     }
 

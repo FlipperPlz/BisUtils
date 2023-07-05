@@ -9,7 +9,7 @@ public class ParamLiteralDebinarizer
 {
 
     //TODO: Abstract to options get byte from LiteralIdFosters
-    public static Result DebinarizeLiteral(out IParamLiteralBase literal, BisBinaryReader reader, ParamOptions options)
+    public static Result DebinarizeLiteral(out IParamLiteral literal, BisBinaryReader reader, ParamOptions options)
     {
         var id = reader.ReadByte();
 

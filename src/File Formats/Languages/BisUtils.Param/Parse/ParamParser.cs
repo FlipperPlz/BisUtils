@@ -187,13 +187,20 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                         next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
                     }
 
-                    context.Statements.Add(ParamVariable.CreateVariable(node, context, name, (ParamTypes) next switch
+                    var operation = (ParamTypes)next switch
                     {
                         ParamTypes.OpAssign => ParamOperatorType.Assign,
-                        ParamTypes.OpAddAssign => foundSquare ? OperatorOf(true) : throw new NotSupportedException(), //TODO ERROR
-                        ParamTypes.OpSubAssign => foundSquare ? OperatorOf(false): throw new NotSupportedException(),//TODO ERROR
+                        ParamTypes.OpAddAssign => foundSquare
+                            ? OperatorOf(true)
+                            : throw new NotSupportedException(), //TODO ERROR
+                        ParamTypes.OpSubAssign => foundSquare
+                            ? OperatorOf(false)
+                            : throw new NotSupportedException(), //TODO ERROR
                         _ => throw new NotSupportedException() //TODO: Error
-                    },ParseLiteral(lexer, ref next)));
+                    };
+                    var value = ParseLiteral(node, lexer, ref next);
+
+                    context.Statements.Add(new ParamVariable(node, context, name, value, operation));
                     if (lexer.NextToken() != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
@@ -218,23 +225,23 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
     /// <param name="lexer">The `ParamLexer` providing the literal to parse.</param>
     /// <param name="next">Output parameter to hand back the next token after parsing the literal.</param>
     /// <returns>An `IParamLiteralBase` instance representing the parsed literal.</returns>
-    private static IParamLiteralBase ParseLiteral(ParamLexer lexer, ref IBisLexer<ParamTypes>.TokenMatch next)
+    private static IParamLiteral ParseLiteral(IParamFile file, ParamLexer lexer, ref IBisLexer<ParamTypes>.TokenMatch next)
     {
         do
         {
             lexer.MoveForward();
         } while (lexer.IsCurrentWhitespace);
 
-        return lexer.CurrentChar == '{' ? ParseParamArray(lexer) : ParseParamPrimitive(lexer);
+        return lexer.CurrentChar == '{' ? ParseParamArray(file, lexer) : ParseParamPrimitive(file, lexer);
     }
 
-    private static IParamLiteralBase ParseParamPrimitive(IBisStringStepper lexer, params char[] delimiters)
+    private static IParamLiteral ParseParamPrimitive(IParamFile file, IBisStringStepper lexer, params char[] delimiters)
     {
-        var value = ParseParamString(lexer, delimiters);
+        var value = ParseParamString(file, lexer, delimiters);
         return value.ToFloat(out var paramFloat) ? paramFloat : value.ToInt(out var paramInt) ? paramInt : value;
     }
 
-    private static ParamString ParseParamString(IBisStringStepper lexer, params char[] delimiters)
+    private static ParamString ParseParamString(IParamFile file, IBisStringStepper lexer, params char[] delimiters)
     {
         var quoted = false;
         if (lexer.CurrentChar == '"')
@@ -283,15 +290,15 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
         }
         Finish:
         {
-            return new ParamString(builder.ToString(), quoted ? ParamStringType.Quoted : ParamStringType.Unquoted);
+            return new ParamString(file, builder.ToString(), quoted ? ParamStringType.Quoted : ParamStringType.Unquoted);
         }
     }
 
-    private static IParamLiteralBase ParseParamArray(ParamLexer lexer)
+    private static ParamArray ParseParamArray(IParamFile file, ParamLexer lexer)
     {
         var results = new List<Result>();
-        var array = new ParamArray { ParamValue = new List<IParamLiteralBase>() };
-        var stack = new Stack<IParamArray>();
+        var array = new ParamArray(file, new List<IParamLiteral>());
+        var stack = new Stack<ParamArray>();
         stack.Push(array);
         TraverseWhitespace(lexer);
         if(lexer.CurrentChar != '{')
@@ -309,7 +316,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
             {
                 case '{':
                 {
-                    context.ParamValue!.Add(ParseParamArray(lexer));
+                    context.Value!.Add(ParseParamArray(file, lexer));
                     continue;
                 }
                 case ',': continue;
@@ -320,7 +327,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 default:
                 {
-                    context.ParamValue!.Add(ParseParamPrimitive(lexer, ';', '}', ','));
+                    context.Value!.Add(ParseParamPrimitive(file, lexer, ';', '}', ','));
                     continue;
                 }
             }

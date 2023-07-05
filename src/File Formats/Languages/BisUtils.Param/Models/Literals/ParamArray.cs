@@ -3,58 +3,62 @@
 using Core.IO;
 using FResults;
 using FResults.Extensions;
+using FResults.Reasoning;
 using Helpers;
 using Options;
 using Stubs;
 
-public interface IParamArray : IParamLiteral<List<IParamLiteralBase>>, IParamLiteralBase
+public interface IParamArray : IParamLiteral
 {
 
 }
 // ParamArray is reserved? why...
 #pragma warning disable CA1716
-public struct ParamArray : IParamLiteralBase, IParamArray
+public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
 {
-    public ParamArray()
+    public override byte LiteralId => 3;
+    public override List<IParamLiteral>? Value { get; set; } = new List<IParamLiteral>();
+
+    public ParamArray(IParamFile? file, IEnumerable<IParamLiteral>? value) : base(file, value?.ToList())
     {
     }
 
-    public IParamFile? ParamFile { get; set; } = null;
-    public Result? LastResult { get; private set; } = null;
-    public required List<IParamLiteralBase> ParamValue { get; set; } = new();
-
-    public Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    public ParamArray(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
     {
-        writer.Write(options.LiteralIdFoster(GetType()));
-        writer.WriteCompactInteger(ParamValue.Count);
-
-        return Result.Merge(ParamValue.Select(v => v.Binarize(writer, options)));
     }
 
-    public Result Debinarize(BisBinaryReader reader, ParamOptions options)
+
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    {
+        var result = base.Binarize(writer, options);
+        var value = Value;
+        writer.WriteCompactInteger(value?.Count ?? 0);
+        return LastResult = result.WithReasons(value?.SelectMany(v => v.Binarize(writer, options).Reasons) ?? new IReason[] {Result.Fail("Failed to write data in list"), });
+    }
+
+    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         var results = Result.Ok();
-        ParamValue = new List<IParamLiteralBase>(reader.ReadCompactInteger());
-        for (var i = 0; i < ParamValue.Capacity; ++i)
+        var contents = new List<IParamLiteral>(reader.ReadCompactInteger());
+        for (var i = 0; i < contents.Capacity ; ++i)
         {
             results.WithReasons(ParamLiteralDebinarizer.DebinarizeLiteral(out var literal, reader, options).Reasons);
-            ParamValue.Add(literal);
+            contents.Add(literal);
         }
-
+        Value = contents;
         return LastResult = results;
     }
 
-    public Result Validate(ParamOptions options) =>
-        LastResult = Result.Merge(ParamValue.Select(v => v.Validate(options)));
+    public override Result Validate(ParamOptions options) =>
+        LastResult = base.Validate(options).IsFailed ? LastResult! : LastResult!.WithReasons(Value?.SelectMany(e => e.Validate(options).Reasons) ?? Array.Empty<IReason>());
 
-    public Result ToParam(out string str, ParamOptions options)
+    public override Result ToParam(out string str, ParamOptions options)
     {
-
-        str = $"{{{string.Join(", ", ParamValue.Select(v => v.ToParam(options)))}}}";
-        return LastResult = Result.Merge
-        (
-            ParamValue.Where(v => v.LastResult is not null)
-                .Select(v => v.LastResult!)
-        );
+        str = Value is not null && Value.Any()
+            ? $"{{{string.Join(", ", Value.Select(v => v.ToParam(options)))}}}"
+            : "";
+        return LastResult = Result.Ok();
     }
+
+
 }

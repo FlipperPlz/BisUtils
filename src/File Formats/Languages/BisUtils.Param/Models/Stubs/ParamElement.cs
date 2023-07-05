@@ -29,7 +29,7 @@ public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamEle
     {
     }
 
-    protected ParamElement(BisBinaryReader reader, ParamOptions options) : base(reader, options)
+    protected ParamElement(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(reader, options)
     {
     }
 

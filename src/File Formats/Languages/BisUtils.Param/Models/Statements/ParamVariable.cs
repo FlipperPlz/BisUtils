@@ -3,31 +3,24 @@
 using Core.IO;
 using Enumerations;
 using FResults;
-using Helpers;
 using Literals;
 using Options;
 using Stubs;
 
-public interface IParamVariableBase : IParamStatement
+public interface IParamVariable : IParamStatement
 {
     string VariableName { get; }
     ParamOperatorType VariableOperator { get; }
-    IParamLiteralBase? UnboxedVariableValue { get; }
+    IParamLiteral? VariableValue { get; }
 
     byte GetStatementId();
 }
 
-public interface IParamVariable<out TParamType> : IParamVariableBase where TParamType : IParamLiteralBase
+public class ParamVariable : ParamStatement, IParamVariable
 {
-    IParamLiteralBase? IParamVariableBase.UnboxedVariableValue => VariableValue;
-    TParamType? VariableValue { get; }
-}
-
-
-public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamType> where TParamType : IParamLiteralBase, new()
-{
-    public string VariableName { get; set; }
+    public string? VariableName { get; set; }
     public ParamOperatorType VariableOperator { get; set; }
+    public IParamLiteral? VariableValue { get; set; }
 
     public byte GetStatementId()
     {
@@ -39,18 +32,20 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
         return VariableValue is IParamArray ? (byte)2 : (byte)1;
     }
 
-    public TParamType? VariableValue { get; set; }
 
-    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, TParamType? variableValue) : base(file, parent)
+    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, IParamLiteral? variableValue, ParamOperatorType operatorType = ParamOperatorType.Assign) : base(file, parent)
     {
         VariableName = variableName;
+        VariableOperator = operatorType;
         VariableValue = variableValue;
     }
 
-    public ParamVariable(BisBinaryReader reader, ParamOptions options, string variableName, TParamType? variableValue) : base(reader, options)
+    public ParamVariable(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
     {
-        VariableName = variableName;
-        VariableValue = variableValue;
+        if (!Debinarize(reader, options))
+        {
+            throw new Exception(); //TODO: ERROR
+        }
     }
 
 
@@ -60,11 +55,11 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
         {
             writer.Write((byte) VariableOperator);
         }
-        writer.WriteAsciiZ(VariableName, options);
+        writer.WriteAsciiZ(VariableName!, options);
         return VariableValue?.Binarize(writer, options) ?? Result.Fail($"Failed to write value of variable {VariableName}");
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         VariableOperator = ParamOperatorType.Assign;
         if (options.LastStatementId == 5)
@@ -74,11 +69,24 @@ public class ParamVariable<TParamType> : ParamStatement, IParamVariable<TParamTy
 
         reader.ReadAsciiZ(out var name, options); //TODO: Delegate factory to options
         VariableName = name;
-        VariableValue = new TParamType();
-        return VariableValue.Debinarize(reader, options);
+        //TODO Read Variable AGHGGH C# GENERICS FUCK OFF PLEASE
+        return Result.Fail("TODODODODODODODODO");
     }
 
-    public override Result Validate(ParamOptions options) => throw new NotImplementedException();
+    public override Result Validate(ParamOptions options)
+    {
+        if (VariableName is not null)
+        {
+            return Result.Fail("No Variable Name!");
+        }
+
+        if (VariableOperator is not ParamOperatorType.Assign && VariableValue is not ParamArray)
+        {
+            return Result.Fail("Invalid Operator!");
+        }
+
+        return VariableValue is null ? Result.Fail("No Variable Value!") : Result.Ok();
+    }
 
     public override Result ToParam(out string str, ParamOptions options) => throw new NotImplementedException();
 

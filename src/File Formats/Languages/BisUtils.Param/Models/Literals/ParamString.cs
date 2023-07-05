@@ -6,45 +6,39 @@ using FResults;
 using Options;
 using Stubs;
 
-public interface IParamString : IParamLiteral<string>
+public interface IParamString : IParamLiteral
 {
     ParamStringType StringType { get; }
 
-
-    public bool ToInt(out IParamInt? paramInt);
-    public bool ToFloat(out IParamFloat? paramFloat);
+    public bool ToInt(out ParamInt? paramInt);
+    public bool ToFloat(out ParamFloat? paramFloat);
 }
 
-public struct ParamString : IParamString
+public class ParamString : ParamLiteral<string>, IParamString
 {
-    public Result? LastResult { get; private set; } = null;
-    public IParamFile? ParamFile { get; set; }
+    public override byte LiteralId => 4;
+    public override string? Value { get; set; }
+    public ParamStringType StringType { get; } //TODO: Constructors and Stringtype
 
-    public ParamStringType StringType { get; set; } = ParamStringType.Unquoted;
+    public ParamString(IParamFile? file, string? value, ParamStringType stringType) : base(file, value) =>
+        StringType = stringType;
 
-    public string ParamValue { get => paramValue; set => paramValue = value; }
-    private string paramValue = "";
+    public ParamString(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options) => StringType = ParamStringType.Quoted;
 
-    public ParamString(string value, ParamStringType type = ParamStringType.Quoted)
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        paramValue = value;
-        StringType = type;
+        var result = base.Binarize(writer, options);
+        writer.WriteAsciiZ(Value ?? "", options);
+        return LastResult = result;
     }
 
-    public Result Binarize(BisBinaryWriter writer, ParamOptions options)
+    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
-        writer.Write(options.LiteralIdFoster(GetType()));
-        writer.WriteAsciiZ(ParamValue, options);
-        return LastResult = Result.ImmutableOk();
+        LastResult = reader.ReadAsciiZ(out var paramValue, options);
+        Value = paramValue;
+        return LastResult;
     }
-
-    public Result Debinarize(BisBinaryReader reader, ParamOptions options) =>
-        LastResult = reader.ReadAsciiZ(out paramValue, options);
-
-    public Result ToParam(out string str, ParamOptions options) =>
-        LastResult = Stringify(out str, ParamValue, StringType, options);
-
-    public Result Validate(ParamOptions options) =>
+    public override Result Validate(ParamOptions options) =>
         LastResult = Result.ImmutableOk();
 
     public static Result Stringify(out string stringified, string str, ParamStringType stringType, ParamOptions options)
@@ -62,28 +56,32 @@ public struct ParamString : IParamString
     }
 
 
+    public override Result ToParam(out string str, ParamOptions options) =>
+        LastResult = Stringify(out str, Value ?? "", StringType, options);
 #pragma warning disable CA1305 //TODO: Options with locale
-    public bool ToInt(out IParamInt paramInt)
+
+    public bool ToInt(out ParamInt paramInt)
     {
-        var response = int.TryParse(ParamValue, out var parsedInt);
+        var response = int.TryParse(Value, out var parsedInt);
         if (!response)
         {
             paramInt = null;
             return response;
         }
-        paramInt = new ParamInt() { ParamValue = parsedInt, ParamFile = ParamFile };
+
+        paramInt = new ParamInt(ParamFile, parsedInt);
         return true;
     }
 
-    public bool ToFloat(out IParamFloat paramFloat)
+    public bool ToFloat(out ParamFloat paramFloat)
     {
-        var response = float.TryParse(ParamValue, out var parsedInt);
+        var response = float.TryParse(Value, out var parsedInt);
         if (!response)
         {
             paramFloat = null;
             return response;
         }
-        paramFloat = new ParamFloat { ParamValue = parsedInt, ParamFile = ParamFile };
+        paramFloat = new ParamFloat(ParamFile, parsedInt);
         return true;
     }
 

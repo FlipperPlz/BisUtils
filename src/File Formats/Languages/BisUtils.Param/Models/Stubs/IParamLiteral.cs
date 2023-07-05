@@ -1,38 +1,49 @@
 ﻿namespace BisUtils.Param.Models.Stubs;
 
 using System.Text;
+using Core.IO;
 using FResults;
 using Options;
 
-public interface IParamLiteralBase : IParamElement
+public interface IParamLiteral : IParamElement
 {
-    object? UnboxedParamValue { get; }
+    object? ParamValue { get; }
+    byte LiteralId { get; }
 }
 
-public interface IParamLiteral<out T> : IParamLiteralBase
+public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
 {
-    object? IParamLiteralBase.UnboxedParamValue => ParamValue;
-
-    T? ParamValue { get; }
-
-    Result IParamElement.WriteParam(StringBuilder builder, ParamOptions options)
+    public object? ParamValue
     {
-        var result = ToParam(out var str, options);
-        builder.Append(str);
-        return result;
+        get => Value;
+        protected set
+        {
+            if (value is not T or null)
+            {
+                throw new NotSupportedException();
+            }
+
+            Value = (T?)value;
+        }
+    }
+    public abstract byte LiteralId { get; }
+    public abstract T? Value { get; set; }
+
+    protected ParamLiteral(IParamFile? file, T? value) : base(file) => ParamValue = value;
+
+    protected ParamLiteral(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    {
     }
 
-    StringBuilder IParamElement.WriteParam(out Result result, ParamOptions options)
-    {
-        var builder = new StringBuilder();
-        result = WriteParam(builder, options);
-        return builder;
-    }
+    public override Result Validate(ParamOptions options) => LastResult = ParamValue is T ? Result.Ok() : Result.Fail("Wrong value type");
 
-    string IParamElement.ToParam(ParamOptions options)
+    public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        ToParam(out var str, options);
-        return str;
+        if (options.WriteLiteralId)
+        {
+            writer.Write(LiteralId);
+        }
+        return Result.Ok();
     }
-
+    public abstract override Result Debinarize(BisBinaryReader reader, ParamOptions options);
 }

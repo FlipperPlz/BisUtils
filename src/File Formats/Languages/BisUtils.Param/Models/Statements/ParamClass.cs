@@ -59,8 +59,12 @@ public class ParamClass : ParamExternalClass, IParamClass
         Statements = statements ?? new List<IParamStatement>();
     }
 
-    public ParamClass(BisBinaryReader reader, ParamOptions options) : base(reader, options)
+    public ParamClass(IParamFile file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
     {
+        if (!Debinarize(reader, options))
+        {
+            throw new Exception(); //TODO: ERROR
+        }
     }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
@@ -70,7 +74,7 @@ public class ParamClass : ParamExternalClass, IParamClass
         return value;
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public new Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         var value = base.Debinarize(reader, options);
         reader.BaseStream.Seek(reader.ReadInt32(), SeekOrigin.Begin);
