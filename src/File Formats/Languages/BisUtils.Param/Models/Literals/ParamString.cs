@@ -5,6 +5,7 @@ using Enumerations;
 using FResults;
 using Options;
 using Stubs;
+using Stubs.Holders;
 
 public interface IParamString : IParamLiteral
 {
@@ -20,10 +21,11 @@ public class ParamString : ParamLiteral<string>, IParamString
     public override string? Value { get; set; }
     public ParamStringType StringType { get; } //TODO: Constructors and Stringtype
 
-    public ParamString(IParamFile? file, string? value, ParamStringType stringType) : base(file, value) =>
+    public ParamString(IParamFile? file, IParamLiteralHolder? parent, string? value, ParamStringType stringType) : base(file, parent, value) =>
         StringType = stringType;
 
-    public ParamString(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options) => StringType = ParamStringType.Quoted;
+    public ParamString(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options) =>
+        StringType = ParamStringType.Quoted;
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
@@ -69,7 +71,7 @@ public class ParamString : ParamLiteral<string>, IParamString
             return response;
         }
 
-        paramInt = new ParamInt(ParamFile, parsedInt);
+        paramInt = new ParamInt(ParamFile, Parent, parsedInt);
         return true;
     }
 
@@ -81,7 +83,7 @@ public class ParamString : ParamLiteral<string>, IParamString
             paramFloat = null;
             return response;
         }
-        paramFloat = new ParamFloat(ParamFile, parsedInt);
+        paramFloat = new ParamFloat(ParamFile, Parent, parsedInt);
         return true;
     }
 

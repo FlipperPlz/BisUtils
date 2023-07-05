@@ -8,24 +8,21 @@ using Core.IO;
 using FResults;
 using Options;
 
-public interface IParamElement : IFamilyMember, IStrictBinaryObject<ParamOptions>
+public interface IParamElement : IStrictBinaryObject<ParamOptions>
 {
     IParamFile? ParamFile { get; }
-    IFamilyNode? IFamilyMember.Node => ParamFile;
 
     Result WriteParam(StringBuilder builder, ParamOptions options);
     StringBuilder WriteParam(out Result result, ParamOptions options);
     Result ToParam(out string str, ParamOptions options);
-
     string ToParam(ParamOptions options);
 }
 
 public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamElement
 {
     public IParamFile? ParamFile { get; set; }
-    public IFamilyNode? Node => ParamFile;
 
-    protected ParamElement(IParamFile? file) : base() => ParamFile = file;
+    protected ParamElement(IParamFile? file) => ParamFile = file;
 
     protected ParamElement(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(reader, options) => ParamFile = file;
 

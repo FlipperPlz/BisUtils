@@ -4,6 +4,7 @@ using Core.IO;
 using FResults;
 using Options;
 using Stubs;
+using Stubs.Holders;
 
 public interface IParamExternalClass : IParamStatement
 {
@@ -14,16 +15,18 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
 {
     private string className = "";
     public string ClassName { get => className; set => className = value; }
+    public override byte StatementId => 3;
 
     public ParamExternalClass(IParamFile? file, IParamStatementHolder? parent, string className) : base(file, parent) => ClassName = className;
 
-    public ParamExternalClass(IParamFile file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    public ParamExternalClass(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
             throw new Exception(); //TODO: ERROR
         }
     }
+
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {

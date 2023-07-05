@@ -6,14 +6,13 @@ using FResults;
 using Options;
 using Statements;
 using Stubs;
+using Stubs.Holders;
 
-public interface IParamFile : IParamClass, IFamilyNode
+public interface IParamFile : IParamClass
 {
     string FileName { get; }
 
     string IParamExternalClass.ClassName => FileName;
-
-    IFamilyParent? IFamilyChild.Parent => null;
 
     IParamStatementHolder? IParamStatement.ParentClass => null;
 
@@ -28,26 +27,27 @@ public interface IParamFile : IParamClass, IFamilyNode
     }
 }
 
-public class ParamFile : ParamElement, IParamFile
+public class ParamFile : ParamClass, IParamFile
 {
     public string FileName { get; set; } = string.Empty;
-    public List<IParamStatement> Statements { get; set; } = new();
 
-    public ParamFile(string fileName, List<IParamStatement>? statements = null) : base(null)
+    public ParamFile(string fileName, List<IParamStatement>? statements = null) : base(null, null, fileName, null, statements)
     {
         FileName = fileName;
         Statements = statements ?? new List<IParamStatement>();
     }
 
-    public ParamFile(BisBinaryReader reader, ParamOptions options) : base(null, reader, options)
+    public ParamFile(string fileName, BisBinaryReader reader, ParamOptions options) : base(null, null, reader, options)
     {
     }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
-
     public override Result Validate(ParamOptions options) => throw new NotImplementedException();
 
-    public override Result ToParam(out string str, ParamOptions options) => ((IParamClass)this).GetStatements(out str, options);
+    public Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+     //TODO: //
+     return Result.Ok();
+    }
 }

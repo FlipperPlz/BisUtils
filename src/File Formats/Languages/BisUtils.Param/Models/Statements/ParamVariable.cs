@@ -6,6 +6,7 @@ using FResults;
 using Literals;
 using Options;
 using Stubs;
+using Stubs.Holders;
 
 public interface IParamVariable : IParamStatement
 {
@@ -21,6 +22,7 @@ public class ParamVariable : ParamStatement, IParamVariable
     public string? VariableName { get; set; }
     public ParamOperatorType VariableOperator { get; set; }
     public IParamLiteral? VariableValue { get; set; }
+    public override byte StatementId => GetStatementId();
 
     public byte GetStatementId()
     {
@@ -40,13 +42,14 @@ public class ParamVariable : ParamStatement, IParamVariable
         VariableValue = variableValue;
     }
 
-    public ParamVariable(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
             throw new Exception(); //TODO: ERROR
         }
     }
+
 
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
@@ -67,7 +70,7 @@ public class ParamVariable : ParamStatement, IParamVariable
             VariableOperator = (ParamOperatorType) reader.ReadByte();
         }
 
-        reader.ReadAsciiZ(out var name, options); //TODO: Delegate factory to options
+        reader.ReadAsciiZ(out var name, options);
         VariableName = name;
         //TODO Read Variable AGHGGH C# GENERICS FUCK OFF PLEASE
         return Result.Fail("TODODODODODODODODO");

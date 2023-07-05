@@ -4,6 +4,7 @@ using Core.IO;
 using FResults;
 using Options;
 using Stubs;
+using Stubs.Holders;
 
 public interface IParamDelete : IParamStatement
 {
@@ -13,12 +14,13 @@ public interface IParamDelete : IParamStatement
 
 public class ParamDelete : ParamStatement, IParamDelete
 {
+    public override byte StatementId => 4;
     public string DeleteTargetName { get; set; } = "";
 
     public ParamDelete(IParamFile? file, IParamStatementHolder? parent, string target) : base(file, parent) =>
         DeleteTargetName = target;
 
-    public ParamDelete(IParamFile file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    public ParamDelete(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -31,6 +33,7 @@ public class ParamDelete : ParamStatement, IParamDelete
         clazz = null; //TODO
         return LastResult = Result.Fail($"Could not locate target '{DeleteTargetName}' of delete statement");
     }
+
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {

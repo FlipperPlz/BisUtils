@@ -3,6 +3,7 @@
 using System.Text;
 using Core.IO;
 using FResults;
+using Holders;
 using Literals;
 using Options;
 
@@ -10,20 +11,21 @@ public interface IParamLiteral : IParamElement
 {
     object? ParamValue { get; }
     byte LiteralId { get; }
+    IParamLiteralHolder? Parent { get; }
 }
 
 
 public static class ParamLiteral
 {
-    public static Result DebinarizeLiteral(IParamFile? file, BisBinaryReader reader, ParamOptions options, out IParamLiteral? literal)
+    public static Result DebinarizeLiteral(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options, out IParamLiteral? literal)
     {
         var id = reader.ReadByte();
         literal = id switch
         {
-            0 => new ParamString(file, reader, options),
-            1 => new ParamFloat(file, reader, options),
-            2 => new ParamInt(file, reader, options),
-            3 => new ParamArray(file, reader, options),
+            0 => new ParamString(file, parent, reader, options),
+            1 => new ParamFloat(file, parent, reader, options),
+            2 => new ParamInt(file, parent, reader, options),
+            3 => new ParamArray(file, parent, reader, options),
             _ => null
         };
         if (literal is null)
@@ -51,13 +53,17 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
         }
     }
     public abstract byte LiteralId { get; }
+    public IParamLiteralHolder? Parent { get; set; }
     public abstract T? Value { get; set; }
 
-    protected ParamLiteral(IParamFile? file, T? value) : base(file) => ParamValue = value;
-
-    protected ParamLiteral(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    protected ParamLiteral(IParamFile? file, IParamLiteralHolder? parent, T? value) : base(file)
     {
+        ParamValue = value;
+        Parent = parent;
     }
+
+    protected ParamLiteral(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, reader, options) =>
+        Parent = parent;
 
     public override Result Validate(ParamOptions options) => LastResult = ParamValue is T ? Result.Ok() : Result.Fail("Wrong value type");
 

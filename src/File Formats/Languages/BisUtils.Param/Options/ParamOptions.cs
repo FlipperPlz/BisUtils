@@ -4,10 +4,6 @@ using System.Text;
 using Core.Binarize.Options;
 using Core.Binarize.Utils;
 using Core.Options;
-using Models.Literals;
-using Models.Statements;
-using Models.Stubs;
-using Utils;
 
 public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
 {

@@ -1,10 +1,10 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
-using System.Globalization;
 using Core.IO;
 using FResults;
 using Options;
 using Stubs;
+using Stubs.Holders;
 
 public interface IParamFloat : IParamLiteral
 {
@@ -16,11 +16,11 @@ public class ParamFloat : ParamLiteral<float>, IParamFloat
     public override byte LiteralId => 1;
     public override float Value { get; set; }
 
-    public ParamFloat(IParamFile? file, float value) : base(file, value)
+    public ParamFloat(IParamFile? file, IParamLiteralHolder? parent, float value) : base(file, parent, value)
     {
     }
 
-    public ParamFloat(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    public ParamFloat(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
     }
 

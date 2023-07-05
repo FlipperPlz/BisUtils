@@ -1,13 +1,15 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
+using System.Text;
 using Core.IO;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
 using Stubs;
+using Stubs.Holders;
 
-public interface IParamArray : IParamLiteral
+public interface IParamArray : IParamLiteral, IParamLiteralHolder
 {
 
 }
@@ -17,12 +19,14 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
 {
     public override byte LiteralId => 3;
     public override List<IParamLiteral>? Value { get; set; } = new List<IParamLiteral>();
+    public IParamLiteralHolder? ParentHolder => Parent;
+    public List<IParamLiteral> Literals => Value ?? new List<IParamLiteral>();
 
-    public ParamArray(IParamFile? file, IEnumerable<IParamLiteral>? value) : base(file, value?.ToList())
+    public ParamArray(IParamFile? file, IParamLiteralHolder? parent, IEnumerable<IParamLiteral>? value) : base(file, parent, value?.ToList())
     {
     }
 
-    public ParamArray(IParamFile? file, BisBinaryReader reader, ParamOptions options) : base(file, reader, options)
+    public ParamArray(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
     }
 
@@ -41,7 +45,7 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
         var contents = new List<IParamLiteral>(reader.ReadCompactInteger());
         for (var i = 0; i < contents.Capacity ; ++i)
         {
-            results.WithReasons(ParamLiteral.DebinarizeLiteral(ParamFile, reader, options, out var literal).Reasons);
+            results.WithReasons(ParamLiteral.DebinarizeLiteral(ParamFile, this, reader, options, out var literal).Reasons);
             if (literal is null)
             {
                 return results;
@@ -64,4 +68,29 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     }
 
 
+    public StringBuilder WriteLiterals(out Result result, ParamOptions options)
+    {
+        var builder = new StringBuilder();
+        result = WriteParam(builder, options);
+        return builder;
+    }
+
+    public string WriteLiterals(ParamOptions options)
+    {
+        if (!TryWriteLiterals(out var str, options))
+        {
+            throw new Exception();
+            //TODO result to exception
+        };
+
+        return str;
+    }
+
+    public Result TryWriteLiterals(StringBuilder builder, ParamOptions options) => throw new NotImplementedException();
+
+    public Result TryWriteLiterals(out string str, ParamOptions options)
+    {
+        str = string.Join(',', Literals.Select(s => s.ToParam(options)));
+        return Result.Ok();
+    }
 }
