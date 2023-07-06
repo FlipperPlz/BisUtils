@@ -14,31 +14,11 @@ public interface IParamLiteral : IParamElement
     IParamLiteralHolder? Parent { get; }
 }
 
-
-public static class ParamLiteral
-{
-    public static Result DebinarizeLiteral(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options, out IParamLiteral? literal)
-    {
-        var id = reader.ReadByte();
-        literal = id switch
-        {
-            0 => new ParamString(file, parent, reader, options),
-            1 => new ParamFloat(file, parent, reader, options),
-            2 => new ParamInt(file, parent, reader, options),
-            3 => new ParamArray(file, parent, reader, options),
-            _ => null
-        };
-        if (literal is null)
-        {
-            return Result.Fail($"Unknown Literal ID '{id}'.");
-        }
-
-        return literal.LastResult ?? Result.Ok();
-    }
-}
-
 public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
 {
+    public abstract byte LiteralId { get; }
+    public IParamLiteralHolder? Parent { get; set; }
+    public abstract T? Value { get; set; }
     public object? ParamValue
     {
         get => Value;
@@ -52,9 +32,6 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
             Value = (T?)value;
         }
     }
-    public abstract byte LiteralId { get; }
-    public IParamLiteralHolder? Parent { get; set; }
-    public abstract T? Value { get; set; }
 
     protected ParamLiteral(IParamFile? file, IParamLiteralHolder? parent, T? value) : base(file)
     {

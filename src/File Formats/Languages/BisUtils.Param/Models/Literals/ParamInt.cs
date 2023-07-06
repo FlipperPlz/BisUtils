@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
 using System.Globalization;
+using Core.Extensions;
 using Core.IO;
 using FResults;
 using Options;
@@ -14,7 +15,6 @@ public interface IParamInt : IParamLiteral
 
 public class ParamInt : ParamLiteral<int>, IParamInt
 {
-
     public override byte LiteralId => 2;
     public override int Value { get; set; }
 
@@ -24,6 +24,10 @@ public class ParamInt : ParamLiteral<int>, IParamInt
 
     public ParamInt(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
     }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
@@ -33,7 +37,7 @@ public class ParamInt : ParamLiteral<int>, IParamInt
         return result;
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         ParamValue = reader.ReadInt32();
         return LastResult = Result.ImmutableOk();

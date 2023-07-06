@@ -1,28 +1,43 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using Core.Extensions;
 using Core.IO;
 using Enumerations;
+using Factories;
 using FResults;
+using FResults.Extensions;
 using Literals;
 using Options;
 using Stubs;
 using Stubs.Holders;
 
-public interface IParamVariable : IParamStatement
+public interface IParamVariable : IParamStatement, IParamLiteralHolder
 {
     string VariableName { get; }
     ParamOperatorType VariableOperator { get; }
     IParamLiteral? VariableValue { get; }
-
-    byte GetStatementId();
 }
 
 public class ParamVariable : ParamStatement, IParamVariable
 {
+    public List<IParamLiteral> Literals => new List<IParamLiteral>();
     public string? VariableName { get; set; }
     public ParamOperatorType VariableOperator { get; set; }
-    public IParamLiteral? VariableValue { get; set; }
     public override byte StatementId => GetStatementId();
+    public IParamLiteral? VariableValue
+    {
+        get => Literals.GetOrNull(0);
+        set
+        {
+            if (value is { } notnull)
+            {
+                Literals[0] = notnull;
+            }
+        }
+    }
+
+
+    public IParamLiteralHolder? ParentHolder => null;
 
     public byte GetStatementId()
     {
@@ -46,11 +61,9 @@ public class ParamVariable : ParamStatement, IParamVariable
     {
         if (!Debinarize(reader, options))
         {
-            throw new Exception(); //TODO: ERROR
+            LastResult!.Throw();
         }
     }
-
-
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
@@ -70,10 +83,11 @@ public class ParamVariable : ParamStatement, IParamVariable
             VariableOperator = (ParamOperatorType) reader.ReadByte();
         }
 
-        reader.ReadAsciiZ(out var name, options);
+        var result = reader.ReadAsciiZ(out var name, options);
         VariableName = name;
-        //TODO Read Variable AGHGGH C# GENERICS FUCK OFF PLEASE
-        return Result.Fail("TODODODODODODODODO");
+        result.WithReasons(ParamLiteralFactory.ReadLiteral(ParamFile, this, reader, options, out var value).Reasons);
+        VariableValue = value;
+        return result;
     }
 
     public override Result Validate(ParamOptions options)

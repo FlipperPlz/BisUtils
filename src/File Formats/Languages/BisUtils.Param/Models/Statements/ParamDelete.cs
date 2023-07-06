@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using Core.Extensions;
 using Core.IO;
 using FResults;
 using Options;
@@ -24,7 +25,7 @@ public class ParamDelete : ParamStatement, IParamDelete
     {
         if (!Debinarize(reader, options))
         {
-            throw new Exception(); //TODO: ERROR
+            LastResult!.Throw();
         }
     }
 

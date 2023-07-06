@@ -2,6 +2,7 @@
 
 using System.Text;
 using Core.IO;
+using Factories;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
@@ -43,9 +44,9 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     {
         var results = Result.Ok();
         var contents = new List<IParamLiteral>(reader.ReadCompactInteger());
-        for (var i = 0; i < contents.Capacity ; ++i)
+        for (var i = 0; i < contents.Capacity; ++i)
         {
-            results.WithReasons(ParamLiteral.DebinarizeLiteral(ParamFile, this, reader, options, out var literal).Reasons);
+            results.WithReasons(ParamLiteralFactory.ReadLiteral(ParamFile, this, reader, options, out var literal).Reasons);
             if (literal is null)
             {
                 return results;

@@ -9,10 +9,11 @@ public interface IParamLiteralHolder : IParamElement
 {
     IParamLiteralHolder? ParentHolder { get; }
     List<IParamLiteral> Literals { get; }
-    StringBuilder WriteLiterals(out Result result, ParamOptions options);
-    string WriteLiterals(ParamOptions options);
-    Result TryWriteLiterals(StringBuilder builder, ParamOptions options);
-    Result TryWriteLiterals(out string str, ParamOptions options);
+    public Result TryWriteLiterals(out string str, ParamOptions options)
+    {
+        str = string.Join(',', Literals.Select(s => s.ToParam(options)));
+        return Result.Ok();
+    }
 }
 
 
@@ -27,30 +28,5 @@ public abstract class ParamLiteralHolder : ParamElement, IParamLiteralHolder
     protected ParamLiteralHolder(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, reader, options) =>
         ParentHolder = parent;
 
-    public StringBuilder WriteLiterals(out Result result, ParamOptions options)
-    {
-        var builder = new StringBuilder();
-        result = WriteParam(builder, options);
-        return builder;
-    }
-
-    public string WriteLiterals(ParamOptions options)
-    {
-        if (!TryWriteLiterals(out var str, options))
-        {
-            throw new Exception();
-            //TODO result to exception
-        };
-
-        return str;
-    }
-
-    public Result TryWriteLiterals(StringBuilder builder, ParamOptions options) => throw new NotImplementedException();
-
-    public Result TryWriteLiterals(out string str, ParamOptions options)
-    {
-        str = string.Join(',', Literals.Select(s => s.ToParam(options)));
-        return Result.Ok();
-    }
 }
 

@@ -1,8 +1,10 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
 using System.Text;
+using Core.Extensions;
 using Core.Family;
 using Core.IO;
+using Factories;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
@@ -46,7 +48,7 @@ public interface IParamClass : IParamExternalClass, IParamStatementHolder
 public class ParamClass : ParamStatementHolder, IParamClass
 {
     public byte StatementId => 0;
-    public string ClassName { get; set; }
+    public string ClassName { get; set; } = "";
     public string? InheritedClassname { get; set; }
     public IFamilyParent? Parent { get; set; }
 
@@ -66,7 +68,7 @@ public class ParamClass : ParamStatementHolder, IParamClass
     {
         if (!Debinarize(reader, options))
         {
-            throw new Exception(); //TODO: ERROR
+            LastResult!.Throw();
         }
     }
 
@@ -80,7 +82,7 @@ public class ParamClass : ParamStatementHolder, IParamClass
         return LastResult = Result.ImmutableOk();
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         var value = reader.ReadAsciiZ(out var className, options);
         ClassName = className;
@@ -97,7 +99,7 @@ public class ParamClass : ParamStatementHolder, IParamClass
 
         for (var i = 0; i < reader.ReadCompactInteger(); i++)
         {
-            value.WithReasons(ParamStatement.DebinarizeStatement(ParamFile, this, reader, options, out var statement).Reasons);
+            value.WithReasons(ParamStatementFactory.ReadStatement(ParamFile, this, reader, options, out var statement).Reasons);
             if (statement is null)
             {
                 return value.WithReason(new Error()

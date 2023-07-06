@@ -4,6 +4,7 @@ using System.Text;
 using Core.Binarize.Options;
 using Core.Binarize.Utils;
 using Core.Options;
+using Models.Stubs;
 
 public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
 {
@@ -15,7 +16,6 @@ public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool WriteStatementId { get; set; }
     public byte LastLiteralId { get; set; }
     public byte LastStatementId { get; set; }
-
 
 
 

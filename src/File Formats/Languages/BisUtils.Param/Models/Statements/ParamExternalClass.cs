@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using Core.Extensions;
 using Core.IO;
 using FResults;
 using Options;
@@ -23,7 +24,7 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
     {
         if (!Debinarize(reader, options))
         {
-            throw new Exception(); //TODO: ERROR
+            LastResult!.Throw();
         }
     }
 

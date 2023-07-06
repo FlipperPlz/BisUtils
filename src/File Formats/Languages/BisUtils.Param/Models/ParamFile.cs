@@ -45,7 +45,7 @@ public class ParamFile : ParamClass, IParamFile
 
     public override Result Validate(ParamOptions options) => throw new NotImplementedException();
 
-    public Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public new Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
      //TODO: //
      return Result.Ok();

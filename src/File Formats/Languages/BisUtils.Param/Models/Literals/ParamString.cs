@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
+using Core.Extensions;
 using Core.IO;
 using Enumerations;
 using FResults;
@@ -24,8 +25,15 @@ public class ParamString : ParamLiteral<string>, IParamString
     public ParamString(IParamFile? file, IParamLiteralHolder? parent, string? value, ParamStringType stringType) : base(file, parent, value) =>
         StringType = stringType;
 
-    public ParamString(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options) =>
+    public ParamString(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) :
+        base(file, parent, reader, options)
+    {
         StringType = ParamStringType.Quoted;
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
+    }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
@@ -34,12 +42,13 @@ public class ParamString : ParamLiteral<string>, IParamString
         return LastResult = result;
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         LastResult = reader.ReadAsciiZ(out var paramValue, options);
         Value = paramValue;
         return LastResult;
     }
+
     public override Result Validate(ParamOptions options) =>
         LastResult = Result.ImmutableOk();
 
