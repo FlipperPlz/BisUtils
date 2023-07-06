@@ -7,7 +7,7 @@ using Options;
 using Stubs;
 using Stubs.Holders;
 
-public interface IParamFloat : IParamLiteral
+public interface IParamFloat : IParamLiteral<float>
 {
 
 }

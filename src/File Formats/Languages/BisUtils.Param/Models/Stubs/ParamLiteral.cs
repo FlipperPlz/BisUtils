@@ -14,7 +14,12 @@ public interface IParamLiteral : IParamElement
     IParamLiteralHolder? Parent { get; }
 }
 
-public abstract class ParamLiteral<T> : ParamElement, IParamLiteral
+public interface IParamLiteral<out T> : IParamLiteral
+{
+    T? Value { get; }
+}
+
+public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>
 {
     public abstract byte LiteralId { get; }
     public IParamLiteralHolder? Parent { get; set; }

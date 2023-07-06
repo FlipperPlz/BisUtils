@@ -1,13 +1,14 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
-using System.Text;
 using Core.Extensions;
-using Core.Family;
 using Core.IO;
+using Enumerations;
+using Errors;
 using Factories;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Literals;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -17,32 +18,6 @@ public interface IParamClass : IParamExternalClass, IParamStatementHolder
 {
     string? InheritedClassname { get; }
     Result LocateParamParent(out IParamExternalClass? clazz);
-
-    string IParamStatementHolder.WriteStatements(ParamOptions options)
-    {
-        TryWriteStatements(out var str, options);
-        return str;
-    }
-
-    Result IParamStatementHolder.TryWriteStatements(StringBuilder builder, ParamOptions options)
-    {
-        var result = ToParam(out var str, options);
-        builder.Append(str);
-        return result;
-    }
-
-    StringBuilder IParamStatementHolder.WriteStatements(out Result result, ParamOptions options)
-    {
-        var builder = new StringBuilder();
-        result = WriteParam(builder, options);
-        return builder;
-    }
-
-    Result IParamStatementHolder.TryWriteStatements(out string str, ParamOptions options)
-    {
-        str = string.Join('\n', Statements.Select(s => s.ToParam(options)));
-        return Result.Ok();
-    }
 }
 
 public class ParamClass : ParamStatementHolder, IParamClass
@@ -50,7 +25,6 @@ public class ParamClass : ParamStatementHolder, IParamClass
     public byte StatementId => 0;
     public string ClassName { get; set; } = "";
     public string? InheritedClassname { get; set; }
-    public IFamilyParent? Parent { get; set; }
 
     public ParamClass(
         IParamFile? file,
@@ -72,7 +46,21 @@ public class ParamClass : ParamStatementHolder, IParamClass
         }
     }
 
-    public override Result Validate(ParamOptions options) => throw new NotImplementedException();
+    public override Result Validate(ParamOptions options)
+    {
+        if (options.MissingParentIsError && !(LastResult = LocateParamParent(out _)))
+        {
+            return LastResult;
+        }
+
+        if (options.DuplicateClassnameIsError && ParentClass?.HasClass(ClassName, out var duplicateClass) == true)
+        {
+            return Result.Fail(new ParamDuplicateClassnameError(this, duplicateClass!));
+        }
+
+
+        return Result.Ok();
+    }
 
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
@@ -121,14 +109,93 @@ public class ParamClass : ParamStatementHolder, IParamClass
 
     public Result LocateParamParent(out IParamExternalClass? clazz)
     {
-        if (InheritedClassname == string.Empty)
+        if (InheritedClassname is not (null or ""))
         {
-            clazz = null;
-            return LastResult = Result.ImmutableOk();
+
+            return (this as IParamStatementHolder).HasClass(InheritedClassname, out clazz)
+                ? Result.Ok()
+                : Result.Fail(new ParamStatementNotFoundError(InheritedClassname, this));
         }
-        //TODO
 
         clazz = null;
-        return LastResult = Result.Fail($"Could not locate parent class of {ClassName}");
+        return LastResult = Result.ImmutableOk();
     }
+
+    public IEnumerable<T> GetStatements<T>() =>
+        (this as IParamStatementHolder).GetStatements<T>();
+
+    public IEnumerable<IParamExternalClass> LocateAllClasses() =>
+        (this as IParamStatementHolder).LocateAllClasses();
+
+    public IEnumerable<IParamExternalClass> LocateAllClasses(string classname) =>
+        (this as IParamStatementHolder).LocateAllClasses(classname);
+
+    public IParamExternalClass? LocateAnyClass(string classname) =>
+        (this as IParamStatementHolder).LocateAnyClass(classname);
+
+    public IEnumerable<IParamClass> LocateBaseClasses() =>
+        (this as IParamStatementHolder).LocateBaseClasses();
+
+    public IEnumerable<IParamClass> LocateBaseClasses(string classname) =>
+        (this as IParamStatementHolder).LocateBaseClasses(classname);
+
+    public IParamClass? LocateBaseClass(string classname) =>
+        (this as IParamStatementHolder).LocateBaseClass(classname);
+
+    public IEnumerable<ParamExternalClass> LocateExternalClasses() =>
+        (this as IParamStatementHolder).LocateExternalClasses();
+
+    public IEnumerable<ParamExternalClass> LocateExternalClasses(string classname) =>
+        (this as IParamStatementHolder).LocateExternalClasses(classname);
+
+    public ParamExternalClass? LocateExternalClass(string classname) =>
+        (this as IParamStatementHolder).LocateExternalClass(classname);
+
+    public IEnumerable<IParamDelete> LocateDeleteStatements() =>
+        (this as IParamStatementHolder).LocateDeleteStatements();
+
+    public IEnumerable<IParamDelete> LocateDeleteStatements(string target) =>
+        (this as IParamStatementHolder).LocateDeleteStatements(target);
+
+    public IParamDelete? LocateDeleteStatement(string target) =>
+        (this as IParamStatementHolder).LocateDeleteStatement(target);
+
+    public IEnumerable<IParamVariable> LocateAllVariables() =>
+        (this as IParamStatementHolder).LocateAllVariables();
+
+    public IEnumerable<IParamVariable> LocateVariables(string name) =>
+        (this as IParamStatementHolder).LocateVariables(name);
+
+    public IEnumerable<IParamVariable> LocateVariables<T>(string name) where T : IParamLiteral =>
+        (this as IParamStatementHolder).LocateVariables<T>(name);
+
+    public IParamVariable? LocateVariable(string name) =>
+        (this as IParamStatementHolder).LocateVariable(name);
+
+    public IParamArray? LocateArray(string name, out ParamOperatorType? op) =>
+        (this as IParamStatementHolder).LocateArray(name, out op);
+
+    public IParamVariable? LocateVariable<T>(string name) where T : IParamLiteral =>
+        (this as IParamStatementHolder).LocateVariable<T>(name);
+
+    public T? EvaluateVariable<T>(string name) where T : IParamLiteral =>
+        (this as IParamStatementHolder).EvaluateVariable<T>(name);
+
+    public bool HasVariable(string name, out IParamVariable? variable) =>
+        (this as IParamStatementHolder).HasVariable(name, out variable);
+
+    public bool HasVariable<T>(string name, out IParamVariable? variable) where T : IParamLiteral =>
+        (this as IParamStatementHolder).HasVariable<T>(name, out variable);
+
+    public bool HasExternalClass(string name, out ParamExternalClass? clazz) =>
+        (this as IParamStatementHolder).HasExternalClass(name, out clazz);
+
+    public bool HasBaseClass(string name, out IParamClass? clazz) =>
+        (this as IParamStatementHolder).HasBaseClass(name, out clazz);
+
+    public bool HasClass(string name, out IParamExternalClass? clazz) =>
+        (this as IParamStatementHolder).HasClass(name, out clazz);
+
+    public bool WasDeleted(string target, out IParamDelete? deleteStatement) =>
+        (this as IParamStatementHolder).WasDeleted(target, out deleteStatement);
 }

@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
 using System.Text;
+using Core.Extensions;
 using Core.IO;
 using Factories;
 using FResults;
@@ -10,7 +11,7 @@ using Options;
 using Stubs;
 using Stubs.Holders;
 
-public interface IParamArray : IParamLiteral, IParamLiteralHolder
+public interface IParamArray : IParamLiteral<List<IParamLiteral>>, IParamLiteralHolder
 {
 
 }
@@ -30,7 +31,6 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     public ParamArray(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
     }
-
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
@@ -78,16 +78,20 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
 
     public string WriteLiterals(ParamOptions options)
     {
-        if (!TryWriteLiterals(out var str, options))
+        if (!(LastResult = TryWriteLiterals(out var str, options)))
         {
-            throw new Exception();
-            //TODO result to exception
+            LastResult.Throw();
         };
 
         return str;
     }
 
-    public Result TryWriteLiterals(StringBuilder builder, ParamOptions options) => throw new NotImplementedException();
+    public Result TryWriteLiterals(StringBuilder builder, ParamOptions options)
+    {
+        var result = TryWriteLiterals(out var str, options);
+        builder.Append(str);
+        return result;
+    }
 
     public Result TryWriteLiterals(out string str, ParamOptions options)
     {

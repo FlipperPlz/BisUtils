@@ -17,6 +17,9 @@ public class ParamOptions : IBinarizationOptions, IAsciizLimiterOptions
     public byte LastLiteralId { get; set; }
     public byte LastStatementId { get; set; }
 
+    public bool MissingParentIsError { get; set; }
+    public bool DuplicateClassnameIsError { get; set; }
+
 
 
 }

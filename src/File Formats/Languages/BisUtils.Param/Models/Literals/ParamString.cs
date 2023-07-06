@@ -8,7 +8,7 @@ using Options;
 using Stubs;
 using Stubs.Holders;
 
-public interface IParamString : IParamLiteral
+public interface IParamString : IParamLiteral<string>
 {
     ParamStringType StringType { get; }
 

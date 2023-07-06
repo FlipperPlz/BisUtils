@@ -8,7 +8,7 @@ using Options;
 using Stubs;
 using Stubs.Holders;
 
-public interface IParamInt : IParamLiteral
+public interface IParamInt : IParamLiteral<int>
 {
 
 }
