@@ -22,10 +22,6 @@ public interface IParamClass : IParamExternalClass, IParamStatementHolder
 
 public class ParamClass : ParamStatementHolder, IParamClass
 {
-    public byte StatementId => 0;
-    public string ClassName { get; set; } = "";
-    public string? InheritedClassname { get; set; }
-
     public ParamClass(
         IParamFile? file,
         IParamStatementHolder? parent,
@@ -38,13 +34,19 @@ public class ParamClass : ParamStatementHolder, IParamClass
         InheritedClassname = inheritedClassname;
     }
 
-    public ParamClass(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamClass(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) :
+        base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
         }
     }
+
+    public byte StatementId => 0;
+
+    public string ClassName { get; set; } = "";
+    public string? InheritedClassname { get; set; }
 
     public override Result Validate(ParamOptions options)
     {
@@ -82,12 +84,14 @@ public class ParamClass : ParamStatementHolder, IParamClass
         {
             return value;
         }
+
         InheritedClassname = super;
 
 
         for (var i = 0; i < reader.ReadCompactInteger(); i++)
         {
-            value.WithReasons(ParamStatementFactory.ReadStatement(ParamFile, this, reader, options, out var statement).Reasons);
+            value.WithReasons(ParamStatementFactory.ReadStatement(ParamFile, this, reader, options, out var statement)
+                .Reasons);
             if (statement is null)
             {
                 return value.WithReason(new Error()
@@ -100,6 +104,7 @@ public class ParamClass : ParamStatementHolder, IParamClass
             {
                 return value;
             }
+
             Statements.Add(statement);
         }
 
@@ -107,11 +112,16 @@ public class ParamClass : ParamStatementHolder, IParamClass
         return value;
     }
 
+    public void SyncToContext(IParamStatementHolder? holder)
+    {
+        ParentClass = holder;
+        ParamFile = holder?.ParamFile;
+    }
+
     public Result LocateParamParent(out IParamExternalClass? clazz)
     {
         if (InheritedClassname is not (null or ""))
         {
-
             return (this as IParamStatementHolder).HasClass(InheritedClassname, out clazz)
                 ? Result.Ok()
                 : Result.Fail(new ParamStatementNotFoundError(InheritedClassname, this));
