@@ -31,15 +31,18 @@ public class ParamDelete : ParamStatement, IParamDelete
 
     public Result LocateDeleteTarget(out IParamExternalClass? clazz)
     {
-        clazz = null; //TODO
-        return LastResult = Result.Fail($"Could not locate target '{DeleteTargetName}' of delete statement");
+        clazz = ParentClass?.LocateAnyClass(DeleteTargetName);
+        return LastResult = clazz is null
+            ? Result.Fail($"Could not locate target '{DeleteTargetName}' of delete statement")
+            : Result.Ok();
     }
 
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
+        var result = base.Binarize(writer, options);
         writer.WriteAsciiZ(DeleteTargetName, options);
-        return Result.Ok();
+        return result;
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
@@ -49,7 +52,18 @@ public class ParamDelete : ParamStatement, IParamDelete
         return result;
     }
 
-    public override Result Validate(ParamOptions options) => throw new NotImplementedException(); //TODO: LocateDeleteTarget
+    public override Result Validate(ParamOptions options)
+    {
+        if (!options.MissingDeleteTargetIsError)
+        {
+            return Result.Ok();
+        }
+
+        var result = LocateDeleteTarget(out _);
+        return result.IsFailed
+            ? result //TODO: Check class access level
+            : Result.Ok();
+    }
 
     public override Result ToParam(out string str, ParamOptions options)
     {

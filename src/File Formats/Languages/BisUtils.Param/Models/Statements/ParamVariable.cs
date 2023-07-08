@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using Enumerations;
@@ -21,7 +22,7 @@ public interface IParamVariable : IParamStatement, IParamLiteralHolder
 public class ParamVariable : ParamStatement, IParamVariable
 {
     public List<IParamLiteral> Literals => new List<IParamLiteral>();
-    public string? VariableName { get; set; }
+    public string VariableName { get; set; } = null!;
     public ParamOperatorType VariableOperator { get; set; }
     public override byte StatementId => GetStatementId();
     public IParamLiteral? VariableValue
@@ -71,7 +72,7 @@ public class ParamVariable : ParamStatement, IParamVariable
         {
             writer.Write((byte) VariableOperator);
         }
-        writer.WriteAsciiZ(VariableName!, options);
+        writer.WriteAsciiZ(VariableName, options);
         return VariableValue?.Binarize(writer, options) ?? Result.Fail($"Failed to write value of variable {VariableName}");
     }
 
@@ -92,11 +93,6 @@ public class ParamVariable : ParamStatement, IParamVariable
 
     public override Result Validate(ParamOptions options)
     {
-        if (VariableName is not null)
-        {
-            return Result.Fail("No Variable Name!");
-        }
-
         if (VariableOperator is not ParamOperatorType.Assign && VariableValue is not ParamArray)
         {
             return Result.Fail("Invalid Operator!");
@@ -105,6 +101,32 @@ public class ParamVariable : ParamStatement, IParamVariable
         return VariableValue is null ? Result.Fail("No Variable Value!") : Result.Ok();
     }
 
-    public override Result ToParam(out string str, ParamOptions options) => throw new NotImplementedException();
+    public override Result ToParam(out string str, ParamOptions options)
+    {
+        var builder = new StringBuilder(VariableName);
+        if (VariableValue is IParamArray)
+        {
+            builder.Append("[]");
+        }
+
+        switch (VariableOperator)
+        {
+            case ParamOperatorType.Assign:
+                builder.Append('=');
+                break;
+            case ParamOperatorType.AddAssign:
+                builder.Append("+=");
+                break;
+            case ParamOperatorType.SubAssign:
+                builder.Append("-=");
+                break;
+        }
+
+        var result = VariableValue?.WriteParam(builder, options) ??
+                     Result.Fail($"Couldn't write value of {VariableName}.");
+        str = builder.ToString();
+        return result;
+
+    }
 
 }
