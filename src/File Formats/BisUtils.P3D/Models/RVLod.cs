@@ -20,7 +20,7 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
 
 public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 {
-    protected const uint Signature1 = 28, Signature2 = 256;
+    protected const uint ValidVersion = 256;
     public string Name => Resolution.Name;
     public IRVResolution Resolution { get; set; }
     public IEnumerable<Vector3> Points => points;
@@ -38,14 +38,53 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 
     public override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
-        if (reader.ReadAscii(4, options) != "P3DM")
-        {
-            return Result.Fail(new LodReadError("Currently only P3DM LODs are supported.", "Invalid Level Of Detail Signature"));
-        }
+        var headStart = reader.BaseStream.Position;
+        var magic = reader.ReadAscii(4, options);
+        var headSize = reader.ReadUInt32();
+        var version = reader.ReadUInt32();
+        var pointCount = reader.ReadUInt32();
+        var normalCount = reader.ReadUInt32();
+        var facesCount = reader.ReadUInt32();
+        var flags = reader.ReadUInt32();
+        var extended = false;
+        var material = false;
 
-        if (reader.ReadUInt32() != Signature1 || reader.ReadUInt32() != Signature2)
+        switch (magic)
         {
-            return Result.Fail(new LodReadError("Unknown P3DMLOD Version", "Invalid Level Of Detail Signature"));
+            case "P3DM":
+            {
+                material = true;
+                extended = true;
+                if (version != ValidVersion)
+                {
+                    //return Result.Warn()
+                    throw new NotImplementedException();
+                }
+
+                reader.BaseStream.Seek(headSize - (24 + magic.Length), SeekOrigin.Current);
+                break;
+            }
+            case "SP3X":
+            {
+                extended = true;
+                reader.BaseStream.Seek(headSize - (24 + magic.Length), SeekOrigin.Current);
+                break;
+            }
+            case "SP3D":
+            {
+                version = 0;
+
+                pointCount = headSize;
+                normalCount = version;
+                facesCount = pointCount;
+                headSize = (uint)(12 + magic.Length);
+                break;
+            }
+            default:
+            {
+                //return Result.Warn($"Bad file format {magic}");
+                throw new NotImplementedException();
+            }
         }
 
 
