@@ -7,7 +7,7 @@ public interface IRVResolution
 
 }
 
-public readonly ref struct RVResolution
+public readonly struct RVResolution
 {
     public float Value { get; }
     public RVLodType Type { get; }
