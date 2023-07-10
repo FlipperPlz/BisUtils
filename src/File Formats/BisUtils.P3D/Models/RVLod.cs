@@ -5,7 +5,7 @@ using System.Numerics;
 public interface IRVLod
 {
     string Name { get; }
-    RVResolution Resolution { get; }
+    IRVResolution Resolution { get; set; }
     IEnumerable<Vector3> Points { get; }
     IEnumerable<Vector3> Normals { get; }
     IEnumerable<string> Textures { get; }
@@ -15,11 +15,11 @@ public interface IRVLod
 public abstract class RVLod : IRVLod
 {
     public string Name => Resolution.Name;
-    public RVResolution Resolution { get; }
+    public IRVResolution Resolution { get; set; }
     public abstract IEnumerable<Vector3> Points { get; }
     public abstract IEnumerable<Vector3> Normals { get; }
     public abstract IEnumerable<string> Textures { get; }
     public abstract IEnumerable<string> Materials { get; }
 
-    protected RVLod(RVResolution resolution) => Resolution = resolution;
+    protected RVLod(IRVResolution resolution) => Resolution = resolution;
 }

@@ -65,6 +65,10 @@ public readonly struct RVResolution : IRVResolution
         return $"ShadowVolume{value - ShadowVolume}";
     }
 
+
+    public static implicit operator float(RVResolution resolution) => resolution.Value;
+    public static explicit operator RVResolution(float resolution) => new(resolution);
+
     public static RVLodType GetLodType(float value) => value switch
     {
         Memory => RVLodType.Memory,

@@ -18,8 +18,10 @@ public abstract class RVShape<TLodType> : StrictBinaryObject<RVShapeOptions>, IR
     public abstract float ModelMass { get; }
     public abstract IEnumerable<TLodType> LevelsOfDetail { get; }
 
-    protected RVShape(string modelName) : base() => ModelName = modelName;
+    protected RVShape(string modelName) => ModelName = modelName;
 
     protected RVShape(string modelName, BisBinaryReader reader, RVShapeOptions options) : base(reader, options) => ModelName = modelName;
 
+    public TLodType? this[IRVResolution resolution] =>
+        LevelsOfDetail.FirstOrDefault(lod => lod.Resolution == resolution);
 }
