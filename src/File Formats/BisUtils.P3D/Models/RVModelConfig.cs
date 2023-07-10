@@ -31,8 +31,8 @@ public class RVModelConfig : ParamFile, IRVModelConfig
     public RVModelConfig(string modelName, BisBinaryReader reader, ParamOptions options) : base(modelName, reader,
         options)
     {
-        SkeletonConfigs = this >> "CfgSkeletons" ?? this;
-        ModelConfigs = this >> "CfgModels" ?? this;
+        SkeletonConfigs = this >> "CfgSkeletons";
+        ModelConfigs = this >> "CfgModels";
         ModelConfig = ModelConfigs is not null ? ModelConfigs >> ModelName : null;
     }
 }

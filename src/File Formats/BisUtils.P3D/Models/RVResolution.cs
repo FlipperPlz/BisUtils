@@ -1,13 +1,20 @@
-﻿namespace BisUtils.P3D.Models;
+﻿// ReSharper disable UnusedMember.Local
+namespace BisUtils.P3D.Models;
 
 using System.Globalization;
 
 public interface IRVResolution
 {
-
+    public string Name { get; }
+    public RVLodType Type { get; }
+    public float Value { get; }
+    public bool KeepsNamedSelections { get; }
+    public bool IsResolution { get; }
+    public bool IsShadow { get; }
+    public bool IsVisual { get; }
 }
 
-public readonly struct RVResolution
+public readonly struct RVResolution : IRVResolution
 {
     public float Value { get; }
     public RVLodType Type { get; }
@@ -92,8 +99,9 @@ public readonly struct RVResolution
     private const float SpecialLod = 1E+15f;
     public const float Buoyancy = 2E+13f;
     public const float PhysxOld = 3E+13f;
-    public const float ShadowVolume = 10000f;
     public const float ShadowBuffer = 11000f;
+
+    public const float ShadowVolume = 10000f;
     public const float Geometry = 1E+13f;
     public const float PhysX = 4E+13f;
     public const float Memory = 1E+15f;
