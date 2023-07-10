@@ -20,6 +20,13 @@ public class BisBinaryReader : BinaryReader
     }
 
 
+    public byte[] ReadBuffer(int length) => ReadBytes(length);
+
+    public string ReadAscii(int length, Encoding encoding) => Encoding.UTF8.GetString(ReadBuffer(length));
+
+    public string ReadAscii(int length, IBinarizationOptions options) => ReadAscii(length, options.Charset);
+
+
     public Result SkipAsciiZ<TOptions>(TOptions? options)
         where TOptions : IAsciizLimiterOptions, IBinarizationOptions =>
         ReadAsciiZ(out _, options);
