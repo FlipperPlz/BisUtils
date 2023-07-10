@@ -22,6 +22,7 @@ public interface IParamClass : IParamExternalClass, IParamStatementHolder
 
 public class ParamClass : ParamStatementHolder, IParamClass
 {
+
     public ParamClass(
         IParamFile? file,
         IParamStatementHolder? parent,
