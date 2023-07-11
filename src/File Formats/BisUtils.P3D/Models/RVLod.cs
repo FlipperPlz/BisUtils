@@ -57,11 +57,13 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         var normalCount = reader.ReadInt32();
         var facesCount = reader.ReadInt32();
         var flags = reader.ReadInt32();
+        var extendedFace = false;
 
         switch (magic)
         {
             case "P3DM":
             {
+                extendedFace = true;
                 if (version != ValidVersion)
                 {
                     //return Result.Warn()
@@ -73,6 +75,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             }
             case "SP3X":
             {
+                extendedFace = true;
                 reader.BaseStream.Seek(headSize - (24 + magic.Length), SeekOrigin.Current);
                 break;
             }
@@ -97,6 +100,14 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         MutablePoints = new List<Vector3>(pointCount);
         MutableNormals = new List<Vector3>(normalCount);
         MutableFaces = new List<IRVFace>(facesCount);
+
+        for (var i = 0; i < pointCount; i++)
+        {
+            switch (extendedFace)
+            {
+
+            }
+        }
 
         return Result.Ok();
     }
