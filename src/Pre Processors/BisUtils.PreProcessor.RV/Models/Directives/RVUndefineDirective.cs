@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.PreProcessor.RV.Models.Directives;
 
 using FResults;
-using Lexer;
 using Stubs;
 
 public interface IRVUndefineDirective : IRVDirective
@@ -21,6 +20,4 @@ public class RVUndefineDirective: RVDirective, IRVUndefineDirective
         str = MacroName;
         return Result.ImmutableOk();
     }
-
-    public override Result Process(RVLexerOld lexerOld, int startPosition) => throw new NotImplementedException();
 }

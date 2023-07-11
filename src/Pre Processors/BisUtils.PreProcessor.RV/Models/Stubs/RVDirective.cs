@@ -1,8 +1,5 @@
 ﻿namespace BisUtils.PreProcessor.RV.Models.Stubs;
 
-using FResults;
-using Lexer;
-
 public interface IRVDirective : IRVElement
 {
     public string DirectiveName { get; }
@@ -19,6 +16,5 @@ public abstract class RVDirective : RVElement, IRVDirective
         DirectiveKeyword = $"#{DirectiveName}";
     }
 
-    public abstract Result Process(RVLexerOld lexerOld, int startPosition);
 
 }

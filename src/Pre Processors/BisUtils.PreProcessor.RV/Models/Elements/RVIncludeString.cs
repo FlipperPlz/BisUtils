@@ -4,7 +4,6 @@ using System.Text;
 using Core.Parsing;
 using Enumerations;
 using FResults;
-using Lexer;
 using Stubs;
 
 public interface IRVIncludeString : IRVElement
@@ -27,13 +26,7 @@ public class RVIncludeString: RVElement, IRVIncludeString
 
     public override Result ToText(out string str) => throw new NotImplementedException();
 
-    public static Result ParseString(IRVPreProcessor processor, RVLexerOld lexerOld, out IRVIncludeString str)
-    {
-        lexerOld.TraverseWhitespace(out _);
-        var stringType = DetectStringType(lexerOld);
-        str = new RVIncludeString(processor, ReadString(lexerOld, stringType), stringType);
-        return Result.ImmutableOk();
-    }
+
 
     private static string ReadString(BisStringStepper lexer, RVStringType stringType)
     {
