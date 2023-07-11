@@ -1,10 +1,12 @@
 ﻿namespace BisUtils.Core.Extensions;
 
+using System.Collections.Immutable;
 using System.Text;
 using Binarize;
 using Binarize.Options;
 using Binarize.Utils;
 using FResults;
+using FResults.Extensions;
 using IO;
 using Parsing;
 using Parsing.Lexer;
@@ -45,5 +47,19 @@ public static class BinarizableExtensions
             : Result.Merge(binarizable.Validate(options), binarizable.Binarize(writer, options));
     }
 
+
+    public static Result WriteBinarized<TOptions>(this IEnumerable<IBinarizable<TOptions>> objects, BisBinaryWriter writer, TOptions options)
+        where TOptions : IBinarizationOptions
+    {
+        var objectList = objects.ToImmutableList();
+        writer.Write(objectList.Count);
+        var result = Result.Ok();
+        foreach (var vertex in objectList)
+        {
+            result.WithReasons(vertex.Binarize(writer, options).Reasons);
+        }
+
+        return result;
+    }
 
 }

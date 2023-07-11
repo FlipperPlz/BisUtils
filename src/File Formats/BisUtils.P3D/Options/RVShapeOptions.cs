@@ -11,4 +11,8 @@ public class RVShapeOptions : IBinarizationOptions, IAsciizLimiterOptions
     public Endianness ByteOrder { get; set; } = Endianness.Little;
     public bool IgnoreValidation { get; set; }
     public int AsciiLengthTimeout { get; set; }
+
+
+    public bool ExtendedFace { get; set; }
+    public int FaceVersion { get; set; }
 }
