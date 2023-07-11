@@ -1,6 +1,5 @@
 namespace BisUtils.Bank.Model.Entry;
 
-using System.Diagnostics;
 using Alerts.Warnings;
 using Core.Binarize.Exceptions;
 using Core.IO;

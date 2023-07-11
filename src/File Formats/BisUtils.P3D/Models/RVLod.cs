@@ -7,13 +7,14 @@ using Core.IO;
 using Face;
 using FResults;
 using Options;
+using Point;
 
 public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
 {
     string Name { get; }
     IRVResolution Resolution { get; set; }
-    IEnumerable<Vector3> Points { get; }
-    IEnumerable<Vector3> Normals { get; }
+    IEnumerable<IRVVector> Points { get; }
+    IEnumerable<IRVVector> Normals { get; }
     IEnumerable<IRVFace> Faces { get; }
 }
 
@@ -22,12 +23,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     protected const uint ValidVersion = 256;
     public string Name => Resolution.Name;
     public IRVResolution Resolution { get; set; }
-    public virtual IEnumerable<Vector3> Points => MutablePoints;
-    public virtual IEnumerable<Vector3> Normals => MutableNormals;
+    public virtual IEnumerable<IRVVector> Points => MutablePoints;
+    public virtual IEnumerable<IRVVector> Normals => MutableNormals;
     public virtual IEnumerable<IRVFace> Faces => MutableFaces;
 
-    public List<Vector3> MutablePoints { get; set; } = null!;
-    public List<Vector3> MutableNormals { get; set; } = null!;
+    public List<IRVVector> MutablePoints { get; set; } = null!;
+    public List<IRVVector> MutableNormals { get; set; } = null!;
     public List<IRVFace> MutableFaces { get; set; } = null!;
 
     protected RVLod(IRVResolution resolution) => Resolution = resolution;
@@ -36,7 +37,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     {
     }
 
-    public RVLod(IRVResolution resolution, List<Vector3> mutablePoints, List<Vector3> mutableNormals, List<IRVFace> mutableFaces)
+    public RVLod(IRVResolution resolution, List<IRVVector> mutablePoints, List<IRVVector> mutableNormals, List<IRVFace> mutableFaces)
     {
         Resolution = resolution;
         MutablePoints = mutablePoints;
@@ -70,11 +71,14 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                     throw new NotImplementedException();
                 }
 
+                version = 1;
+
                 reader.BaseStream.Seek(headSize - (24 + magic.Length), SeekOrigin.Current);
                 break;
             }
             case "SP3X":
             {
+                version = 0;
                 extendedFace = true;
                 reader.BaseStream.Seek(headSize - (24 + magic.Length), SeekOrigin.Current);
                 break;
@@ -97,16 +101,18 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             }
         }
 
-        MutablePoints = new List<Vector3>(pointCount);
-        MutableNormals = new List<Vector3>(normalCount);
+        MutablePoints = new List<IRVVector>(pointCount);
+        MutableNormals = new List<IRVVector>(normalCount);
         MutableFaces = new List<IRVFace>(facesCount);
 
         for (var i = 0; i < pointCount; i++)
         {
-            switch (extendedFace)
-            {
+            MutablePoints.Add(extendedFace ? new RVPoint(reader, options) : new RVVector(reader, options));
+        }
 
-            }
+        for (var i = 0; i < normalCount; i++)
+        {
+            MutableNormals.Add(new RVVector(reader, options));
         }
 
         return Result.Ok();
