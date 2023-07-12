@@ -1,9 +1,12 @@
 ﻿namespace BisUtils.P3D.Models.Face;
 
+using System.Text;
 using Utils;
 using Core.Binarize;using Core.Binarize.Implementation;
+using Core.Binarize.Options;
 using Core.Extensions;
 using Core.IO;
+using Errors;
 using FResults;
 using FResults.Extensions;
 using Options;
@@ -47,6 +50,8 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
 
     public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
     {
+        #region Write Face Header
+
         switch (options.ExtendedFace)
         {
             case false:
@@ -78,10 +83,13 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 }
             }
         }
+
+        #endregion
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
+        #region Read Face Header
         switch (options.ExtendedFace)
         {
             case false:
@@ -92,20 +100,8 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 Material = material;
                 Flags = null;
                 LastResult = Result.Ok();
-                var nVertices = reader.ReadInt32();
-                var vertices = new List<RVDataVertex>(nVertices);
-                for (var i = 0; i < nVertices; i++)
-                {
-                    var vertex = new RVDataVertex(reader, options);
-                    vertices.Add(vertex);
-                    if (vertex.LastResult?.Reasons is { } reasons)
-                    {
-                        LastResult.WithReasons(reasons);
-                    }
-                }
-
-                Vertices = vertices;
-                return LastResult;
+                Vertices = reader.ReadIndexedList<RVDataVertex, IBinarizationOptions>(options);
+                break;
             }
             case true:
             {
@@ -113,49 +109,79 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 {
                     case 1:
                     {
-                        //TODO(REFACTOR): Create a method for reading a binarized list
                         LastResult = Result.Ok();
-                        var nVertices = reader.ReadInt32();
-                        var vertices = new List<RVDataVertex>(nVertices);
-                        for (var i = 0; i < nVertices; i++)
-                        {
-                            var vertex = new RVDataVertex(reader, options);
-                            vertices.Add(vertex);
-                            if (vertex.LastResult?.Reasons is { } reasons)
-                            {
-                                LastResult.WithReasons(reasons);
-                            }
-                        }
-
-                        Vertices = vertices;
+                        Vertices = reader.ReadIndexedList<RVDataVertex, IBinarizationOptions>(options);
                         Flags = (RVFaceFlags)reader.ReadInt32();
                         LastResult.WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture;
                         LastResult.WithReasons(reader.ReadAsciiZ(out var material, options).Reasons);
                         Material = material;
-                        return LastResult;
+                        break;
                     }
                     default:
                     {//TODO(Validate): maybe not terminated
                         (LastResult = Result.Ok()).WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture;
-                        var nVertices = reader.ReadInt32();
-                        var vertices = new List<RVDataVertex>(nVertices);
-                        for (var i = 0; i < nVertices; i++)
-                        {
-                            var vertex = new RVDataVertex(reader, options);
-                            vertices.Add(vertex);
-                            if (vertex.LastResult?.Reasons is { } reasons)
-                            {
-                                LastResult.WithReasons(reasons);
-                            }
-                        }
-                        Vertices = vertices;
-                        return LastResult;
+                        Vertices = reader.ReadIndexedList<RVDataVertex, IBinarizationOptions>(options);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        #endregion
+
+        #region Read Face Body
+
+        switch (reader.ReadAscii(4, options))
+        {
+            case "TAGG":
+            {
+                while (true)
+                {
+                    LexTagg(out var taggName, reader);
+                    if (taggName is null || !taggName.StartsWith('#'))
+                    {
+                        return LastResult.WithError(new FaceReadError("Tried to parse a tag without proper prefix."));
                     }
                 }
             }
+            case "SS3D":
+            {
+                var nVertices = reader.ReadInt32();
+                var nFaces = reader.ReadInt32();
+                var nNormals = reader.ReadInt32();
+                var normSize = reader.ReadInt32();
+                //TODO(SS3D): Read
+                throw new NotImplementedException();
+            }
+            default:
+            {
+                return LastResult.WithError(new FaceReadError("Unknown setup magic."));
+            }
         }
+
+        #endregion
+    }
+
+    private static Result LexTagg(out string? taggName, BisBinaryReader reader)
+    {
+        var taggBuilder = new StringBuilder("#");
+        var currentChar = reader.ReadChar();
+        if (currentChar != '#')
+        {
+            taggName = null;
+            return Result.Fail(new FaceReadError("Expected '#'"));
+        }
+
+        do
+        {
+            taggBuilder.Append(currentChar = reader.ReadChar());
+        } while (currentChar != '#');
+
+        taggName = taggBuilder.ToString();
+
+        return Result.Ok();
     }
 
     public override Result Validate(RVShapeOptions options) => LastResult = Result.FailIf(Vertices.Count() > 4, "Face has more than 4 vertices");

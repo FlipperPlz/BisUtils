@@ -2,13 +2,12 @@
 
 using Core.Extensions;
 using Core.IO;
-using Enumerations;
 using Errors;
+using Extensions;
 using Factories;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
-using Literals;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -131,82 +130,4 @@ public class ParamClass : ParamStatementHolder, IParamClass
         clazz = null;
         return LastResult = Result.ImmutableOk();
     }
-
-    public IEnumerable<T> GetStatements<T>() =>
-        (this as IParamStatementHolder).GetStatements<T>();
-
-    public IEnumerable<IParamExternalClass> LocateAllClasses() =>
-        (this as IParamStatementHolder).LocateAllClasses();
-
-    public IEnumerable<IParamExternalClass> LocateAllClasses(string classname) =>
-        (this as IParamStatementHolder).LocateAllClasses(classname);
-
-    public IParamExternalClass? LocateAnyClass(string classname) =>
-        (this as IParamStatementHolder).LocateAnyClass(classname);
-
-    public IEnumerable<IParamClass> LocateBaseClasses() =>
-        (this as IParamStatementHolder).LocateBaseClasses();
-
-    public IEnumerable<IParamClass> LocateBaseClasses(string classname) =>
-        (this as IParamStatementHolder).LocateBaseClasses(classname);
-
-    public IParamClass? LocateBaseClass(string classname) =>
-        (this as IParamStatementHolder).LocateBaseClass(classname);
-
-    public IEnumerable<ParamExternalClass> LocateExternalClasses() =>
-        (this as IParamStatementHolder).LocateExternalClasses();
-
-    public IEnumerable<ParamExternalClass> LocateExternalClasses(string classname) =>
-        (this as IParamStatementHolder).LocateExternalClasses(classname);
-
-    public ParamExternalClass? LocateExternalClass(string classname) =>
-        (this as IParamStatementHolder).LocateExternalClass(classname);
-
-    public IEnumerable<IParamDelete> LocateDeleteStatements() =>
-        (this as IParamStatementHolder).LocateDeleteStatements();
-
-    public IEnumerable<IParamDelete> LocateDeleteStatements(string target) =>
-        (this as IParamStatementHolder).LocateDeleteStatements(target);
-
-    public IParamDelete? LocateDeleteStatement(string target) =>
-        (this as IParamStatementHolder).LocateDeleteStatement(target);
-
-    public IEnumerable<IParamVariable> LocateAllVariables() =>
-        (this as IParamStatementHolder).LocateAllVariables();
-
-    public IEnumerable<IParamVariable> LocateVariables(string name) =>
-        (this as IParamStatementHolder).LocateVariables(name);
-
-    public IEnumerable<IParamVariable> LocateVariables<T>(string name) where T : IParamLiteral =>
-        (this as IParamStatementHolder).LocateVariables<T>(name);
-
-    public IParamVariable? LocateVariable(string name) =>
-        (this as IParamStatementHolder).LocateVariable(name);
-
-    public IParamArray? LocateArray(string name, out ParamOperatorType? op) =>
-        (this as IParamStatementHolder).LocateArray(name, out op);
-
-    public IParamVariable? LocateVariable<T>(string name) where T : IParamLiteral =>
-        (this as IParamStatementHolder).LocateVariable<T>(name);
-
-    public T? EvaluateVariable<T>(string name) where T : IParamLiteral =>
-        (this as IParamStatementHolder).EvaluateVariable<T>(name);
-
-    public bool HasVariable(string name, out IParamVariable? variable) =>
-        (this as IParamStatementHolder).HasVariable(name, out variable);
-
-    public bool HasVariable<T>(string name, out IParamVariable? variable) where T : IParamLiteral =>
-        (this as IParamStatementHolder).HasVariable<T>(name, out variable);
-
-    public bool HasExternalClass(string name, out ParamExternalClass? clazz) =>
-        (this as IParamStatementHolder).HasExternalClass(name, out clazz);
-
-    public bool HasBaseClass(string name, out IParamClass? clazz) =>
-        (this as IParamStatementHolder).HasBaseClass(name, out clazz);
-
-    public bool HasClass(string name, out IParamExternalClass? clazz) =>
-        (this as IParamStatementHolder).HasClass(name, out clazz);
-
-    public bool WasDeleted(string target, out IParamDelete? deleteStatement) =>
-        (this as IParamStatementHolder).WasDeleted(target, out deleteStatement);
 }

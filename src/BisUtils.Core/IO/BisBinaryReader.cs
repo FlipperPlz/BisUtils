@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Core.IO;
 
 using System.Text;
+using Binarize.Implementation;
 using Binarize.Options;
 using FResults;
 using Options;
@@ -60,6 +61,16 @@ public class BisBinaryReader : BinaryReader
 
         read = stringBuffer.ToString();
         return Result.Ok();
+    }
+
+    public IEnumerable<T> ReadIndexedList<T, TOptions>(TOptions options)
+        where T : BinaryObject<TOptions>, new() where TOptions : IBinarizationOptions
+    {
+        var count = ReadInt32();
+        for (var i = 0; i < count; i++)
+        {
+            yield return (T) Activator.CreateInstance(typeof(T), new object?[] {this, options} , null)!;
+        }
     }
 
     public int ReadCompactInteger()

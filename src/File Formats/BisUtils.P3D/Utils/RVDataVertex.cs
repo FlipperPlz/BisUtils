@@ -30,6 +30,11 @@ public class RVDataVertex : BinaryObject<IBinarizationOptions>, IRVDataVertex
         MapV = mapV;
     }
 
+    public RVDataVertex()
+    {
+
+    }
+
     public RVDataVertex(BisBinaryReader reader, IBinarizationOptions options) : base(reader, options)
     {
         if (!Debinarize(reader, options))
