@@ -2,6 +2,7 @@
 
 using FResults.Reasoning;
 using Models;
+using Models.Data;
 
 public class FaceReadError : ErrorBase
 {
@@ -12,7 +13,7 @@ public class FaceReadError : ErrorBase
     public FaceReadError(string reason, string alertName = "Generic Face Read Failure")
     {
         AlertName = alertName;
-        AlertScope = typeof(RVLod);
+        AlertScope = typeof(RVShapeData);
         Message = $"There was an error reading a LOD Face. {reason}";
     }
 }

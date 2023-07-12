@@ -40,6 +40,11 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
         Flags = flags;
     }
 
+    public RVFace()
+    {
+
+    }
+
     public RVFace(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
     {
         if (!Debinarize(reader, options))

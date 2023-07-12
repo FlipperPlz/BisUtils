@@ -1,10 +1,10 @@
-﻿namespace BisUtils.P3D.Models;
+﻿namespace BisUtils.P3D.Models.Data;
 
 using Core.IO;
-using Param.Models;
-using Param.Models.Statements;
-using Param.Models.Stubs;
-using Param.Options;
+using BisUtils.Param.Models;
+using BisUtils.Param.Models.Statements;
+using BisUtils.Param.Models.Stubs;
+using BisUtils.Param.Options;
 
 public interface IRVModelConfig : IParamFile
 {

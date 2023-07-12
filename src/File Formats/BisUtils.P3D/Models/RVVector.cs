@@ -27,7 +27,7 @@ public class RVVector: BinaryObject<IBinarizationOptions>, IRVVector
         Z = z;
     }
 
-    protected RVVector()
+    public RVVector()
     {
 
     }

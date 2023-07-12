@@ -63,10 +63,24 @@ public class BisBinaryReader : BinaryReader
         return Result.Ok();
     }
 
-    public IEnumerable<T> ReadIndexedList<T, TOptions>(TOptions options)
+    public IEnumerable<T> ReadIndexedList<T, TOptions>(TOptions options) where T : BinaryObject<TOptions>, new() where TOptions : IBinarizationOptions =>
+        ReadIndexedList<T, TOptions>(ReadInt32(), options);
+
+    public IEnumerable<T> ReadIndexedList<T, TOptions>(int count, TOptions options)
         where T : BinaryObject<TOptions>, new() where TOptions : IBinarizationOptions
     {
-        var count = ReadInt32();
+        for (var i = 0; i < count; i++)
+        {
+            yield return (T) Activator.CreateInstance(typeof(T), new object?[] {this, options} , null)!;
+        }
+    }
+
+    public IEnumerable<T> ReadStrictIndexedList<T, TOptions>(TOptions options) where T : StrictBinaryObject<TOptions>, new() where TOptions : IBinarizationOptions =>
+        ReadStrictIndexedList<T, TOptions>(ReadInt32(), options);
+
+    public IEnumerable<T> ReadStrictIndexedList<T, TOptions>(int count, TOptions options)
+        where T : StrictBinaryObject<TOptions>, new() where TOptions : IBinarizationOptions
+    {
         for (var i = 0; i < count; i++)
         {
             yield return (T) Activator.CreateInstance(typeof(T), new object?[] {this, options} , null)!;
