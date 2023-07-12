@@ -8,14 +8,16 @@ using Core.IO;
 using Face;
 using Options;
 using FResults;
+using Point;
 using Utils;
 
 public interface IRVShapeData : IStrictBinaryObject<RVShapeOptions>
 {
     public IRVResolution Resolution { get; set; }
-    IEnumerable<IRVVector> Normals { get; set; }
-    IEnumerable<IRVVector> Points { get; set; }
-    IEnumerable<IRVFace> Faces { get; set; }
+    List<IRVVector> Normals { get; set; }
+    List<IRVVector> Points { get; set; }
+    List<IRVFace> Faces { get; set; }
+    IRVPointAttrib<float> Mass { get; set; }
 }
 
 public class RVShapeData : StrictBinaryObject<RVShapeOptions>, IRVShapeData
@@ -23,9 +25,10 @@ public class RVShapeData : StrictBinaryObject<RVShapeOptions>, IRVShapeData
 
     protected const uint ValidVersion = 256;
     public IRVResolution Resolution { get; set; } = null!;
-    public IEnumerable<IRVVector> Points { get; set; } = null!;
-    public IEnumerable<IRVVector> Normals { get; set; } = null!;
-    public IEnumerable<IRVFace> Faces { get; set; } = null!;
+    public List<IRVVector> Points { get; set; } = null!;
+    public List<IRVVector> Normals { get; set; } = null!;
+    public List<IRVFace> Faces { get; set; } = null!;
+    public IRVPointAttrib<float> Mass { get; set; } = null!;
 
     public RVShapeData()
     {
@@ -39,12 +42,13 @@ public class RVShapeData : StrictBinaryObject<RVShapeOptions>, IRVShapeData
         }
     }
 
-    public RVShapeData(IRVResolution resolution, IEnumerable<IRVVector> points, IEnumerable<IRVVector> normals, IEnumerable<IRVFace> faces)
+    public RVShapeData(IRVResolution resolution, List<IRVVector> points, List<IRVVector> normals, List<IRVFace> faces, IRVPointAttrib<float> mass)
     {
         Resolution = resolution;
         Points = points;
         Normals = normals;
         Faces = faces;
+        Mass = mass;
     }
 
     public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options) => throw new NotImplementedException();
@@ -102,14 +106,20 @@ public class RVShapeData : StrictBinaryObject<RVShapeOptions>, IRVShapeData
         }
 
         Points = reader
-            .ReadIndexedList<RVVector, IBinarizationOptions>(options, pointCount);
+            .ReadIndexedList<RVVector, IBinarizationOptions>(options, pointCount)
+            .Cast<IRVVector>()
+            .ToList();
         Normals = reader
-            .ReadIndexedList<RVVector, IBinarizationOptions>(options, normalCount);
+            .ReadIndexedList<RVVector, IBinarizationOptions>(options, normalCount).Cast<IRVVector>()
+            .ToList();
         Faces = reader
-            .ReadStrictIndexedList<RVFace, RVShapeOptions>(options, facesCount);
+            .ReadStrictIndexedList<RVFace, RVShapeOptions>(options, facesCount)
+            .Cast<IRVFace>()
+            .ToList();
         Resolution = (RVResolution) reader.ReadSingle();
 
         return Result.Ok();
     }
+
     public override Result Validate(RVShapeOptions options) => throw new NotImplementedException();
 }

@@ -1,7 +1,8 @@
 ﻿namespace BisUtils.P3D.Models.Face;
 
 using System.Text;
-using Core.Binarize;using Core.Binarize.Implementation;
+using Core.Binarize;
+using Core.Binarize.Implementation;
 using Core.Binarize.Options;
 using Core.Extensions;
 using Core.IO;
@@ -15,7 +16,7 @@ public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
 {
     string Texture { get; set; }
     string? Material { get; set; }
-    IEnumerable<RVDataVertex> Vertices { get; set; }
+    List<IRVUVSet> UVSets { get; set; }
     public RVFaceFlags? Flags { get; set; }
 
     public bool IsOld { get; }
@@ -26,16 +27,16 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
 {
     public string Texture { get; set; } = null!;
     public string? Material { get; set; }
-    public IEnumerable<RVDataVertex> Vertices { get; set; } = null!;
+    public List<IRVUVSet> UVSets { get; set; } = null!;
     public RVFaceFlags? Flags { get; set; }
     public bool IsOld => Material is null;
     public bool IsExtended => Flags is not null;
 
-    public RVFace(string texture, string? material, IEnumerable<RVDataVertex> vertices, RVFaceFlags flags)
+    public RVFace(string texture, string? material, List<IRVUVSet> uvSets, RVFaceFlags flags)
     {
         Texture = texture;
         Material = material;
-        Vertices = vertices;
+        UVSets = uvSets;
         Flags = flags;
     }
 
@@ -63,7 +64,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 writer.WriteAsciiZ(Texture, options);
                 writer.WriteAsciiZ(Material ?? "", options);
                 Flags = null;
-                return LastResult = Vertices.WriteBinarized(writer, options);
+                return LastResult = UVSets.WriteBinarized(writer, options);
             }
             case true:
             {
@@ -71,7 +72,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 {
                     case 1:
                     {
-                        LastResult = Vertices.WriteBinarized(writer, options);
+                        LastResult = UVSets.WriteBinarized(writer, options);
                         writer.Write((int?)Flags ?? 0 );//TODO(Validate): ASSERT Flags When Extended
                         writer.WriteAsciiZ(Texture, options); //TODO(Validate): ASSERT V1 EXTENDED 9000 max
                         writer.WriteAsciiZ(Material ?? "", options); //TODO(Validate) ASSERT V1 EXTENDED 9000 max
@@ -80,7 +81,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                     default:
                     {
                         writer.Write(Texture[..32]);//TODO(Validate): ASSERT NON-V1 EXTENDED 32 max
-                        LastResult = Vertices.WriteBinarized(writer, options);
+                        LastResult = UVSets.WriteBinarized(writer, options);
                         writer.Write((int?)Flags ?? 0 );
                         return LastResult;
                     }
@@ -104,7 +105,9 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 Material = material;
                 Flags = null;
                 LastResult = Result.Ok();
-                Vertices = reader.ReadIndexedList<RVDataVertex, IBinarizationOptions>(options);
+                UVSets = reader.ReadIndexedList<RVUVSet, IBinarizationOptions>(options)
+                    .Cast<IRVUVSet>()
+                    .ToList();
                 break;
             }
             case true:
@@ -114,7 +117,9 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                     case 1:
                     {
                         LastResult = Result.Ok();
-                        Vertices = reader.ReadIndexedList<RVDataVertex, IBinarizationOptions>(options);
+                        UVSets = reader.ReadIndexedList<RVUVSet, IBinarizationOptions>(options)
+                            .Cast<IRVUVSet>()
+                            .ToList();
                         Flags = (RVFaceFlags)reader.ReadInt32();
                         LastResult.WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture;
@@ -126,7 +131,9 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                     {//TODO(Validate): maybe not terminated
                         (LastResult = Result.Ok()).WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture;
-                        Vertices = reader.ReadIndexedList<RVDataVertex, IBinarizationOptions>(options);
+                        UVSets = reader.ReadIndexedList<RVUVSet, IBinarizationOptions>(options)
+                            .Cast<IRVUVSet>()
+                            .ToList();
                         break;
                     }
                 }
@@ -188,7 +195,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
         return Result.Ok();
     }
 
-    public override Result Validate(RVShapeOptions options) => LastResult = Result.FailIf(Vertices.Count() > 4, "Face has more than 4 vertices");
+    public override Result Validate(RVShapeOptions options) => LastResult = Result.Ok();
 }
 
 

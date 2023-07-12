@@ -7,7 +7,7 @@ using Core.Extensions;
 using Core.IO;
 using FResults;
 
-public interface IRVDataVertex : IBinaryObject<IBinarizationOptions>
+public interface IRVUVSet : IBinaryObject<IBinarizationOptions>
 {
     public int Point { get; set; }
     public int Normal { get; set; }
@@ -15,14 +15,14 @@ public interface IRVDataVertex : IBinaryObject<IBinarizationOptions>
     public float MapV { get; set; }
 }
 
-public class RVDataVertex : BinaryObject<IBinarizationOptions>, IRVDataVertex
+public class RVUVSet : BinaryObject<IBinarizationOptions>, IRVUVSet
 {
     public int Point { get; set; }
     public int Normal { get; set; }
     public float MapU { get; set; }
     public float MapV { get; set;  }
 
-    public RVDataVertex(int point, int normal, float mapU, float mapV)
+    public RVUVSet(int point, int normal, float mapU, float mapV)
     {
         Point = point;
         Normal = normal;
@@ -30,12 +30,12 @@ public class RVDataVertex : BinaryObject<IBinarizationOptions>, IRVDataVertex
         MapV = mapV;
     }
 
-    public RVDataVertex()
+    public RVUVSet()
     {
 
     }
 
-    public RVDataVertex(BisBinaryReader reader, IBinarizationOptions options) : base(reader, options)
+    public RVUVSet(BisBinaryReader reader, IBinarizationOptions options) : base(reader, options)
     {
         if (!Debinarize(reader, options))
         {

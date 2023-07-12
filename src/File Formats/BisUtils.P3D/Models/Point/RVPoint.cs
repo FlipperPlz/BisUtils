@@ -9,6 +9,7 @@ using Utils;
 public interface IRVPoint : IRVVector
 {
     RVPointFlags PointFlags { get; }
+    public static abstract IRVPoint operator -(IRVPoint a, IRVPoint b);
 }
 
 public class RVPoint : RVVector, IRVPoint
@@ -18,6 +19,8 @@ public class RVPoint : RVVector, IRVPoint
     public RVPoint(float x, float y, float z) : base(x, y, z)
     {
     }
+
+    static IRVPoint IRVPoint.operator -(IRVPoint a, IRVPoint b) => new RVPoint(a.X-b.X, a.Y-b.Y, a.Z-b.Z);
 
     public RVPoint(BisBinaryReader reader, IBinarizationOptions options)
     {
