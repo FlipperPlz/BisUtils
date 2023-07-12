@@ -13,7 +13,6 @@ using Utils;
 
 public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
 {
-    const int MaxDataCount = 4;
     string Texture { get; set; }
     string? Material { get; set; }
     IEnumerable<RVDataVertex> Vertices { get; set; }
