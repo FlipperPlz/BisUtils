@@ -1,6 +1,6 @@
-﻿namespace BisUtils.P3D.Models;
+﻿namespace BisUtils.P3D.Models.Lod;
 
-public enum RVLodType
+public enum RVLodFlags
 {
     ViewGunner,
     ViewPilot,

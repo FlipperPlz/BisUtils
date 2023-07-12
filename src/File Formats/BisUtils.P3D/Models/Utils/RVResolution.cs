@@ -2,11 +2,12 @@
 namespace BisUtils.P3D.Models.Utils;
 
 using System.Globalization;
+using Lod;
 
 public interface IRVResolution
 {
     public string Name { get; }
-    public RVLodType Type { get; }
+    public RVLodFlags Flags { get; }
     public float Value { get; }
     public bool KeepsNamedSelections { get; }
     public bool IsResolution { get; }
@@ -17,7 +18,7 @@ public interface IRVResolution
 public readonly struct RVResolution : IRVResolution
 {
     public float Value { get; }
-    public RVLodType Type { get; }
+    public RVLodFlags Flags { get; }
     public bool KeepsNamedSelections { get; }
     public string Name { get; }
     public bool IsResolution { get; }
@@ -27,39 +28,39 @@ public readonly struct RVResolution : IRVResolution
     public RVResolution(float value)
     {
         Value = value;
-        Type = GetLodType(Value);
-        Name = GetLodName(Value, Type);
+        Flags = GetLodType(Value);
+        Name = GetLodName(Value, Flags);
         IsResolution = CanBeResolution(Value);
-        IsShadow = CanBeShadow(Type);
+        IsShadow = CanBeShadow(Flags);
         IsVisual = IsResolution || Value is ViewCargo or ViewPilot or ViewCommander;
-        KeepsNamedSelections = Math.Abs(value - Buoyancy) < 0.00001 || ShouldKeepNamedSelections(Type);
+        KeepsNamedSelections = Math.Abs(value - Buoyancy) < 0.00001 || ShouldKeepNamedSelections(Flags);
     }
 
-    public static bool ShouldKeepNamedSelections(RVLodType type) =>
-        type
-            is RVLodType.Memory
-            or RVLodType.FireGeometry
-            or RVLodType.Geometry
-            or RVLodType.ViewGeometry
-            or RVLodType.ViewPilotGeometry
-            or RVLodType.ViewGunnerGeometry
-            or RVLodType.ViewCargoGeometry
-            or RVLodType.Paths
-            or RVLodType.HitPoints
-            or RVLodType.PhysX;
+    public static bool ShouldKeepNamedSelections(RVLodFlags flags) =>
+        flags
+            is RVLodFlags.Memory
+            or RVLodFlags.FireGeometry
+            or RVLodFlags.Geometry
+            or RVLodFlags.ViewGeometry
+            or RVLodFlags.ViewPilotGeometry
+            or RVLodFlags.ViewGunnerGeometry
+            or RVLodFlags.ViewCargoGeometry
+            or RVLodFlags.Paths
+            or RVLodFlags.HitPoints
+            or RVLodFlags.PhysX;
 
     public static bool CanBeResolution(float value) => value < ShadowVolume;
 
-    public static bool CanBeShadow(RVLodType type) => type is RVLodType.ShadowVolume or RVLodType.ShadowVolumeViewGunner
-        or RVLodType.ShadowVolumeViewPilot or RVLodType.ShadowVolumeViewGunner;
+    public static bool CanBeShadow(RVLodFlags flags) => flags is RVLodFlags.ShadowVolume or RVLodFlags.ShadowVolumeViewGunner
+        or RVLodFlags.ShadowVolumeViewPilot or RVLodFlags.ShadowVolumeViewGunner;
     public static bool WithinShadowRange(float value) => value is >= ShadowMin and <= ShadowMax;
 
-    private static string GetLodName(float value, RVLodType? type = null)
+    private static string GetLodName(float value, RVLodFlags? type = null)
     {
         type ??= GetLodType(value);
-        if (type != RVLodType.ShadowVolume)
+        if (type != RVLodFlags.ShadowVolume)
         {
-            return (type == RVLodType.Resolution ? value.ToString("#.000", CultureInfo.CurrentCulture) : Enum.GetName(typeof(RVLodType), type)) ?? string.Empty;
+            return (type == RVLodFlags.Resolution ? value.ToString("#.000", CultureInfo.CurrentCulture) : Enum.GetName(typeof(RVLodFlags), type)) ?? string.Empty;
         }
 
         return $"ShadowVolume{value - ShadowVolume}";
@@ -69,35 +70,35 @@ public readonly struct RVResolution : IRVResolution
     public static implicit operator float(RVResolution resolution) => resolution.Value;
     public static explicit operator RVResolution(float resolution) => new(resolution);
 
-    public static RVLodType GetLodType(float value) => value switch
+    public static RVLodFlags GetLodType(float value) => value switch
     {
-        Memory => RVLodType.Memory,
-        LandContact => RVLodType.LandContact,
-        Roadway => RVLodType.Roadway,
-        Paths => RVLodType.Paths,
-        HitPoints => RVLodType.HitPoints,
-        ViewGeometry => RVLodType.ViewGeometry,
-        FireGeometry => RVLodType.FireGeometry,
-        ViewCargoGeometry => RVLodType.ViewCargoGeometry,
-        ViewCargoFireGeometry => RVLodType.ViewCargoFireGeometry,
-        ViewCommander => RVLodType.ViewCommander,
-        ViewCommanderGeometry => RVLodType.ViewCommanderGeometry,
-        ViewCommanderFireGeometry => RVLodType.ViewCommanderFireGeometry,
-        ViewPilotGeometry => RVLodType.ViewPilotGeometry,
-        ViewPilotFireGeometry => RVLodType.ViewPilotFireGeometry,
-        ViewGunnerGeometry => RVLodType.ViewGunnerGeometry,
-        ViewGunnerFireGeometry => RVLodType.ViewGunnerFireGeometry,
-        SubParts => RVLodType.SubParts,
-        ShadowVolumeViewCargo => RVLodType.ShadowVolumeViewCargo,
-        ShadowVolumeViewPilot => RVLodType.ShadowVolumeViewPilot,
-        ShadowVolumeViewGunner => RVLodType.ShadowVolumeViewGunner,
-        Wreck => RVLodType.Wreck,
-        ViewGunner => RVLodType.ViewGunner,
-        ViewPilot => RVLodType.ViewPilot,
-        ViewCargo => RVLodType.ViewCargo,
-        Geometry => RVLodType.Geometry,
-        PhysX => RVLodType.PhysX,
-        _ => WithinShadowRange(value) ? RVLodType.ShadowVolume : RVLodType.Resolution
+        Memory => RVLodFlags.Memory,
+        LandContact => RVLodFlags.LandContact,
+        Roadway => RVLodFlags.Roadway,
+        Paths => RVLodFlags.Paths,
+        HitPoints => RVLodFlags.HitPoints,
+        ViewGeometry => RVLodFlags.ViewGeometry,
+        FireGeometry => RVLodFlags.FireGeometry,
+        ViewCargoGeometry => RVLodFlags.ViewCargoGeometry,
+        ViewCargoFireGeometry => RVLodFlags.ViewCargoFireGeometry,
+        ViewCommander => RVLodFlags.ViewCommander,
+        ViewCommanderGeometry => RVLodFlags.ViewCommanderGeometry,
+        ViewCommanderFireGeometry => RVLodFlags.ViewCommanderFireGeometry,
+        ViewPilotGeometry => RVLodFlags.ViewPilotGeometry,
+        ViewPilotFireGeometry => RVLodFlags.ViewPilotFireGeometry,
+        ViewGunnerGeometry => RVLodFlags.ViewGunnerGeometry,
+        ViewGunnerFireGeometry => RVLodFlags.ViewGunnerFireGeometry,
+        SubParts => RVLodFlags.SubParts,
+        ShadowVolumeViewCargo => RVLodFlags.ShadowVolumeViewCargo,
+        ShadowVolumeViewPilot => RVLodFlags.ShadowVolumeViewPilot,
+        ShadowVolumeViewGunner => RVLodFlags.ShadowVolumeViewGunner,
+        Wreck => RVLodFlags.Wreck,
+        ViewGunner => RVLodFlags.ViewGunner,
+        ViewPilot => RVLodFlags.ViewPilot,
+        ViewCargo => RVLodFlags.ViewCargo,
+        Geometry => RVLodFlags.Geometry,
+        PhysX => RVLodFlags.PhysX,
+        _ => WithinShadowRange(value) ? RVLodFlags.ShadowVolume : RVLodFlags.Resolution
     };
 
     private const float SpecialLod = 1E+15f;

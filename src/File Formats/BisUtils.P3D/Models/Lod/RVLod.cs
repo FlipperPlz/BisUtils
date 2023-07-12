@@ -31,9 +31,9 @@ public class RVLod : BinaryObject<RVShapeOptions>, IRVLod
 
     }
 
-    public RVLod(string name, IRVResolution resolution, IEnumerable<IRVVector> normals, IEnumerable<IRVVector> points, IEnumerable<IRVFace> faces)
+    public RVLod(IRVResolution resolution, IEnumerable<IRVVector> normals, IEnumerable<IRVVector> points, IEnumerable<IRVFace> faces)
     {
-        Name = name;
+        Name = resolution.Name;
         Resolution = resolution;
         Normals = normals;
         Points = points;
