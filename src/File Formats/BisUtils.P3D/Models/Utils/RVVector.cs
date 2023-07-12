@@ -13,8 +13,15 @@ public interface IRVVector: IBinaryObject<IBinarizationOptions>
     float Y { get; set; }
     float Z { get; set; }
     float SquaredSize();
-    static abstract IRVVector operator -(IRVVector a, IRVVector b);
-    static abstract IRVVector operator /(float a, IRVVector b);
+
+    static IRVVector operator -(IRVVector a, IRVVector b) =>
+        new RVVector(a.X-b.X, a.Y-b.Y, a.Z-b.Z);
+
+    static IRVVector operator /(float a, IRVVector b)
+    {
+        var i = 1 / a;
+        return new RVVector(b.X*i, b.Y*i, b.Z*i);
+    }
 
 }
 
@@ -25,15 +32,6 @@ public class RVVector: BinaryObject<IBinarizationOptions>, IRVVector
     public float Z { get; set; }
 
     public float SquaredSize() => (X*X)+(Y*Y)+(Z*Z);
-
-    static IRVVector IRVVector.operator -(IRVVector a, IRVVector b) => new RVVector(a.X-b.X, a.Y-b.Y, a.Z-b.Z);
-
-    static IRVVector IRVVector.operator /(float a, IRVVector b)
-    {
-        var i = 1 / a;
-        return new RVVector(b.X*i, b.Y*i, b.Z*i);
-    }
-
 
     public RVVector(float x, float y, float z)
     {
