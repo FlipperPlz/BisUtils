@@ -4,6 +4,7 @@ using Core.Binarize.Options;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Utils;
 
 public interface IRVPoint : IRVVector
 {

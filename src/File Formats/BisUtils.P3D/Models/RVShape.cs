@@ -5,6 +5,7 @@ using Core.Binarize.Implementation;
 using Core.IO;
 using Lod;
 using Options;
+using Utils;
 
 public interface IRVShape<out TLodType> : IStrictBinaryObject<RVShapeOptions> where TLodType : IRVLod
 {

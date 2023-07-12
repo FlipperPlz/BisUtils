@@ -7,6 +7,7 @@ using Core.IO;
 using Face;
 using Options;
 using FResults;
+using Utils;
 
 public interface IRVShapeData : IStrictBinaryObject<RVShapeOptions>
 {

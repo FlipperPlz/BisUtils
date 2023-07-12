@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.P3D.Models.Face;
 
 using System.Text;
-using Utils;
 using Core.Binarize;using Core.Binarize.Implementation;
 using Core.Binarize.Options;
 using Core.Extensions;
@@ -10,6 +9,7 @@ using Errors;
 using FResults;
 using FResults.Extensions;
 using Options;
+using Utils;
 
 public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
 {

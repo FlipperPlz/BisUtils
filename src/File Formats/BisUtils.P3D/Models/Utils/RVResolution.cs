@@ -1,5 +1,5 @@
 ﻿// ReSharper disable UnusedMember.Local
-namespace BisUtils.P3D.Models;
+namespace BisUtils.P3D.Models.Utils;
 
 using System.Globalization;
 

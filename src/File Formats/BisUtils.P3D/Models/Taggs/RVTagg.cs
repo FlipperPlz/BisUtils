@@ -5,12 +5,13 @@ using Options;
 
 public abstract class RVTagg : BinaryObject<RVShapeOptions>
 {
-    public int DataSize { get; set; }
     public string Name { get; set; }
+
+    public int DataSize { get; set; }
 
     protected RVTagg(string name, int dataSize)
     {
         Name = name;
         DataSize = dataSize;
-    }
+    }//TODO: Base Binarize
 }

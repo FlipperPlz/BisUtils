@@ -1,8 +1,8 @@
-﻿namespace BisUtils.P3D.Models;
+﻿namespace BisUtils.P3D.Models.Utils;
 
 using Core.Binarize;
 using Core.Binarize.Implementation;
-using Core.Binarize.Options;
+using BisUtils.Core.Binarize.Options;
 using Core.Extensions;
 using Core.IO;
 using FResults;
