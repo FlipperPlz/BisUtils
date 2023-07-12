@@ -4,8 +4,11 @@ using Core.Binarize.Implementation;
 using Core.IO;
 using Data;
 using Errors;
+using Extensions;
 using FResults;
+using FResults.Extensions;
 using Options;
+using Utils;
 
 public interface IRVLod
 {
@@ -59,13 +62,23 @@ public class RVLod : BinaryObject<RVShapeOptions>, IRVLod
             {
                 throw new NotImplementedException();
             }
-            default: return Result.Fail(new LodReadError("Unknown lod magic, expected ODOL, MLOD, or NLOD."));
+            default: return LastResult.WithError(new LodReadError("Unknown lod magic, expected ODOL, MLOD, or NLOD."));
         }
         LodLevels = reader.ReadStrictIndexedList<RVShapeData, RVShapeOptions>(options, levelCount);
         if (LodLevels.Count() == 1 && options.LodVersion < 0 && !isLod)
         {
-            return Result.Fail(new LodReadError("Invalid P3D File!"));
+            return LastResult.WithError(new LodReadError("Invalid P3D File!"));
         }
+
+        if (
+            this.LocateLevel(RVConstants.GeometryLod, out var levelPosition) is not { } geometryLod ||
+            levelPosition <= 0 ||
+            options.LodVersion != 0
+            )
+        {
+            return LastResult;
+        }
+        //TODO: Deal with mass
 
         return LastResult;
     }
