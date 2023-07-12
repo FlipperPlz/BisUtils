@@ -13,8 +13,6 @@ public interface IRVShape: IStrictBinaryObject<RVShapeOptions>
     string ModelName { get; }
     float ModelMass { get; }
     IEnumerable<IRVLod> LevelsOfDetail { get; }
-    public IRVLod? this[IRVResolution resolution] =>
-        LevelsOfDetail.FirstOrDefault(lod => lod.Resolution == resolution);
 }
 
 public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
