@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.P3D.Extensions;
 
 using Models;
-using Models.Data;
 using Models.Lod;
 
 public static class RvShapeExtensions
@@ -28,4 +27,5 @@ public static class RvShapeExtensions
 
         return found;
     }
+
 }

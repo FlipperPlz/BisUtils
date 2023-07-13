@@ -30,9 +30,11 @@ public static class RVConstants
     public const float ViewGunnerLod = 1000.0f;
     public const float ViewPilotLod = 1100.0f;
     public const float ViewCargoLod = 1200.0f;
-    public const float MinShadowLod = 10000.0f;
-    public const float MaxShadowLod = 19999.9f;
-    public static readonly float ShadowBLod = MinShadowLod;
+    public const float MinShadow = 10000.0f;
+    public const float MaxShadow = 19999.9f;
+    public const float MinShadowBuffer = 11000.0f;
+    public const float MaxShadowBuffer = 11999.0f;
+    public static readonly float ShadowBLod = MinShadow;
     public const float MinEditLod = 20000.0f;
     public static readonly float MaxEditLod = 29999.9f;
     public static readonly float EditBLod = MinEditLod;
@@ -180,7 +182,8 @@ public static class RVConstants
     public static bool CanBeShadow(RVLodType type) => type is RVLodType.ShadowVolume or RVLodType.ShadowVolumeViewGunner
         or RVLodType.ShadowVolumeViewPilot or RVLodType.ShadowVolumeViewGunner;
 
-    public static bool WithinShadowRange(float f) => f is >= MinShadowLod and <= MaxShadowLod;
+    public static bool WithinShadowRange(float f) => f is >= MinShadow and <= MaxShadow;
+    public static bool WithinShadowBufferRange(float f) => f is >= MinShadowBuffer and <= MaxShadowBuffer;
 
 
     public static float CalculateSpecialLod(int x) =>
@@ -189,10 +192,10 @@ public static class RVConstants
     public static bool CompareFloats(float f1, float f2) => Math.Abs(f1 - f2) < 0.01f;
 
     public static float CalculateShadowLod(float x) =>
-        x - MinShadowLod;
+        x - MinShadow;
 
     public static float GetShadowLod(float x) =>
-        x + MinShadowLod;
+        x + MinShadow;
 
     public static float CalculateEditLod(float x) =>
         x - MinEditLod;
@@ -204,7 +207,7 @@ public static class RVConstants
         (f > 1e12 && f < 1e14) || (f < -1e12 && f > -1e14);
 
     public static bool IsResolutionLod(float x) =>
-        x < MinShadowLod || CompareFloats(x, ViewCommanderLod);
+        x < MinShadow || CompareFloats(x, ViewCommanderLod);
 
     public static bool ShouldKeepNamedSelections(RVLodType type) =>
         type
