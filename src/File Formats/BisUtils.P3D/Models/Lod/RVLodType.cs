@@ -30,5 +30,6 @@ public enum RVLodType
     PhysX,
     ShadowVolume,
     Resolution,
-    Undefined
+    Undefined,
+    Edit
 }

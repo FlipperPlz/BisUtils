@@ -33,7 +33,7 @@ public sealed class RVResolution : BinaryObject<RVShapeOptions>, IRVResolution
             this.value = value;
             Type = RVConstants.GetLodType(this.value);
             Name = GetLodName(this.value, Type);
-            IsResolution = RVConstants.CanBeResolution(this.value);
+            IsResolution = RVConstants.CanBeResolution(this.value) || Type == RVLodType.ViewCommander;
             IsShadow = RVConstants.CanBeShadow(Type);
             IsVisual = IsResolution || Type is RVLodType.ViewCargo or RVLodType.ViewPilot or RVLodType.ViewCommander;
             KeepsNamedSelections = RVConstants.CompareFloats(this.value, RVConstants.Buoyancy) || RVConstants.ShouldKeepNamedSelections(Type);

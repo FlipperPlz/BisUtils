@@ -173,6 +173,11 @@ public static class RVConstants
             return RVLodType.PhysX;
         }
 
+        if (WithinEditRange(f))
+        {
+            return RVLodType.Edit;
+        }
+
         return WithinShadowRange(f) ? RVLodType.ShadowVolume : RVLodType.Undefined;
     }
 
@@ -182,7 +187,11 @@ public static class RVConstants
     public static bool CanBeShadow(RVLodType type) => type is RVLodType.ShadowVolume or RVLodType.ShadowVolumeViewGunner
         or RVLodType.ShadowVolumeViewPilot or RVLodType.ShadowVolumeViewGunner;
 
+    public static bool WithinEditRange(float f) => f >= MinEditLod;
+
     public static bool WithinShadowRange(float f) => f is >= MinShadow and <= MaxShadow;
+
+
     public static bool WithinShadowBufferRange(float f) => f is >= MinShadowBuffer and <= MaxShadowBuffer;
 
 

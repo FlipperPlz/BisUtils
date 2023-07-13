@@ -1,11 +1,6 @@
 ﻿namespace BisUtils.P3D.Models.Point;
 
-using Core.Binarize;using Core.Binarize.Implementation;
-using Core.IO;
-using Data;
-using FResults;
 using Lod;
-using Options;
 
 public interface IRVPointAttrib<T> where T : struct
 {

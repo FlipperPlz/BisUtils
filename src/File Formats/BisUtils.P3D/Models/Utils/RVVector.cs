@@ -31,7 +31,17 @@ public interface IRVVector<in TOptions>: IBinaryObject<TOptions> where TOptions 
 
 public class RVVector : RVVector<IBinarizationOptions>, IRVVector
 {
+    public RVVector()
+    {
+    }
 
+    public RVVector(float x, float y, float z) : base(x, y, z)
+    {
+    }
+
+    public RVVector(BisBinaryReader reader, IBinarizationOptions options) : base(reader, options)
+    {
+    }
 }
 public class RVVector<TOptions>: BinaryObject<TOptions>, IRVVector<TOptions> where TOptions : IBinarizationOptions
 {
