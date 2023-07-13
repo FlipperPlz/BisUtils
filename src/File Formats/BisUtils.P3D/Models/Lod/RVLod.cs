@@ -1,11 +1,13 @@
 ﻿namespace BisUtils.P3D.Models.Lod;
 
+using System.Globalization;
 using System.Text;
 using Core.Binarize;
 using Core.Binarize.Implementation;
 using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.Extensions;
 using Core.IO;
+using Data;
 using Errors;
 using Face;
 using Point;
@@ -13,6 +15,7 @@ using Utils;
 using Options;
 using FResults;
 using FResults.Extensions;
+using FResults.Reasoning;
 
 public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
 {
@@ -21,6 +24,7 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IRVPoint> Points { get; set; }
     List<IRVFace> Faces { get; set; }
     List<IRVDataVertex> Vertices { get; set; }
+    List<IRVNamedProperty> Properties { get; set; }
     IRVPointAttrib<float> Mass { get; set; }
 }
 
@@ -32,28 +36,39 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVPoint> Points { get; set; } = null!;
     public List<IRVVector> Normals { get; set; } = null!;
     public List<IRVFace> Faces { get; set; } = null!;
-    public IRVPointAttrib<float> Mass { get; set; } = null!;
     public List<IRVDataVertex> Vertices { get; set; } = null!;
+    public List<IRVNamedProperty> Properties { get; set; }
+    public IRVPointAttrib<float> Mass { get; set; } = null!;
 
-    public RVLod()
-    {
-    }
 
-    public RVLod(BisBinaryReader reader, RVShapeOptions options)
+    public RVLod() => Properties = new List<IRVNamedProperty>();
+
+    public RVLod(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
     {
+        Properties = new List<IRVNamedProperty>();
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
         }
     }
 
-    public RVLod(IRVResolution resolution, List<IRVDataVertex> vertices, List<IRVPoint> points, List<IRVVector> normals, List<IRVFace> faces, IRVPointAttrib<float> mass)
+    public RVLod
+    (
+        IRVResolution resolution,
+        List<IRVDataVertex> vertices,
+        List<IRVPoint> points,
+        List<IRVVector> normals,
+        List<IRVFace> faces,
+        List<IRVNamedProperty> properties,
+        IRVPointAttrib<float> mass
+    )
     {
         Vertices = vertices;
         Resolution = resolution;
         Points = points;
         Normals = normals;
         Faces = faces;
+        Properties = properties;
         Mass = mass;
     }
 
@@ -61,6 +76,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
+
         LastResult = Result.Ok();
 
         var magic = reader.ReadAscii(4, options);
@@ -133,6 +149,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         {
             case "TAGG":
             {
+                var shouldEndTaggs = false;
                 while (true)
                 {
                     //TODO: FACE TAGGS
@@ -140,7 +157,90 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                     {
                         return LastResult.WithError(new LodReadError("Tried to parse a tag without proper prefix."));
                     }
+
+                    var tagLength = reader.ReadInt32();
+
+                    switch (taggName)
+                    {
+                        case "#EndOfFile#":
+                        {
+                            shouldEndTaggs = true;
+                            break;
+                        }
+                        case "#Mass#":
+                        {
+                            switch (options.LodVersion)
+                            {
+                                case 0:
+                                {
+                                    LastResult.WithReason(new Warning { Message = "Old mass no longer supported." });
+                                    reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+                                    break;
+                                }
+                                default:
+                                {
+                                    var count = reader.ReadInt32();
+                                    if (count > 0)
+                                    {
+                                        for (var i = 0; i < count; i++)
+                                        {
+                                            Mass[i] = reader.ReadSingle();
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case "#Animation#":
+                        {
+                            throw new NotImplementedException();
+                        }
+                        case "#Property#":
+                        {
+                            Properties.Add
+                            (
+                                new RVNamedProperty
+                                (
+                                    reader.ReadChars(64).ToString()!.TrimEnd('\0', ' '),
+                                    reader.ReadChars(64).ToString()!.TrimEnd('\0', ' ')
+                                )
+                            );
+                            break;
+                        }
+                        case "#MaterialIndex#":
+                        {
+                            ReadMaterialIndex("__ambient", reader);
+                            ReadMaterialIndex("__diffuse", reader);
+                            ReadMaterialIndex("__specular", reader);
+                            ReadMaterialIndex("__emissive", reader);
+                            break;
+                        }
+                        default:
+                        {
+                            if (taggName.StartsWith('#'))
+                            {
+                                LastResult.WithReason(new Warning
+                                {
+                                    Message = $"Unknown or unsupported TAGG '{taggName}"
+                                });
+                                reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+                                break;
+                            }
+                            throw new NotImplementedException(); //TODO: Read Named Selection
+
+
+                        }
+
+                    }
+
+                    if(shouldEndTaggs)
+                    {
+                        break;
+                    }
                 }
+                Resolution = new RVResolution(reader, options);
+                break;
             }
             case "SS3D":
             {
@@ -156,8 +256,19 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 return LastResult.WithError(new LodReadError("Unknown setup magic."));
             }
         }
+
+        return LastResult;
     }
 
+    private void ReadMaterialIndex(string name, BinaryReader reader) =>
+        Properties.Add
+        (
+            new RVNamedProperty
+            (
+                name,
+                reader.ReadInt32().ToString("x8", CultureInfo.CurrentCulture)
+            )
+        );
 
 
     private static Result LexTagg(out string? taggName, BisBinaryReader reader)
