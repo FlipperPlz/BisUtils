@@ -3,6 +3,7 @@
 using Core.Binarize;
 using Core.Binarize.Implementation;
 using Core.IO;
+using Core.Render.Vector;
 using Errors;
 using FResults;
 using FResults.Extensions;
@@ -15,7 +16,7 @@ public interface IRVShape: IStrictBinaryObject<RVShapeOptions>
     string ModelName { get; set; }
     float Mass { get; }
     float InventoryMass { get; }
-    RVVector CenterOfMass { get; }
+    IVector3D CenterOfMass { get; }
     List<IRVLod> LevelsOfDetail { get; set; }
     IRVLod? MemoryLod { get; }
     IRVLod? GeometryLod { get; }
@@ -67,7 +68,7 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
 
     public float Mass { get; private set; }
     public float InventoryMass { get; private set; }
-    public RVVector CenterOfMass { get; set; } = null!;
+    public IVector3D CenterOfMass { get; set; } = null!;
     private List<IRVLod> lods = null!;
 
     public List<IRVLod> LevelsOfDetail
@@ -100,7 +101,7 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
         bool isLod;
         Mass = 0;
         InventoryMass = 1e10f;
-        CenterOfMass = new RVVector(0, 0, 0);
+        CenterOfMass = new Vector3D(0, 0, 0);
         switch (reader.ReadAscii(4, options))
         {
             case "NLOD":

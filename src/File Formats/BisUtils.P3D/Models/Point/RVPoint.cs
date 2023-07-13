@@ -2,22 +2,23 @@
 
 using Core.Extensions;
 using Core.IO;
+using Core.Render.Vector;
 using FResults;
 using Options;
-using Utils;
 
-public interface IRVPoint : IRVVector<RVShapeOptions>
+public interface IRVPoint : IVector3D
 {
     RVPointFlag? PointFlags { get; set; }
 }
 
-public class RVPoint : RVVector<RVShapeOptions>, IRVPoint
+public class RVPoint : BinarizableVector3D, IRVPoint
 {
     public RVPointFlag? PointFlags { get; set; }
 
     public RVPoint(float x, float y, float z, RVPointFlag? flags) : base(x, y, z) => PointFlags = flags;
 
-    public RVPoint(BisBinaryReader reader, RVShapeOptions options)
+
+    public RVPoint(BisBinaryReader reader, RVShapeOptions options) : base(reader, options, false)
     {
         if (!Debinarize(reader, options))
         {
@@ -30,7 +31,7 @@ public class RVPoint : RVVector<RVShapeOptions>, IRVPoint
 
     }
 
-    public sealed override Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
+    public Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
     {
         var result = base.Binarize(writer, options);
         if(PointFlags is { } flag)
@@ -41,7 +42,7 @@ public class RVPoint : RVVector<RVShapeOptions>, IRVPoint
         return result;
     }
 
-    public new Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
+    public Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
         var result = base.Debinarize(reader, options);
         if (options.ExtendedPoint)

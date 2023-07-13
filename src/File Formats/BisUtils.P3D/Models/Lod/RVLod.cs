@@ -8,6 +8,7 @@ using Core.Binarize.Implementation;
 using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.Extensions;
 using Core.IO;
+using Core.Render.Vector;
 using Data;
 using Errors;
 using Face;
@@ -21,7 +22,7 @@ using FResults.Reasoning;
 public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
 {
     public IRVResolution Resolution { get; set; }
-    List<IRVVector> Normals { get; set; }
+    List<IVector3D> Normals { get; set; }
     List<IRVPoint> Points { get; set; }
     List<IRVFace> Faces { get; set; }
     List<IRVDataVertex> Vertices { get; set; }
@@ -37,7 +38,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     protected const uint ValidVersion = 256;
     public IRVResolution Resolution { get; set; } = null!;
     public List<IRVPoint> Points { get; set; } = null!;
-    public List<IRVVector> Normals { get; set; } = null!;
+    public List<IVector3D> Normals { get; set; } = null!;
     public List<IRVFace> Faces { get; set; } = null!;
     public List<IRVDataVertex> Vertices { get; set; } = null!;
     public List<IRVNamedProperty> NamedProperties => new(RVConstants.MaxNamedProperties);
@@ -63,7 +64,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         IRVResolution resolution,
         List<IRVDataVertex> vertices,
         List<IRVPoint> points,
-        List<IRVVector> normals,
+        List<IVector3D> normals,
         List<IRVFace> faces,
         IRVPointAttrib<float> mass
     )
@@ -137,11 +138,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         }
 
         Points = reader
-            .ReadIndexedList<RVPoint, RVShapeOptions>(options, pointCount)
+            .ReadIndexedList<RVPoint, IBinarizationOptions>(options, pointCount)
             .Cast<IRVPoint>()
             .ToList();
         Normals = reader
-            .ReadIndexedList<RVVector, IBinarizationOptions>(options, normalCount).Cast<IRVVector>()
+            .ReadIndexedList<BinarizableVector3D, IBinarizationOptions>(options, normalCount)
+            .Cast<IVector3D>()
             .ToList();
         Faces = reader
             .ReadStrictIndexedList<RVFace, RVShapeOptions>(options, facesCount)
