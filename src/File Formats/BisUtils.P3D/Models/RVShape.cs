@@ -43,10 +43,6 @@ public interface IRVShape: IStrictBinaryObject<RVShapeOptions>
 public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
 {
     public string ModelName { get; set; }
-    public float Mass { get; private set; }
-    public float InventoryMass { get; private set; }
-    public RVVector CenterOfMass { get; set; } = null!;
-    private List<IRVLod> lods = null!;
     public IRVLod? MemoryLod { get; private set; }
     public IRVLod? GeometryLod { get; private set; }
     public IRVLod? FireGeometryLod { get; private set; }
@@ -62,13 +58,17 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
     public IRVLod? CargoShadowVolumeLod { get; private set; }
     public IRVLod? PilotShadowVolumeLod { get; private set; }
     public IRVLod? GunnerShadowVolumeLod { get; private set; }
-
     public IRVLod? WreckLod { get; private set; }
     public IRVLod? ShadowBufferLod { get; private set; }
-
     public int ShadowBufferLodsCount { get; private set; }
     public int ShadowVolumeLodsCount { get; private set; }
     public int GraphicalLodsCount { get; private set; }
+
+
+    public float Mass { get; private set; }
+    public float InventoryMass { get; private set; }
+    public RVVector CenterOfMass { get; set; } = null!;
+    private List<IRVLod> lods = null!;
 
     public List<IRVLod> LevelsOfDetail
     {
@@ -89,13 +89,14 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
     protected RVShape(string modelName, BisBinaryReader reader, RVShapeOptions options) : base(reader, options) =>
         ModelName = modelName;
 
-    public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options) => throw new NotImplementedException();
+    public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options) =>
+        throw new NotImplementedException();
 
     public override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
         LastResult = Result.Ok();
         options.LodVersion = -1;
-        var levelCount = options.MaxLodLevels;
+        var levelCount = 1;
         bool isLod;
         Mass = 0;
         InventoryMass = 1e10f;
@@ -113,10 +114,7 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
             {
                 isLod = true;
                 options.LodVersion = reader.ReadInt32();
-                if (options.LodVersion == 9999)
-                {
-                    options.LodVersion = 1;
-                }
+                levelCount = reader.ReadInt32();
                 break;
             }
             case "ODOL":
@@ -134,9 +132,8 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
             return LastResult.WithError(new LodReadError("Invalid P3D File!"));
         }
 
-        var major = options.LodVersion >> 8;
-        var minor = options.LodVersion & 0xff;
-        //TODO
+        var major = options.LodMajorVersion;
+        var minor = options.LodMinorVersion;
         return LastResult;
     }
 

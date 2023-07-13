@@ -5,6 +5,9 @@ using Lod;
 public static class RVConstants
 {
     public const float SpecialLod = 1e15f;
+    public const int MaxNamedSelections = 0x200;
+    public const int MaxNamedProperties = 0x80;
+
     public static readonly float MemoryLod = CalculateSpecialLod(1);
     public static readonly float LandContactLod = CalculateSpecialLod(2);
     public static readonly float RoadWayLod = CalculateSpecialLod(3);
@@ -14,6 +17,7 @@ public static class RVConstants
     public static readonly float FireGeometryLod = CalculateSpecialLod(7);
     public static readonly float ViewCargoGeometryLod = CalculateSpecialLod(8);
     public static readonly float ViewCargoFireGeometryLod = CalculateSpecialLod(9);
+
     public const float ViewCommanderLod = 1E+16f;
     public const float Buoyancy = 2E+13f;
     public const float ViewCommanderGeometryLod = 1.1E+16f;

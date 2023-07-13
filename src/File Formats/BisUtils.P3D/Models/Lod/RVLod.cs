@@ -24,8 +24,10 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IRVPoint> Points { get; set; }
     List<IRVFace> Faces { get; set; }
     List<IRVDataVertex> Vertices { get; set; }
-    List<IRVNamedProperty> Properties { get; set; }
-    IRVPointAttrib<float> Mass { get; set; }
+    List<IRVNamedProperty> NamedProperties { get; }
+    List<IRVNamedSelection> NamedSelections { get; }
+    List<IRVSharpEdge> SharpEdges { get; }
+    IRVPointAttrib<float> Mass { get; }
 }
 
 public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
@@ -37,15 +39,18 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVVector> Normals { get; set; } = null!;
     public List<IRVFace> Faces { get; set; } = null!;
     public List<IRVDataVertex> Vertices { get; set; } = null!;
-    public List<IRVNamedProperty> Properties { get; set; }
+    public List<IRVNamedProperty> NamedProperties => new(RVConstants.MaxNamedProperties);
+    public List<IRVNamedSelection> NamedSelections => new(RVConstants.MaxNamedSelections);
+    public List<IRVSharpEdge> SharpEdges => new();
     public IRVPointAttrib<float> Mass { get; set; } = null!;
 
 
-    public RVLod() => Properties = new List<IRVNamedProperty>();
+    public RVLod()
+    {
+    }
 
     public RVLod(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
     {
-        Properties = new List<IRVNamedProperty>();
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
@@ -59,7 +64,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         List<IRVPoint> points,
         List<IRVVector> normals,
         List<IRVFace> faces,
-        List<IRVNamedProperty> properties,
         IRVPointAttrib<float> mass
     )
     {
@@ -68,7 +72,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         Points = points;
         Normals = normals;
         Faces = faces;
-        Properties = properties;
         Mass = mass;
     }
 
@@ -198,7 +201,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                         }
                         case "#Property#":
                         {
-                            Properties.Add
+                            NamedProperties.Add
                             (
                                 new RVNamedProperty
                                 (
@@ -227,6 +230,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                                 reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
                                 break;
                             }
+
+                            if (NamedSelections.Count < NamedSelections.Capacity)
+                            {
+                                NamedSelections.Add(new RVNamedSelection(this, taggName));
+                            }
+
                             throw new NotImplementedException(); //TODO: Read Named Selection
 
 
@@ -261,7 +270,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     }
 
     private void ReadMaterialIndex(string name, BinaryReader reader) =>
-        Properties.Add
+        NamedProperties.Add
         (
             new RVNamedProperty
             (
