@@ -1,17 +1,18 @@
 ﻿namespace BisUtils.P3D.Models.Point;
 
 using Data;
+using Lod;
 
 public interface IRVPointAttrib<T> where T : struct
 {
-    public IRVShapeData Parent { get; set; }
+    public IRVLod Parent { get; set; }
     public List<T> Attributes { get; set; }
     T? this[int i] { get; set; }
 }
 
 public class RVPointAttrib<T> : IRVPointAttrib<T> where T : struct
 {
-    public IRVShapeData Parent { get; set; }
+    public IRVLod Parent { get; set; }
     public List<T> Attributes { get; set; }
 
     public T? this[int i]
@@ -26,7 +27,7 @@ public class RVPointAttrib<T> : IRVPointAttrib<T> where T : struct
         }
     }
 
-    public RVPointAttrib(IRVShapeData parentShape, List<T> attributes)
+    public RVPointAttrib(IRVLod parentShape, List<T> attributes)
     {
         Parent = parentShape;
         Attributes = attributes;

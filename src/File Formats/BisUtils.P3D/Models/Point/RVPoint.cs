@@ -1,28 +1,23 @@
 ﻿namespace BisUtils.P3D.Models.Point;
 
-using Core.Binarize.Options;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Options;
 using Utils;
 
-public interface IRVPoint : IRVVector
+public interface IRVPoint : IRVVector<RVShapeOptions>
 {
-    RVPointFlags PointFlags { get; }
-    public static abstract IRVPoint operator -(IRVPoint a, IRVPoint b);
+    RVPointFlag? PointFlags { get; set; }
 }
 
-public class RVPoint : RVVector, IRVPoint
+public class RVPoint : RVVector<RVShapeOptions>, IRVPoint
 {
-    public RVPointFlags PointFlags { get; private set; }
+    public RVPointFlag? PointFlags { get; set; }
 
-    public RVPoint(float x, float y, float z) : base(x, y, z)
-    {
-    }
+    public RVPoint(float x, float y, float z, RVPointFlag? flags) : base(x, y, z) => PointFlags = flags;
 
-    static IRVPoint IRVPoint.operator -(IRVPoint a, IRVPoint b) => new RVPoint(a.X-b.X, a.Y-b.Y, a.Z-b.Z);
-
-    public RVPoint(BisBinaryReader reader, IBinarizationOptions options)
+    public RVPoint(BisBinaryReader reader, RVShapeOptions options)
     {
         if (!Debinarize(reader, options))
         {
@@ -30,17 +25,29 @@ public class RVPoint : RVVector, IRVPoint
         }
     }
 
-    public sealed override Result Binarize(BisBinaryWriter writer, IBinarizationOptions options)
+    public RVPoint()
+    {
+
+    }
+
+    public sealed override Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
     {
         var result = base.Binarize(writer, options);
-        writer.Write((uint) PointFlags);
+        if(PointFlags is { } flag)
+        {
+            writer.Write((uint) flag);
+        }
+
         return result;
     }
 
-    public new Result Debinarize(BisBinaryReader reader, IBinarizationOptions options)
+    public new Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
         var result = base.Debinarize(reader, options);
-        PointFlags = (RVPointFlags) reader.ReadUInt32();
+        if (options.ExtendedPoint)
+        {
+            PointFlags = (RVPointFlag) reader.ReadUInt32();
+        }
         return result;
     }
 }

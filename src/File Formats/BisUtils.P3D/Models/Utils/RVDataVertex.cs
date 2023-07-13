@@ -2,12 +2,12 @@
 
 using Core.Binarize;
 using Core.Binarize.Implementation;
-using BisUtils.Core.Binarize.Options;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Options;
 
-public interface IRVUVSet : IBinaryObject<IBinarizationOptions>
+public interface IRVDataVertex : IBinaryObject<RVShapeOptions>
 {
     public int Point { get; set; }
     public int Normal { get; set; }
@@ -15,14 +15,14 @@ public interface IRVUVSet : IBinaryObject<IBinarizationOptions>
     public float MapV { get; set; }
 }
 
-public class RVUVSet : BinaryObject<IBinarizationOptions>, IRVUVSet
+public class RVDataVertex : BinaryObject<RVShapeOptions>, IRVDataVertex
 {
     public int Point { get; set; }
     public int Normal { get; set; }
     public float MapU { get; set; }
     public float MapV { get; set;  }
 
-    public RVUVSet(int point, int normal, float mapU, float mapV)
+    public RVDataVertex(int point, int normal, float mapU, float mapV)
     {
         Point = point;
         Normal = normal;
@@ -30,12 +30,12 @@ public class RVUVSet : BinaryObject<IBinarizationOptions>, IRVUVSet
         MapV = mapV;
     }
 
-    public RVUVSet()
+    public RVDataVertex()
     {
 
     }
 
-    public RVUVSet(BisBinaryReader reader, IBinarizationOptions options) : base(reader, options)
+    public RVDataVertex(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -43,7 +43,7 @@ public class RVUVSet : BinaryObject<IBinarizationOptions>, IRVUVSet
         }
     }
 
-    public override Result Binarize(BisBinaryWriter writer, IBinarizationOptions options)
+    public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
     {
         writer.Write(Point);
         writer.Write(Normal);
@@ -52,7 +52,7 @@ public class RVUVSet : BinaryObject<IBinarizationOptions>, IRVUVSet
         return Result.Ok();
     }
 
-    public sealed override Result Debinarize(BisBinaryReader reader, IBinarizationOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
         Point = reader.ReadInt32();
         Normal = reader.ReadInt32();

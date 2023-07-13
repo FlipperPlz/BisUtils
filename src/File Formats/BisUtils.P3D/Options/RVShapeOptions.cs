@@ -10,6 +10,8 @@ public class RVShapeOptions : IBinarizationOptions, IAsciizLimiterOptions
     public int MaxFacePolyCount { get; set; } = 4;
     public int MaxLodLevels { get; set; } = 32;
     public bool ExtendedFace { get; set; }
+    public bool ExtendedPoint { get; set; }
+
     public int FaceVersion { get; set; }
     public int LodVersion { get; set; }
     public Encoding Charset { get; set; } = Encoding.UTF8;

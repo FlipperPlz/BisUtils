@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.P3D.Models.Point;
 
 [Flags]
-public enum RVPointFlags : uint
+public enum RVPointFlag : uint
 {
     None = 0U,
     OnLand = 1U,

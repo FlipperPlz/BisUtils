@@ -6,10 +6,10 @@ using Models.Lod;
 
 public static class RvShapeExtensions
 {
-    public static IRVShapeData? LocateLevel(this IRVShape lod, float resolution, out int foundLevelPosition)
+    public static IRVLod? LocateLevel(this IRVShape lod, float resolution, out int foundLevelPosition)
     {
         var minDifference = Math.Abs(resolution) * 0.00001f;
-        IRVShapeData? found = null;
+        IRVLod? found = null;
         foundLevelPosition = -1;
         var levelPosition = -1;
         foreach (var level in lod.LevelsOfDetail)

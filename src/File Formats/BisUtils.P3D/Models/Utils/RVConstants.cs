@@ -39,146 +39,146 @@ public static class RVConstants
     public const float GeometryLod = 1e13f;
     public const float PhysXLod = 1e13f;
 
-    public static RVLodTypes GetLodType(float f)
+    public static RVLodType GetLodType(float f)
     {
         if (CompareFloats(f, MemoryLod))
         {
-            return RVLodTypes.Memory;
+            return RVLodType.Memory;
         }
 
         if (CompareFloats(f, LandContactLod))
         {
-            return RVLodTypes.LandContact;
+            return RVLodType.LandContact;
         }
 
         if (CompareFloats(f, RoadWayLod))
         {
-            return RVLodTypes.Roadway;
+            return RVLodType.Roadway;
         }
 
         if (CompareFloats(f, PathsLod))
         {
-            return RVLodTypes.Paths;
+            return RVLodType.Paths;
         }
 
         if (CompareFloats(f, PathsLod))
         {
-            return RVLodTypes.Paths;
+            return RVLodType.Paths;
         }
 
         if (CompareFloats(f, HitPointsLod))
         {
-            return RVLodTypes.HitPoints;
+            return RVLodType.HitPoints;
         }
 
         if (CompareFloats(f, ViewGeometryLod))
         {
-            return RVLodTypes.ViewGeometry;
+            return RVLodType.ViewGeometry;
         }
 
         if (CompareFloats(f, FireGeometryLod))
         {
-            return RVLodTypes.FireGeometry;
+            return RVLodType.FireGeometry;
         }
 
         if (CompareFloats(f, ViewCargoFireGeometryLod))
         {
-            return RVLodTypes.ViewCargoFireGeometry;
+            return RVLodType.ViewCargoFireGeometry;
         }
 
         if (CompareFloats(f, ViewCommanderLod))
         {
-            return RVLodTypes.ViewCommander;
+            return RVLodType.ViewCommander;
         }
 
         if (CompareFloats(f, ViewCommanderGeometryLod))
         {
-            return RVLodTypes.ViewCommanderGeometry;
+            return RVLodType.ViewCommanderGeometry;
         }
 
         if (CompareFloats(f, ViewCommanderFireGeometryLod))
         {
-            return RVLodTypes.ViewCommanderFireGeometry;
+            return RVLodType.ViewCommanderFireGeometry;
         }
 
         if (CompareFloats(f, ViewPilotGeometryLod))
         {
-            return RVLodTypes.ViewPilotGeometry;
+            return RVLodType.ViewPilotGeometry;
         }
 
         if (CompareFloats(f, ViewPilotFireGeometryLod))
         {
-            return RVLodTypes.ViewPilotFireGeometry;
+            return RVLodType.ViewPilotFireGeometry;
         }
 
         if (CompareFloats(f, ViewGunnerGeometryLod))
         {
-            return RVLodTypes.ViewGunnerGeometry;
+            return RVLodType.ViewGunnerGeometry;
         }
 
         if (CompareFloats(f, ViewGunnerFireGeometryLod))
         {
-            return RVLodTypes.ViewGunnerFireGeometry;
+            return RVLodType.ViewGunnerFireGeometry;
         }
 
         if (CompareFloats(f, SubPartsLod))
         {
-            return RVLodTypes.SubParts;
+            return RVLodType.SubParts;
         }
 
         if (CompareFloats(f, ViewCargoShadowVolumeLod))
         {
-            return RVLodTypes.ShadowVolumeViewCargo;
+            return RVLodType.ShadowVolumeViewCargo;
         }
 
         if (CompareFloats(f, ViewPilotShadowVolumeLod))
         {
-            return RVLodTypes.ShadowVolumeViewPilot;
+            return RVLodType.ShadowVolumeViewPilot;
         }
 
         if (CompareFloats(f, ViewGunnerShadowVolumeLod))
         {
-            return RVLodTypes.ShadowVolumeViewGunner;
+            return RVLodType.ShadowVolumeViewGunner;
         }
 
         if (CompareFloats(f, WreckLod))
         {
-            return RVLodTypes.Wreck;
+            return RVLodType.Wreck;
         }
 
         if (CompareFloats(f, ViewGunnerLod))
         {
-            return RVLodTypes.ViewGunner;
+            return RVLodType.ViewGunner;
         }
 
         if (CompareFloats(f, ViewPilotLod))
         {
-            return RVLodTypes.ViewPilot;
+            return RVLodType.ViewPilot;
         }
 
         if (CompareFloats(f, ViewCargoLod))
         {
-            return RVLodTypes.ViewCargo;
+            return RVLodType.ViewCargo;
         }
 
         if (CompareFloats(f, GeometryLod))
         {
-            return RVLodTypes.Geometry;
+            return RVLodType.Geometry;
         }
 
         if (CompareFloats(f, PhysXLod))
         {
-            return RVLodTypes.PhysX;
+            return RVLodType.PhysX;
         }
 
-        return WithinShadowRange(f) ? RVLodTypes.ShadowVolume : RVLodTypes.Undefined;
+        return WithinShadowRange(f) ? RVLodType.ShadowVolume : RVLodType.Undefined;
     }
 
 
     public static bool CanBeResolution(float value) => value < ShadowBLod;
 
-    public static bool CanBeShadow(RVLodTypes types) => types is RVLodTypes.ShadowVolume or RVLodTypes.ShadowVolumeViewGunner
-        or RVLodTypes.ShadowVolumeViewPilot or RVLodTypes.ShadowVolumeViewGunner;
+    public static bool CanBeShadow(RVLodType type) => type is RVLodType.ShadowVolume or RVLodType.ShadowVolumeViewGunner
+        or RVLodType.ShadowVolumeViewPilot or RVLodType.ShadowVolumeViewGunner;
 
     public static bool WithinShadowRange(float f) => f is >= MinShadowLod and <= MaxShadowLod;
 
@@ -206,18 +206,18 @@ public static class RVConstants
     public static bool IsResolutionLod(float x) =>
         x < MinShadowLod || CompareFloats(x, ViewCommanderLod);
 
-    public static bool ShouldKeepNamedSelections(RVLodTypes types) =>
-        types
-            is RVLodTypes.Memory
-            or RVLodTypes.FireGeometry
-            or RVLodTypes.Geometry
-            or RVLodTypes.ViewGeometry
-            or RVLodTypes.ViewPilotGeometry
-            or RVLodTypes.ViewGunnerGeometry
-            or RVLodTypes.ViewCargoGeometry
-            or RVLodTypes.Paths
-            or RVLodTypes.HitPoints
-            or RVLodTypes.PhysX;
+    public static bool ShouldKeepNamedSelections(RVLodType type) =>
+        type
+            is RVLodType.Memory
+            or RVLodType.FireGeometry
+            or RVLodType.Geometry
+            or RVLodType.ViewGeometry
+            or RVLodType.ViewPilotGeometry
+            or RVLodType.ViewGunnerGeometry
+            or RVLodType.ViewCargoGeometry
+            or RVLodType.Paths
+            or RVLodType.HitPoints
+            or RVLodType.PhysX;
 
     public static bool IsGeometryLod(float x) =>
         CompareFloats(x, ViewGeometryLod) || CompareFloats(x, FireGeometryLod) ||

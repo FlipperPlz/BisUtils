@@ -7,7 +7,7 @@ using Lod;
 public interface IRVResolution
 {
     public string Name { get; }
-    public RVLodTypes Type { get; }
+    public RVLodType Type { get; }
     public float Value { get; }
     public bool KeepsNamedSelections { get; }
     public bool IsResolution { get; }
@@ -19,7 +19,7 @@ public interface IRVResolution
 public readonly struct RVResolution : IRVResolution
 {
     public float Value { get; }
-    public RVLodTypes Type { get; }
+    public RVLodType Type { get; }
     public bool KeepsNamedSelections { get; }
     public string Name { get; }
     public bool IsResolution { get; }
@@ -33,7 +33,7 @@ public readonly struct RVResolution : IRVResolution
         Name = GetLodName(Value, Type);
         IsResolution = RVConstants.CanBeResolution(Value);
         IsShadow = RVConstants.CanBeShadow(Type);
-        IsVisual = IsResolution || Type is RVLodTypes.ViewCargo or RVLodTypes.ViewPilot or RVLodTypes.ViewCommander;
+        IsVisual = IsResolution || Type is RVLodType.ViewCargo or RVLodType.ViewPilot or RVLodType.ViewCommander;
         KeepsNamedSelections = RVConstants.CompareFloats(value, RVConstants.Buoyancy) || RVConstants.ShouldKeepNamedSelections(Type);
     }
 
@@ -41,12 +41,12 @@ public readonly struct RVResolution : IRVResolution
     public static implicit operator float(RVResolution resolution) => resolution.Value;
     public static explicit operator RVResolution(float resolution) => new(resolution);
 
-    private static string GetLodName(float value, RVLodTypes? type = null)
+    private static string GetLodName(float value, RVLodType? type = null)
     {
         type ??= RVConstants.GetLodType(value);
-        if (type != RVLodTypes.ShadowVolume)
+        if (type != RVLodType.ShadowVolume)
         {
-            return (type == RVLodTypes.Resolution ? value.ToString("#.000", CultureInfo.CurrentCulture) : Enum.GetName(typeof(RVLodTypes), type)) ?? string.Empty;
+            return (type == RVLodType.Resolution ? value.ToString("#.000", CultureInfo.CurrentCulture) : Enum.GetName(typeof(RVLodType), type)) ?? string.Empty;
         }
 
         return $"ShadowVolume{value - RVConstants.ShadowBLod}";

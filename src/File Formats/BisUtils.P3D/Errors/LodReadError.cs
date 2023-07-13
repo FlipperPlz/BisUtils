@@ -3,6 +3,7 @@
 using FResults.Reasoning;
 using Models;
 using Models.Data;
+using Models.Lod;
 
 public class LodReadError : ErrorBase
 {
@@ -13,7 +14,7 @@ public class LodReadError : ErrorBase
     public LodReadError(string reason, string alertName = "Generic Lod Read Failure")
     {
         AlertName = alertName;
-        AlertScope = typeof(RVShapeData);
+        AlertScope = typeof(RVLod);
         Message = $"There was an error reading a shape LOD. {reason}";
     }
 }

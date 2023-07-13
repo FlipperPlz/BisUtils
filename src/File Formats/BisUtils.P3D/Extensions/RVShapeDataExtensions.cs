@@ -1,15 +1,16 @@
 ﻿namespace BisUtils.P3D.Extensions;
 
 using Models.Data;
+using Models.Lod;
 
 public static class RVShapeDataExtensions
 {
-    public static int PointCount(this IRVShapeData data) => data.Points.Count;
-    public static int NormalsCount(this IRVShapeData data) => data.Normals.Count;
-    public static int FacesCount(this IRVShapeData data) => data.Faces.Count;
+    public static int PointCount(this IRVLod data) => data.Points.Count;
+    public static int NormalsCount(this IRVLod data) => data.Normals.Count;
+    public static int FacesCount(this IRVLod data) => data.Faces.Count;
 
 
-    public static void ResetMass(this IRVShapeData lod, int? index = null)
+    public static void ResetMass(this IRVLod lod, int? index = null)
     {
         if (index is { } nIndex)
         {

@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.P3D.Models.Face;
 
 [Flags]
-public enum RVFaceFlags
+public enum RVFaceFlag
 {
     Default = 0,
     ShadowOff = 16,

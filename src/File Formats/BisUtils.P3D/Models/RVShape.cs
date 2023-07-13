@@ -3,31 +3,28 @@
 using Core.Binarize;
 using Core.Binarize.Implementation;
 using Core.IO;
-using Data;
 using Errors;
 using Extensions;
 using FResults;
 using FResults.Extensions;
+using Lod;
 using Options;
 using Utils;
 
 public interface IRVShape: IStrictBinaryObject<RVShapeOptions>
 {
     string ModelName { get; }
-    float ModelMass { get; set; }
-    List<IRVShapeData> LevelsOfDetail { get; set; }
+    List<IRVLod> LevelsOfDetail { get; set; }
 }
 
 public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
 {
     public string ModelName { get; }
-    public float ModelMass { get; set; }
-    public List<IRVShapeData> LevelsOfDetail { get; set; } = null!;
+    public List<IRVLod> LevelsOfDetail { get; set; } = null!;
 
-    protected RVShape(string modelName, float modelMass, List<IRVShapeData> levelsOfDetail)
+    protected RVShape(string modelName, List<IRVLod> levelsOfDetail)
     {
         ModelName = modelName;
-        ModelMass = modelMass;
         LevelsOfDetail = levelsOfDetail;
     }
 
@@ -69,8 +66,8 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
             default: return LastResult.WithError(new LodReadError("Unknown lod magic, expected ODOL, MLOD, or NLOD."));
         }
         LevelsOfDetail = reader
-            .ReadStrictIndexedList<RVShapeData, RVShapeOptions>(options, levelCount)
-            .Cast<IRVShapeData>()
+            .ReadStrictIndexedList<RVLod, RVShapeOptions>(options, levelCount)
+            .Cast<IRVLod>()
             .ToList();
         if (LevelsOfDetail.Count == 1 && options.LodVersion < 0 && !isLod)
         {

@@ -16,28 +16,28 @@ public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
 {
     string Texture { get; set; }
     string? Material { get; set; }
-    List<IRVUVSet> UVSets { get; set; }
-    public RVFaceFlags? Flags { get; set; }
+    RVFaceFlag? Flags { get; set; }
+    List<IRVDataVertex> Vertices { get; set; }
 
-    public bool IsOld { get; }
-    public bool IsExtended { get; }
+    bool IsOld { get; }
+    bool IsExtended { get; }
 }
 
 public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
 {
     public string Texture { get; set; } = null!;
     public string? Material { get; set; }
-    public List<IRVUVSet> UVSets { get; set; } = null!;
-    public RVFaceFlags? Flags { get; set; }
+    public List<IRVDataVertex> Vertices { get; set; } = null!;
+    public RVFaceFlag? Flags { get; set; }
     public bool IsOld => Material is null;
     public bool IsExtended => Flags is not null;
 
-    public RVFace(string texture, string? material, List<IRVUVSet> uvSets, RVFaceFlags flags)
+    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, RVFaceFlag flag)
     {
+        Vertices = vertices;
         Texture = texture;
         Material = material;
-        UVSets = uvSets;
-        Flags = flags;
+        Flags = flag;
     }
 
     public RVFace()
@@ -55,41 +55,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
 
     public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
     {
-        #region Write Face Header
-
-        switch (options.ExtendedFace)
-        {
-            case false:
-            {
-                writer.WriteAsciiZ(Texture, options);
-                writer.WriteAsciiZ(Material ?? "", options);
-                Flags = null;
-                return LastResult = UVSets.WriteBinarized(writer, options);
-            }
-            case true:
-            {
-                switch (options.FaceVersion)
-                {
-                    case 1:
-                    {
-                        LastResult = UVSets.WriteBinarized(writer, options);
-                        writer.Write((int?)Flags ?? 0 );//TODO(Validate): ASSERT Flags When Extended
-                        writer.WriteAsciiZ(Texture, options); //TODO(Validate): ASSERT V1 EXTENDED 9000 max
-                        writer.WriteAsciiZ(Material ?? "", options); //TODO(Validate) ASSERT V1 EXTENDED 9000 max
-                        return LastResult;
-                    }
-                    default:
-                    {
-                        writer.Write(Texture[..32]);//TODO(Validate): ASSERT NON-V1 EXTENDED 32 max
-                        LastResult = UVSets.WriteBinarized(writer, options);
-                        writer.Write((int?)Flags ?? 0 );
-                        return LastResult;
-                    }
-                }
-            }
-        }
-
-        #endregion
+        throw new NotImplementedException();
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
@@ -103,11 +69,11 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                 Texture = texture;
                 reader.ReadAsciiZ(out var material, options);
                 Material = material;
+                Vertices = reader.ReadIndexedList<RVDataVertex, RVShapeOptions>(options)
+                    .Cast<IRVDataVertex>()
+                    .ToList();
                 Flags = null;
                 LastResult = Result.Ok();
-                UVSets = reader.ReadIndexedList<RVUVSet, IBinarizationOptions>(options)
-                    .Cast<IRVUVSet>()
-                    .ToList();
                 break;
             }
             case true:
@@ -117,10 +83,10 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                     case 1:
                     {
                         LastResult = Result.Ok();
-                        UVSets = reader.ReadIndexedList<RVUVSet, IBinarizationOptions>(options)
-                            .Cast<IRVUVSet>()
+                        Vertices = reader.ReadIndexedList<RVDataVertex, RVShapeOptions>(options)
+                            .Cast<IRVDataVertex>()
                             .ToList();
-                        Flags = (RVFaceFlags)reader.ReadInt32();
+                        Flags = (RVFaceFlag)reader.ReadInt32();
                         LastResult.WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture;
                         LastResult.WithReasons(reader.ReadAsciiZ(out var material, options).Reasons);
@@ -131,9 +97,6 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                     {//TODO(Validate): maybe not terminated
                         (LastResult = Result.Ok()).WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture;
-                        UVSets = reader.ReadIndexedList<RVUVSet, IBinarizationOptions>(options)
-                            .Cast<IRVUVSet>()
-                            .ToList();
                         break;
                     }
                 }
@@ -142,57 +105,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
         }
         #endregion
 
-        #region Read Face Body
-
-        switch (reader.ReadAscii(4, options))
-        {
-            case "TAGG":
-            {
-                while (true)
-                {
-                    LexTagg(out var taggName, reader);
-                    if (taggName is null || !taggName.StartsWith('#'))
-                    {
-                        return LastResult.WithError(new FaceReadError("Tried to parse a tag without proper prefix."));
-                    }
-                }
-            }
-            case "SS3D":
-            {
-                var nVertices = reader.ReadInt32();
-                var nFaces = reader.ReadInt32();
-                var nNormals = reader.ReadInt32();
-                var normSize = reader.ReadInt32();
-                //TODO(SS3D): Read
-                throw new NotImplementedException();
-            }
-            default:
-            {
-                return LastResult.WithError(new FaceReadError("Unknown setup magic."));
-            }
-        }
-
-        #endregion
-    }
-
-    private static Result LexTagg(out string? taggName, BisBinaryReader reader)
-    {
-        var taggBuilder = new StringBuilder("#");
-        var currentChar = reader.ReadChar();
-        if (currentChar != '#')
-        {
-            taggName = null;
-            return Result.Fail(new FaceReadError("Expected '#'"));
-        }
-
-        do
-        {
-            taggBuilder.Append(currentChar = reader.ReadChar());
-        } while (currentChar != '#');
-
-        taggName = taggBuilder.ToString();
-
-        return Result.Ok();
+        return LastResult;
     }
 
     public override Result Validate(RVShapeOptions options) => LastResult = Result.Ok();
