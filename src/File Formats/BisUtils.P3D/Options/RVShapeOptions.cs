@@ -18,10 +18,6 @@ public class RVShapeOptions : IBinarizationOptions, IAsciizLimiterOptions
     public int LodVersion { get; set; }
     public bool ExtendedFace { get; set; }
     public bool ExtendedPoint { get; set; }
-    public int SelectionVerticesCount { get; set; }
-    public int SelectionFaceCount { get; set; }
-    public int SelectionNormalsCount { get; set; }
-
     public int LodMajorVersion => LodVersion >> 8;
     public int LodMinorVersion => LodVersion & 0xff;
 

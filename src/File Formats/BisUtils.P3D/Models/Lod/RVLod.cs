@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.P3D.Models.Lod;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using Core.Binarize;
@@ -148,125 +149,9 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             .ToList();
         Resolution = (RVResolution) reader.ReadSingle();
 
-        switch (reader.ReadAscii(4, options))
-        {
-            case "TAGG":
-            {
-                var shouldEndTaggs = false;
-                while (true)
-                {
-                    //TODO: FACE TAGGS
-                    if (!LexTagg(out var taggName, reader) || taggName is null || !taggName.StartsWith('#'))
-                    {
-                        return LastResult.WithError(new LodReadError("Tried to parse a tag without proper prefix."));
-                    }
-
-                    var tagLength = reader.ReadInt32();
-
-                    switch (taggName)
-                    {
-                        case "#EndOfFile#":
-                        {
-                            shouldEndTaggs = true;
-                            break;
-                        }
-                        case "#Mass#":
-                        {
-                            switch (options.LodVersion)
-                            {
-                                case 0:
-                                {
-                                    LastResult.WithReason(new Warning { Message = "Old mass no longer supported." });
-                                    reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
-                                    break;
-                                }
-                                default:
-                                {
-                                    var count = reader.ReadInt32();
-                                    if (count > 0)
-                                    {
-                                        for (var i = 0; i < count; i++)
-                                        {
-                                            Mass[i] = reader.ReadSingle();
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                        case "#Animation#":
-                        {
-                            throw new NotImplementedException();
-                        }
-                        case "#Property#":
-                        {
-                            NamedProperties.Add
-                            (
-                                new RVNamedProperty
-                                (
-                                    reader.ReadChars(64).ToString()!.TrimEnd('\0', ' '),
-                                    reader.ReadChars(64).ToString()!.TrimEnd('\0', ' ')
-                                )
-                            );
-                            break;
-                        }
-                        case "#MaterialIndex#":
-                        {
-                            ReadMaterialIndex("__ambient", reader);
-                            ReadMaterialIndex("__diffuse", reader);
-                            ReadMaterialIndex("__specular", reader);
-                            ReadMaterialIndex("__emissive", reader);
-                            break;
-                        }
-                        default:
-                        {
-                            if (taggName.StartsWith('#'))
-                            {
-                                LastResult.WithReason(new Warning
-                                {
-                                    Message = $"Unknown or unsupported TAGG '{taggName}"
-                                });
-                                reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
-                                break;
-                            }
-
-                            if (NamedSelections.Count < NamedSelections.Capacity)
-                            {
-                                NamedSelections.Add(new RVNamedSelection(this, taggName));
-                            }
-
-                            throw new NotImplementedException(); //TODO: Read Named Selection
 
 
-                        }
-
-                    }
-
-                    if(shouldEndTaggs)
-                    {
-                        break;
-                    }
-                }
-                Resolution = new RVResolution(reader, options);
-                break;
-            }
-            case "SS3D":
-            {
-                //var nVertices = reader.ReadInt32();
-                //var nFaces = reader.ReadInt32();
-                //var nNormals = reader.ReadInt32();
-                //var normSize = reader.ReadInt32();
-                //TODO(SS3D): Read
-                throw new NotImplementedException();
-            }
-            default:
-            {
-                return LastResult.WithError(new LodReadError("Unknown setup magic."));
-            }
-        }
-
-        return LastResult;
+        return ReadLodBody(reader, options);
     }
 
     private void ReadMaterialIndex(string name, BinaryReader reader) =>
@@ -279,6 +164,128 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             )
         );
 
+    private Result ReadLodBody(BisBinaryReader reader, RVShapeOptions options) => reader.ReadAscii(4, options) switch
+    {
+        "TAGG" => (LastResult ??= Result.Ok()).WithReasons(ReadTaggs(reader, options).Reasons),
+        "SS3D" => (LastResult ??= Result.Ok()).WithReasons(ReadSS3D(reader, options).Reasons),
+        _ => (LastResult ??= Result.Ok()).WithError(new LodReadError("Unknown setup magic."))
+    };
+
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
+    [SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Local")]
+    [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+    [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+    private Result ReadSS3D(BisBinaryReader reader, RVShapeOptions options)
+    {
+        /*var nVertices = */reader.ReadInt32();
+        /*var nFaces = */reader.ReadInt32();
+        /*var nNormals =*/ reader.ReadInt32();
+        /*var normSize =*/ reader.ReadInt32();
+        //TODO(SS3D): Read
+        throw new NotImplementedException();
+    }
+
+    private Result ReadTaggs(BisBinaryReader reader, RVShapeOptions options)
+    {
+        LastResult ??= Result.Ok();
+        var shouldEndTaggs = false;
+        while (true)
+        {
+            //TODO: FACE TAGGS
+            if (!LexTagg(out var taggName, reader) || taggName is null || !taggName.StartsWith('#'))
+            {
+                return LastResult.WithError(new LodReadError("Tried to parse a tag without proper prefix."));
+            }
+
+            var tagLength = reader.ReadInt32();
+            switch (taggName)
+            {
+                case "#EndOfFile#":
+                {
+                    shouldEndTaggs = true;
+                    break;
+                }
+                case "#Mass#":
+                {
+                    switch (options.LodVersion)
+                    {
+                        case 0:
+                        {
+                            LastResult.WithReason(new Warning { Message = "Old mass no longer supported." });
+                            reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+                            break;
+                        }
+                        default:
+                        {
+                            var count = reader.ReadInt32();
+                            if (count > 0)
+                            {
+                                for (var i = 0; i < count; i++)
+                                {
+                                    Mass[i] = reader.ReadSingle();
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+                case "#Animation#":
+                {
+                    throw new NotImplementedException();
+                }
+                case "#Property#":
+                {
+                    NamedProperties.Add
+                    (
+                        new RVNamedProperty
+                        (
+                            reader.ReadChars(64).ToString()!.TrimEnd('\0', ' '),
+                            reader.ReadChars(64).ToString()!.TrimEnd('\0', ' ')
+                        )
+                    );
+                    break;
+                }
+                case "#MaterialIndex#":
+                {
+                    ReadMaterialIndex("__ambient", reader);
+                    ReadMaterialIndex("__diffuse", reader);
+                    ReadMaterialIndex("__specular", reader);
+                    ReadMaterialIndex("__emissive", reader);
+                    break;
+                }
+                default:
+                {
+                    int verticesSize = Points.Count * sizeof(byte), facesSize = Faces.Count * sizeof(bool);
+                    if (taggName.StartsWith('#'))
+                    {
+                        LastResult.WithReason(new Warning { Message = $"Unknown or unsupported TAGG '{taggName}" });
+                        reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+                        break;
+                    }
+
+                    if (NamedSelections.Count < NamedSelections.Capacity)
+                    {
+                        var selection = new RVNamedSelection(this, taggName);
+                        selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                        NamedSelections.Add(selection);
+                    }
+
+                    break;
+                }
+            }
+
+            if (shouldEndTaggs)
+            {
+                break;
+            }
+        }
+
+        Resolution = new RVResolution(reader, options);
+        return LastResult;
+    }
 
     private static Result LexTagg(out string? taggName, BisBinaryReader reader)
     {

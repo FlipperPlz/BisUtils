@@ -1,39 +1,46 @@
 ﻿namespace BisUtils.P3D.Models.Data;
 
-using Core.Binarize;
-using Core.Binarize.Implementation;
 using Core.IO;
-using FResults;
 using Lod;
-using Options;
 
 public interface IRVSelection
 {
     IRVLod Parent { get; }
-    IReadOnlyList<byte> SelectedVertices { get; }
-    IReadOnlyList<bool> SelectedFaces { get; }
+    List<byte> SelectedVertices { get; }
+    List<bool> SelectedFaces { get; }
 }
 
 public class RVSelection : IRVSelection
 {
     public IRVLod Parent { get; set; }
-    public IReadOnlyList<byte> SelectedVertices => vertices.AsReadOnly();
-    public IReadOnlyList<bool> SelectedFaces => faces.AsReadOnly();
 
-    private readonly List<byte> vertices = new();
-    private readonly List<bool> faces = new();
+    public List<byte> SelectedVertices { get; private set; } = new();
 
-    public RVSelection(IRVLod lod)
+    public List<bool> SelectedFaces { get; private set; } = new();
+
+    public RVSelection(IRVLod lod) => Parent = lod;
+
+    public void LoadSelection(BisBinaryReader reader, int sizeVert, int sizeFace, int sizeNorm)
     {
-        Parent = lod;
-        EvaluateLod();
+        if(sizeVert > 0)
+        {
+            SelectedVertices = reader.ReadIndexedList(it => it.ReadByte()).ToList();
+        }
+
+        EvaluateFaces(sizeFace);
+        EvaluateFaces(sizeVert);
+        if (sizeFace > 0)
+        {
+            SelectedFaces = reader.ReadIndexedList(it => it.ReadBoolean()).ToList();
+        }
     }
+    //TODO: Save
 
     private void EvaluatePoints(int count = -1) =>
-        Evaluate(count, Parent.Vertices.Count, vertices, it => Enumerable.Repeat<byte>(0, it));
+        Evaluate(count, Parent.Vertices.Count, SelectedVertices, it => Enumerable.Repeat<byte>(0, it));
 
     private void EvaluateFaces(int count = -1) =>
-        Evaluate(count, Parent.Faces.Count, faces, it => Enumerable.Repeat(false, it));
+        Evaluate(count, Parent.Faces.Count, SelectedFaces, it => Enumerable.Repeat(false, it));
 
     private static void Evaluate<T>(int count, int parentCount, List<T> collection, Func<int, IEnumerable<T>> generateItems)
     {
@@ -47,8 +54,8 @@ public class RVSelection : IRVSelection
 
     private void EvaluateLod()
     {
-        vertices.Clear();
-        faces.Clear();
+        SelectedVertices.Clear();
+        SelectedFaces.Clear();
         EvaluatePoints();
         EvaluateFaces();
     }

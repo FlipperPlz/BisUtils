@@ -80,6 +80,18 @@ public class BisBinaryReader : BinaryReader
         }
     }
 
+    public IEnumerable<T> ReadIndexedList<T>(Func<BisBinaryReader, T> factory, int count = -1)
+    {
+        if(count < 0)
+        {
+            count = ReadInt32();
+        }
+        for(var i = 0; i < count; i++)
+        {
+            yield return factory(this);
+        }
+    }
+
     public IEnumerable<T> ReadIndexedList<TBase, T, TOptions>(TOptions options, int? count = null, Action<T>? afterRead = null)
         where TBase : IBinarizable<TOptions>
         where T : TBase, new()
