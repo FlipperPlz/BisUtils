@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.P3D.Models.Lod;
 
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
@@ -28,8 +29,11 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IRVDataVertex> Vertices { get; set; }
     List<IRVNamedProperty> NamedProperties { get; }
     List<IRVNamedSelection> NamedSelections { get; }
+    IReadOnlyList<IRVAnimationPhase> AnimationPhases { get; }
     List<IRVSharpEdge> SharpEdges { get; }
     IRVPointAttrib<float> Mass { get; }
+
+    void AddAnimationPhase(IRVAnimationPhase phase);
 }
 
 public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
@@ -43,8 +47,10 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVDataVertex> Vertices { get; set; } = null!;
     public List<IRVNamedProperty> NamedProperties => new(RVConstants.MaxNamedProperties);
     public List<IRVNamedSelection> NamedSelections => new(RVConstants.MaxNamedSelections);
+    public IReadOnlyList<IRVAnimationPhase> AnimationPhases => animationPhases;
     public List<IRVSharpEdge> SharpEdges => new();
     public IRVPointAttrib<float> Mass { get; set; } = null!;
+    private List<IRVAnimationPhase> animationPhases => new();
 
 
     public RVLod()
@@ -75,6 +81,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         Normals = normals;
         Faces = faces;
         Mass = mass;
+    }
+
+    public void AddAnimationPhase(IRVAnimationPhase phase)
+    {
+        var i = animationPhases.FindIndex(p => p.Time > phase.Time);
+        animationPhases.Insert(i != -1 ? i : animationPhases.Count, phase);
     }
 
     public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options) => throw new NotImplementedException();
@@ -219,13 +231,10 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                         }
                         default:
                         {
-                            var count = reader.ReadInt32();
-                            if (count > 0)
+                            var count = Points.Count;
+                            if(count > 0)
                             {
-                                for (var i = 0; i < count; i++)
-                                {
-                                    Mass[i] = reader.ReadSingle();
-                                }
+                                Mass.Attributes = reader.ReadIndexedList(it => it.ReadSingle(), count).ToList();
                             }
 
                             break;
@@ -236,7 +245,15 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
                 case "#Animation#":
                 {
-                    throw new NotImplementedException();
+                    var phase = new RVAnimationPhase(reader, options)
+                    {
+                        Parent = this
+                    };
+                    foreach (var point in Vertices)
+                    {
+
+                    }
+                    break;
                 }
                 case "#Property#":
                 {

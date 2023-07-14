@@ -61,11 +61,10 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
     public IRVLod? GunnerShadowVolumeLod { get; private set; }
     public IRVLod? WreckLod { get; private set; }
     public IRVLod? ShadowBufferLod { get; private set; }
+
     public int ShadowBufferLodsCount { get; private set; }
     public int ShadowVolumeLodsCount { get; private set; }
     public int GraphicalLodsCount { get; private set; }
-
-
     public float Mass { get; private set; }
     public float InventoryMass { get; private set; }
     public IVector3D CenterOfMass { get; set; } = null!;
