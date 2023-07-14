@@ -30,6 +30,8 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IRVAnimationPhase> AnimationPhases { get; }
     List<IRVSharpEdge> SharpEdges { get; }
     IRVPointAttrib<float> Mass { get; }
+    IRVSelection? HiddenSelection { get; }
+    IRVSelection? LockedSelection { get; }
 
 
     void AddAnimationPhase(IRVAnimationPhase phase);
@@ -48,6 +50,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVAnimationPhase> AnimationPhases => new();
     public List<IRVSharpEdge> SharpEdges { get; private set; } = new();
     public IRVPointAttrib<float> Mass { get; set; } = null!;
+    public IRVSelection? HiddenSelection { get; private set; }
+    public IRVSelection? LockedSelection { get; private set; }
 
 
     public RVLod()
@@ -196,6 +200,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     {
         LastResult ??= Result.Ok();
         var shouldEndTaggs = false;
+        int verticesSize = Points.Count * sizeof(byte), facesSize = Faces.Count * sizeof(bool);
+
         while (true)
         {
             var activated = reader.ReadBoolean();
@@ -214,6 +220,20 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 case "#EndOfFile#":
                 {
                     shouldEndTaggs = true;
+                    break;
+                }
+                case "#Lock#":
+                {
+                    var selection = new RVSelection(this);
+                    selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                    LockedSelection = selection;
+                    break;
+                }
+                case "#Hide#":
+                {
+                    var selection = new RVSelection(this);
+                    selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                    HiddenSelection = selection;
                     break;
                 }
                 case "#ShapeEdges#":
@@ -290,7 +310,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
                 default:
                 {
-                    int verticesSize = Points.Count * sizeof(byte), facesSize = Faces.Count * sizeof(bool);
                     if (taggName.StartsWith('#'))
                     {
                         LastResult.WithReason(new Warning { Message = $"Unknown or unsupported TAGG '{taggName}" });
