@@ -24,12 +24,11 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IVector3D> Normals { get; set; }
     List<IRVPoint> Points { get; set; }
     List<IRVFace> Faces { get; set; }
-    List<IRVDataVertex> Vertices { get; set; }
     List<IRVNamedProperty> NamedProperties { get; }
     List<IRVNamedSelection> NamedSelections { get; }
     List<IRVAnimationPhase> AnimationPhases { get; }
     List<IRVSharpEdge> SharpEdges { get; }
-    IRVPointAttrib<float> Mass { get; }
+    IRVPointAttrib<float>? Mass { get; }
     IRVSelection? Selection { get; }
     IRVSelection? HiddenSelection { get; }
     IRVSelection? LockedSelection { get; }
@@ -45,12 +44,11 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVPoint> Points { get; set; } = null!;
     public List<IVector3D> Normals { get; set; } = null!;
     public List<IRVFace> Faces { get; set; } = null!;
-    public List<IRVDataVertex> Vertices { get; set; } = null!;
     public List<IRVNamedProperty> NamedProperties => new(RVConstants.MaxNamedProperties);
     public List<IRVNamedSelection> NamedSelections => new(RVConstants.MaxNamedSelections);
     public List<IRVAnimationPhase> AnimationPhases => new();
     public List<IRVSharpEdge> SharpEdges { get; private set; } = new();
-    public IRVPointAttrib<float> Mass { get; set; } = null!;
+    public IRVPointAttrib<float>? Mass { get; set; }
     public IRVSelection? Selection { get; private set; }
     public IRVSelection? HiddenSelection { get; private set; }
     public IRVSelection? LockedSelection { get; private set; }
@@ -71,14 +69,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public RVLod
     (
         IRVResolution resolution,
-        List<IRVDataVertex> vertices,
         List<IRVPoint> points,
         List<IVector3D> normals,
         List<IRVFace> faces,
         IRVPointAttrib<float> mass
     )
     {
-        Vertices = vertices;
         Resolution = resolution;
         Points = points;
         Normals = normals;
@@ -202,7 +198,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     {
         LastResult ??= Result.Ok();
         var shouldEndTaggs = false;
-        int verticesSize = Points.Count * sizeof(byte), facesSize = Faces.Count * sizeof(bool);
 
         while (true)
         {
@@ -227,21 +222,21 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 case "#Selected#":
                 {
                     var selection = new RVSelection(this);
-                    selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                    selection.LoadSelection(reader, Points.Count, Faces.Count);
                     Selection = selection;
                     break;
                 }
                 case "#Lock#":
                 {
                     var selection = new RVSelection(this);
-                    selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                    selection.LoadSelection(reader, Points.Count, Faces.Count);
                     LockedSelection = selection;
                     break;
                 }
                 case "#Hide#":
                 {
                     var selection = new RVSelection(this);
-                    selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                    selection.LoadSelection(reader, Points.Count, Faces.Count);
                     HiddenSelection = selection;
                     break;
                 }
@@ -279,10 +274,11 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                         }
                         default:
                         {
-                            var count = Points.Count;
+                            var count = tagLength / 4;
                             if(count > 0)
                             {
-                                Mass.Attributes = reader.ReadIndexedList(it => it.ReadSingle(), count).ToList();
+                                Mass = new RVPointAttrib<float>(this,
+                                    reader.ReadIndexedList(it => it.ReadSingle(), count).ToList());
                             }
 
                             break;
@@ -329,7 +325,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                     if (NamedSelections.Count < NamedSelections.Capacity)
                     {
                         var selection = new RVNamedSelection(this, taggName);
-                        selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                        selection.LoadSelection(reader, Points.Count, Faces.Count);
                         NamedSelections.Add(selection);
                     }
 
