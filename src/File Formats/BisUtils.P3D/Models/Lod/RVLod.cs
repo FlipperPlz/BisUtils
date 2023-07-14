@@ -240,7 +240,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                     HiddenSelection = selection;
                     break;
                 }
-                case "#ShapeEdges#":
+                case "#SharpEdges#":
                 {
                     var edgeCount = tagLength / 8;
                     SharpEdges = reader.ReadIndexedList<RVSharpEdge, RVShapeOptions>(options, edgeCount)
