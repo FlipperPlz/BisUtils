@@ -30,6 +30,7 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IRVAnimationPhase> AnimationPhases { get; }
     List<IRVSharpEdge> SharpEdges { get; }
     IRVPointAttrib<float> Mass { get; }
+    IRVSelection? Selection { get; }
     IRVSelection? HiddenSelection { get; }
     IRVSelection? LockedSelection { get; }
 
@@ -50,6 +51,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVAnimationPhase> AnimationPhases => new();
     public List<IRVSharpEdge> SharpEdges { get; private set; } = new();
     public IRVPointAttrib<float> Mass { get; set; } = null!;
+    public IRVSelection? Selection { get; private set; }
     public IRVSelection? HiddenSelection { get; private set; }
     public IRVSelection? LockedSelection { get; private set; }
 
@@ -220,6 +222,13 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 case "#EndOfFile#":
                 {
                     shouldEndTaggs = true;
+                    break;
+                }
+                case "#Selected#":
+                {
+                    var selection = new RVSelection(this);
+                    selection.LoadSelection(reader, verticesSize, facesSize, 0);
+                    Selection = selection;
                     break;
                 }
                 case "#Lock#":
