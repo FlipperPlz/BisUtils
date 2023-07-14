@@ -24,8 +24,9 @@ public readonly struct Vector2D : IVector2D
         Y = y;
     }
 
-    public Vector2D(int x, int y) : this(Convert.ToSingle(x), Convert.ToSingle(y))
+    public Vector2D(int x, int y) : this (Convert.ToSingle(x), Convert.ToSingle(y))
     {
+
     }
     public static implicit operator BinarizablePoint2D(Vector2D point) => new(point.X, point.Y);
     public static explicit operator Vector2D(BinarizablePoint2D point) => new(point.X, point.Y);

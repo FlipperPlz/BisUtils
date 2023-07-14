@@ -63,11 +63,11 @@ public class BisBinaryReader : BinaryReader
         return Result.Ok();
     }
 
-    public IEnumerable<T> ReadStrictIndexedList<T, TOptions>(TOptions options, int? count = null, Action<T>? afterRead = null)where T : StrictBinaryObject<TOptions>, new() where TOptions : IBinarizationOptions =>
-        ReadIndexedList<StrictBinaryObject<TOptions>, T, TOptions>(options, count, afterRead);
+    public IEnumerable<T> ReadStrictIndexedList<T, TOptions>(TOptions options, int? count = null, Action<T>? afterRead = null)where T : IStrictBinaryObject<TOptions>, new() where TOptions : IBinarizationOptions =>
+        ReadIndexedList<IStrictBinaryObject<TOptions>, T, TOptions>(options, count, afterRead);
 
-    public IEnumerable<T> ReadIndexedList<T, TOptions>(TOptions options, int? count = null, Action<T>? afterRead = null)where T : BinaryObject<TOptions>, new() where TOptions : IBinarizationOptions =>
-        ReadIndexedList<BinaryObject<TOptions>, T, TOptions>(options, count, afterRead);
+    public IEnumerable<T> ReadIndexedList<T, TOptions>(TOptions options, int? count = null, Action<T>? afterRead = null)where T : IBinaryObject<TOptions>, new() where TOptions : IBinarizationOptions =>
+        ReadIndexedList<IBinaryObject<TOptions>, T, TOptions>(options, count, afterRead);
 
     public IEnumerable<T> ReadIndexedList<TBase, T, TOptions>(int count, TOptions options)
         where TBase : IBinarizable<TOptions>

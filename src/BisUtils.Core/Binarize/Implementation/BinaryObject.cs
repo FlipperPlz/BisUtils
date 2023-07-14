@@ -25,6 +25,7 @@ public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarization
     /// <param name="options">The options controlling the debinarization process.</param>
     protected BinaryObject(BisBinaryReader reader, T options)
     {
+
     }
 
     /// <summary>

@@ -2,6 +2,7 @@
 
 using Core.Binarize;
 using Core.Binarize.Implementation;
+using Core.Extensions;
 using Core.IO;
 using Core.Render.Vector;
 using Errors;
@@ -80,19 +81,25 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
         }
     }
 
-    protected RVShape(string modelName, List<IRVLod> levelsOfDetail)
+    public RVShape(string modelName, List<IRVLod> levelsOfDetail)
     {
         ModelName = modelName;
         LevelsOfDetail = levelsOfDetail;
     }
 
-    protected RVShape(string modelName, BisBinaryReader reader, RVShapeOptions options) : base(reader, options) =>
+    public RVShape(string modelName, BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    {
         ModelName = modelName;
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
+    }
 
     public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options) =>
         throw new NotImplementedException();
 
-    public override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, RVShapeOptions options)
     {
         LastResult = Result.Ok();
         options.LodVersion = -1;

@@ -12,7 +12,7 @@ public class RVShapeOptions : IBinarizationOptions, IAsciizLimiterOptions
     public Encoding Charset { get; set; } = Encoding.UTF8;
     public Endianness ByteOrder { get; set; } = Endianness.Little;
     public bool IgnoreValidation { get; set; }
-    public int AsciiLengthTimeout { get; set; }
+    public int AsciiLengthTimeout { get; set; } = 9000;
 
     public int FaceVersion { get; set; }
     public int LodVersion { get; set; }

@@ -1,9 +1,7 @@
 ﻿namespace BisUtils.P3D.Models.Lod;
 
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
 using Core.Binarize;
 using Core.Binarize.Implementation;
 using BisUtils.Core.Binarize.Options;
@@ -29,16 +27,16 @@ public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
     List<IRVDataVertex> Vertices { get; set; }
     List<IRVNamedProperty> NamedProperties { get; }
     List<IRVNamedSelection> NamedSelections { get; }
-    IReadOnlyList<IRVAnimationPhase> AnimationPhases { get; }
+    List<IRVAnimationPhase> AnimationPhases { get; }
     List<IRVSharpEdge> SharpEdges { get; }
     IRVPointAttrib<float> Mass { get; }
+
 
     void AddAnimationPhase(IRVAnimationPhase phase);
 }
 
 public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 {
-
     protected const uint ValidVersion = 256;
     public IRVResolution Resolution { get; set; } = null!;
     public List<IRVPoint> Points { get; set; } = null!;
@@ -47,10 +45,9 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVDataVertex> Vertices { get; set; } = null!;
     public List<IRVNamedProperty> NamedProperties => new(RVConstants.MaxNamedProperties);
     public List<IRVNamedSelection> NamedSelections => new(RVConstants.MaxNamedSelections);
-    public IReadOnlyList<IRVAnimationPhase> AnimationPhases => animationPhases;
-    public List<IRVSharpEdge> SharpEdges => new();
+    public List<IRVAnimationPhase> AnimationPhases => new();
+    public List<IRVSharpEdge> SharpEdges { get; private set; } = new();
     public IRVPointAttrib<float> Mass { get; set; } = null!;
-    private List<IRVAnimationPhase> animationPhases => new();
 
 
     public RVLod()
@@ -85,8 +82,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 
     public void AddAnimationPhase(IRVAnimationPhase phase)
     {
-        var i = animationPhases.FindIndex(p => p.Time > phase.Time);
-        animationPhases.Insert(i != -1 ? i : animationPhases.Count, phase);
+        var i = AnimationPhases.FindIndex(p => p.Time > phase.Time);
+        AnimationPhases.Insert(i != -1 ? i : AnimationPhases.Count, phase);
     }
 
     public override Result Binarize(BisBinaryWriter writer, RVShapeOptions options) => throw new NotImplementedException();
@@ -161,10 +158,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             .ReadStrictIndexedList<RVFace, RVShapeOptions>(options, facesCount)
             .Cast<IRVFace>()
             .ToList();
-        Resolution = (RVResolution) reader.ReadSingle();
-
-
-
         return ReadLodBody(reader, options);
     }
 
@@ -205,18 +198,44 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         var shouldEndTaggs = false;
         while (true)
         {
-            //TODO: FACE TAGGS
-            if (!LexTagg(out var taggName, reader) || taggName is null || !taggName.StartsWith('#'))
+            var activated = reader.ReadBoolean();
+            if (!reader.ReadAsciiZ(out var taggName, options))
             {
                 return LastResult.WithError(new LodReadError("Tried to parse a tag without proper prefix."));
             }
-
             var tagLength = reader.ReadInt32();
+
+            if (!activated)
+            {
+                reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+            }
             switch (taggName)
             {
                 case "#EndOfFile#":
                 {
                     shouldEndTaggs = true;
+                    break;
+                }
+                case "#ShapeEdges#":
+                {
+                    var edgeCount = tagLength / 8;
+                    SharpEdges = reader.ReadIndexedList<RVSharpEdge, RVShapeOptions>(options, edgeCount)
+                        .Cast<IRVSharpEdge>()
+                        .ToList();
+                    SharpEdges.ForEach( it => it.OrganizeEdges());
+                    SharpEdges.Sort
+                    (
+                        (x, y) =>
+                        {
+                            var ret = x.EdgeX - y.EdgeX;
+                            if (ret != 0)
+                            {
+                                return ret;
+                            }
+
+                            return y.EdgeY - y.EdgeY;
+                        }
+                    );
                     break;
                 }
                 case "#Mass#":
@@ -245,14 +264,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
                 case "#Animation#":
                 {
-                    var phase = new RVAnimationPhase(reader, options)
-                    {
-                        Parent = this
-                    };
-                    foreach (var point in Vertices)
-                    {
+                    AddAnimationPhase(new RVAnimationPhase(reader, options) { Parent = this });
 
-                    }
                     break;
                 }
                 case "#Property#":
@@ -304,26 +317,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 
         Resolution = new RVResolution(reader, options);
         return LastResult;
-    }
-
-    private static Result LexTagg(out string? taggName, BisBinaryReader reader)
-    {
-        var taggBuilder = new StringBuilder("#");
-        var currentChar = reader.ReadChar();
-        if (currentChar != '#')
-        {
-            taggName = null;
-            return Result.Fail(new FaceReadError("Expected '#'"));
-        }
-
-        do
-        {
-            taggBuilder.Append(currentChar = reader.ReadChar());
-        } while (currentChar != '#');
-
-        taggName = taggBuilder.ToString();
-
-        return Result.Ok();
     }
 
     public override Result Validate(RVShapeOptions options) => throw new NotImplementedException();
