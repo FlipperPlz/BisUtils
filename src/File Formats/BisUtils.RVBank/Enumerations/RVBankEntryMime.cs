@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.RVBank.Enumerations;
 
-public enum PboEntryMime
+public enum RVBankEntryMime
 {
     Decompressed = 0x00000000,
     Compressed = 0x43707273,

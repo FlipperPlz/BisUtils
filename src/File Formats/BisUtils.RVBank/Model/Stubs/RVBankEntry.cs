@@ -1,12 +1,12 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
-using BisUtils.Core.IO;
-using BisUtils.RVBank.Enumerations;
+using Core.IO;
+using Enumerations;
 using Options;
 
-public interface IPboEntry : IPboVFSEntry
+public interface IRVBankEntry : IRVBankVfsEntry
 {
-    PboEntryMime EntryMime { get; }
+    RVBankEntryMime EntryMime { get; }
     int OriginalSize { get; }
     int Offset { get; }
     int TimeStamp { get; }
@@ -18,13 +18,19 @@ public interface IPboEntry : IPboVFSEntry
     bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
 }
 
-public abstract class PboEntry : PboVFSEntry
+public abstract class RVBankEntry : RVBankVfsEntry
 {
-    protected PboEntry(
-        IPboFile? file,
-        IPboDirectory? parent,
+    public RVBankEntryMime EntryMime { get; set; } = RVBankEntryMime.Decompressed;
+    public int OriginalSize { get; set; }
+    public int Offset { get; set; }
+    public int TimeStamp { get; set; }
+    public int DataSize { get; set; }
+
+    protected RVBankEntry(
+        IRVBank file,
+        IRVBankDirectory parent,
         string fileName,
-        PboEntryMime mime,
+        RVBankEntryMime mime,
         int originalSize,
         int offset,
         int timeStamp,
@@ -38,15 +44,9 @@ public abstract class PboEntry : PboVFSEntry
         DataSize = dataSize;
     }
 
-    protected PboEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    protected RVBankEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
     }
-
-    public PboEntryMime EntryMime { get; set; } = PboEntryMime.Decompressed;
-    public int OriginalSize { get; set; }
-    public int Offset { get; set; }
-    public int TimeStamp { get; set; }
-    public int DataSize { get; set; }
 
     public bool IsEmptyMeta() =>
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;

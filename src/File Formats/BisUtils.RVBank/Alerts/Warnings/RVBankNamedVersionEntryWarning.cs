@@ -3,17 +3,17 @@
 using FResults.Reasoning;
 using Model.Stubs;
 
-public class PboImproperMetaWarning : WarningBase
+public class RVBankNamedVersionEntryWarning : WarningBase
 {
-    public PboImproperMetaWarning(bool isError = true, Type? type = null)
+    public RVBankNamedVersionEntryWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;
-        AlertScope = type ?? typeof(PboEntry);
+        AlertScope = type ?? typeof(RVBankEntry);
     }
 
     public override string? AlertName
     {
-        get => "ImproperMeta";
+        get => "NamedVersionEntry";
         init => throw new NotSupportedException();
     }
 
@@ -31,7 +31,7 @@ public class PboImproperMetaWarning : WarningBase
 
     public override string? Message
     {
-        get => "An improper meta was found on an entry";
+        get => "Version entries are supposed to have an empty name.";
         set => throw new NotSupportedException();
     }
 }

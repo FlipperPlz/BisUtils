@@ -6,9 +6,9 @@ using BisUtils.Core.Binarize.Utils;
 using BisUtils.Core.Options;
 using BisUtils.RVBank.Enumerations;
 
-public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
+public class RVBankOptions : IBinarizationOptions, IAsciizLimiterOptions
 {
-    public PboSection CurrentSection { get; set; } = PboSection.NotApplicable;
+    public RVBankSection CurrentSection { get; set; } = RVBankSection.NotApplicable;
     public TimeSpan DecompressionTimeout { get; set; } = TimeSpan.FromMinutes(1);
     public bool CompressionErrorsAreWarnings { get; set; } //= false;
     public bool RequireValidSignature { get; set; } = true;

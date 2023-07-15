@@ -1,31 +1,31 @@
 namespace BisUtils.RVBank.Model.Entry;
 
-using BisUtils.Core.Binarize.Exceptions;
-using BisUtils.Core.IO;
-using BisUtils.RVBank.Alerts.Warnings;
-using BisUtils.RVBank.Enumerations;
+using Core.Binarize.Exceptions;
+using Core.IO;
+using Alerts.Warnings;
+using Core.Parsing;
+using Enumerations;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
 using Stubs;
-using Utils;
 
-public interface IPboDataEntry : IPboEntry
+public interface IRVBankDataEntry : IRVBankEntry
 {
     Stream EntryData { get; }
 
     void ExpandDirectoryStructure();
 }
 
-public class PboDataEntry : PboEntry, IPboDataEntry
+public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 {
-    public PboDataEntry
+    public RVBankDataEntry
     (
-        IPboFile? file,
-        IPboDirectory? parent,
+        IRVBank file,
+        IRVBankDirectory parent,
         string fileName,
-        PboEntryMime mime,
+        RVBankEntryMime mime,
         int originalSize,
         int offset,
         int timeStamp,
@@ -34,7 +34,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
     {
     }
 
-    public PboDataEntry(BisBinaryReader reader, PboOptions options) : base(reader, options)
+    public RVBankDataEntry(IRVBank file, IRVBankDirectory parent ,BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
         Debinarize(reader, options);
         if (LastResult!.IsFailed)
@@ -47,22 +47,22 @@ public class PboDataEntry : PboEntry, IPboDataEntry
 
     public void ExpandDirectoryStructure()
     {
-        ArgumentNullException.ThrowIfNull(PboFile, "When expanding a Pbo Entry, The node must be established");
+        ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
 
-        var normalizePath = EntryName = PboPathUtilities.NormalizePboPath(EntryName);
+        var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
 
         if (!EntryName.Contains('\\'))
         {
             return;
         }
 
-        EntryName = PboPathUtilities.GetFilename(EntryName);
+        EntryName = RVPathUtilities.GetFilename(EntryName);
 
-        ParentDirectory = PboFile.CreateDirectory(PboPathUtilities.GetParent(normalizePath), PboFile);
+        ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
         ParentDirectory.PboEntries.Add(this);
     }
 
-    public sealed override Result Binarize(BisBinaryWriter writer, PboOptions options)
+    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
         LastResult = base.Binarize(writer, options);
         writer.Write((long)EntryMime);
@@ -74,35 +74,35 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         return LastResult;
     }
 
-    public sealed override Result Validate(PboOptions options)
+    public sealed override Result Validate(RVBankOptions options)
     {
         LastResult = Result.Ok();
 
         switch (EntryMime)
         {
-            case PboEntryMime.Encrypted:
-                LastResult.WithWarning(new PboEncryptedEntryWarning(!options.AllowEncrypted));
+            case RVBankEntryMime.Encrypted:
+                LastResult.WithWarning(new RVBankEncryptedEntryWarning(!options.AllowEncrypted));
                 break;
-            case PboEntryMime.Version:
-                LastResult.WithWarning(new PboImproperMimeWarning(!options.AllowVersionMimeOnData,
-                    typeof(IPboDataEntry)));
+            case RVBankEntryMime.Version:
+                LastResult.WithWarning(new RVBankImproperMimeWarning(!options.AllowVersionMimeOnData,
+                    typeof(IRVBankDataEntry)));
                 break;
-            case PboEntryMime.Decompressed:
-            case PboEntryMime.Compressed:
+            case RVBankEntryMime.Decompressed:
+            case RVBankEntryMime.Compressed:
             default:
                 break;
         }
 
         if (EntryName.Length == 0)
         {
-            LastResult.WithWarning(new PboUnnamedEntryWarning(!options.AllowUnnamedDataEntries, typeof(IPboDataEntry)));
+            LastResult.WithWarning(new RVBankUnnamedEntryWarning(!options.AllowUnnamedDataEntries, typeof(IRVBankDataEntry)));
         }
 
-        if (EntryData.Length != DataSize && options.CurrentSection != PboSection.Header)
+        if (EntryData.Length != DataSize && options.CurrentSection != RVBankSection.Header)
         {
             LastResult.WithWarning(new Warning
             {
-                AlertScope = typeof(IPboDataEntry),
+                AlertScope = typeof(IRVBankDataEntry),
                 AlertName = "EntryReadError",
                 Message = "Incorrect Stream/DataSize Value.",
                 IsError = !options.IgnoreInvalidStreamSize
@@ -113,7 +113,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         {
             LastResult.WithWarning(new Warning
             {
-                AlertScope = typeof(IPboDataEntry),
+                AlertScope = typeof(IRVBankDataEntry),
                 AlertName = "EntryReadError",
                 Message = "Incorrect DataSize Value.",
                 IsError = !options.IgnoreInvalidStreamSize
@@ -124,7 +124,7 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         {
             LastResult.WithWarning(new Warning
             {
-                AlertScope = typeof(IPboDataEntry),
+                AlertScope = typeof(IRVBankDataEntry),
                 AlertName = "EntryReadError",
                 Message = "Incorrect OriginalSize Value.",
                 IsError = !options.IgnoreInvalidStreamSize
@@ -134,19 +134,14 @@ public class PboDataEntry : PboEntry, IPboDataEntry
         return LastResult;
     }
 
-    public sealed override Result Debinarize(BisBinaryReader reader, PboOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
         LastResult = base.Debinarize(reader, options);
-        EntryMime = (PboEntryMime)reader.ReadInt32(); // TODO WARN/ERROR then recover
+        EntryMime = (RVBankEntryMime)reader.ReadInt32(); // TODO WARN/ERROR then recover
         OriginalSize = reader.ReadInt32();
         TimeStamp = reader.ReadInt32();
         Offset = reader.ReadInt32();
         DataSize = reader.ReadInt32();
-
-        if (!options.IgnoreValidation)
-        {
-            LastResult = Result.Merge(LastResult, Validate(options));
-        }
 
         return LastResult;
     }

@@ -3,12 +3,12 @@
 using FResults.Reasoning;
 using Model.Stubs;
 
-public class PboImproperMimeWarning : WarningBase
+public class RVBankImproperMimeWarning : WarningBase
 {
-    public PboImproperMimeWarning(bool isError = true, Type? type = null)
+    public RVBankImproperMimeWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;
-        AlertScope = type ?? typeof(PboEntry);
+        AlertScope = type ?? typeof(RVBankEntry);
     }
 
     public override string? AlertName

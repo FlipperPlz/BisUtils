@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.RVBank.Enumerations;
 
-public enum PboSection
+public enum RVBankSection
 {
     NotApplicable,
     Header,

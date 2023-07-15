@@ -8,8 +8,8 @@ using RVBank.Options;
 public class PboFileCreationBenchmarks
 {
     private readonly BisBinaryReader reader;
-    private readonly PboOptions flatReadOptions = new() { FlatRead = true };
-    private readonly PboOptions options = new() { FlatRead = false };
+    private readonly RVBankOptions flatReadOptions = new() { FlatRead = true };
+    private readonly RVBankOptions options = new() { FlatRead = false };
 
     public PboFileCreationBenchmarks()
     {
@@ -21,13 +21,13 @@ public class PboFileCreationBenchmarks
     public void DebinarizeFlatReadSetup() => reader.BaseStream.Position = 0;
 
     [Benchmark(Baseline = true)]
-    public PboFile DebinarizeFlatRead() => new(reader, flatReadOptions);
+    public RVBank DebinarizeFlatRead() => new(reader, flatReadOptions);
 
     [IterationSetup(Target = nameof(Debinarize))]
     public void DebinarizeSetup() => reader.BaseStream.Position = 0;
 
     [Benchmark]
-    public PboFile Debinarize() => new(reader, options);
+    public RVBank Debinarize() => new(reader, options);
 
     [GlobalCleanup]
     public void Cleanup() => reader.Close();

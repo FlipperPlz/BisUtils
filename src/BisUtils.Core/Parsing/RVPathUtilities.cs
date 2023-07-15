@@ -1,6 +1,6 @@
-﻿namespace BisUtils.RVBank.Utils;
+﻿namespace BisUtils.Core.Parsing;
 
-public static class PboPathUtilities
+public static class RVPathUtilities
 {
     public static string NormalizePboPath(string path)
     {

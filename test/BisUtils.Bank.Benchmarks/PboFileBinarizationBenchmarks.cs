@@ -7,7 +7,7 @@ using RVBank.Model;
 
 public class PboFileBinarizationBenchmarks
 {
-    private readonly PboFile pbo;
+    private readonly RVBank pbo;
     private readonly BisBinaryWriter destination;
 
     public PboFileBinarizationBenchmarks()
@@ -15,7 +15,7 @@ public class PboFileBinarizationBenchmarks
         using var fs = File.OpenRead(@"C:\Steam\steamapps\common\DayZ\Addons\weapons_data.pbo");
         using var reader = new BisBinaryReader(fs);
 
-        pbo = new PboFile(reader, new());
+        pbo = new RVBank(reader, new());
 
         destination = new BisBinaryWriter(new MemoryStream((int)fs.Length));
     }

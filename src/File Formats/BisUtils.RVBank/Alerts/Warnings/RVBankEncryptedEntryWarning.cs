@@ -1,19 +1,19 @@
 ﻿namespace BisUtils.RVBank.Alerts.Warnings;
 
 using FResults.Reasoning;
-using Model.Stubs;
+using Model.Entry;
 
-public class PboNamedVersionEntryWarning : WarningBase
+public class RVBankEncryptedEntryWarning : WarningBase
 {
-    public PboNamedVersionEntryWarning(bool isError = true, Type? type = null)
+    public RVBankEncryptedEntryWarning(bool isError = true)
     {
         IsError = isError;
-        AlertScope = type ?? typeof(PboEntry);
+        AlertScope = typeof(RVBankDataEntry);
     }
 
     public override string? AlertName
     {
-        get => "NamedVersionEntry";
+        get => "EncryptedEntryMime";
         init => throw new NotSupportedException();
     }
 
@@ -31,7 +31,7 @@ public class PboNamedVersionEntryWarning : WarningBase
 
     public override string? Message
     {
-        get => "Version entries are supposed to have an empty name.";
+        get => "An entry was found with an encrypted mime. No decryption algorithm present. ";
         set => throw new NotSupportedException();
     }
 }

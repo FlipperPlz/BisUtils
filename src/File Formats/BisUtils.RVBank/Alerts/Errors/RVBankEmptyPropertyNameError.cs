@@ -3,11 +3,11 @@
 using FResults.Reasoning;
 using Model;
 
-public class PboEmptyPropertyNameError : ErrorBase
+public class RVBankEmptyPropertyNameError : ErrorBase
 {
-    public static readonly PboEmptyPropertyNameError Instance = new();
+    public static readonly RVBankEmptyPropertyNameError Instance = new();
 
-    private PboEmptyPropertyNameError()
+    private RVBankEmptyPropertyNameError()
     {
     }
 
@@ -19,7 +19,7 @@ public class PboEmptyPropertyNameError : ErrorBase
 
     public override Type? AlertScope
     {
-        get => typeof(PboFile);
+        get => typeof(RVBank);
         init => throw new NotSupportedException();
     }
 
@@ -29,6 +29,6 @@ public class PboEmptyPropertyNameError : ErrorBase
         set => throw new NotSupportedException();
     }
 
-    public static PboEmptyPropertyNameError CreateInstanceWithData(Dictionary<string, object> metadata) =>
+    public static RVBankEmptyPropertyNameError CreateInstanceWithData(Dictionary<string, object> metadata) =>
         new() { Metadata = metadata };
 }
