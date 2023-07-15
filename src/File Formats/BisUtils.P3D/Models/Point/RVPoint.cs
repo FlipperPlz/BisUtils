@@ -8,14 +8,14 @@ using Options;
 
 public interface IRVPoint : IVector3D
 {
-    RVPointFlag? PointFlags { get; set; }
+    int? PointFlags { get; set; }
 }
 
 public class RVPoint : BinarizableVector3D, IRVPoint
 {
-    public RVPointFlag? PointFlags { get; set; }
+    public int? PointFlags { get; set; }
 
-    public RVPoint(float x, float y, float z, RVPointFlag? flags) : base(x, y, z) => PointFlags = flags;
+    public RVPoint(float x, float y, float z, int? flags) : base(x, y, z) => PointFlags = flags;
 
 
     public RVPoint(BisBinaryReader reader, RVShapeOptions options) : base(reader, options, false)
@@ -47,7 +47,7 @@ public class RVPoint : BinarizableVector3D, IRVPoint
         var result = base.Debinarize(reader, options);
         if (options.ExtendedPoint)
         {
-            PointFlags = (RVPointFlag) reader.ReadUInt32();
+            PointFlags = reader.ReadInt32();
         }
         return result;
     }

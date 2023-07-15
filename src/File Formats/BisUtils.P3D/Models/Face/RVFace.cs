@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.P3D.Models.Face;
 
+using System.Globalization;
 using System.Text;
 using Core.Binarize;
 using Core.Binarize.Implementation;
@@ -16,11 +17,12 @@ public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
 {
     string Texture { get; set; }
     string? Material { get; set; }
-    RVFaceFlag? Flags { get; set; }
+    int? Flags { get; set; }
     List<IRVDataVertex> Vertices { get; set; }
-
     bool IsOld { get; }
     bool IsExtended { get; }
+
+    bool HasFlag(RVFaceFlag flag);
 }
 
 public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
@@ -28,15 +30,16 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
     public string Texture { get; set; } = null!;
     public string? Material { get; set; }
     public List<IRVDataVertex> Vertices { get; set; } = null!;
-    public RVFaceFlag? Flags { get; set; }
+    public int? Flags { get; set; }
     public bool IsOld => Material is null;
     public bool IsExtended => Flags is not null;
+    public bool HasFlag(RVFaceFlag flag) => (Flags & (int)flag) == (int)flag;
 
-    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, RVFaceFlag flag)
+    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, int flag)
     {
         Vertices = vertices;
-        Texture = texture;
-        Material = material;
+        Texture = texture.ToLower(CultureInfo.CurrentCulture);
+        Material = material?.ToLower(CultureInfo.CurrentCulture);
         Flags = flag;
     }
 
@@ -66,9 +69,9 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
             case false:
             {
                 reader.ReadAsciiZ(out var texture, options);
-                Texture = texture;
+                Texture = texture.ToLower(CultureInfo.CurrentCulture);
                 reader.ReadAsciiZ(out var material, options);
-                Material = material;
+                Material = material.ToLower(CultureInfo.CurrentCulture);
                 Vertices = reader.ReadIndexedList<RVDataVertex, RVShapeOptions>(options)
                     .Cast<IRVDataVertex>()
                     .ToList();
@@ -86,17 +89,17 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                         Vertices = reader.ReadIndexedList<RVDataVertex, RVShapeOptions>(options)
                             .Cast<IRVDataVertex>()
                             .ToList();
-                        Flags = (RVFaceFlag)reader.ReadInt32();
+                        Flags = reader.ReadInt32();
                         LastResult.WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
-                        Texture = texture;
+                        Texture = texture.ToLower(CultureInfo.CurrentCulture);
                         LastResult.WithReasons(reader.ReadAsciiZ(out var material, options).Reasons);
-                        Material = material;
+                        Material = material.ToLower(CultureInfo.CurrentCulture);
                         break;
                     }
                     default:
                     {//TODO(Validate): maybe not terminated
                         (LastResult = Result.Ok()).WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
-                        Texture = texture;
+                        Texture = texture.ToLower(CultureInfo.CurrentCulture);
                         break;
                     }
                 }

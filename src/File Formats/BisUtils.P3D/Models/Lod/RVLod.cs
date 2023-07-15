@@ -156,12 +156,42 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             .ReadIndexedList<BinarizableVector3D, IBinarizationOptions>(options, normalCount)
             .Cast<IVector3D>()
             .ToList();
+
         Faces = reader
-            .ReadStrictIndexedList<RVFace, RVShapeOptions>(options, facesCount)
+            .ReadStrictIndexedList<RVFace, RVShapeOptions>(options, facesCount, face =>
+            {
+                var i = 0;
+                foreach (var vertex in face.Vertices)
+                {
+                    i++;
+                    var absMapU = Math.Abs(vertex.MapU);
+                    var absMapV = Math.Abs(vertex.MapV);
+                    if (!(absMapU < 1e5) || !(absMapV < 1e5) || float.IsNaN(vertex.MapU) || float.IsNaN(vertex.MapV))
+                    {
+                        if (options.ReportInvalidFaceVertexUV)
+                        {
+                            LastResult.WithWarning("Invalid UV", typeof(RVDataVertex),
+                                $"Face #{i}, Point #{vertex.Point}: Face points to ({face.Vertices[0].Point}, {face.Vertices[0].Point}, {face.Vertices[0].Point}) - Invalid UV (U:{vertex.MapU}, V:{vertex.MapV}) setting UV to zero.");
+                        }
+
+                        vertex.MapU = 0;
+                        vertex.MapV = 0;
+                    }
+
+                    if (absMapU > options.UVLimit || absMapV > options.UVLimit)
+                    {
+                        LastResult.WithWarning("Oversized UV", typeof(RVDataVertex),
+                            $"UV coordinate on point #{i} is too big (U:{vertex.MapU}, V:{vertex.MapV}, Current Max: {options.UVLimit}) - the UV compression may produce inaccurate results");
+                    }
+                }
+            })
             .Cast<IRVFace>()
             .ToList();
+
         return ReadLodBody(reader, options);
     }
+
+
 
     private void ReadMaterialIndex(string name, BinaryReader reader) =>
         NamedProperties.Add
@@ -261,6 +291,10 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                         }
                     );
                     break;
+                }
+                case "#UVSet#":
+                {
+                    throw new NotImplementedException();
                 }
                 case "#Mass#":
                 {
