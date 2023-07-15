@@ -294,7 +294,9 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
                 case "#UVSet#":
                 {
-                    throw new NotImplementedException();
+                    //TODO: UVSet, skip for now
+                    reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+                    break;
                 }
                 case "#Mass#":
                 {
