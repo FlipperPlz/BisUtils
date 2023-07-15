@@ -1,19 +1,19 @@
-﻿namespace BisUtils.Bank.Alerts.Warnings;
+﻿namespace BisUtils.RVBank.Alerts.Warnings;
 
 using FResults.Reasoning;
-using Model.Stubs;
+using Model.Entry;
 
-public class PboImproperMetaWarning : WarningBase
+public class PboEncryptedEntryWarning : WarningBase
 {
-    public PboImproperMetaWarning(bool isError = true, Type? type = null)
+    public PboEncryptedEntryWarning(bool isError = true)
     {
         IsError = isError;
-        AlertScope = type ?? typeof(PboEntry);
+        AlertScope = typeof(IPboDataEntry);
     }
 
     public override string? AlertName
     {
-        get => "ImproperMeta";
+        get => "EncryptedEntryMime";
         init => throw new NotSupportedException();
     }
 
@@ -31,7 +31,7 @@ public class PboImproperMetaWarning : WarningBase
 
     public override string? Message
     {
-        get => "An improper meta was found on an entry";
+        get => "An entry was found with an encrypted mime. No decryption algorithm present. ";
         set => throw new NotSupportedException();
     }
 }

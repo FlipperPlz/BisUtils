@@ -1,11 +1,11 @@
-﻿namespace BisUtils.Bank.Alerts.Warnings;
+﻿namespace BisUtils.RVBank.Alerts.Warnings;
 
 using FResults.Reasoning;
 using Model.Stubs;
 
-public class PboNamedVersionEntryWarning : WarningBase
+public class PboImproperMetaWarning : WarningBase
 {
-    public PboNamedVersionEntryWarning(bool isError = true, Type? type = null)
+    public PboImproperMetaWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;
         AlertScope = type ?? typeof(PboEntry);
@@ -13,7 +13,7 @@ public class PboNamedVersionEntryWarning : WarningBase
 
     public override string? AlertName
     {
-        get => "NamedVersionEntry";
+        get => "ImproperMeta";
         init => throw new NotSupportedException();
     }
 
@@ -31,7 +31,7 @@ public class PboNamedVersionEntryWarning : WarningBase
 
     public override string? Message
     {
-        get => "Version entries are supposed to have an empty name.";
+        get => "An improper meta was found on an entry";
         set => throw new NotSupportedException();
     }
 }

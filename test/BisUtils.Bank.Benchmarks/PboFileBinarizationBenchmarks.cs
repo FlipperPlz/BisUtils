@@ -1,9 +1,9 @@
 ﻿namespace BisUtils.Bank.Benchmarks;
 
 using BenchmarkDotNet.Attributes;
-using BisUtils.Bank.Model;
 using BisUtils.Core.IO;
 using FResults;
+using RVBank.Model;
 
 public class PboFileBinarizationBenchmarks
 {

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\File Formats\BisUtils.Bank\BisUtils.Bank.csproj" />
+    <ProjectReference Include="..\..\src\File Formats\BisUtils.RVBank\BisUtils.RVBank.csproj" />
   </ItemGroup>
 
 </Project>

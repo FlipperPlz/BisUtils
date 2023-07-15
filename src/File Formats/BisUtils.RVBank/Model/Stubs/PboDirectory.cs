@@ -1,10 +1,9 @@
-namespace BisUtils.Bank.Model.Stubs;
+namespace BisUtils.RVBank.Model.Stubs;
 
-using System.Diagnostics;
-using Core.Family;
-using Core.IO;
-using Entry;
-using Enumerations;
+using BisUtils.Core.Family;
+using BisUtils.Core.IO;
+using BisUtils.RVBank.Enumerations;
+using BisUtils.RVBank.Model.Entry;
 using FResults;
 using Options;
 using Utils;

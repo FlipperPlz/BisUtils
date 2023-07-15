@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Bank.Utils;
+﻿namespace BisUtils.RVBank.Utils;
 
 public static class PboPathUtilities
 {

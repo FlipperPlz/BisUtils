@@ -1,8 +1,7 @@
-namespace BisUtils.Bank.Model.Stubs;
+namespace BisUtils.RVBank.Model.Stubs;
 
-using System.Diagnostics;
-using Core.IO;
-using Enumerations;
+using BisUtils.Core.IO;
+using BisUtils.RVBank.Enumerations;
 using Options;
 
 public interface IPboEntry : IPboVFSEntry

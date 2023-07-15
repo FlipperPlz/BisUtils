@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Bank.Alerts.Errors;
+﻿namespace BisUtils.RVBank.Alerts.Errors;
 
 public class ObfuscatedPboException : IOException
 {

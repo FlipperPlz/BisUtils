@@ -1,11 +1,10 @@
-﻿namespace BisUtils.Bank.Options;
+﻿namespace BisUtils.RVBank.Options;
 
 using System.Text;
-using Core.Binarize.Options;
-using Core.Binarize.Utils;
-using Core.Options;
-using Enumerations;
-using Utils;
+using BisUtils.Core.Binarize.Options;
+using BisUtils.Core.Binarize.Utils;
+using BisUtils.Core.Options;
+using BisUtils.RVBank.Enumerations;
 
 public class PboOptions : IBinarizationOptions, IAsciizLimiterOptions
 {

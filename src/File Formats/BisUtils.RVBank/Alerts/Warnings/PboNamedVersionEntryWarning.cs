@@ -1,11 +1,11 @@
-﻿namespace BisUtils.Bank.Alerts.Warnings;
+﻿namespace BisUtils.RVBank.Alerts.Warnings;
 
 using FResults.Reasoning;
 using Model.Stubs;
 
-public class PboImproperMimeWarning : WarningBase
+public class PboNamedVersionEntryWarning : WarningBase
 {
-    public PboImproperMimeWarning(bool isError = true, Type? type = null)
+    public PboNamedVersionEntryWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;
         AlertScope = type ?? typeof(PboEntry);
@@ -13,7 +13,7 @@ public class PboImproperMimeWarning : WarningBase
 
     public override string? AlertName
     {
-        get => "ImproperMime";
+        get => "NamedVersionEntry";
         init => throw new NotSupportedException();
     }
 
@@ -31,7 +31,7 @@ public class PboImproperMimeWarning : WarningBase
 
     public override string? Message
     {
-        get => "An improper mime was found on an entry";
+        get => "Version entries are supposed to have an empty name.";
         set => throw new NotSupportedException();
     }
 }

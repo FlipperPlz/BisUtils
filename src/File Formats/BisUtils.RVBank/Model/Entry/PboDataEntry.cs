@@ -1,9 +1,9 @@
-namespace BisUtils.Bank.Model.Entry;
+namespace BisUtils.RVBank.Model.Entry;
 
-using Alerts.Warnings;
-using Core.Binarize.Exceptions;
-using Core.IO;
-using Enumerations;
+using BisUtils.Core.Binarize.Exceptions;
+using BisUtils.Core.IO;
+using BisUtils.RVBank.Alerts.Warnings;
+using BisUtils.RVBank.Enumerations;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;

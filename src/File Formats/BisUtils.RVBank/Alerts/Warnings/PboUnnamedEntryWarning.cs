@@ -1,19 +1,19 @@
-﻿namespace BisUtils.Bank.Alerts.Warnings;
+﻿namespace BisUtils.RVBank.Alerts.Warnings;
 
 using FResults.Reasoning;
-using Model.Entry;
+using Model.Stubs;
 
-public class PboEncryptedEntryWarning : WarningBase
+public class PboUnnamedEntryWarning : WarningBase
 {
-    public PboEncryptedEntryWarning(bool isError = true)
+    public PboUnnamedEntryWarning(bool isError = true, Type? type = null)
     {
         IsError = isError;
-        AlertScope = typeof(IPboDataEntry);
+        AlertScope = type ?? typeof(PboEntry);
     }
 
     public override string? AlertName
     {
-        get => "EncryptedEntryMime";
+        get => "UnnamedEntry";
         init => throw new NotSupportedException();
     }
 
@@ -31,7 +31,7 @@ public class PboEncryptedEntryWarning : WarningBase
 
     public override string? Message
     {
-        get => "An entry was found with an encrypted mime. No decryption algorithm present. ";
+        get => "A pbo entry was found with no name.";
         set => throw new NotSupportedException();
     }
 }

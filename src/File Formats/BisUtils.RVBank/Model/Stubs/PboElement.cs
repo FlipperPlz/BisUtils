@@ -1,9 +1,9 @@
-﻿namespace BisUtils.Bank.Model.Stubs;
+﻿namespace BisUtils.RVBank.Model.Stubs;
 
-using Core.Binarize;
-using Core.Binarize.Implementation;
-using Core.Family;
-using Core.IO;
+using BisUtils.Core.Binarize;
+using BisUtils.Core.Binarize.Implementation;
+using BisUtils.Core.Family;
+using BisUtils.Core.IO;
 using Options;
 
 public interface IPboElement : IFamilyMember, IStrictBinaryObject<PboOptions>

@@ -10,7 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\lib\FResults\FResults\FResults.csproj" />
       <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
-      <ProjectReference Include="..\File Formats\BisUtils.Bank\BisUtils.Bank.csproj" />
+      <ProjectReference Include="..\File Formats\BisUtils.RVBank\BisUtils.RVBank.csproj" />
       <ProjectReference Include="..\File Formats\Languages\BisUtils.Param\BisUtils.Param.csproj" />
       <ProjectReference Include="..\Pre Processors\BisUtils.PreProcessor.RV\BisUtils.PreProcessor.RV.csproj" />
     </ItemGroup>

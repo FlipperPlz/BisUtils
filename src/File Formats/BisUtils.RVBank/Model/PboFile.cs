@@ -1,15 +1,15 @@
-namespace BisUtils.Bank.Model;
+namespace BisUtils.RVBank.Model;
 
-using Core.Binarize.Exceptions;
-using Core.Family;
-using Core.IO;
-using Entry;
-using Enumerations;
+using BisUtils.Core.Binarize.Exceptions;
+using BisUtils.Core.Family;
+using BisUtils.Core.IO;
+using BisUtils.RVBank.Enumerations;
+using BisUtils.RVBank.Model.Entry;
+using BisUtils.RVBank.Model.Stubs;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
-using Stubs;
 
 public interface IPboFile : IPboDirectory, IFamilyNode
 {

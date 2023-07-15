@@ -1,8 +1,7 @@
-namespace BisUtils.Bank.Model.Stubs;
+namespace BisUtils.RVBank.Model.Stubs;
 
-using System.Diagnostics;
-using Core.Family;
-using Core.IO;
+using BisUtils.Core.Family;
+using BisUtils.Core.IO;
 using FResults;
 using Options;
 
