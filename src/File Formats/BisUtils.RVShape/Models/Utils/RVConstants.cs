@@ -1,4 +1,4 @@
-﻿namespace BisUtils.P3D.Models.Utils;
+﻿namespace BisUtils.RVShape.Models.Utils;
 
 using Lod;
 

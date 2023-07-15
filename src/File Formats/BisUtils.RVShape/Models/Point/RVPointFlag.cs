@@ -1,4 +1,4 @@
-﻿namespace BisUtils.P3D.Models.Point;
+﻿namespace BisUtils.RVShape.Models.Point;
 
 [Flags]
 public enum RVPointFlag : uint

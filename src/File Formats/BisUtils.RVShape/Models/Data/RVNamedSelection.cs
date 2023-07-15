@@ -1,6 +1,6 @@
-﻿namespace BisUtils.P3D.Models.Data;
+﻿namespace BisUtils.RVShape.Models.Data;
 
-using Lod;
+using BisUtils.RVShape.Models.Lod;
 
 public interface IRVNamedSelection : IRVSelection
 {

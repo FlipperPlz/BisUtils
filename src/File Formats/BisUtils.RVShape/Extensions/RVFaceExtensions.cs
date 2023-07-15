@@ -1,6 +1,6 @@
-﻿namespace BisUtils.P3D.Extensions;
+﻿namespace BisUtils.RVShape.Extensions;
 
-using Models.Face;
+using BisUtils.RVShape.Models.Face;
 
 public static class RVFaceExtensions
 {

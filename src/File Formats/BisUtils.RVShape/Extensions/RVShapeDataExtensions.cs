@@ -1,7 +1,6 @@
-﻿namespace BisUtils.P3D.Extensions;
+﻿namespace BisUtils.RVShape.Extensions;
 
-using Models.Data;
-using Models.Lod;
+using BisUtils.RVShape.Models.Lod;
 
 public static class RVShapeDataExtensions
 {

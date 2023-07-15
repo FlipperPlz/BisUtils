@@ -1,9 +1,9 @@
-﻿namespace BisUtils.P3D.Extensions;
+﻿namespace BisUtils.RVShape.Extensions;
 
-using Models;
-using Models.Lod;
+using BisUtils.RVShape.Models;
+using BisUtils.RVShape.Models.Lod;
 
-public static class RvShapeExtensions
+public static class RVShapeExtensions
 {
     public static IRVLod? LocateLevel(this IRVShape lod, float resolution, out int foundLevelPosition)
     {

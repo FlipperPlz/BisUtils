@@ -1,10 +1,10 @@
-﻿namespace BisUtils.P3D.Models.Data;
+﻿namespace BisUtils.RVShape.Models.Data;
 
-using Core.Binarize;
-using Core.Extensions;
-using Core.IO;
+using BisUtils.Core.Binarize;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.RVShape.Options;
 using FResults;
-using Options;
 
 public interface IRVSharpEdge
 {

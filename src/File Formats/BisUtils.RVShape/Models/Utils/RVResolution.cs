@@ -1,14 +1,15 @@
 ﻿// ReSharper disable UnusedMember.Local
-namespace BisUtils.P3D.Models.Utils;
+namespace BisUtils.RVShape.Models.Utils;
 
 using System.Globalization;
-using Core.Binarize;
-using Core.Binarize.Implementation;
-using Core.Extensions;
-using Core.IO;
+using BisUtils.Core.Binarize;
+using BisUtils.Core.Binarize.Implementation;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.RVShape.Options;
 using FResults;
 using Lod;
-using Options;
+using P3D.Models.Utils;
 
 public interface IRVResolution : IBinaryObject<RVShapeOptions>
 {

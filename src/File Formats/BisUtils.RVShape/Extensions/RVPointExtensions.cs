@@ -1,6 +1,6 @@
-﻿namespace BisUtils.P3D.Extensions;
+﻿namespace BisUtils.RVShape.Extensions;
 
-using Models.Point;
+using BisUtils.RVShape.Models.Point;
 
 public static class RVPointExtensions
 {

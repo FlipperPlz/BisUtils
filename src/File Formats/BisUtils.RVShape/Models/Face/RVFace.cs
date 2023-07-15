@@ -1,17 +1,14 @@
-﻿namespace BisUtils.P3D.Models.Face;
+﻿namespace BisUtils.RVShape.Models.Face;
 
 using System.Globalization;
-using System.Text;
-using Core.Binarize;
-using Core.Binarize.Implementation;
-using Core.Binarize.Options;
-using Core.Extensions;
-using Core.IO;
-using Errors;
+using BisUtils.Core.Binarize;
+using BisUtils.Core.Binarize.Implementation;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.P3D.Models.Utils;
+using BisUtils.RVShape.Options;
 using FResults;
 using FResults.Extensions;
-using Options;
-using Utils;
 
 public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
 {

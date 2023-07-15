@@ -2,7 +2,8 @@
 
 using BisUtils.Core.IO;
 using BisUtils.P3D.Models;
-using BisUtils.P3D.Options;
+using BisUtils.RVShape.Models;
+using BisUtils.RVShape.Options;
 
 var reader = new BisBinaryReader(File.OpenRead(@"C:\Users\ryann\Desktop\box.p3d"));
 var shapeOptions = new RVShapeOptions();

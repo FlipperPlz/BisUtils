@@ -1,4 +1,4 @@
-﻿namespace BisUtils.P3D.Models.Face;
+﻿namespace BisUtils.RVShape.Models.Face;
 
 [Flags]
 public enum RVFaceFlag : int

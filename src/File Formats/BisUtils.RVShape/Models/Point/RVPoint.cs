@@ -1,10 +1,10 @@
-﻿namespace BisUtils.P3D.Models.Point;
+﻿namespace BisUtils.RVShape.Models.Point;
 
-using Core.Extensions;
-using Core.IO;
-using Core.Render.Vector;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.Core.Render.Vector;
+using BisUtils.RVShape.Options;
 using FResults;
-using Options;
 
 public interface IRVPoint : IVector3D
 {

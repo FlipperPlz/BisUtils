@@ -1,11 +1,11 @@
 ﻿namespace BisUtils.P3D.Models.Utils;
 
+using BisUtils.RVShape.Options;
 using Core.Binarize;
 using Core.Binarize.Implementation;
 using Core.Extensions;
 using Core.IO;
 using FResults;
-using Options;
 
 public interface IRVDataVertex : IBinaryObject<RVShapeOptions>
 {

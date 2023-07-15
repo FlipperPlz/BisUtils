@@ -1,9 +1,9 @@
-﻿namespace BisUtils.P3D.Options;
+﻿namespace BisUtils.RVShape.Options;
 
 using System.Text;
-using Core.Binarize.Options;
-using Core.Binarize.Utils;
-using Core.Options;
+using BisUtils.Core.Binarize.Options;
+using BisUtils.Core.Binarize.Utils;
+using BisUtils.Core.Options;
 
 public class RVShapeOptions : IBinarizationOptions, IAsciizLimiterOptions
 {

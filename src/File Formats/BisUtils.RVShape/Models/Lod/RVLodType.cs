@@ -1,4 +1,4 @@
-﻿namespace BisUtils.P3D.Models.Lod;
+﻿namespace BisUtils.RVShape.Models.Lod;
 
 public enum RVLodType
 {

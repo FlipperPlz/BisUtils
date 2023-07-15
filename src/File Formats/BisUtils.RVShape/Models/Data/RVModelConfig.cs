@@ -1,6 +1,6 @@
-﻿namespace BisUtils.P3D.Models.Data;
+﻿namespace BisUtils.RVShape.Models.Data;
 
-using Core.IO;
+using BisUtils.Core.IO;
 using BisUtils.Param.Models;
 using BisUtils.Param.Models.Statements;
 using BisUtils.Param.Models.Stubs;

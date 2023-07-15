@@ -1,9 +1,7 @@
-﻿namespace BisUtils.P3D.Errors;
+﻿namespace BisUtils.RVShape.Errors;
 
+using BisUtils.RVShape.Models.Lod;
 using FResults.Reasoning;
-using Models;
-using Models.Data;
-using Models.Lod;
 
 public class FaceReadError : ErrorBase
 {

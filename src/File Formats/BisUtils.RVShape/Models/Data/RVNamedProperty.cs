@@ -1,4 +1,4 @@
-﻿namespace BisUtils.P3D.Models.Data;
+﻿namespace BisUtils.RVShape.Models.Data;
 
 public interface IRVNamedProperty
 {

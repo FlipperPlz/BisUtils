@@ -1,14 +1,14 @@
-﻿namespace BisUtils.P3D.Models.Data;
+﻿namespace BisUtils.RVShape.Models.Data;
 
-using Core.Binarize;
-using Core.Binarize.Implementation;
-using Core.Binarize.Options;
-using Core.Extensions;
-using Core.IO;
-using Core.Render.Vector;
+using BisUtils.Core.Binarize;
+using BisUtils.Core.Binarize.Implementation;
+using BisUtils.Core.Binarize.Options;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.Core.Render.Vector;
+using BisUtils.RVShape.Models.Lod;
+using BisUtils.RVShape.Options;
 using FResults;
-using Lod;
-using Options;
 
 public interface IRVAnimationPhase : IBinaryObject<RVShapeOptions>
 {
