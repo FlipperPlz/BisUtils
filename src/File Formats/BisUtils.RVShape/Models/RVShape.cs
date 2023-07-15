@@ -129,7 +129,7 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
             {
                 throw new NotImplementedException();
             }
-            default: return LastResult.WithError(new LodReadError("Unknown lod magic, expected ODOL, MLOD, or NLOD."));
+            default: return LastResult.WithError(new RVShapeLodReadError("Unknown lod magic, expected ODOL, MLOD, or NLOD."));
         }
         LevelsOfDetail = reader
             .ReadStrictIndexedList<RVLod, RVShapeOptions>(options, levelCount)
@@ -137,7 +137,7 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
             .ToList();
         if (LevelsOfDetail.Count == 1 && options.LodVersion < 0 && !isLod)
         {
-            return LastResult.WithError(new LodReadError("Invalid P3D File!"));
+            return LastResult.WithError(new RVShapeLodReadError("Invalid P3D File!"));
         }
 
         var major = options.LodMajorVersion;

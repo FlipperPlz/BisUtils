@@ -208,7 +208,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     {
         "TAGG" => (LastResult ??= Result.Ok()).WithReasons(ReadTaggs(reader, options).Reasons),
         "SS3D" => (LastResult ??= Result.Ok()).WithReasons(ReadSS3D(reader, options).Reasons),
-        _ => (LastResult ??= Result.Ok()).WithError(new LodReadError("Unknown setup magic."))
+        _ => (LastResult ??= Result.Ok()).WithError(new RVShapeLodReadError("Unknown setup magic."))
     };
 
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
@@ -235,7 +235,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             var activated = reader.ReadBoolean();
             if (!reader.ReadAsciiZ(out var taggName, options))
             {
-                return LastResult.WithError(new LodReadError("Tried to parse a tag without proper prefix."));
+                return LastResult.WithError(new RVShapeLodReadError("Tried to parse a tag without proper prefix."));
             }
             var tagLength = reader.ReadInt32();
 
