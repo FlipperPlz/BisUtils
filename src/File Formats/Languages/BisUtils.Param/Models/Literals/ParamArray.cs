@@ -3,6 +3,7 @@
 using System.Text;
 using Core.Extensions;
 using Core.IO;
+using Extensions;
 using Factories;
 using FResults;
 using FResults.Extensions;
@@ -31,6 +32,10 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     public ParamArray(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) :
         base(file, parent, reader, options)
     {
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
     }
 
     public override byte LiteralId => 3;
@@ -42,12 +47,12 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     {
         var result = base.Binarize(writer, options);
         var value = Value;
-        writer.WriteCompactInteger(value?.Count ?? 0);
+        writer.WriteCompactInteger(value.Count);
         return LastResult = result.WithReasons(value?.SelectMany(v => v.Binarize(writer, options).Reasons) ??
                                                new IReason[] { Result.Fail("Failed to write data in list"), });
     }
 
-    public override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         var results = Result.Ok();
         var contents = new List<IParamLiteral>(reader.ReadCompactInteger());
@@ -70,50 +75,24 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     public override Result Validate(ParamOptions options) =>
         LastResult = base.Validate(options).IsFailed
             ? LastResult!
-            : LastResult!.WithReasons(Value?.SelectMany(e => e.Validate(options).Reasons) ?? Array.Empty<IReason>());
+            : LastResult!.WithReasons(Value.SelectMany(e => e.Validate(options).Reasons) ?? Array.Empty<IReason>());
 
-    public override Result ToParam(out string str, ParamOptions options)
+    public override Result WriteParam(out string value, ParamOptions options)
     {
-        str = Value.Any()
-            ? $"{{{string.Join(", ", Value.Select(v => v.ToParam(options)))}}}"
+        value = Value.Any()
+            ? $"{{{string.Join(", ", Value.Select(v => v.ToParam(out _, options)))}}}"
             : "{}";
         return LastResult = Result.Ok();
     }
 
     public static implicit operator List<IParamLiteral>(ParamArray array) => array.Value;
+
     public static explicit operator ParamArray(List<IParamLiteral> array) => new(null, null, array);
 
-    #region Printing Extras
-
-    public StringBuilder WriteLiterals(out Result result, ParamOptions options)
+    public Result WriteLiterals(out string value, ParamOptions options)
     {
-        var builder = new StringBuilder();
-        result = WriteParam(builder, options);
-        return builder;
-    }
-
-    public string WriteLiterals(ParamOptions options)
-    {
-        if (!(LastResult = TryWriteLiterals(out var str, options)))
-        {
-            LastResult.Throw();
-        }
-
-        return str;
-    }
-
-    public Result TryWriteLiterals(StringBuilder builder, ParamOptions options)
-    {
-        var result = TryWriteLiterals(out var str, options);
-        builder.Append(str);
-        return result;
-    }
-
-    public Result TryWriteLiterals(out string str, ParamOptions options)
-    {
-        str = string.Join(',', Literals.Select(s => s.ToParam(options)));
+        value = string.Join(',', Literals.Select(s => s.ToParam(out _, options)));
         return Result.Ok();
     }
 
-    #endregion
 }

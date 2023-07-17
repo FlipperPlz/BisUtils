@@ -2,6 +2,7 @@
 
 using System.Text;
 using Core.IO;
+using Extensions;
 using FResults;
 using Options;
 
@@ -9,13 +10,9 @@ public interface IParamLiteralHolder : IParamElement
 {
     IParamLiteralHolder? ParentHolder { get; }
     List<IParamLiteral> Literals { get; }
-    public Result TryWriteLiterals(out string str, ParamOptions options)
-    {
-        str = string.Join(',', Literals.Select(s => s.ToParam(options)));
-        return Result.Ok();
-    }
-}
+    Result WriteLiterals(out string value, ParamOptions options);
 
+}
 
 public abstract class ParamLiteralHolder : ParamElement, IParamLiteralHolder
 {
@@ -27,6 +24,12 @@ public abstract class ParamLiteralHolder : ParamElement, IParamLiteralHolder
 
     protected ParamLiteralHolder(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, reader, options) =>
         ParentHolder = parent;
+
+    public Result WriteLiterals(out string value, ParamOptions options)
+    {
+        value = string.Join(',', Literals.Select(s => s.ToParam(out _, options)));
+        return Result.Ok();
+    }
 
 }
 

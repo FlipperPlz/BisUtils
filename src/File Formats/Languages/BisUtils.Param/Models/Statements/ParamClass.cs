@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using Errors;
@@ -15,7 +16,7 @@ using Stubs.Holders;
 // ReSharper disable once PossibleInterfaceMemberAmbiguity
 public interface IParamClass : IParamExternalClass, IParamStatementHolder
 {
-    string? InheritedClassname { get; }
+    string? InheritedClassname { get; set;  }
     Result LocateParamParent(out IParamExternalClass? clazz);
 }
 
@@ -122,12 +123,29 @@ public class ParamClass : ParamStatementHolder, IParamClass
     {
         if (InheritedClassname is not (null or ""))
         {
-            return (this as IParamStatementHolder).HasClass(InheritedClassname, out clazz)
+            return this.HasClass(InheritedClassname, out clazz)
                 ? Result.Ok()
                 : Result.Fail(new ParamStatementNotFoundError(InheritedClassname, this));
         }
 
         clazz = null;
         return LastResult = Result.ImmutableOk();
+    }
+
+    public override Result WriteParam(out string value, ParamOptions options)
+    {
+        var builder = new StringBuilder($"class {ClassName}");
+        if (InheritedClassname is { } super)
+        {
+            builder.Append(" : ").Append(super);
+        }
+
+        builder.Append(" {\n");
+        LastResult = WriteStatements(out var statements, options);
+        builder.Append(statements);
+        builder.Append("\n};");
+
+        value = builder.ToString();
+        return LastResult;
     }
 }

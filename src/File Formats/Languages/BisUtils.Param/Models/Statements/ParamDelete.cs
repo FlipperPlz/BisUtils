@@ -17,7 +17,7 @@ public interface IParamDelete : IParamStatement
 public class ParamDelete : ParamStatement, IParamDelete
 {
     public override byte StatementId => 4;
-    public string DeleteTargetName { get; set; } = "";
+    public string DeleteTargetName { get; set; } = null!;
 
     public ParamDelete(IParamFile? file, IParamStatementHolder? parent, string target) : base(file, parent) =>
         DeleteTargetName = target;
@@ -66,9 +66,9 @@ public class ParamDelete : ParamStatement, IParamDelete
             : Result.Ok();
     }
 
-    public override Result ToParam(out string str, ParamOptions options)
+    public override Result WriteParam(out string value, ParamOptions options)
     {
-        str = $"delete {DeleteTargetName};";
+        value = $"delete {DeleteTargetName};";
         return Result.Ok();
     }
 }

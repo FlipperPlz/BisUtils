@@ -42,9 +42,9 @@ public class ParamFloat : ParamLiteral<float>, IParamFloat
         return LastResult = Result.ImmutableOk();
     }
 
-    public override Result ToParam(out string str, ParamOptions options)
+    public override Result WriteParam(out string value, ParamOptions options)
     {
-        str = ParamValue?.ToString() ?? "";
+        value = ParamValue?.ToString() ?? "";
         return LastResult = Result.ImmutableOk();
     }
 }

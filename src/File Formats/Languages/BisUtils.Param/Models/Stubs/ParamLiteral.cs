@@ -7,7 +7,7 @@ using Options;
 
 public interface IParamLiteral : IParamElement
 {
-    object? ParamValue { get; }
+    object ParamValue { get; }
     byte LiteralId { get; }
     IParamLiteralHolder? Parent { get; }
 
@@ -16,7 +16,7 @@ public interface IParamLiteral : IParamElement
 
 public interface IParamLiteral<out T> : IParamLiteral
 {
-    T? Value { get; }
+    T Value { get; }
 }
 
 public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>

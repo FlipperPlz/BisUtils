@@ -9,13 +9,12 @@ using Stubs.Holders;
 
 public interface IParamExternalClass : IParamStatement
 {
-    string ClassName { get; }
+    string ClassName { get; set; }
 }
 
 public class ParamExternalClass : ParamStatement, IParamExternalClass
 {
-    private string className = "";
-    public string ClassName { get => className; set => className = value; }
+    public string ClassName { get; set; } = null!;
     public override byte StatementId => 3;
 
     public ParamExternalClass(IParamFile? file, IParamStatementHolder? parent, string className) : base(file, parent) => ClassName = className;
@@ -28,22 +27,25 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
         }
     }
 
-
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
-        writer.WriteAsciiZ(className, options.Charset);
+        writer.WriteAsciiZ(ClassName, options.Charset);
         return LastResult = Result.ImmutableOk();
     }
 
-    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options) =>
-        LastResult = reader.ReadAsciiZ(out className, options);
+    public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
+    {
+        LastResult = reader.ReadAsciiZ(out var className, options);
+        ClassName = className;
+        return LastResult;
+    }
 
     public override Result Validate(ParamOptions options) => Result.Ok();
 
-    public override Result ToParam(out string str, ParamOptions options)
+
+    public override Result WriteParam(out string value, ParamOptions options)
     {
-        str = $"class {ClassName};";
+        value = $"class {ClassName};";
         return LastResult = Result.Ok();
     }
-
 }

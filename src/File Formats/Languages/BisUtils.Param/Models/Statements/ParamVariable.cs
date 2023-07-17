@@ -14,31 +14,39 @@ using Stubs.Holders;
 
 public interface IParamVariable : IParamStatement, IParamLiteralHolder
 {
-    string VariableName { get; }
-    ParamOperatorType VariableOperator { get; }
-    IParamLiteral? VariableValue { get; }
+    string VariableName { get; set; }
+    ParamOperatorType VariableOperator { get; set; }
+    IParamLiteral VariableValue { get; set; }
 }
 
-public class ParamVariable : ParamStatement, IParamVariable
+public abstract class ParamVariableBase : ParamStatement, IParamVariable
 {
-    public List<IParamLiteral> Literals => new List<IParamLiteral>();
-    public string VariableName { get; set; } = null!;
-    public ParamOperatorType VariableOperator { get; set; }
-    public override byte StatementId => GetStatementId();
-    public IParamLiteral? VariableValue
+
+    public abstract string VariableName { get; set; }
+    public abstract ParamOperatorType VariableOperator { get; set; }
+    public abstract IParamLiteral VariableValue { get; set; }
+    public IParamLiteralHolder? ParentHolder => null;
+    public List<IParamLiteral> Literals => new List<IParamLiteral>() { VariableValue };
+
+    protected ParamVariableBase(IParamFile? file, IParamStatementHolder? parent) : base(file, parent)
     {
-        get => Literals.GetOrNull(0);
-        set
-        {
-            if (value is { } notnull)
-            {
-                Literals[0] = notnull;
-            }
-        }
     }
 
+    protected ParamVariableBase(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    {
+    }
 
-    public IParamLiteralHolder? ParentHolder => null;
+    public Result WriteLiterals(out string value, ParamOptions options) =>
+        VariableValue.WriteParam(out value, options);
+}
+
+public class ParamVariable : ParamVariableBase, IParamVariable
+{
+    public sealed override string VariableName { get; set; } = null!;
+    public sealed override ParamOperatorType VariableOperator { get; set; }
+    public override byte StatementId => GetStatementId();
+    public sealed override IParamLiteral VariableValue { get; set; } = null!;
+
 
     public byte GetStatementId()
     {
@@ -51,7 +59,7 @@ public class ParamVariable : ParamStatement, IParamVariable
     }
 
 
-    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, IParamLiteral? variableValue, ParamOperatorType operatorType = ParamOperatorType.Assign) : base(file, parent)
+    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, IParamLiteral variableValue, ParamOperatorType operatorType = ParamOperatorType.Assign) : base(file, parent)
     {
         VariableName = variableName;
         VariableOperator = operatorType;
@@ -73,7 +81,7 @@ public class ParamVariable : ParamStatement, IParamVariable
             writer.Write((byte) VariableOperator);
         }
         writer.WriteAsciiZ(VariableName, options);
-        return VariableValue?.Binarize(writer, options) ?? Result.Fail($"Failed to write value of variable {VariableName}");
+        return VariableValue.Binarize(writer, options);
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
@@ -87,7 +95,7 @@ public class ParamVariable : ParamStatement, IParamVariable
         var result = reader.ReadAsciiZ(out var name, options);
         VariableName = name;
         result.WithReasons(ParamLiteralFactory.ReadLiteral(ParamFile, this, reader, options, out var value).Reasons);
-        VariableValue = value;
+        VariableValue = value!;
         return result;
     }
 
@@ -98,10 +106,10 @@ public class ParamVariable : ParamStatement, IParamVariable
             return Result.Fail("Invalid Operator!");
         }
 
-        return VariableValue is null ? Result.Fail("No Variable Value!") : Result.Ok();
+        return Result.Ok();
     }
 
-    public override Result ToParam(out string str, ParamOptions options)
+    public override Result WriteParam(out string value, ParamOptions options)
     {
         var builder = new StringBuilder(VariableName);
         if (VariableValue is IParamArray)
@@ -122,11 +130,9 @@ public class ParamVariable : ParamStatement, IParamVariable
                 break;
         }
 
-        var result = VariableValue?.WriteParam(builder, options) ??
-                     Result.Fail($"Couldn't write value of {VariableName}.");
-        str = builder.ToString();
+        var result = VariableValue.WriteParam(out var varValue, options);
+        builder.Append(varValue);
+        value = builder.ToString();
         return result;
-
     }
-
 }

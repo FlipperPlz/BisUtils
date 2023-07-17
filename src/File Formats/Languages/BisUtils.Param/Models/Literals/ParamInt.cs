@@ -40,18 +40,18 @@ public class ParamInt : ParamLiteral<int>, IParamInt
     public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {
         ParamValue = reader.ReadInt32();
-        return LastResult = Result.ImmutableOk();
+        return LastResult = Result.Ok();
     }
 
 
     public override Result Validate(ParamOptions options) =>
-        LastResult = Result.ImmutableOk();
+        LastResult = Result.Ok();
 
 
-    public override Result ToParam(out string str, ParamOptions options)
+    public override Result WriteParam(out string value, ParamOptions options)
     {
-        str = Value.ToString("D", CultureInfo.CurrentCulture);
-        return LastResult = Result.ImmutableOk();
+        value = Value.ToString("D", CultureInfo.CurrentCulture);
+        return LastResult = Result.Ok();
     }
 
 

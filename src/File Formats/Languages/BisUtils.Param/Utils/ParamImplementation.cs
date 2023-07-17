@@ -19,7 +19,6 @@ public class ParamImplementation : BinaryObject<ParamOptions>, IParamImplementat
     public IParamFile ParamFile { get; set; }
     public string Name { get => ParamFile.FileName; set => ParamFile.FileName = value; }
 
-
     protected ParamImplementation(IParamFile paramFile) => ParamFile = paramFile;
 
     protected ParamImplementation(string name, BisBinaryReader reader, ParamOptions options)

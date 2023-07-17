@@ -66,9 +66,9 @@ public class ParamString : ParamLiteral<string>, IParamString
         }
     }
 
+    public override Result WriteParam(out string value, ParamOptions options) =>
+        LastResult = Stringify(out value, Value ?? "", StringType, options);
 
-    public override Result ToParam(out string str, ParamOptions options) =>
-        LastResult = Stringify(out str, Value ?? "", StringType, options);
 #pragma warning disable CA1305 //TODO: Options with locale
 
     public bool ToInt(out ParamInt paramInt)

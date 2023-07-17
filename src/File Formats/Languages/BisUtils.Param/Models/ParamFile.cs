@@ -1,31 +1,15 @@
 ﻿namespace BisUtils.Param.Models;
 
 using Core.Extensions;
-using Core.Family;
 using Core.IO;
 using FResults;
 using Options;
 using Statements;
 using Stubs;
-using Stubs.Holders;
 
 public interface IParamFile : IParamClass
 {
     string FileName { get; set; }
-
-    string IParamExternalClass.ClassName => FileName;
-
-    IParamStatementHolder? IParamStatement.ParentClass => null;
-
-    IParamStatementHolder? IParamStatementHolder.ParentClass => null;
-
-    string? IParamClass.InheritedClassname => null;
-
-    Result IParamClass.LocateParamParent(out IParamExternalClass? clazz)
-    {
-        clazz = null;
-        return Result.ImmutableOk();
-    }
 }
 
 public class ParamFile : ParamClass, IParamFile
