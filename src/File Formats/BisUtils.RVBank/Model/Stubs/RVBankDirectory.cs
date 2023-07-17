@@ -1,9 +1,8 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
-using BisUtils.Core.Family;
-using BisUtils.Core.IO;
-using BisUtils.RVBank.Enumerations;
-using BisUtils.RVBank.Model.Entry;
+using Core.IO;
+using Enumerations;
+using Entry;
 using Core.Parsing;
 using FResults;
 using FResults.Extensions;
