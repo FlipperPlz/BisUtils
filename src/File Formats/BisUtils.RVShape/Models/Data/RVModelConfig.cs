@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.RVShape.Models.Data;
 
-using BisUtils.Core.IO;
+using Core.IO;
 using BisUtils.Param.Models;
 using BisUtils.Param.Models.Statements;
 using BisUtils.Param.Models.Stubs;
@@ -21,7 +21,7 @@ public class RVModelConfig : ParamFile, IRVModelConfig
     public IParamClass? ModelConfigs { get; }
     public IParamClass? ModelConfig { get; }
 
-    public RVModelConfig(string modelName, List<IParamStatement>? statements = null) : base(modelName, statements)
+    public RVModelConfig(string modelName, List<IParamStatement> statements) : base(modelName, statements)
     {
         SkeletonConfigs = null;
         ModelConfigs = null;
