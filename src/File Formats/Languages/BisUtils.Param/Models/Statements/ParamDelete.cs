@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using Extensions;
@@ -19,10 +20,10 @@ public class ParamDelete : ParamStatement, IParamDelete
     public override byte StatementId => 4;
     public string DeleteTargetName { get; set; } = null!;
 
-    public ParamDelete(IParamFile? file, IParamStatementHolder? parent, string target) : base(file, parent) =>
+    public ParamDelete(IParamFile file, IParamStatementHolder parent, string target) : base(file, parent) =>
         DeleteTargetName = target;
 
-    public ParamDelete(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamDelete(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -32,7 +33,7 @@ public class ParamDelete : ParamStatement, IParamDelete
 
     public Result LocateDeleteTarget(out IParamExternalClass? clazz)
     {
-        clazz = ParentClass?.LocateAnyClass(DeleteTargetName);
+        clazz = ParentClass.LocateAnyClass(DeleteTargetName);
         return LastResult = clazz is null
             ? Result.Fail($"Could not locate target '{DeleteTargetName}' of delete statement")
             : Result.Ok();
@@ -66,9 +67,10 @@ public class ParamDelete : ParamStatement, IParamDelete
             : Result.Ok();
     }
 
-    public override Result WriteParam(out string value, ParamOptions options)
+
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
     {
-        value = $"delete {DeleteTargetName};";
+        builder.Append("delete ").Append(DeleteTargetName).Append(';');
         return Result.Ok();
     }
 }

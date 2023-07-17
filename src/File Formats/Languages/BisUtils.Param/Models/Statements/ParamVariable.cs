@@ -25,19 +25,24 @@ public abstract class ParamVariableBase : ParamStatement, IParamVariable
     public abstract string VariableName { get; set; }
     public abstract ParamOperatorType VariableOperator { get; set; }
     public abstract IParamLiteral VariableValue { get; set; }
-    public IParamLiteralHolder? ParentHolder => null;
-    public List<IParamLiteral> Literals => new List<IParamLiteral>() { VariableValue };
+    public IParamLiteralHolder? ParentHolder { get => null; set => throw new NotSupportedException(); }
 
-    protected ParamVariableBase(IParamFile? file, IParamStatementHolder? parent) : base(file, parent)
+    public List<IParamLiteral> Literals
+    {
+        get => new List<IParamLiteral>() { VariableValue };
+        set => VariableValue = value[0];
+    }
+
+    protected ParamVariableBase(IParamFile file, IParamStatementHolder parent) : base(file, parent)
     {
     }
 
-    protected ParamVariableBase(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    protected ParamVariableBase(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
     }
 
-    public Result WriteLiterals(out string value, ParamOptions options) =>
-        VariableValue.WriteParam(out value, options);
+    public Result WriteLiterals(ref StringBuilder builder, ParamOptions options) =>
+        VariableValue.WriteParam(ref builder, options);
 }
 
 public class ParamVariable : ParamVariableBase, IParamVariable
@@ -59,14 +64,14 @@ public class ParamVariable : ParamVariableBase, IParamVariable
     }
 
 
-    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, string variableName, IParamLiteral variableValue, ParamOperatorType operatorType = ParamOperatorType.Assign) : base(file, parent)
+    public ParamVariable(IParamFile file, IParamStatementHolder parent, string variableName, IParamLiteral variableValue, ParamOperatorType operatorType = ParamOperatorType.Assign) : base(file, parent)
     {
         VariableName = variableName;
         VariableOperator = operatorType;
         VariableValue = variableValue;
     }
 
-    public ParamVariable(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamVariable(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -109,9 +114,9 @@ public class ParamVariable : ParamVariableBase, IParamVariable
         return Result.Ok();
     }
 
-    public override Result WriteParam(out string value, ParamOptions options)
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
     {
-        var builder = new StringBuilder(VariableName);
+        builder.Append(VariableName);
         if (VariableValue is IParamArray)
         {
             builder.Append("[]");
@@ -130,9 +135,7 @@ public class ParamVariable : ParamVariableBase, IParamVariable
                 break;
         }
 
-        var result = VariableValue.WriteParam(out var varValue, options);
-        builder.Append(varValue);
-        value = builder.ToString();
+        var result = VariableValue.WriteParam(ref builder, options);
         return result;
     }
 }

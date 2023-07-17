@@ -23,16 +23,16 @@ public class RVModelConfig : ParamFile, IRVModelConfig
 
     public RVModelConfig(string modelName, List<IParamStatement>? statements = null) : base(modelName, statements)
     {
-        SkeletonConfigs = this >> "CfgSkeletons";
-        ModelConfigs = this >> "CfgModels";
+        SkeletonConfigs = null;
+        ModelConfigs = null;
         ModelConfig = ModelConfigs is not null ? ModelConfigs >> ModelName : null;
     }
 
     public RVModelConfig(string modelName, BisBinaryReader reader, ParamOptions options) : base(modelName, reader,
         options)
     {
-        SkeletonConfigs = this >> "CfgSkeletons";
-        ModelConfigs = this >> "CfgModels";
+        SkeletonConfigs = null;
+        ModelConfigs = null;
         ModelConfig = ModelConfigs is not null ? ModelConfigs >> ModelName : null;
     }
 }

@@ -16,13 +16,13 @@ public class ParamFile : ParamClass, IParamFile
 {
     public string FileName { get => ClassName; set => ClassName = value; }
 
-    public ParamFile(string fileName, List<IParamStatement>? statements = null) : base(null, null, fileName, null, statements)
+    public ParamFile(string fileName, List<IParamStatement> statements ) : base(null!, null!, fileName, null, statements)
     {
         FileName = fileName;
         Statements = statements ?? new List<IParamStatement>();
     }
 
-    public ParamFile(string fileName, BisBinaryReader reader, ParamOptions options) : base(null, null, reader, options)
+    public ParamFile(string fileName, BisBinaryReader reader, ParamOptions options) : base(null!, null!, reader, options)
     {
         FileName = fileName;
         if (!Debinarize(reader, options))
@@ -35,9 +35,5 @@ public class ParamFile : ParamClass, IParamFile
 
     public override Result Validate(ParamOptions options) => throw new NotImplementedException();
 
-    private new Result Debinarize(BisBinaryReader reader, ParamOptions options)
-    {
-     //TODO: //
-     return Result.Ok();
-    }
+    private new Result Debinarize(BisBinaryReader reader, ParamOptions options) => throw new NotImplementedException();
 }

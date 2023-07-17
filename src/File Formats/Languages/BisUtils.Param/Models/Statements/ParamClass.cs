@@ -20,34 +20,36 @@ public interface IParamClass : IParamExternalClass, IParamStatementHolder
     Result LocateParamParent(out IParamExternalClass? clazz);
 }
 
-public class ParamClass : ParamStatementHolder, IParamClass
+public class ParamClass : ParamStatement, IParamClass
 {
 
+    public override byte StatementId => 0;
+    public string ClassName { get; set; } = "";
+    public string? InheritedClassname { get; set; }
+    public List<IParamStatement> Statements { get; set; }
+
     public ParamClass(
-        IParamFile? file,
-        IParamStatementHolder? parent,
+        IParamFile file,
+        IParamStatementHolder parent,
         string className,
         string? inheritedClassname = null,
-        IEnumerable<IParamStatement>? statements = null
-    ) : base(file, parent, statements)
+        List<IParamStatement>? statements = null
+    ) : base(file, parent)
     {
+        Statements = statements ?? new List<IParamStatement>();
         ClassName = className;
         InheritedClassname = inheritedClassname;
     }
 
-    public ParamClass(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) :
+    public ParamClass(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) :
         base(file, parent, reader, options)
     {
+        Statements = new List<IParamStatement>();
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
         }
     }
-
-    public byte StatementId => 0;
-
-    public string ClassName { get; set; } = "";
-    public string? InheritedClassname { get; set; }
 
     public override Result Validate(ParamOptions options)
     {
@@ -56,7 +58,7 @@ public class ParamClass : ParamStatementHolder, IParamClass
             return LastResult;
         }
 
-        if (options.DuplicateClassnameIsError && ParentClass?.HasClass(ClassName, out var duplicateClass) == true)
+        if (options.DuplicateClassnameIsError && ParentClass.HasClass(ClassName, out var duplicateClass))
         {
             return Result.Fail(new ParamDuplicateClassnameError(this, duplicateClass!));
         }
@@ -113,12 +115,6 @@ public class ParamClass : ParamStatementHolder, IParamClass
         return value;
     }
 
-    public void SyncToContext(IParamStatementHolder? holder)
-    {
-        ParentClass = holder;
-        ParamFile = holder?.ParamFile;
-    }
-
     public Result LocateParamParent(out IParamExternalClass? clazz)
     {
         if (InheritedClassname is not (null or ""))
@@ -132,20 +128,25 @@ public class ParamClass : ParamStatementHolder, IParamClass
         return LastResult = Result.ImmutableOk();
     }
 
-    public override Result WriteParam(out string value, ParamOptions options)
+
+
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
     {
-        var builder = new StringBuilder($"class {ClassName}");
+        builder.Append("class ").Append(ClassName);
         if (InheritedClassname is { } super)
         {
             builder.Append(" : ").Append(super);
         }
 
         builder.Append(" {\n");
-        LastResult = WriteStatements(out var statements, options);
-        builder.Append(statements);
+
+        foreach (var statement in Statements)
+        {
+            statement.WriteParam(ref builder, options);
+            builder.Append('\n');
+        }
         builder.Append("\n};");
 
-        value = builder.ToString();
-        return LastResult;
+        return LastResult = Result.Ok();
     }
 }

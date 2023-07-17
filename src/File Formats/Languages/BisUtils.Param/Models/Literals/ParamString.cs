@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using Enumerations;
@@ -19,13 +20,13 @@ public interface IParamString : IParamLiteral<string>
 public class ParamString : ParamLiteral<string>, IParamString
 {
     public override byte LiteralId => 4;
-    public override string? Value { get; set; }
+    public override string Value { get; set; } = null!;
     public ParamStringType StringType { get; }
 
-    public ParamString(IParamFile? file, IParamLiteralHolder? parent, string? value, ParamStringType stringType) : base(file, parent, value) =>
+    public ParamString(IParamFile file, IParamLiteralHolder parent, string value, ParamStringType stringType) : base(file, parent, value) =>
         StringType = stringType;
 
-    public ParamString(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) :
+    public ParamString(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options) :
         base(file, parent, reader, options)
     {
         StringType = ParamStringType.Quoted;
@@ -38,7 +39,7 @@ public class ParamString : ParamLiteral<string>, IParamString
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)
     {
         var result = base.Binarize(writer, options);
-        writer.WriteAsciiZ(Value ?? "", options);
+        writer.WriteAsciiZ(Value, options);
         return LastResult = result;
     }
 
@@ -65,10 +66,6 @@ public class ParamString : ParamLiteral<string>, IParamString
                 return Result.Fail("");
         }
     }
-
-    public override Result WriteParam(out string value, ParamOptions options) =>
-        LastResult = Stringify(out value, Value ?? "", StringType, options);
-
 #pragma warning disable CA1305 //TODO: Options with locale
 
     public bool ToInt(out ParamInt paramInt)
@@ -96,17 +93,23 @@ public class ParamString : ParamLiteral<string>, IParamString
         return true;
     }
 
-    public IParamFloat? ToFloat()
+    public IParamFloat ToFloat()
     {
         ToFloat(out var paramFloat);
         return paramFloat;
     }
 
-    public IParamInt? ToInt()
+    public IParamInt ToInt()
     {
         ToInt(out var paramInt);
         return paramInt;
     }
 #pragma warning restore CA1305
 
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
+    {
+        LastResult = Stringify(out var value, Value, StringType, options);
+        builder.Append(value);
+        return LastResult;
+    }
 }

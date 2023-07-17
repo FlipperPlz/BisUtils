@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
 using System.Globalization;
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using FResults;
@@ -18,11 +19,11 @@ public class ParamInt : ParamLiteral<int>, IParamInt
     public override byte LiteralId => 2;
     public override int Value { get; set; }
 
-    public ParamInt(IParamFile? file, IParamLiteralHolder? parent, int value) : base(file, parent, value)
+    public ParamInt(IParamFile file, IParamLiteralHolder parent, int value) : base(file, parent, value)
     {
     }
 
-    public ParamInt(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamInt(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -48,11 +49,9 @@ public class ParamInt : ParamLiteral<int>, IParamInt
         LastResult = Result.Ok();
 
 
-    public override Result WriteParam(out string value, ParamOptions options)
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
     {
-        value = Value.ToString("D", CultureInfo.CurrentCulture);
+        builder.Append(Value.ToString("D", CultureInfo.CurrentCulture));
         return LastResult = Result.Ok();
     }
-
-
 }

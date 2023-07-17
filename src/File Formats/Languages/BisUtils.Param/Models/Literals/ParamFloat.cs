@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Literals;
 
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using FResults;
@@ -17,11 +18,11 @@ public class ParamFloat : ParamLiteral<float>, IParamFloat
     public override byte LiteralId => 1;
     public override float Value { get; set; }
 
-    public ParamFloat(IParamFile? file, IParamLiteralHolder? parent, float value) : base(file, parent, value)
+    public ParamFloat(IParamFile file, IParamLiteralHolder parent, float value) : base(file, parent, value)
     {
     }
 
-    public ParamFloat(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamFloat(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -42,9 +43,10 @@ public class ParamFloat : ParamLiteral<float>, IParamFloat
         return LastResult = Result.ImmutableOk();
     }
 
-    public override Result WriteParam(out string value, ParamOptions options)
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
     {
-        value = ParamValue?.ToString() ?? "";
-        return LastResult = Result.ImmutableOk();
+        builder.Append(Value);
+        return LastResult = Result.Ok();
     }
+
 }

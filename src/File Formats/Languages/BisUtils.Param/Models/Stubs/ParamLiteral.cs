@@ -7,11 +7,11 @@ using Options;
 
 public interface IParamLiteral : IParamElement
 {
-    object ParamValue { get; }
+    object? ParamValue { get; }
     byte LiteralId { get; }
-    IParamLiteralHolder? Parent { get; }
+    IParamLiteralHolder Parent { get; }
 
-    void SyncToContext(IParamLiteralHolder? holder);
+    void SyncToContext(IParamLiteralHolder holder);
 }
 
 public interface IParamLiteral<out T> : IParamLiteral
@@ -21,19 +21,19 @@ public interface IParamLiteral<out T> : IParamLiteral
 
 public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>
 {
-    protected ParamLiteral(IParamFile? file, IParamLiteralHolder? parent, T? value) : base(file)
+    public abstract byte LiteralId { get; }
+    public IParamLiteralHolder Parent { get; set; }
+    public abstract T Value { get; set; }
+
+    protected ParamLiteral(IParamFile file, IParamLiteralHolder parent, T? value) : base(file)
     {
         ParamValue = value;
         Parent = parent;
     }
 
-    protected ParamLiteral(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader, ParamOptions options)
+    protected ParamLiteral(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options)
         : base(file, reader, options) =>
         Parent = parent;
-
-    public abstract byte LiteralId { get; }
-    public IParamLiteralHolder? Parent { get; set; }
-    public abstract T? Value { get; set; }
 
     public object? ParamValue
     {
@@ -45,14 +45,14 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>
                 throw new NotSupportedException();
             }
 
-            Value = (T?)value;
+            Value = (T)value;
         }
     }
 
-    public void SyncToContext(IParamLiteralHolder? holder)
+    public void SyncToContext(IParamLiteralHolder holder)
     {
         Parent = holder;
-        ParamFile = holder?.ParamFile;
+        ParamFile = holder.ParamFile;
     }
 
     public override Result Validate(ParamOptions options) =>

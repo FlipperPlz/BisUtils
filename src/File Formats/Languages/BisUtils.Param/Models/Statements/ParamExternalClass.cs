@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Param.Models.Statements;
 
+using System.Text;
 using Core.Extensions;
 using Core.IO;
 using FResults;
@@ -17,9 +18,9 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
     public string ClassName { get; set; } = null!;
     public override byte StatementId => 3;
 
-    public ParamExternalClass(IParamFile? file, IParamStatementHolder? parent, string className) : base(file, parent) => ClassName = className;
+    public ParamExternalClass(IParamFile file, IParamStatementHolder parent, string className) : base(file, parent) => ClassName = className;
 
-    public ParamExternalClass(IParamFile? file, IParamStatementHolder? parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamExternalClass(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
     {
         if (!Debinarize(reader, options))
         {
@@ -43,9 +44,9 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
     public override Result Validate(ParamOptions options) => Result.Ok();
 
 
-    public override Result WriteParam(out string value, ParamOptions options)
+    public override Result WriteParam(ref StringBuilder builder, ParamOptions options)
     {
-        value = $"class {ClassName};";
+        builder.Append("class ").Append(ClassName).Append(';');
         return LastResult = Result.Ok();
     }
 }
