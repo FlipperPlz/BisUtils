@@ -11,7 +11,7 @@ using Stubs.Holders;
 
 public interface IParamFile : IParamClass
 {
-    string FileName { get; }
+    string FileName { get; set; }
 
     string IParamExternalClass.ClassName => FileName;
 
@@ -30,7 +30,7 @@ public interface IParamFile : IParamClass
 
 public class ParamFile : ParamClass, IParamFile
 {
-    public string FileName { get => ClassName; init => ClassName = value; }
+    public string FileName { get => ClassName; set => ClassName = value; }
 
     public ParamFile(string fileName, List<IParamStatement>? statements = null) : base(null, null, fileName, null, statements)
     {
