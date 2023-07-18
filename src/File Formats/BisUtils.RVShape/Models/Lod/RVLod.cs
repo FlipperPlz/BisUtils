@@ -2,16 +2,16 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using BisUtils.Core.Binarize;
-using BisUtils.Core.Binarize.Implementation;
+using Core.Binarize;
+using Core.Binarize.Implementation;
 using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.Extensions;
-using BisUtils.Core.IO;
-using BisUtils.Core.Render.Vector;
+using Core.IO;
+using Core.Render.Vector;
 using BisUtils.P3D.Models.Utils;
-using BisUtils.RVShape.Models.Point;
-using BisUtils.RVShape.Models.Utils;
-using BisUtils.RVShape.Options;
+using Point;
+using Utils;
+using Options;
 using Data;
 using Errors;
 using Face;
@@ -45,15 +45,14 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public List<IRVPoint> Points { get; set; } = null!;
     public List<IVector3D> Normals { get; set; } = null!;
     public List<IRVFace> Faces { get; set; } = null!;
-    public List<IRVNamedProperty> NamedProperties => new(RVConstants.MaxNamedProperties);
-    public List<IRVNamedSelection> NamedSelections => new(RVConstants.MaxNamedSelections);
+    public List<IRVNamedProperty> NamedProperties { get; } = new(RVConstants.MaxNamedProperties);
+    public List<IRVNamedSelection> NamedSelections { get; } = new(RVConstants.MaxNamedSelections);
     public List<IRVAnimationPhase> AnimationPhases => new();
     public List<IRVSharpEdge> SharpEdges { get; private set; } = new();
     public IRVPointAttrib<float>? Mass { get; set; }
     public IRVSelection? Selection { get; private set; }
     public IRVSelection? HiddenSelection { get; private set; }
     public IRVSelection? LockedSelection { get; private set; }
-
 
     public RVLod()
     {
@@ -193,16 +192,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     }
 
 
+    private void AddNamedProperty(string name, string value) => AddNamedProperty(new RVNamedProperty(name, value));
+
+    private void AddNamedProperty(IRVNamedProperty namedProperty) => NamedProperties.Add(namedProperty);
 
     private void ReadMaterialIndex(string name, BinaryReader reader) =>
-        NamedProperties.Add
-        (
-            new RVNamedProperty
-            (
-                name,
-                reader.ReadInt32().ToString("x8", CultureInfo.CurrentCulture)
-            )
-        );
+        AddNamedProperty(name, reader.ReadInt32().ToString("x8", CultureInfo.CurrentCulture));
 
     private Result ReadLodBody(BisBinaryReader reader, RVShapeOptions options) => reader.ReadAscii(4, options) switch
     {
@@ -332,14 +327,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
                 case "#Property#":
                 {
-                    NamedProperties.Add
-                    (
-                        new RVNamedProperty
-                        (
-                            reader.ReadChars(64).ToString()!.TrimEnd('\0', ' '),
-                            reader.ReadChars(64).ToString()!.TrimEnd('\0', ' ')
-                        )
-                    );
+                    AddNamedProperty(new string(reader.ReadChars(64)).TrimEnd('\0'), new string(reader.ReadChars(64)).TrimEnd('\0'));
                     break;
                 }
                 case "#MaterialIndex#":

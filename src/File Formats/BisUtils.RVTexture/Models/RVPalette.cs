@@ -43,7 +43,6 @@ public class RVPalette : BinaryObject<RVTextureOptions>, IRVPalette
         IsTransparent = isTransparent;
     }
 
-
     public override Result Binarize(BisBinaryWriter writer, RVTextureOptions options) => throw new NotImplementedException();
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVTextureOptions options) => throw new NotImplementedException();

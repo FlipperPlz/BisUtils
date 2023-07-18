@@ -29,8 +29,6 @@ public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
     protected RVBankVfsEntry(IRVBank file, IRVBankDirectory? parent, BisBinaryReader reader, RVBankOptions options) :
         base(file, reader, options) => ParentDirectory = parent;
 
-
-
     public override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
         LastResult = reader.ReadAsciiZ(out var entryName, options);
