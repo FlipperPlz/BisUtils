@@ -1,21 +1,26 @@
 ﻿namespace BisUtils.RVShape.Models.Point;
 
 using BisUtils.Core.Extensions;
-using BisUtils.Core.IO;
-using BisUtils.Core.Render.Vector;
-using BisUtils.RVShape.Options;
+using Core.IO;
+using Core.Render.Vector;
+using Options;
+using Core.Binarize.Flagging;
 using FResults;
 
-public interface IRVPoint : IVector3D
+public interface IRVPoint : IVector3D, IBisFlaggable<RVPointFlag>
 {
-    int? PointFlags { get; set; }
+    bool IsHidden { get; set; }
 }
 
 public class RVPoint : BinarizableVector3D, IRVPoint
 {
-    public int? PointFlags { get; set; }
+    public RVPointFlag Flags { get; set; }
+    public bool IsHidden { get => this.HasFlag(RVPointFlag.SpecialHidden); set => this.AddFlag(RVPointFlag.SpecialHidden); }
 
-    public RVPoint(float x, float y, float z, int? flags) : base(x, y, z) => PointFlags = flags;
+
+    public RVPoint(float x, float y, float z, int? flags) : base(x, y, z) => Flags = (RVPointFlag)(flags ?? 0) ;
+
+    public RVPoint(float x, float y, float z, bool hidden) : base(x, y, z) => IsHidden = hidden;
 
 
     public RVPoint(BisBinaryReader reader, RVShapeOptions options) : base(reader, options, false)
@@ -34,7 +39,7 @@ public class RVPoint : BinarizableVector3D, IRVPoint
     public Result Binarize(BisBinaryWriter writer, RVShapeOptions options)
     {
         var result = base.Binarize(writer, options);
-        if(PointFlags is { } flag)
+        if(Flags is { } flag)
         {
             writer.Write((uint) flag);
         }
@@ -47,8 +52,10 @@ public class RVPoint : BinarizableVector3D, IRVPoint
         var result = base.Debinarize(reader, options);
         if (options.ExtendedPoint)
         {
-            PointFlags = reader.ReadInt32();
+            Flags = (RVPointFlag) reader.ReadInt32();
         }
         return result;
     }
+
+
 }
