@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Core.Binarize;
 using Core.Binarize.Implementation;
 using BisUtils.Core.Binarize.Options;
@@ -187,7 +188,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             })
             .Cast<IRVFace>()
             .ToList();
-
+        //Header has been read, prepare for tag reading.
+        CalculateUVMinMax(out var uvMinMax);
         return ReadLodBody(reader, options);
     }
 
@@ -198,6 +200,95 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
 
     private void ReadMaterialIndex(string name, BinaryReader reader) =>
         AddNamedProperty(name, reader.ReadInt32().ToString("x8", CultureInfo.CurrentCulture));
+
+    //TODO: Update on Faces add or on Faces.Vertices add
+    private void CalculateUVMinMax(out (float, float) minMaxUV)
+    {
+        (float, float) minUV, maxUV;
+        minUV.Item1 = float.MaxValue;
+        minUV.Item2 = float.MaxValue;
+        maxUV.Item1 = float.MinValue;
+        maxUV.Item2 = float.MinValue;
+        foreach (var face in Faces)
+        {
+            foreach (var vertex in face.Vertices)
+            {
+                if (vertex.MapU > maxUV.Item1)
+                {
+                    maxUV.Item1 = vertex.MapU;
+                }
+
+                if (vertex.MapV > maxUV.Item2)
+                {
+                    maxUV.Item2 = vertex.MapV;
+                }
+
+                if (vertex.MapU > minUV.Item1)
+                {
+                    minUV.Item1 = vertex.MapU;
+                }
+
+                if (vertex.MapV > minUV.Item2)
+                {
+                    minUV.Item2 = vertex.MapV;
+                }
+            }
+        }
+        maxUV.Item1 = Math.Max(maxUV.Item1, minUV.Item1);
+        maxUV.Item2 = Math.Max(maxUV.Item2, minUV.Item2);
+        (float, float) _minUV = new(), _maxUV = new();
+        const float minIntervalSize = 1e-6f;
+        if (maxUV.Item1 - minUV.Item1 < minIntervalSize)
+        {
+            _maxUV.Item1 = NextFloat(minUV.Item1 + minIntervalSize);
+        }
+        if (maxUV.Item2 - minUV.Item2 < minIntervalSize)
+        {
+            _maxUV.Item2 = NextFloat(minUV.Item2 + minIntervalSize);
+        }
+
+        minMaxUV = new(1 / (_maxUV.Item1 - _minUV.Item1), 1 / (_maxUV.Item2 - _minUV.Item2));
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    internal struct UFloatInt
+    {
+        [FieldOffset(0)]
+        public float f;
+        [FieldOffset(0)]
+        public uint i;
+    }
+
+    internal static float NextFloat(float x)
+    {
+        UFloatInt h;
+        h.f = x;
+        h.i = 0;
+
+        if ((h.i & 0x7F800000) == 0x7F800000)
+        {
+            if (h.i != 0xFF800000)
+            {
+                return x + x;
+            }
+        }
+
+        else if (h.i == 0x80000000)
+        {
+            return 1.401298464e-45f;
+        }
+
+        if ((h.i & 0x80000000) == 0)
+        {
+            h.i++;
+        } else
+        {
+            h.i--;
+        }
+
+        return h.f;
+    }
+
 
     private Result ReadLodBody(BisBinaryReader reader, RVShapeOptions options) => reader.ReadAscii(4, options) switch
     {
