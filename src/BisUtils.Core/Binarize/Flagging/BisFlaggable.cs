@@ -4,3 +4,4 @@ public interface IBisFlaggable<TFlags>
 {
     TFlags Flags { get; set; }
 }
+

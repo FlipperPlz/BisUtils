@@ -1,25 +1,23 @@
 ﻿namespace BisUtils.RVShape.Models.Face;
 
 using System.Globalization;
-using BisUtils.Core.Binarize;
-using BisUtils.Core.Binarize.Implementation;
+using Core.Binarize;
+using Core.Binarize.Implementation;
 using BisUtils.Core.Extensions;
-using BisUtils.Core.IO;
+using Core.IO;
 using BisUtils.P3D.Models.Utils;
-using BisUtils.RVShape.Options;
+using Options;
+using Core.Binarize.Flagging;
 using FResults;
 using FResults.Extensions;
 
-public interface IRVFace : IStrictBinaryObject<RVShapeOptions>
+public interface IRVFace : IStrictBinaryObject<RVShapeOptions>, IBisOptionallyFlaggable<RVFaceFlag?>
 {
     string Texture { get; set; }
     string? Material { get; set; }
-    int? Flags { get; set; }
     List<IRVDataVertex> Vertices { get; set; }
     bool IsOld { get; }
     bool IsExtended { get; }
-
-    bool HasFlag(RVFaceFlag flag);
 }
 
 public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
@@ -27,17 +25,16 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
     public string Texture { get; set; } = null!;
     public string? Material { get; set; }
     public List<IRVDataVertex> Vertices { get; set; } = null!;
-    public int? Flags { get; set; }
     public bool IsOld => Material is null;
-    public bool IsExtended => Flags is not null;
-    public bool HasFlag(RVFaceFlag flag) => (Flags & (int)flag) == (int)flag;
+    public bool IsExtended => this.IsFlaggable();
+    public RVFaceFlag? Flags { get; set; }
 
-    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, int flag)
+    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, params RVFaceFlag[] flags)
     {
         Vertices = vertices;
         Texture = texture.ToLower(CultureInfo.CurrentCulture);
         Material = material?.ToLower(CultureInfo.CurrentCulture);
-        Flags = flag;
+        Flags = BisFlagUtils.CreateFlagsFor<RVFaceFlag>(flags);
     }
 
     public RVFace()
@@ -86,7 +83,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
                         Vertices = reader.ReadIndexedList<RVDataVertex, RVShapeOptions>(options)
                             .Cast<IRVDataVertex>()
                             .ToList();
-                        Flags = reader.ReadInt32();
+                        Flags = (RVFaceFlag) reader.ReadInt32();
                         LastResult.WithReasons(reader.ReadAsciiZ(out var texture, options).Reasons);
                         Texture = texture.ToLower(CultureInfo.CurrentCulture);
                         LastResult.WithReasons(reader.ReadAsciiZ(out var material, options).Reasons);
