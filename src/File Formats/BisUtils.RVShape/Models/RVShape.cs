@@ -1,12 +1,11 @@
 ﻿namespace BisUtils.RVShape.Models;
 
-using BisUtils.Core.Binarize;
-using BisUtils.Core.Binarize.Implementation;
+using Core.Binarize;
+using Core.Binarize.Implementation;
 using BisUtils.Core.Extensions;
-using BisUtils.Core.IO;
-using BisUtils.Core.Render.Vector;
-using BisUtils.P3D.Models.Utils;
-using BisUtils.RVShape.Options;
+using Core.IO;
+using Core.Render.Vector;
+using Options;
 using Errors;
 using FResults;
 using FResults.Extensions;

@@ -9,6 +9,7 @@ using BisUtils.Core.Extensions;
 using Core.IO;
 using Core.Render.Vector;
 using BisUtils.P3D.Models.Utils;
+using Core.Binarize.Flagging;
 using Point;
 using Utils;
 using Options;

@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.Core.Binarize.Flagging;
 
-public interface IBisFlaggable
+public interface IBisFlaggable<TFlags>
 {
-    int Flags { get; set; }
+    TFlags Flags { get; set; }
 }

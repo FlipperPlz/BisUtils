@@ -1,77 +1,82 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System;
+using System.Collections.Generic;
 
-using BisUtils.Core.Extensions;
-using BisUtils.Param.Lexer;
-using BisUtils.Param.Parse;
+namespace BisUtils.Core.Binarize.Flagging;
 
-ParamParser.Instance.ProcessAndParse(out var file, new ParamLexer(
-"""
-class CfgPatches    // required
+public interface IBisFlaggable<TFlags>
 {
-    class TestMod
-    {
-        requiredAddons[]=
-        {
-            "DZ_Data",  // addon depedency
-        };
-    };
-};
+    TFlags Flags { get; set; }
+}
 
-class CfgMods      // required in pbo's which add/modify scripts or inputs
+public static class BisFlaggableExtensions
 {
-    class TestMod
+    public static bool HasFlag<TFlag>(this IBisFlaggable<TFlag> flaggable, TFlag flag) where TFlag : struct
     {
-        type = "mod";                    // required
-        inputs = "mods\testmod\inputs\my_new_inputs.xml";  // optional, when using custom inputs
-        dependencies[]={"Game"};              // optional, when you need to set class dependency
+        dynamic flagValue = flag;
+        dynamic flagsValue = flaggable.Flags;
 
-        class defs
+        return (flagsValue & flagValue) == flagValue;
+    }
+
+    public static void AddFlag<TFlag>(this IBisFlaggable<TFlag> flaggable, TFlag flag)
+        where TFlag : struct, Enum
+    {
+        dynamic flagValue = flag;
+        dynamic flagsValue = flaggable.Flags;
+        flaggable.Flags = flagsValue | flagValue;
+    }
+
+    public static void RemoveFlag<TFlag>(this IBisFlaggable<TFlag> flaggable, TFlag flag)
+        where TFlag : struct
+    {
+        dynamic flagValue = flag;
+        dynamic flagsValue = flaggable.Flags;
+        flaggable.Flags = flagsValue & ~flagValue;
+    }
+
+    public static IEnumerable<TFlag> GetFlags<TFlag>(this IBisFlaggable<TFlag> flaggable)where TFlag : struct, Enum
+    {
+        var flags = Enum.GetValues(typeof(TFlag));
+        foreach (TFlag iFlag in flags)
         {
-            // optional: you can add custom imagesets like this
-            class imageSets
+            if (flaggable.HasFlag(iFlag))
             {
-                files[]={"mods/testmod/gui/imagesets/mod1.imageset", "mods/testmod/gui/imagesets/mod2.imageset" };
-            };
+                yield return iFlag;
+            }
+        }
+    }
+}
 
-            // optional: you can add custom widget styles like this
-            class widgetStyles
-            {
-                files[]={"mods/testmod/gui/looknfeel/mod1.styles", "mods/testmod/gui/looknfeel/mod2.styles"};
-            };
-            class engineScriptModule
-            {
-                value=""; // when value is empty, default entry function is used
-                files[]={"mods/testmod/scripts/1_Core"}; // you can add any number of files or directories and they will be compiled together with original game module scripts
-            };
 
-            /*
-            script module config classes are optional, define only what you want to mod
-            class gameLibScriptModule
-            {
-                value="";
-                files[]={"mods/testmod/scripts/2_GameLib"};
-            };*/
 
-            class gameScriptModule
-            {
-                value="CreateGameMod"; // when value is filled, default script module entry function name is overwritten by it
-                files[]={"mods/testmod/scripts/3_Game"};
-            };
+public class Foo
+{
+    public static void Main()
+    {
+        var impl = new TestImpl();
+        Console.WriteLine((int) impl.Flags); // out: 0
 
-            class worldScriptModule
-            {
-                value="";
-                files[]={"mods/testmod/scripts/4_World"};
-            };
+        impl.AddFlag(Test.LightningBoth);
+        Console.WriteLine((int) impl.Flags); //out: 32
 
-            class missionScriptModule
-            {
-                value="";
-                files[]={"mods/testmod/scripts/5_Mission"};
-            };
-        };
-    };
-};
-"""));
 
-Console.WriteLine();
+        impl.AddFlag(Test.ZBiasHigh);
+        Console.WriteLine((int)impl.Flags);  //out: 800
+
+    }
+}
+
+class TestImpl : IBisFlaggable<Test>
+{
+    public Test Flags { get; set; }
+}
+enum Test : int
+{
+    Default = 0,
+    ShadowOff = 16,
+    LightningBoth = 32,
+    LightningPosition = 128,
+    ZBiasLow = 256,
+    ZBiasMid = 512,
+    ZBiasHigh = 768,
+}
