@@ -16,8 +16,11 @@ public interface IRVBankVersionEntry : IRVBankEntry, IBisCloneable<IRVBankVersio
     List<IRVBankProperty> Properties { get; }
 
     Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options);
-
     Result WritePboProperties(BisBinaryWriter writer, RVBankOptions options);
+
+    IRVBankProperty CreateVersionProperty(string name, string value);
+    IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options);
+
 }
 
 public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
@@ -121,6 +124,10 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
         return LastResult;
     }
+
+    public IRVBankProperty CreateVersionProperty(string name, string value) => new RVBankProperty(BankFile, this, name, value);
+
+    public IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options) => new RVBankProperty(BankFile, this, reader, options);
 
     public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(BankFile, EntryName, EntryMime, OriginalSize, Offset,
         TimeStamp, DataSize, Properties);

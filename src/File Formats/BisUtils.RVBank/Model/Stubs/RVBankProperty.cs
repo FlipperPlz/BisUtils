@@ -26,7 +26,7 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
         get => name;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             name = value;
         }
     }
@@ -37,7 +37,7 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
         get => value;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             this.value = value;
         }
     }
@@ -45,6 +45,9 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
     public RVBankProperty(IRVBank file, IRVBankVersionEntry parent, string name, string value) : base(file)
     {
         VersionEntry = parent;
+        VersionEntry.ChangesSaved += OnChangesSaved;
+        parent.MonitorElement(this);
+
         Name = name;
         Value = value;
     }
@@ -52,11 +55,16 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
     public RVBankProperty(IRVBank file, IRVBankVersionEntry parent, BisBinaryReader reader, RVBankOptions options) : base(file, reader, options)
     {
         VersionEntry = parent;
+        VersionEntry.ChangesSaved += OnChangesSaved;
+        VersionEntry.MonitorElement(this);
+
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
         }
     }
+
+    ~RVBankProperty() => VersionEntry.IgnoreElement(this);
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
@@ -85,5 +93,5 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
         return LastResult;
     }
 
-    public IRVBankProperty BisClone() => new RVBankProperty(BankFile, VersionEntry, Name, Value);
+    public IRVBankProperty BisClone() => VersionEntry.CreateVersionProperty(Name, Value);
 }

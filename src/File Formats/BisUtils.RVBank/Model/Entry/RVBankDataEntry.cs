@@ -48,7 +48,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         get => entryData;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             entryData = value;
         }
     }

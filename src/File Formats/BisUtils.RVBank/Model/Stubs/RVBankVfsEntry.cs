@@ -20,7 +20,7 @@ public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
         get => entryName;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             entryName = value;
         }
     }

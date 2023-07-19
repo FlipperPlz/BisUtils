@@ -30,9 +30,6 @@ public interface IBisSynchronizable<TOptions> : IBisSynchronizableElement<TOptio
     public Result SynchronizeWithStream(TOptions options);
 
 
-    public void MonitorElement(BisSynchronizableElement<TOptions> element);
-    public void IgnoreElement(BisSynchronizableElement<TOptions> element);
-
 }
 
 public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>, IBisSynchronizable<TOptions> where TOptions : IBinarizationOptions
@@ -41,7 +38,7 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     public event EventHandler? ChangesSaved;
 
     public IBisSynchronizable<TOptions> SynchronizationRoot { get; } = null!;
-
+    public bool IsStale { get; private set; }
     private Stream? synchronizationStream;
     public Stream? SynchronizationStream
     {
@@ -53,7 +50,6 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
         }
     }
 
-    public bool IsStale { get; private set; }
 
     protected BisSynchronizable(BisBinaryReader reader, TOptions options, Stream? syncTo) : base(reader, options)
     {
@@ -91,9 +87,6 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
         return LastResult;
     }
 
-    public void MonitorElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade += OnChangesMade;
-
-    public void IgnoreElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade -= OnChangesMade;
 
     protected virtual void OnChangesSaved(EventArgs e)
     {
@@ -107,6 +100,9 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
         ChangesMade?.Invoke(sender, e);
         IsStale = true;
     }
+
+    public void MonitorElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade += OnChangesMade;
+    public void IgnoreElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade -= OnChangesMade;
 
 }
 

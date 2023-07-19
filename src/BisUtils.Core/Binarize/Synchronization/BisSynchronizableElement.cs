@@ -31,11 +31,15 @@ public interface IBisSynchronizableElement<TOptions> : IStrictBinaryObject<TOpti
     /// Indicates whether or not this element is stale.
     /// </summary>
     public bool IsStale { get; }
+    public void MonitorElement(BisSynchronizableElement<TOptions> element);
+    public void IgnoreElement(BisSynchronizableElement<TOptions> element);
+
 }
 
 public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions>, IBisSynchronizableElement<TOptions> where TOptions : IBinarizationOptions
 {
     public bool IsStale { get; private set; }
+
     public event EventHandler? ChangesMade;
     public event EventHandler? ChangesSaved;
 
@@ -66,18 +70,26 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
 
     public IBisSynchronizable<TOptions> SynchronizationRoot { get; }
 
-    protected virtual void OnChangesMade(EventArgs e)
+
+    //Sender will usually be 'this' unless there are child elements
+    protected virtual void OnChangesMade(object? sender, EventArgs e)
     {
+
         IsStale = true;
-        ChangesMade?.Invoke(this, e);
+        ChangesMade?.Invoke(sender, e);
     }
 
+
+    //Sender will usually be 'SynchronizationRoot' unless I've changed something
     protected virtual void OnChangesSaved(object? sender, EventArgs e)
     {
-        //Sender will usually be 'this' unless there are child elements
         IsStale = false;
         ChangesSaved?.Invoke(sender, e);
     }
+
+    public void MonitorElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade += OnChangesMade;
+    public void IgnoreElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade -= OnChangesMade;
+
 
 }
 

@@ -20,13 +20,13 @@ public abstract class RVBankElement : BisSynchronizableElement<RVBankOptions>, I
     protected RVBankElement(IRVBank file, BisBinaryReader reader, RVBankOptions options) : base(reader, options, file) =>
         BankFile = file;
 
-    protected override void OnChangesMade(EventArgs e)
+    protected override void OnChangesMade(object? sender, EventArgs? e)
     {
         if (IsFirstRead)
         {
             IsFirstRead = false;
             return;
         }
-        base.OnChangesMade(e);
+        base.OnChangesMade(sender, e);
     }
 }

@@ -26,7 +26,7 @@ public abstract class RVBankEntry : RVBankVfsEntry
         get => entryMime;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             entryMime = value;
         }
     }
@@ -37,7 +37,7 @@ public abstract class RVBankEntry : RVBankVfsEntry
         get => originalSize;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             originalSize = value;
         }
     }
@@ -48,7 +48,7 @@ public abstract class RVBankEntry : RVBankVfsEntry
         get => offset;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             offset = value;
         }
     }
@@ -59,7 +59,7 @@ public abstract class RVBankEntry : RVBankVfsEntry
         get => timeStamp;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             timeStamp = value;
         }
     }
@@ -70,7 +70,7 @@ public abstract class RVBankEntry : RVBankVfsEntry
         get => dataSize;
         set
         {
-            OnChangesMade(EventArgs.Empty);
+            OnChangesMade(this, EventArgs.Empty);
             dataSize = value;
         }
     }
