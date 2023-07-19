@@ -4,7 +4,7 @@ using BisUtils.Core.IO;
 using BisUtils.RVShape.Models;
 using BisUtils.RVShape.Options;
 
-var reader = new BisBinaryReader(File.OpenRead(@"C:\Users\ryann\Downloads\watches_m.p3d"));
+var reader = new BisBinaryReader(File.OpenRead(@"C:\Users\ryann\Desktop\breachingcharge.p3d"));
 var shapeOptions = new RVShapeOptions();
-var shape = new RVShape("watches_m", reader, shapeOptions);
+var shape = new RVShape("breachingcharge", reader, shapeOptions);
 Console.WriteLine("Done");

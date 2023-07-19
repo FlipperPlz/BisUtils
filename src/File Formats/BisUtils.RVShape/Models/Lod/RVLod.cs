@@ -190,7 +190,9 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         //Header has been read, prepare for tag reading.
         //CalculateUVMinMax(out var uvMinMax);
 
-        return ReadLodBody(reader, options);
+        LastResult = ReadLodBody(reader, options);
+        Resolution = new RVResolution(reader, options);
+        return LastResult;
     }
 
 
@@ -468,7 +470,6 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             }
         }
 
-        Resolution = new RVResolution(reader, options);
         return LastResult;
     }
 
