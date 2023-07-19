@@ -6,7 +6,7 @@ using Options;
 
 public interface IRVBankVfsEntry : IRVBankElement
 {
-    IRVBankDirectory? ParentDirectory { get; set; }
+    IRVBankDirectory ParentDirectory { get; }
     string EntryName { get; set; }
     string Path { get; }
     string AbsolutePath { get; }
@@ -14,25 +14,33 @@ public interface IRVBankVfsEntry : IRVBankElement
 
 public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
 {
-    public string EntryName { get; set; } = null!;
+    private string entryName = null!;
+    public string EntryName
+    {
+        get => entryName;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            entryName = value;
+        }
+    }
 
     public string Path => ParentDirectory is { } parentDirectory ? parentDirectory.Path + "\\" + EntryName : EntryName;
     public string AbsolutePath => ParentDirectory is { } parentDirectory ? parentDirectory.AbsolutePath + "\\" + EntryName : BankFile.AbsolutePath + "\\" + EntryName;
-    public IRVBankDirectory? ParentDirectory { get; set; }
+    public IRVBankDirectory ParentDirectory { get; private set; }
 
-    protected RVBankVfsEntry(IRVBank file, IRVBankDirectory? parent, string name) : base(file)
+    protected RVBankVfsEntry(IRVBank file, IRVBankDirectory parent, string name) : base(file)
     {
         ParentDirectory = parent;
         EntryName = name;
     }
 
-    protected RVBankVfsEntry(IRVBank file, IRVBankDirectory? parent, BisBinaryReader reader, RVBankOptions options) :
+    protected RVBankVfsEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) :
         base(file, reader, options) => ParentDirectory = parent;
 
     public override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
-        LastResult = reader.ReadAsciiZ(out var entryName, options);
-        EntryName = entryName;
+        LastResult = reader.ReadAsciiZ(out entryName, options);
         return LastResult;
     }
 

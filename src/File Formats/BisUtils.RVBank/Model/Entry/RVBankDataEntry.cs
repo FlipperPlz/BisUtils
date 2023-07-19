@@ -3,9 +3,7 @@ namespace BisUtils.RVBank.Model.Entry;
 using Core.Binarize.Exceptions;
 using Core.IO;
 using Alerts.Warnings;
-using Core.Parsing;
 using Enumerations;
-using Extensions;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
@@ -44,23 +42,33 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
     }
 
-    public Stream EntryData { get; set; } = Stream.Null;
+    private Stream entryData = Stream.Null;
+    public Stream EntryData
+    {
+        get => entryData;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            entryData = value;
+        }
+    }
 
     public void ExpandDirectoryStructure()
     {
-        ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
+        // ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
+        //
+        // var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
+        //
+        // if (!EntryName.Contains('\\'))
+        // {
+        //     return;
+        // }
+        //
+        // EntryName = RVPathUtilities.GetFilename(EntryName);
 
-        var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
-
-        if (!EntryName.Contains('\\'))
-        {
-            return;
-        }
-
-        EntryName = RVPathUtilities.GetFilename(EntryName);
-
-        ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
-        ParentDirectory.PboEntries.Add(this);
+        //MOVE ENTRY
+        //ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
+        //ParentDirectory.PboEntries.Add(this);
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)

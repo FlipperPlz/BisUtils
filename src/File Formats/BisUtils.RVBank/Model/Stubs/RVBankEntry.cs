@@ -20,11 +20,60 @@ public interface IRVBankEntry : IRVBankVfsEntry
 
 public abstract class RVBankEntry : RVBankVfsEntry
 {
-    public RVBankEntryMime EntryMime { get; set; } = RVBankEntryMime.Decompressed;
-    public int OriginalSize { get; set; }
-    public int Offset { get; set; }
-    public int TimeStamp { get; set; }
-    public int DataSize { get; set; }
+    private RVBankEntryMime entryMime = RVBankEntryMime.Decompressed;
+    public RVBankEntryMime EntryMime
+    {
+        get => entryMime;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            entryMime = value;
+        }
+    }
+
+    private int originalSize;
+    public int OriginalSize
+    {
+        get => originalSize;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            originalSize = value;
+        }
+    }
+
+    private int offset;
+    public int Offset
+    {
+        get => offset;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            offset = value;
+        }
+    }
+
+    private int timeStamp;
+    public int TimeStamp
+    {
+        get => timeStamp;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            timeStamp = value;
+        }
+    }
+
+    private int dataSize;
+    public int DataSize
+    {
+        get => dataSize;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            dataSize = value;
+        }
+    }
 
     protected RVBankEntry(
         IRVBank file,

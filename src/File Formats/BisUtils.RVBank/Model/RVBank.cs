@@ -11,15 +11,11 @@ using FResults.Extensions;
 using FResults.Reasoning;
 using Options;
 
-public interface IRVBank : IRVBankDirectory
+public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 {
     public string BankPrefix { get; set; }
 
-    IRVBankDirectory? IRVBankVfsEntry.ParentDirectory
-    {
-        get => null;
-        set => throw new NotSupportedException();
-    }
+    IRVBankDirectory IRVBankVfsEntry.ParentDirectory => this;
 
     string IRVBankVfsEntry.Path => "";
 
@@ -31,13 +27,13 @@ public interface IRVBank : IRVBankDirectory
         set => BankPrefix = value;
     }
 
-
 }
 
-public class RVBank : BisSynchronizable<RVBankOptions>, IRVBankElement, IRVBank
+public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 {
     public string BankPrefix { get; set; }
     public IRVBank BankFile { get; }
+    public bool IsFirstRead { get; private set; } = true;
     public List<IRVBankEntry> PboEntries { get; set; }
     public IEnumerable<IRVBankDataEntry> FileEntries => PboEntries.OfType<IRVBankDataEntry>();
     public IEnumerable<IRVBankDirectory> Directories => PboEntries.OfType<IRVBankDirectory>();
@@ -74,7 +70,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBankElement, IRVBank
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
             IRVBankEntry currentEntry = mime switch
             {
-                RVBankEntryMime.Version => new RVBankVersionEntry(this, reader, options) { ParentDirectory = this, BankFile = this },
+                RVBankEntryMime.Version => new RVBankVersionEntry(this, reader, options),
                 _ => new RVBankDataEntry(this, this, reader, options)
             };
 
@@ -136,9 +132,5 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBankElement, IRVBank
         return LastResult = Result.Merge(result);
     }
 
-    public override Result Validate(RVBankOptions options)
-    {
-        throw new NotImplementedException();
-    }
-
+    public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
 }

@@ -30,19 +30,19 @@ public interface IRVBankDirectory : IRVBankEntry
 
 public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
 {
-
+    //TODO call ChangesMade on entry add/remove
     public List<IRVBankEntry> PboEntries { get; set; } = new();
     public IEnumerable<IRVBankDataEntry> FileEntries => PboEntries.OfType<IRVBankDataEntry>();
     public IEnumerable<IRVBankDirectory> Directories => PboEntries.OfType<IRVBankDirectory>();
 
     public RVBankDirectory(
         IRVBank file,
-        IRVBankDirectory? parent,
+        IRVBankDirectory parent,
         List<IRVBankEntry> entries,
         string directoryName
     ) : base(file, parent, directoryName) => PboEntries = entries;
 
-    protected RVBankDirectory(IRVBank file, IRVBankDirectory? parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
+    protected RVBankDirectory(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
     }
 

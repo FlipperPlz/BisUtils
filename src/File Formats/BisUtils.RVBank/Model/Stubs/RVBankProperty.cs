@@ -1,6 +1,5 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
-using Core.Binarize.Exceptions;
 using Core.Cloning;
 using Core.IO;
 using Alerts.Errors;
@@ -13,20 +12,34 @@ using Options;
 public interface IRVBankProperty : IRVBankElement, IBisCloneable<IRVBankProperty>
 {
     IRVBankVersionEntry VersionEntry { get; }
-    string Name { get; }
-    string Value { get; }
+    string Name { get; set; }
+    string Value { get; set; }
 }
 
 public class RVBankProperty : RVBankElement, IRVBankProperty
 {
-    public IRVBankVersionEntry VersionEntry { get; set; } = null!;
+    public IRVBankVersionEntry VersionEntry { get; private set; }
 
-    public string Name { get; set; } = null!;
-    public string Value { get; set; } = null!;
-
-    public RVBankProperty()
+    private string name = null!;
+    public string Name
     {
+        get => name;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            name = value;
+        }
+    }
 
+    private string value = null!;
+    public string Value
+    {
+        get => value;
+        set
+        {
+            OnChangesMade(EventArgs.Empty);
+            this.value = value;
+        }
     }
 
     public RVBankProperty(IRVBank file, IRVBankVersionEntry parent, string name, string value) : base(file)
@@ -54,15 +67,13 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
-        LastResult = reader.ReadAsciiZ(out var name, options);
-        Name = name;
+        LastResult = reader.ReadAsciiZ(out name, options);
         if (Name.Length == 0)
         {
             return LastResult.WithError(RVBankEmptyPropertyNameError.Instance);
         }
 
-        LastResult.WithReasons(reader.ReadAsciiZ(out var value, options).Reasons);
-        Value = value;
+        LastResult.WithReasons(reader.ReadAsciiZ(out value, options).Reasons);
 
         return LastResult;
     }

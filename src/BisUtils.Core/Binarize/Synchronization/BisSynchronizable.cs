@@ -14,7 +14,7 @@ using Options;
 public interface IBisSynchronizable<TOptions> : IBisSynchronizableElement<TOptions> where TOptions : IBinarizationOptions
 {
     /// <summary>
-    /// The current stream being used for synchronization. Since theres some usecases where writing
+    /// The current stream being used for synchronization. Since theres some use-cases where writing
     /// isn't needed, this value is nullable; When the stream is null all events will still be fired
     /// and the IsStale property will be updated.
     /// </summary>
@@ -34,7 +34,7 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     public event EventHandler? ChangesMade;
     public event EventHandler? ChangesSaved;
 
-    public IBisSynchronizable<TOptions> SynchronizationRoot { get; }
+    public IBisSynchronizable<TOptions> SynchronizationRoot { get; } = null!;
 
     private Stream? synchronizationStream;
     public Stream? SynchronizationStream
@@ -53,6 +53,11 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     {
         SynchronizationRoot = this;
         SynchronizationStream = syncTo;
+    }
+
+    protected BisSynchronizable()
+    {
+
     }
 
     protected BisSynchronizable(Stream? syncTo)
