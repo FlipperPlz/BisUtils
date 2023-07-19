@@ -3,7 +3,6 @@ namespace BisUtils.RVBank.Model.Stubs;
 using Core.IO;
 using Enumerations;
 using Entry;
-using Core.Parsing;
 using FResults;
 using FResults.Extensions;
 using Options;
@@ -27,10 +26,6 @@ public interface IRVBankDirectory : IRVBankEntry
     int IRVBankEntry.DataSize => PboEntries.Sum(e => e.DataSize);
 
     RVBankEntryMime IRVBankEntry.EntryMime => throw new NotSupportedException();
-
-    IRVBankDirectory? GetDirectory(string name);
-
-    IRVBankDirectory CreateDirectory(string name, IRVBank? node);
 }
 
 public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
@@ -51,47 +46,7 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
     {
     }
 
-    public IRVBankDirectory? GetDirectory(string name) =>
-        Directories.FirstOrDefault(e => e.EntryName == name);
 
-    public IRVBankDirectory CreateDirectory(string name, IRVBank? node)
-    {
-        var split = name.Split('\\', 2);
-        IRVBankDirectory ret;
-
-        if (split[0].Length == 0)
-        {
-            return this;
-        }
-
-        if (GetDirectory(split[0]) is { } i)
-        {
-            if (split[1].Length == 0)
-            {
-                return i;
-            }
-
-            if (!PboEntries.Contains(i))
-            {
-                PboEntries.Add(i);
-            }
-
-            ret = i.CreateDirectory(split[1], node);
-
-            return ret;
-        }
-
-        var directory = new RVBankDirectory(node, this, new List<IRVBankEntry>(), RVPathUtilities.GetFilename(split[0]));
-        PboEntries.Add(directory);
-        if (split[1].Length == 0)
-        {
-            return directory;
-        }
-
-        ret = directory.CreateDirectory(split[1], node);
-
-        return ret;
-    }
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>
         LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(e => e.Binarize(writer, options).Reasons));
@@ -101,4 +56,5 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
 
     public override Result Validate(RVBankOptions options) =>
         LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(e => e.Validate(options).Reasons));
+
 }

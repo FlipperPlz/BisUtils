@@ -1,4 +1,6 @@
 namespace BisUtils.RVBank.Model;
+
+using Core.Binarize.Synchronization;
 using Core.Extensions;
 using Core.IO;
 using Enumerations;
@@ -11,17 +13,47 @@ using Options;
 
 public interface IRVBank : IRVBankDirectory
 {
-}
+    public string BankPrefix { get; set; }
 
-public class RVBank : RVBankDirectory, IRVBank
-{
-    public RVBank(List<IRVBankEntry> children) :
-        base(null!, null!, children, "prefix") //TODO: Identify prefix overwrite path and absolutepath
+    IRVBankDirectory? IRVBankVfsEntry.ParentDirectory
     {
+        get => null;
+        set => throw new NotSupportedException();
     }
 
-    public RVBank(BisBinaryReader reader, RVBankOptions options) : base(null!, null!, reader, options)
+    string IRVBankVfsEntry.Path => "";
+
+    string IRVBankVfsEntry.AbsolutePath => BankPrefix;
+
+    string IRVBankVfsEntry.EntryName
     {
+        get => BankPrefix;
+        set => BankPrefix = value;
+    }
+
+
+}
+
+public class RVBank : BisSynchronizable<RVBankOptions>, IRVBankElement, IRVBank
+{
+    public string BankPrefix { get; set; }
+    public IRVBank BankFile { get; }
+    public List<IRVBankEntry> PboEntries { get; set; }
+    public IEnumerable<IRVBankDataEntry> FileEntries => PboEntries.OfType<IRVBankDataEntry>();
+    public IEnumerable<IRVBankDirectory> Directories => PboEntries.OfType<IRVBankDirectory>();
+
+    public RVBank(string filename, List<IRVBankEntry> entries, Stream? synchronizeTo = null) : base(synchronizeTo)
+    {
+        BankFile = this;
+        BankPrefix = filename;
+        PboEntries = entries;
+    }
+
+    public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo = null) : base(reader, options, synchronizeTo)
+    {
+        BankFile = this;
+        BankPrefix = filename;
+        PboEntries = new List<IRVBankEntry>();
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
@@ -104,6 +136,9 @@ public class RVBank : RVBankDirectory, IRVBank
         return LastResult = Result.Merge(result);
     }
 
-    public override Result Validate(RVBankOptions options) =>
-        Result.Merge(base.Validate(options));
+    public override Result Validate(RVBankOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
 }
