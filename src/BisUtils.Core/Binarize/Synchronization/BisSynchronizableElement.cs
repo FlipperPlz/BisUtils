@@ -74,8 +74,11 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
 
     protected virtual void OnChangesSaved(object? sender, EventArgs e)
     {
+        //Sender will usually be 'this' unless there are child elements
         IsStale = false;
         ChangesSaved?.Invoke(sender, e);
     }
 
 }
+
+

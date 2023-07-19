@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Core.Binarize.Synchronization;
 
 using FResults;
+using FResults.Extensions;
 using Implementation;
 using IO;
 using Options;
@@ -76,6 +77,10 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     public Result SynchronizeWithStream(TOptions options)
     {
         LastResult = Result.Ok();
+        if (this != SynchronizationRoot)
+        {
+            return LastResult.WithError("Synchronization Error", typeof(BisSynchronizable<TOptions>), "Synchronization can only be performed from the root element.");
+        }
         if (SynchronizationStream is { } stream)
         {
             var writer = new BisBinaryWriter(stream, options.Charset, false);
