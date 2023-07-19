@@ -3,6 +3,7 @@
 [Flags]
 public enum RVFaceFlag : uint
 {
+
     LightMask = 0x3000a7,
     NoLight = 0x1,
     AmbientLight = 0x2,

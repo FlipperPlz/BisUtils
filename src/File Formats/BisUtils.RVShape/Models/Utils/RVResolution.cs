@@ -9,7 +9,6 @@ using BisUtils.Core.IO;
 using BisUtils.RVShape.Options;
 using FResults;
 using Lod;
-using P3D.Models.Utils;
 
 public interface IRVResolution : IBinaryObject<RVShapeOptions>
 {

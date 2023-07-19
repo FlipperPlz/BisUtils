@@ -9,7 +9,6 @@ using BisUtils.Core.Binarize.Options;
 using BisUtils.Core.Extensions;
 using Core.IO;
 using Core.Render.Vector;
-using BisUtils.P3D.Models.Utils;
 using Point;
 using Utils;
 using Options;
@@ -189,7 +188,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
             .Cast<IRVFace>()
             .ToList();
         //Header has been read, prepare for tag reading.
-        CalculateUVMinMax(out var uvMinMax);
+        //CalculateUVMinMax(out var uvMinMax);
+
         return ReadLodBody(reader, options);
     }
 
@@ -209,29 +209,26 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         minUV.Item2 = float.MaxValue;
         maxUV.Item1 = float.MinValue;
         maxUV.Item2 = float.MinValue;
-        foreach (var face in Faces)
+        foreach (var vertex in Faces.SelectMany(face => face.Vertices))
         {
-            foreach (var vertex in face.Vertices)
+            if (vertex.MapU > maxUV.Item1)
             {
-                if (vertex.MapU > maxUV.Item1)
-                {
-                    maxUV.Item1 = vertex.MapU;
-                }
+                maxUV.Item1 = vertex.MapU;
+            }
 
-                if (vertex.MapV > maxUV.Item2)
-                {
-                    maxUV.Item2 = vertex.MapV;
-                }
+            if (vertex.MapV > maxUV.Item2)
+            {
+                maxUV.Item2 = vertex.MapV;
+            }
 
-                if (vertex.MapU > minUV.Item1)
-                {
-                    minUV.Item1 = vertex.MapU;
-                }
+            if (vertex.MapU > minUV.Item1)
+            {
+                minUV.Item1 = vertex.MapU;
+            }
 
-                if (vertex.MapV > minUV.Item2)
-                {
-                    minUV.Item2 = vertex.MapV;
-                }
+            if (vertex.MapV > minUV.Item2)
+            {
+                minUV.Item2 = vertex.MapV;
             }
         }
         maxUV.Item1 = Math.Max(maxUV.Item1, minUV.Item1);
@@ -303,8 +300,8 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     [SuppressMessage("ReSharper", "UnusedParameter.Local")]
     private Result ReadSS3D(BisBinaryReader reader, RVShapeOptions options)
     {
-        /*var nVertices = */reader.ReadInt32();
-        /*var nFaces = */reader.ReadInt32();
+        /*var nVertices = */ reader.ReadInt32();
+        /*var nFaces = */ reader.ReadInt32();
         /*var nNormals =*/ reader.ReadInt32();
         /*var normSize =*/ reader.ReadInt32();
         //TODO(SS3D): Read
@@ -324,6 +321,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 return LastResult.WithError(new RVShapeLodReadError("Tried to parse a tag without proper prefix."));
             }
             var tagLength = reader.ReadInt32();
+            var endPosition = reader.BaseStream.Position + tagLength;
 
             if (!activated)
             {
@@ -382,7 +380,16 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 case "#UVSet#":
                 {
                     //TODO: UVSet, skip for now
-                    reader.BaseStream.Seek(tagLength, SeekOrigin.Current);
+                    var stageId = reader.ReadInt32();
+                    if (stageId > 1)
+                    {
+                        LastResult.WithWarning($"Unsupported UVSet Stage {stageId}");
+                    }
+
+                    foreach (var vertex in Faces.SelectMany(face => face.Vertices))
+                    {
+                        vertex.FaceUV = new RVUvMap(reader.ReadSingle(), reader.ReadSingle());
+                    }
                     break;
                 }
                 case "#Mass#":
@@ -449,6 +456,12 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
             }
 
+            if (reader.BaseStream.Position != endPosition)
+            {
+                LastResult.WithReason(new Warning { Message = $"Tagg {taggName} appears to have not been read fully." });
+
+                reader.BaseStream.Seek(endPosition, SeekOrigin.Begin);
+            }
             if (shouldEndTaggs)
             {
                 break;

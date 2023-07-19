@@ -1,18 +1,18 @@
-﻿namespace BisUtils.P3D.Models.Utils;
+﻿namespace BisUtils.RVShape.Models.Utils;
 
-using BisUtils.RVShape.Options;
 using Core.Binarize;
 using Core.Binarize.Implementation;
-using Core.Extensions;
+using BisUtils.Core.Extensions;
 using Core.IO;
+using Data;
+using Options;
 using FResults;
 
-public interface IRVDataVertex : IBinaryObject<RVShapeOptions>
+public interface IRVDataVertex : IBinaryObject<RVShapeOptions>, IRVUvMap
 {
     public int Point { get; set; }
     public int Normal { get; set; }
-    public float MapU { get; set; }
-    public float MapV { get; set; }
+    public IRVUvMap? FaceUV { get; set; }
 }
 
 public class RVDataVertex : BinaryObject<RVShapeOptions>, IRVDataVertex
@@ -21,9 +21,11 @@ public class RVDataVertex : BinaryObject<RVShapeOptions>, IRVDataVertex
     public int Normal { get; set; }
     public float MapU { get; set; }
     public float MapV { get; set;  }
+    public IRVUvMap? FaceUV { get; set; }
 
-    public RVDataVertex(int point, int normal, float mapU, float mapV)
+    public RVDataVertex(int point, int normal, float mapU, float mapV, IRVUvMap? uvMap)
     {
+        FaceUV = uvMap;
         Point = point;
         Normal = normal;
         MapU = mapU;

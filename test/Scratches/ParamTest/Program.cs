@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ParamTest;
 
-namespace BisUtils.Core.Binarize.Flagging;
+using System;
+using System.Collections.Generic;
 
 public interface IBisFlaggable<TFlags>
 {
@@ -60,7 +60,7 @@ public class Foo
         Console.WriteLine((int) impl.Flags); //out: 32
 
 
-        impl.AddFlag(Test.ZBiasHigh);
+        impl.AddFlag(Test.ShadowOff);
         Console.WriteLine((int)impl.Flags);  //out: 800
 
     }
@@ -74,9 +74,5 @@ enum Test : int
 {
     Default = 0,
     ShadowOff = 16,
-    LightningBoth = 32,
-    LightningPosition = 128,
-    ZBiasLow = 256,
-    ZBiasMid = 512,
-    ZBiasHigh = 768,
+    LightningBoth = 32
 }

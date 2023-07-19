@@ -5,11 +5,11 @@ using Core.Binarize;
 using Core.Binarize.Implementation;
 using BisUtils.Core.Extensions;
 using Core.IO;
-using BisUtils.P3D.Models.Utils;
 using Options;
 using Core.Binarize.Flagging;
 using FResults;
 using FResults.Extensions;
+using Utils;
 
 public interface IRVFace : IStrictBinaryObject<RVShapeOptions>, IBisOptionallyFlaggable<RVFaceFlag?>
 {
