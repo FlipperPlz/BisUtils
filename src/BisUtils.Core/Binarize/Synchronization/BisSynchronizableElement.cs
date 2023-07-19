@@ -52,6 +52,13 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
         IsStale = false;
         SynchronizationRoot = synchronizationRoot;
         SynchronizationRoot.ChangesSaved += OnChangesSaved;
+        SynchronizationRoot.MonitorElement(this);
+    }
+
+    ~BisSynchronizableElement()
+    {
+        SynchronizationRoot.ChangesSaved -= OnChangesSaved;
+        SynchronizationRoot.IgnoreElement(this);
     }
 
 

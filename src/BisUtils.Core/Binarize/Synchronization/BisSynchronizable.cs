@@ -27,6 +27,11 @@ public interface IBisSynchronizable<TOptions> : IBisSynchronizableElement<TOptio
     /// <param name="options">The binarization options to use for synchronization.</param>
     /// <returns>A result indicating the success of the binarization process.</returns>
     public Result SynchronizeWithStream(TOptions options);
+
+
+    public void MonitorElement(BisSynchronizableElement<TOptions> element);
+    public void IgnoreElement(BisSynchronizableElement<TOptions> element);
+
 }
 
 public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>, IBisSynchronizable<TOptions> where TOptions : IBinarizationOptions
@@ -63,8 +68,10 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     protected BisSynchronizable(Stream? syncTo)
     {
         SynchronizationRoot = this;
+        ChangesMade += OnChangesMade;
         SynchronizationStream = syncTo;
     }
+
 
     public Result SynchronizeWithStream(TOptions options)
     {
@@ -79,10 +86,21 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
         return LastResult;
     }
 
+    public void MonitorElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade += OnChangesMade;
+
+    public void IgnoreElement(BisSynchronizableElement<TOptions> element) => element.ChangesMade -= OnChangesMade;
+
     protected virtual void OnChangesSaved(EventArgs e)
     {
         ChangesSaved?.Invoke(this, e);
         IsStale = false;
+    }
+
+
+    protected virtual void OnChangesMade(object? sender, EventArgs e)
+    {
+        ChangesMade?.Invoke(sender, e);
+        IsStale = true;
     }
 
 }
