@@ -12,17 +12,17 @@ public sealed class BisCompatibleLzss
     /// <summary>
     ///     Index for root of binary search trees
     /// </summary>
-    private readonly int nil;
+    private readonly int nil = N;
 
     /// <summary>
     ///     These constitute binary search trees.
     /// </summary>
-    private readonly int[] previousChildren, nextChildren, parents;
+    private readonly int[] previousChildren = new int[N + 1], nextChildren = new int[N + 257], parents = new int[N + 1];
 
     /// <summary>
     ///     The ring buffer of size N with extra F-1 bytes to facilitate string comparison.
     /// </summary>
-    private readonly byte[] textBuffer;
+    private readonly byte[] textBuffer = new byte[N + F - 1];
 
     /// <summary>
     ///     The length and position of the longest match found.
@@ -31,13 +31,72 @@ public sealed class BisCompatibleLzss
     private int matchPosition, matchLength;
 
 
-    public BisCompatibleLzss()
+    public int Decode(BinaryReader input, BinaryWriter output)
     {
-        nil = N;
-        textBuffer = new byte[N + F - 1];
-        previousChildren = new int[N + 1];
-        nextChildren = new int[N + 257];
-        parents = new int[N + 1];
+        int i;
+        var flags = 0;
+        var textSize = 0;
+        var inputLength = (int)input.BaseStream.Length;
+
+        for (i = 0; i < N - F; i++)
+        {
+            textBuffer[i] = Fill;
+        }
+        var r = N - F;
+
+        while (input.BaseStream.Position < inputLength)
+        {
+            flags >>= 1;
+            int c;
+            if ((flags & 0x100) == 0)
+            {
+                if ((c = input.Read()) < 0)
+                {
+                    break;
+                }
+                flags = c | 0xFF00;  /* uses higher byte cleverly */
+            }                       /* to count eight */
+
+            if ((flags & 1) != 0)
+            {
+                if ((c = input.Read()) < 0)
+                {
+                    break;
+                }
+                output.Write((byte)c);
+                textSize++;
+                textBuffer[r++] = (byte)c;
+                r &= N - 1;
+            }
+            else
+            {
+                if ((i = input.Read()) < 0)
+                {
+                    break;
+                }
+
+                int j;
+                if ((j = input.Read()) < 0)
+                {
+                    break;
+                }
+
+                i |= (j & 0xF0) << 4;
+                j = (j & 0x0F) + Threshold;
+
+                int k;
+                for (k = 0; k <= j; k++)
+                {
+                    c = textBuffer[(i + k) & (N - 1)];
+                    output.Write((byte)c);
+                    textSize++;
+                    textBuffer[r++] = (byte)c;
+                    r &= N - 1;
+                }
+            }
+        }
+
+        return textSize;
     }
 
     public int Encode(byte[] input, BinaryWriter output)
