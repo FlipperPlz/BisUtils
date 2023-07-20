@@ -1,0 +1,4 @@
+This library has the same restrictions as the ones described in the Bi Tools EULA. Any output produced by this library cannot be sold.
+By using this library you agree that you own a legitimate copy of DayZ. These tools are NOT to be used for the debinarizaton of models or the decryption of encrypted file formats.
+https://community.bistudio.com/wiki/Intellectual_Property
+https://community.bistudio.com/wiki/End_User_License_Agreement_for_BI%27s_Tools

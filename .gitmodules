@@ -1,0 +1,3 @@
+[submodule "Libraries/FResults"]
+	path = lib/FResults
+	url = https://github.com/FlipperPlz/FResults

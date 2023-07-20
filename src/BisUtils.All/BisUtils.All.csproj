@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\lib\FResults\FResults\FResults.csproj" />
+      <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
+      <ProjectReference Include="..\BisUtils.RVBank\BisUtils.RVBank.csproj" />
+      <ProjectReference Include="..\BisUtils.Param\BisUtils.Param.csproj" />
+      <ProjectReference Include="..\BisUtils.PreProcessor.RV\BisUtils.PreProcessor.RV.csproj" />
+    </ItemGroup>
+  
+</Project>
