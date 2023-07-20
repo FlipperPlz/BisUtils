@@ -1,8 +1,10 @@
 namespace BisUtils.RVBank.Model.Entry;
 
+using Alerts.Errors;
 using Core.Binarize.Exceptions;
 using Core.IO;
 using Alerts.Warnings;
+using Core.Compression;
 using Core.Parsing;
 using Enumerations;
 using Extensions;
@@ -17,6 +19,7 @@ public interface IRVBankDataEntry : IRVBankEntry
     Stream EntryData { get; }
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
+    void InitializeData(BisBinaryReader reader, RVBankOptions options);
 }
 
 public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
@@ -99,6 +102,53 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
         ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
         Move(ParentDirectory);
+    }
+
+    public void InitializeData(BisBinaryReader reader, RVBankOptions options)
+    {
+        switch (PackingMethod)
+        {
+            case RVBankDataType.Compressed:
+            {
+                var stream = new MemoryStream();
+                using (var writer = new BinaryWriter(stream, options.Charset, true))
+                {
+
+                    BisCompatibleLzss.Compressor.Decode(reader, writer, OriginalSize);
+                }
+
+                entryData = stream;
+                break;
+            }
+            case RVBankDataType.Encrypted:
+            {
+                throw new RVEncryptedBankException();
+            }
+            default:
+            {
+
+                var memoryStream = new MemoryStream();
+                const int BufferSize = 8192; // Or your preferred chunk size (8KB here)
+
+                var iterations = DataSize / BufferSize;
+
+                for (long i = 0; i < iterations; i++)
+                {
+                    var chunk = reader.ReadBytes(BufferSize);
+                    memoryStream.Write(chunk, 0, chunk.Length);
+                }
+
+                var remainder = (int)(DataSize % BufferSize);
+                if (remainder > 0)
+                {
+                    var chunk = reader.ReadBytes(remainder);
+                    memoryStream.Write(chunk, 0, chunk.Length);
+                }
+
+                entryData = memoryStream;
+                break;
+            }
+        }
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)

@@ -80,6 +80,11 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
+        if(pboEntries.Count != 0)
+        {
+            PboEntries.Clear();
+        }
+
         var responses = new List<Result>();
         var first = true;
         do
@@ -133,6 +138,11 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 PboEntries.Add(currentEntry);
             }
         } while (true);
+
+        foreach (var entry in this.GetFileEntries())
+        {
+            entry.InitializeData(reader, options);
+        }
 
         LastResult = Result.Merge(responses);
         if (reader.BaseStream == SynchronizationStream)

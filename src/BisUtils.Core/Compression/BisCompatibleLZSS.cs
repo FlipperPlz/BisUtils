@@ -1,11 +1,13 @@
 ﻿namespace BisUtils.Core.Compression;
 
+
 /// <summary>
 ///     Bis Lzss
 /// </summary>
 /// Author: https://github.com/rvost Thank You So Much
 public sealed class BisCompatibleLzss
 {
+    public static BisCompatibleLzss Compressor { get; } = new BisCompatibleLzss();
     private const int N = 4096, F = 18, Threshold = 2;
     private const byte Fill = 0x20;
 
@@ -30,80 +32,47 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-
-    public int Decode(byte[] input, BinaryWriter output)
+    public void Decode(BinaryReader reader, BinaryWriter output, long length)
     {
-        int i;
+        var r = N - F;
         var flags = 0;
-        var textSize = 0;
-        var inputPosition = 0;
-
-        for (i = 0; i < N - F; i++)
+        var stopPos = reader.BaseStream.Position + length;
+        InitTree();
+        for (var i = 0; i < r; i++)
         {
             textBuffer[i] = Fill;
         }
-        var r = N - F;
 
-        while (inputPosition < input.Length)
+        while (reader.BaseStream.Position < stopPos)
         {
-            flags >>= 1;
-            int c;
-            if ((flags & 0x100) == 0)
+            if (((flags >>= 1) & 256) != 256)
             {
-                if (inputPosition >= input.Length)
-                {
-                    break;
-                }
-
-                c = input[inputPosition++];
-                flags = c | 0xFF00;
+                flags = reader.ReadByte() | 0xff00;  // Set flags with the 8th bit.  1 left shift = 1 byte read.
             }
 
-            if ((flags & 1) != 0)
+            if ((flags & 1) == 1)
             {
-                if (inputPosition >= input.Length)
-                {
-                    break;
-                }
-
-                c = input[inputPosition++];
-                output.Write((byte)c);
-                textSize++;
-                textBuffer[r++] = (byte)c;
+                var c = reader.ReadByte();
+                output.Write(c);
+                textBuffer[r++] = c;
                 r &= N - 1;
             }
             else
             {
-                if (inputPosition >= input.Length)
+                int i = reader.ReadByte(), j = reader.ReadByte();
+
+                i |= (j & 0xf0) << 4;
+                j = (j & 0xf) + Threshold;
+
+                for (var k = 0; k <= j; k++)
                 {
-                    break;
-                }
-
-                i = input[inputPosition++];
-
-                if (inputPosition >= input.Length)
-                {
-                    break;
-                }
-
-                int j = input[inputPosition++];
-
-                i |= (j & 0xF0) << 4;
-                j = (j & 0x0F) + Threshold;
-
-                int k;
-                for (k = 0; k <= j; k++)
-                {
-                    c = textBuffer[(i + k) & (N - 1)];
-                    output.Write((byte)c);
-                    textSize++;
-                    textBuffer[r++] = (byte)c;
+                    var c = textBuffer[(i + k) & (N - 1)];
+                    output.Write(c);
+                    textBuffer[r++] = c;
                     r &= N - 1;
                 }
             }
         }
-
-        return textSize;
     }
 
     public int Encode(byte[] input, BinaryWriter output)

@@ -9,6 +9,7 @@ using Options;
 
 public class BisBinaryReader : BinaryReader
 {
+
     public BisBinaryReader(Stream input) : base(input)
     {
     }
