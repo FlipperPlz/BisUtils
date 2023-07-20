@@ -63,7 +63,19 @@ public static class RVBankDirectoryExtensions
         int timeStamp,
         int dataSize
     ) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize));
+
     public static void CreateEntry(this IRVBankDirectory ctx, BisBinaryReader reader, RVBankOptions options) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, reader, options));
+
+    public static void CreateEntry
+    (
+        this IRVBankDirectory ctx,
+        string fileName,
+        RVBankEntryMime mime,
+        int offset,
+        int timeStamp,
+        Stream data,
+        RVBankDataType packingMethod
+    ) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, fileName, mime, offset, timeStamp, data, packingMethod));
 
     public static void RemoveEntry(this IRVBankDirectory ctx, IRVBankEntry entry) => ctx.PboEntries.Remove(entry);
 

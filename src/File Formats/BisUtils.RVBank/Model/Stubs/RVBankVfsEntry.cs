@@ -1,7 +1,6 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
 using Core.IO;
-using Extensions;
 using FResults;
 using Options;
 
@@ -11,7 +10,6 @@ public interface IRVBankVfsEntry : IRVBankElement
     string EntryName { get; set; }
     string Path { get; }
     string AbsolutePath { get; }
-
 }
 
 public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry

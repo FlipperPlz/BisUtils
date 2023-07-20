@@ -21,7 +21,30 @@ public interface IRVBankDataEntry : IRVBankEntry
 
 public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 {
-    public RVBankDataType PackingMethod { get; set; }
+
+    private RVBankDataType packingMethod;
+    public RVBankDataType PackingMethod
+    {
+        get => packingMethod;
+        set
+        {
+            OnChangesMade(this, EventArgs.Empty);
+            packingMethod = value;
+        }
+    }
+
+
+    private Stream entryData = Stream.Null;
+    public Stream EntryData
+    {
+        get => entryData;
+        set
+        {
+            OnChangesMade(this, EventArgs.Empty);
+            entryData = value;
+        }
+    }
+
 
 
     public RVBankDataEntry
@@ -38,6 +61,21 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
     {
     }
 
+    public RVBankDataEntry
+    (
+        IRVBank file,
+        IRVBankDirectory parent,
+        string fileName,
+        RVBankEntryMime mime,
+        long offset,
+        long timeStamp,
+        Stream entryData,
+        RVBankDataType packingMethod
+    ) : base(file, parent, fileName, mime, entryData.Length, offset, timeStamp, 0) =>
+        PackingMethod = packingMethod;
+
+    protected sealed override void OnChangesMade(object? sender, EventArgs? e) => base.OnChangesMade(sender, e);
+
     public RVBankDataEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
         Debinarize(reader, options);
@@ -46,18 +84,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             throw new DebinarizeFailedException(LastResult.ToString());
         }
     }
-
-    private Stream entryData = Stream.Null;
-    public Stream EntryData
-    {
-        get => entryData;
-        set
-        {
-            OnChangesMade(this, EventArgs.Empty);
-            entryData = value;
-        }
-    }
-
 
     public void SynchronizeMetaWithStream() => OriginalSize = (int)EntryData.Length;
 

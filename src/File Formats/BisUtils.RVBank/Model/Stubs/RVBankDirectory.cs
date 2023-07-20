@@ -18,13 +18,13 @@ public interface IRVBankDirectory : IRVBankEntry
 
     IEnumerable<IRVBankVfsEntry> VfsEntries => PboEntries.OfType<IRVBankVfsEntry>().ToList();
 
-    int IRVBankEntry.OriginalSize => PboEntries.Sum(e => e.OriginalSize);
+    long IRVBankEntry.OriginalSize => PboEntries.Sum(e => e.OriginalSize);
 
-    int IRVBankEntry.Offset => throw new NotSupportedException();
+    long IRVBankEntry.Offset => throw new NotSupportedException();
 
-    int IRVBankEntry.TimeStamp => throw new NotSupportedException();
+    long IRVBankEntry.TimeStamp => throw new NotSupportedException();
 
-    int IRVBankEntry.DataSize => PboEntries.Sum(e => e.DataSize);
+    long IRVBankEntry.DataSize => PboEntries.Sum(e => e.DataSize);
 
     RVBankEntryMime IRVBankEntry.EntryMime => throw new NotSupportedException();
 }

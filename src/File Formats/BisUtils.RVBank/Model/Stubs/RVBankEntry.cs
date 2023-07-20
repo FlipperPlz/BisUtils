@@ -8,10 +8,10 @@ using Options;
 public interface IRVBankEntry : IRVBankVfsEntry
 {
     RVBankEntryMime EntryMime { get; }
-    int OriginalSize { get; }
-    int Offset { get; }
-    int TimeStamp { get; }
-    int DataSize { get; }
+    long OriginalSize { get; }
+    long Offset { get; }
+    long TimeStamp { get; }
+    long DataSize { get; }
 
     bool IsEmptyMeta() =>
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
@@ -34,8 +34,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     }
 
 
-    private int originalSize;
-    public int OriginalSize
+    private long originalSize;
+    public long OriginalSize
     {
         get => originalSize;
         set
@@ -45,8 +45,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private int offset;
-    public int Offset
+    private long offset;
+    public long Offset
     {
         get => offset;
         set
@@ -56,8 +56,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private int timeStamp;
-    public int TimeStamp
+    private long timeStamp;
+    public long TimeStamp
     {
         get => timeStamp;
         set
@@ -67,8 +67,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private int dataSize;
-    public int DataSize
+    private long dataSize;
+    public long DataSize
     {
         get => dataSize;
         set
@@ -83,10 +83,10 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         IRVBankDirectory parent,
         string fileName,
         RVBankEntryMime mime,
-        int originalSize,
-        int offset,
-        int timeStamp,
-        int dataSize
+        long originalSize,
+        long offset,
+        long timeStamp,
+        long dataSize
     ) : base(file, parent, fileName)
     {
         EntryMime = mime;

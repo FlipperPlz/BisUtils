@@ -32,10 +32,10 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         IRVBank file,
         string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        int originalSize = 0,
-        int offset = 0,
-        int timeStamp = 0,
-        int dataSize = 0,
+        long originalSize = 0,
+        long offset = 0,
+        long timeStamp = 0,
+        long dataSize = 0,
         List<IRVBankProperty>? properties = null
     ) : base(file, file, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
         Properties = properties ?? new List<IRVBankProperty>();
