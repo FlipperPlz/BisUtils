@@ -1,5 +1,6 @@
 namespace BisUtils.RVBank.Model.Entry;
 
+using System.Collections.ObjectModel;
 using Core.Cloning;
 using Core.IO;
 using Alerts.Errors;
@@ -13,7 +14,7 @@ using Stubs;
 
 public interface IRVBankVersionEntry : IRVBankEntry, IBisCloneable<IRVBankVersionEntry>
 {
-    List<IRVBankProperty> Properties { get; }
+    ObservableCollection<IRVBankProperty> Properties { get; }
 
     Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options);
     Result WritePboProperties(BisBinaryWriter writer, RVBankOptions options);
@@ -36,9 +37,9 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         long offset = 0,
         long timeStamp = 0,
         long dataSize = 0,
-        List<IRVBankProperty>? properties = null
+        IEnumerable<IRVBankProperty>? properties = null
     ) : base(file, file, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
-        Properties = properties ?? new List<IRVBankProperty>();
+        Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
 
     public RVBankVersionEntry(IRVBank file, BisBinaryReader reader, RVBankOptions options) : base(file, file, reader, options)
     {
@@ -48,7 +49,19 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         }
     }
 
-    public List<IRVBankProperty> Properties { get; set; } = new();
+    private readonly ObservableCollection<IRVBankProperty> properties = null!;
+    public ObservableCollection<IRVBankProperty> Properties
+    {
+        get => properties;
+        init
+        {
+            properties = value;
+            properties.CollectionChanged += (_, args) =>
+            {
+                OnChangesMade(this, args);
+            };
+        }
+    }
 
     public Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options)
     {

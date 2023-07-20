@@ -10,9 +10,20 @@ using Options;
 
 public static class RVBankDirectoryExtensions
 {
+    public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) =>
+        ctx.PboEntries.OfType<T>();
+
+    public static IEnumerable<IRVBankVfsEntry> GetVfsEntries(this IRVBankDirectory ctx) =>
+        GetEntries<IRVBankVfsEntry>(ctx);
+
+    public static IEnumerable<IRVBankDataEntry> GetFileEntries(this IRVBankDirectory ctx) =>
+        GetEntries<IRVBankDataEntry>(ctx);
+
+    public static IEnumerable<IRVBankDirectory> GetDirectories(this IRVBankDirectory ctx) =>
+        GetEntries<IRVBankDirectory>(ctx);
 
     public static IRVBankDirectory? GetDirectory(this IRVBankDirectory ctx, string name) =>
-        ctx.Directories.FirstOrDefault(e => e.EntryName == name);
+        GetDirectories(ctx).FirstOrDefault(e => e.EntryName == name);
 
     public static IRVBankDirectory CreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node)
     {

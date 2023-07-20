@@ -1,5 +1,6 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
+using System.Collections.ObjectModel;
 using Core.IO;
 using Enumerations;
 using Entry;
@@ -10,13 +11,7 @@ using Options;
 
 public interface IRVBankDirectory : IRVBankEntry
 {
-    List<IRVBankEntry> PboEntries { get; }
-
-    IEnumerable<IRVBankDataEntry> FileEntries { get; }
-
-    IEnumerable<IRVBankDirectory> Directories { get; }
-
-    IEnumerable<IRVBankVfsEntry> VfsEntries => PboEntries.OfType<IRVBankVfsEntry>().ToList();
+    ObservableCollection<IRVBankEntry> PboEntries { get; }
 
     long IRVBankEntry.OriginalSize => PboEntries.Sum(e => e.OriginalSize);
 
@@ -31,21 +26,33 @@ public interface IRVBankDirectory : IRVBankEntry
 
 public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
 {
-    //TODO call ChangesMade on entry add/remove
-    public List<IRVBankEntry> PboEntries { get; set; } = new();
+    private readonly ObservableCollection<IRVBankEntry> pboEntries = null!;
+    public ObservableCollection<IRVBankEntry> PboEntries
+    {
+        get => pboEntries;
+        init
+        {
+            pboEntries = value;
+            pboEntries.CollectionChanged += (_, args) =>
+            {
+                OnChangesMade(this, args);
+            };
+        }
+    }
+
     public IEnumerable<IRVBankDataEntry> FileEntries => PboEntries.OfType<IRVBankDataEntry>();
     public IEnumerable<IRVBankDirectory> Directories => PboEntries.OfType<IRVBankDirectory>();
 
     public RVBankDirectory(
         IRVBank file,
         IRVBankDirectory parent,
-        List<IRVBankEntry> entries,
+        IEnumerable<IRVBankEntry> entries,
         string directoryName
-    ) : base(file, parent, directoryName) => PboEntries = entries;
+    ) : base(file, parent, directoryName) =>
+        PboEntries = new ObservableCollection<IRVBankEntry>(entries);
 
-    protected RVBankDirectory(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
-    {
-    }
+    protected RVBankDirectory(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options) =>
+        PboEntries = new ObservableCollection<IRVBankEntry>();
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>
         LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(e => e.Binarize(writer, options).Reasons));

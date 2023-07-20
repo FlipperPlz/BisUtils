@@ -1,5 +1,6 @@
 namespace BisUtils.RVBank.Model;
 
+using System.Collections.ObjectModel;
 using Core.Binarize.Synchronization;
 using Core.Extensions;
 using Core.IO;
@@ -32,24 +33,37 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 {
     public string BankPrefix { get; set; }
-    public IRVBank BankFile { get; }
-    public bool IsFirstRead { get; private set; } = true;
-    public List<IRVBankEntry> PboEntries { get; set; }
-    public IEnumerable<IRVBankDataEntry> FileEntries => PboEntries.OfType<IRVBankDataEntry>();
-    public IEnumerable<IRVBankDirectory> Directories => PboEntries.OfType<IRVBankDirectory>();
 
-    public RVBank(string filename, List<IRVBankEntry> entries, Stream? synchronizeTo = null) : base(synchronizeTo)
+    public IRVBank BankFile { get; }
+
+    public bool IsFirstRead { get; private set; } = true;
+
+    private readonly ObservableCollection<IRVBankEntry> pboEntries = null!;
+    public ObservableCollection<IRVBankEntry> PboEntries
+    {
+        get => pboEntries;
+        init
+        {
+            pboEntries = value;
+            pboEntries.CollectionChanged += (_, args) =>
+            {
+                OnChangesMade(this, args);
+            };
+        }
+    }
+
+    public RVBank(string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo = null) : base(synchronizeTo)
     {
         BankFile = this;
         BankPrefix = filename;
-        PboEntries = entries;
+        PboEntries = new ObservableCollection<IRVBankEntry>(entries);
     }
 
     public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo = null) : base(reader, options, synchronizeTo)
     {
         BankFile = this;
         BankPrefix = filename;
-        PboEntries = new List<IRVBankEntry>();
+        PboEntries = new ObservableCollection<IRVBankEntry>();
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
