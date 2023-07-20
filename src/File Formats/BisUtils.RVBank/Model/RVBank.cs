@@ -6,6 +6,7 @@ using Core.Extensions;
 using Core.IO;
 using Enumerations;
 using Entry;
+using Extensions;
 using Stubs;
 using FResults;
 using FResults.Extensions;
@@ -14,6 +15,8 @@ using Options;
 
 public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 {
+    public string FileName { get; set; }
+
     public string BankPrefix { get; set; }
 
     IRVBankDirectory IRVBankVfsEntry.ParentDirectory => this;
@@ -32,8 +35,13 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 
 public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 {
-    public string BankPrefix { get; set; }
+    public string FileName { get; set; }
 
+    public string BankPrefix
+    {
+        get => this.GetVersionEntry()?.GetPropertyValue("prefix") ?? FileName;
+        set => (this.GetVersionEntry() ?? this.AddVersionEntry()).SetOrCreateProperty("prefix", value);
+    }
     public IRVBank BankFile { get; }
 
     public bool IsFirstRead { get; private set; } = true;
@@ -55,14 +63,14 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     public RVBank(string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo = null) : base(synchronizeTo)
     {
         BankFile = this;
-        BankPrefix = filename;
+        FileName = filename;
         PboEntries = new ObservableCollection<IRVBankEntry>(entries);
     }
 
     public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo = null) : base(reader, options, synchronizeTo)
     {
         BankFile = this;
-        BankPrefix = filename;
+        FileName = filename;
         PboEntries = new ObservableCollection<IRVBankEntry>();
         if (!Debinarize(reader, options))
         {
@@ -74,8 +82,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     {
         var responses = new List<Result>();
         var first = true;
-        options.CurrentSection = RVBankSection.Header;
-
         do
         {
             var start = reader.BaseStream.Position;
@@ -84,7 +90,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
             IRVBankEntry currentEntry = mime switch
             {
-                RVBankEntryMime.Version => new RVBankVersionEntry(this, reader, options),
+                RVBankEntryMime.Version => new RVBankVersionEntry(this, this, reader, options),
                 _ => new RVBankDataEntry(this, this, reader, options)
             };
 
@@ -128,22 +134,25 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             }
         } while (true);
 
-        options.CurrentSection = RVBankSection.Data;
-        //INITIALIZE ENTRY DATA
-
-        options.CurrentSection = RVBankSection.Signature;
-
-        options.CurrentSection = RVBankSection.Finished;
         LastResult = Result.Merge(responses);
+        if (reader.BaseStream == SynchronizationStream)
+        {
+            OnChangesSaved(EventArgs.Empty);
+        }
+
+        if (IsFirstRead)
+        {
+            IsFirstRead = false;
+        }
 
         return LastResult;
     }
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        var result = PboEntries.Select(e => e.Binarize(writer, options));
 
-        return LastResult = Result.Merge(result);
+        throw new NotImplementedException();
+        return LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(e => e.Binarize(writer, options).Reasons));
     }
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();

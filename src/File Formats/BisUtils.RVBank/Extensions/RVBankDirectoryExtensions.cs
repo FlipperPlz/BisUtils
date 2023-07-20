@@ -22,8 +22,62 @@ public static class RVBankDirectoryExtensions
     public static IEnumerable<IRVBankDirectory> GetDirectories(this IRVBankDirectory ctx) =>
         GetEntries<IRVBankDirectory>(ctx);
 
+    public static IEnumerable<IRVBankVersionEntry> GetVersionEntries(this IRVBankDirectory ctx) =>
+        GetEntries<IRVBankVersionEntry>(ctx);
+
+    public static IRVBankVersionEntry? GetVersionEntry(this IRVBankDirectory ctx) =>
+        GetVersionEntries(ctx).FirstOrDefault();
+
     public static IRVBankDirectory? GetDirectory(this IRVBankDirectory ctx, string name) =>
         GetDirectories(ctx).FirstOrDefault(e => e.EntryName == name);
+
+    public static IRVBankVersionEntry CreateVersionEntry(this IRVBankDirectory ctx, BisBinaryReader reader,
+        RVBankOptions options) =>
+        new RVBankVersionEntry(ctx.BankFile, ctx, reader, options);
+
+    public static IRVBankVersionEntry CreateVersionEntry
+    (
+        this IRVBankDirectory ctx, string fileName = "",
+        RVBankEntryMime mime = RVBankEntryMime.Version,
+        long originalSize = 0,
+        long offset = 0,
+        long timeStamp = 0,
+        long dataSize = 0,
+        IEnumerable<IRVBankProperty>? properties = null
+    ) =>
+        new RVBankVersionEntry(ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize, properties);
+
+    public static IRVBankVersionEntry AddVersionEntry
+    (
+        this IRVBankDirectory ctx, string fileName = "",
+        RVBankEntryMime mime = RVBankEntryMime.Version,
+        long originalSize = 0,
+        long offset = 0,
+        long timeStamp = 0,
+        long dataSize = 0,
+        IEnumerable<IRVBankProperty>? properties = null
+    )
+    {
+        var entry = CreateVersionEntry(ctx, fileName, mime, originalSize, offset, timeStamp, dataSize, properties);
+        ctx.PboEntries.Add(entry);
+        return entry;
+    }
+
+    public static IRVBankVersionEntry AddVersionEntry(this IRVBankDirectory ctx, BisBinaryReader reader,
+        RVBankOptions options)
+    {
+        var entry = CreateVersionEntry(ctx, reader, options);
+        ctx.PboEntries.Add(entry);
+        return entry;
+    }
+
+    public static IRVBankDirectory AddDirectory(this IRVBankDirectory ctx, string name, IRVBank node)
+    {
+        var directory = CreateDirectory(ctx, name, node);
+        ctx.PboEntries.Add(directory);
+        return directory;
+    }
+
 
     public static IRVBankDirectory CreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node)
     {
@@ -64,7 +118,7 @@ public static class RVBankDirectoryExtensions
         return ret;
     }
 
-    public static void CreateEntry
+    public static void AddEntry
     (
         this IRVBankDirectory ctx,
         string fileName,
@@ -75,9 +129,9 @@ public static class RVBankDirectoryExtensions
         int dataSize
     ) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize));
 
-    public static void CreateEntry(this IRVBankDirectory ctx, BisBinaryReader reader, RVBankOptions options) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, reader, options));
+    public static void AddEntry(this IRVBankDirectory ctx, BisBinaryReader reader, RVBankOptions options) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, reader, options));
 
-    public static void CreateEntry
+    public static void AddEntry
     (
         this IRVBankDirectory ctx,
         string fileName,

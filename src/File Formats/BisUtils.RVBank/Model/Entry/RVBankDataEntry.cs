@@ -45,8 +45,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
     }
 
-
-
     public RVBankDataEntry
     (
         IRVBank file,
@@ -114,6 +112,8 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         IdentifyPackingMethod();
         return LastResult;
     }
+
+    internal void SetEntryDataQuietly(Stream data) => entryData = data;
 
     private void IdentifyPackingMethod()
     {

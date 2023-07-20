@@ -29,25 +29,6 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
     //public string FileName { get; } = "$PROPERTIES$";
     public static readonly string[] UsedPboProperties = { "product", "prefix", "version", "encrypted", "obfuscated" };
 
-    public RVBankVersionEntry(
-        IRVBank file,
-        string fileName = "",
-        RVBankEntryMime mime = RVBankEntryMime.Version,
-        long originalSize = 0,
-        long offset = 0,
-        long timeStamp = 0,
-        long dataSize = 0,
-        IEnumerable<IRVBankProperty>? properties = null
-    ) : base(file, file, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
-        Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
-
-    public RVBankVersionEntry(IRVBank file, BisBinaryReader reader, RVBankOptions options) : base(file, file, reader, options)
-    {
-        if (!Debinarize(reader, options))
-        {
-            LastResult!.Throw();
-        }
-    }
 
     private readonly ObservableCollection<IRVBankProperty> properties = null!;
     public ObservableCollection<IRVBankProperty> Properties
@@ -62,6 +43,28 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
             };
         }
     }
+
+    public RVBankVersionEntry(
+        IRVBank file,
+        IRVBankDirectory parent,
+        string fileName = "",
+        RVBankEntryMime mime = RVBankEntryMime.Version,
+        long originalSize = 0,
+        long offset = 0,
+        long timeStamp = 0,
+        long dataSize = 0,
+        IEnumerable<IRVBankProperty>? properties = null
+    ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
+        Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
+
+    public RVBankVersionEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
+    {
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
+    }
+
 
     public Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options)
     {
@@ -142,6 +145,6 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
     public IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options) => new RVBankProperty(BankFile, this, reader, options);
 
-    public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(BankFile, EntryName, EntryMime, OriginalSize, Offset,
+    public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(BankFile, ParentDirectory, EntryName, EntryMime, OriginalSize, Offset,
         TimeStamp, DataSize, Properties);
 }
