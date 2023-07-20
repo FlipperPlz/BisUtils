@@ -3,7 +3,9 @@ namespace BisUtils.RVBank.Model.Entry;
 using Core.Binarize.Exceptions;
 using Core.IO;
 using Alerts.Warnings;
+using Core.Parsing;
 using Enumerations;
+using Extensions;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
@@ -13,12 +15,15 @@ using Stubs;
 public interface IRVBankDataEntry : IRVBankEntry
 {
     Stream EntryData { get; }
-
+    RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
 }
 
 public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 {
+    public RVBankDataType PackingMethod { get; set; }
+
+
     public RVBankDataEntry
     (
         IRVBank file,
@@ -33,7 +38,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
     {
     }
 
-    public RVBankDataEntry(IRVBank file, IRVBankDirectory parent ,BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
+    public RVBankDataEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
         Debinarize(reader, options);
         if (LastResult!.IsFailed)
@@ -53,22 +58,23 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
     }
 
+
+    public void SynchronizeMetaWithStream() => OriginalSize = (int)EntryData.Length;
+
     public void ExpandDirectoryStructure()
     {
-        // ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
-        //
-        // var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
-        //
-        // if (!EntryName.Contains('\\'))
-        // {
-        //     return;
-        // }
-        //
-        // EntryName = RVPathUtilities.GetFilename(EntryName);
+        ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
 
-        //MOVE ENTRY
-        //ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
-        //ParentDirectory.PboEntries.Add(this);
+        var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
+
+        if (!EntryName.Contains('\\'))
+        {
+            return;
+        }
+        EntryName = RVPathUtilities.GetFilename(EntryName);
+
+        ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
+        Move(ParentDirectory);
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
@@ -79,8 +85,31 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
-
+        IdentifyPackingMethod();
         return LastResult;
+    }
+
+    private void IdentifyPackingMethod()
+    {
+        if (EntryMime is RVBankEntryMime.Encrypted)
+        {
+            PackingMethod = RVBankDataType.Encrypted;
+            return;
+        }
+
+        if (OriginalSize <= 0)
+        {
+            PackingMethod = RVBankDataType.Original;
+            return;
+        }
+
+        if (DataSize != OriginalSize)
+        {
+            PackingMethod = RVBankDataType.Compressed;
+            return;
+        }
+
+        PackingMethod = RVBankDataType.Original;
     }
 
     public sealed override Result Validate(RVBankOptions options)
@@ -155,6 +184,4 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         return LastResult;
     }
 
-
-    public void SynchronizeMetaWithStream() => OriginalSize = (int)EntryData.Length;
 }
