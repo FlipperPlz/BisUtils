@@ -2,6 +2,8 @@
 namespace BisUtils.RVBank.Model.Misc;
 
 using System.Runtime.InteropServices;
+using Core.IO;
+using Options;
 
 public interface IRVBankDigest
 {
@@ -27,6 +29,15 @@ public readonly struct RVBankDigest : IRVBankDigest
         var ptrDigest = GCHandle.Alloc(digest, GCHandleType.Pinned);
         Marshal.PtrToStructure(ptrDigest.AddrOfPinnedObject(), this);
         ptrDigest.Free();
+    }
+
+    public void Write(BisBinaryWriter writer, RVBankOptions options)
+    {
+        writer.Write(SectorA);
+        writer.Write(SectorB);
+        writer.Write(SectorC);
+        writer.Write(SectorD);
+        writer.Write(SectorE);
     }
 
     public static bool operator ==(RVBankDigest obj1, RVBankDigest obj2) => obj1.Equals(obj2);

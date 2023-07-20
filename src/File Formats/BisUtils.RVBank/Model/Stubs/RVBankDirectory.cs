@@ -73,4 +73,6 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
         ParentDirectory = destination;
         OnChangesMade(this, EventArgs.Empty);
     }
+
+    public long CalculateLength(RVBankOptions options) => 0;
 }

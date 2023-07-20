@@ -75,6 +75,37 @@ public sealed class BisCompatibleLzss
         }
     }
 
+    public Stream Encode(Stream inputStream, out int outputSize)
+    {
+        if (!inputStream.CanRead)
+        {
+            throw new IOException("Cannot read from the provided stream.");
+        }
+
+        using var memoryStream = new MemoryStream();
+        inputStream.CopyTo(memoryStream);
+
+        var encodedStream = new MemoryStream();
+        using var binaryWriter = new BinaryWriter(encodedStream);
+
+        outputSize = Encode(memoryStream.ToArray(), binaryWriter);
+
+        encodedStream.Seek(0, SeekOrigin.Begin);
+        return encodedStream;
+    }
+
+    public int Encode(Stream inputStream, BinaryWriter output)
+    {
+        if (!inputStream.CanRead)
+        {
+            throw new IOException("Cannot read from the provided stream.");
+        }
+
+        using var memoryStream = new MemoryStream();
+        inputStream.CopyTo(memoryStream);
+        return Encode(memoryStream.ToArray(), output);
+    }
+
     public int Encode(byte[] input, BinaryWriter output)
     {
         int i, len;

@@ -17,6 +17,7 @@ public interface IRVBankEntry : IRVBankVfsEntry
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
     bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
 
+    long CalculateLength(RVBankOptions options);
 }
 
 public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
@@ -116,4 +117,6 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
 
     public bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
+
+    public long CalculateLength(RVBankOptions options) => 21 + options.Charset.GetByteCount(EntryName);
 }

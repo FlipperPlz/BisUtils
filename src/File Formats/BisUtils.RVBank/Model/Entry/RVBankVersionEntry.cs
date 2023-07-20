@@ -141,6 +141,9 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         return LastResult;
     }
 
+    public new long CalculateLength(RVBankOptions options) => base.CalculateLength(options) + 1 + Properties.Sum(property =>
+        2 + options.Charset.GetByteCount(property.Name) + options.Charset.GetByteCount(property.Value));
+
     public IRVBankProperty CreateVersionProperty(string name, string value) => new RVBankProperty(BankFile, this, name, value);
 
     public IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options) => new RVBankProperty(BankFile, this, reader, options);

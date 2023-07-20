@@ -13,11 +13,13 @@ public static class RVBankDirectoryExtensions
     public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) =>
         ctx.PboEntries.OfType<T>();
 
-    public static IEnumerable<IRVBankVfsEntry> GetVfsEntries(this IRVBankDirectory ctx) =>
+    public static IEnumerable<IRVBankVfsEntry> GetVfsEntries(this IRVBankDirectory ctx, bool recursive = false) =>
         GetEntries<IRVBankVfsEntry>(ctx);
 
-    public static IEnumerable<IRVBankDataEntry> GetFileEntries(this IRVBankDirectory ctx) =>
-        GetEntries<IRVBankDataEntry>(ctx);
+    public static IEnumerable<IRVBankDataEntry> GetFileEntries(this IRVBankDirectory ctx, bool recursive = false) =>
+        !recursive ? GetEntries<IRVBankDataEntry>(ctx) : GetDirectories(ctx).SelectMany(it => it.GetFileEntries(recursive))
+            .Concat(GetEntries<IRVBankDataEntry>(ctx));
+
 
     public static IEnumerable<IRVBankDirectory> GetDirectories(this IRVBankDirectory ctx) =>
         GetEntries<IRVBankDirectory>(ctx);

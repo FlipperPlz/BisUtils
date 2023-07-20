@@ -185,9 +185,28 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-
-        throw new NotImplementedException();
-        return LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(e => e.Binarize(writer, options).Reasons));
+        var headerStart = writer.BaseStream.Position;
+        var headerLength = PboEntries.Sum(it => it.CalculateLength(options));
+        //var dataStart = writer.BaseStream.Position;
+        //long dataLength = 0;
+        writer.BaseStream.Seek(headerLength, SeekOrigin.Current);
+        foreach (var entry in this.GetFileEntries(true))
+        {
+            var data = entry.RetrieveFinalStream(out var compressed);
+            //dataLength += data.Length;
+            writer.Write(data);
+            if (compressed)
+            {
+                data.Close();
+            }
+        }
+        var dataEnd = writer.BaseStream.Position;
+        writer.BaseStream.Seek(headerStart, SeekOrigin.Begin);
+        LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(it => it.Binarize(writer, options).Reasons));
+        writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
+        var digest = CalculateDigest(writer.BaseStream);
+        digest.Write(writer, options);
+        return LastResult;
     }
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
@@ -212,4 +231,5 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     }
 #pragma warning restore CA5350
 #pragma warning restore SYSLIB0021
+    public long CalculateLength(RVBankOptions options) => pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
 }

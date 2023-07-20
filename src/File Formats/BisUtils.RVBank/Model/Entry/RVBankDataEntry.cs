@@ -20,6 +20,7 @@ public interface IRVBankDataEntry : IRVBankEntry
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
     void InitializeData(BisBinaryReader reader, RVBankOptions options);
+    public Stream RetrieveFinalStream(out bool streamWasCompressed);
 }
 
 public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
@@ -149,6 +150,26 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
                 break;
             }
         }
+    }
+
+    public Stream RetrieveFinalStream(out bool streamWasCompressed)
+    {
+        switch (PackingMethod)
+        {
+            case RVBankDataType.Compressed:
+            {
+                streamWasCompressed = true;
+                var stream = BisCompatibleLzss.Compressor.Encode(entryData, out var compressedSize);
+                DataSize = compressedSize;
+                return stream;
+            }
+            default:
+            {
+                streamWasCompressed = false;
+                return entryData;
+            }
+        }
+
     }
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
