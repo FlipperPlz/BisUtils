@@ -10,28 +10,7 @@
 
 
     <ItemGroup>
-      
-      <ProjectReference Include="..\Languages\BisUtils.Param\BisUtils.Param.csproj" />
-
-
-
-
-
-
-
-
-
-
-
-
+      <ProjectReference Include="..\BisUtils.Param\BisUtils.Param.csproj" />
     </ItemGroup>
-
-
-
-
-
-
-
-
 
 </Project>

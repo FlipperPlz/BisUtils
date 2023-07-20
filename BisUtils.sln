@@ -16,13 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3BC325D5-711
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.Core", "src\BisUtils.Core\BisUtils.Core.csproj", "{F75A0623-0022-4204-9FDE-BFC39583C413}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVBank", "src\File Formats\BisUtils.RVBank\BisUtils.RVBank.csproj", "{F53CAC57-01A3-4A71-88D6-19146D271933}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVBank", "src\BisUtils.RVBank\BisUtils.RVBank.csproj", "{F53CAC57-01A3-4A71-88D6-19146D271933}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.Param", "src\File Formats\Languages\BisUtils.Param\BisUtils.Param.csproj", "{1C3D2806-0E33-4816-BF09-3A84CF50AA80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.Param", "src\BisUtils.Param\BisUtils.Param.csproj", "{1C3D2806-0E33-4816-BF09-3A84CF50AA80}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extra Functionality", "Extra Functionality", "{4FFCAE7B-C53D-46FD-B897-B21F86167CD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.PreProcessor.RV", "src\Pre Processors\BisUtils.PreProcessor.RV\BisUtils.PreProcessor.RV.csproj", "{44137427-4E99-4F20-829F-C7B40C6F0D36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.PreProcessor.RV", "src\BisUtils.PreProcessor.RV\BisUtils.PreProcessor.RV.csproj", "{44137427-4E99-4F20-829F-C7B40C6F0D36}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6685E7AA-0C0B-45E3-8CAC-1A0DDD407BD1}"
 EndProject
@@ -40,13 +40,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParamTest", "test\Scratches
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.All", "src\BisUtils.All\BisUtils.All.csproj", "{49247244-E4A6-4D7C-91FF-51C11DD9C3BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVShape", "src\File Formats\BisUtils.RVShape\BisUtils.RVShape.csproj", "{1B5C4AB8-7D90-47C2-991C-6A6192655BDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVShape", "src\BisUtils.RVShape\BisUtils.RVShape.csproj", "{1B5C4AB8-7D90-47C2-991C-6A6192655BDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeTest", "test\Scratches\ShapeTest\ShapeTest.csproj", "{6D7A5B37-30AE-4477-A04B-A0035C75492B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVTexture", "src\File Formats\BisUtils.RVTexture\BisUtils.RVTexture.csproj", "{2810E061-35DA-4B97-BA9B-CE9F17383A6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVTexture", "src\BisUtils.RVTexture\BisUtils.RVTexture.csproj", "{2810E061-35DA-4B97-BA9B-CE9F17383A6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVMaterial", "src\File Formats\BisUtils.RVMaterial\BisUtils.RVMaterial.csproj", "{3901DEA3-27CE-4527-BD71-4983A8D60A9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVMaterial", "src\BisUtils.RVMaterial\BisUtils.RVMaterial.csproj", "{3901DEA3-27CE-4527-BD71-4983A8D60A9B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DZServerQuery", "src\BisUtils.DZServerQuery\BisUtils.DZServerQuery.csproj", "{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}"
 EndProject
