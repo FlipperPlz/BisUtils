@@ -1,0 +1,727 @@
+* refactor: Remove Project Files
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Initial Commit
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(family): Add Family Interfaces
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(binarize): Work On Strict Binarization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Start PBO Implementation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Start Pbo Entry Implementations
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Add Version Entry Validation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Add .gitignore
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Add .editorconfig
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Add .gitattributes
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Fix .editorconfig rules
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(pbo): Misc. Code Fix-Ups & Implementations
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(formatting): Fix Braces On Single-Statement Ifs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Add PboProperty class
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(result): Switch to FluentResults
+
+Not sure if this is .Net Core compatible but for now it suites the needs. Maybe we will use another library or rewrite something smaller in the future
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor: Switch To FResults
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(validation): Change bool to result in validation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(bank): Start Migrating to FResults
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(bank): Finish Migrating to FResults
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix: Update FResults Submodule
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Create Interfaces For Each PboElement
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Fix Interfaces And Implement De/Binarization for PboProperty.cs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Implement DataEntry Binarization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Implement De/Binarization ForPboDataEntry.cs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(pbo): Fix Namespace Declarations; Add Size Validation On Data Entries
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Add Pbo Reading Support
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(pbo): Start Read Testing :D
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Restructure Project
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(pbo): Fix PboProperty Debinarization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Add Result Caching
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Update FResults
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Add PboSection Enumeration
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Start Working On Path Normalization/Parsing/Expanding
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(pbo): Finish up path expanding
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Finish Flat & Expanded Read
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Add BisCompatibleLZSS.cs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(pbo): Remove Print Statements From Release Build
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Restructure Project
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(pbo): Small Pbo Fixes
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Working On ParamFile Data Structure
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Reformat Project Files
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Working On Param Literals
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(pbo): Move Enums To Enumerations Folder
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add ParamInt Type
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add Float And Array Literals
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Adjust WriteParam/ToParam Methods In ParamElement.cs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Adding Models For ParamStatements
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(param): Fix ParamFile Interface
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add Foster Delegates For Id's and SubIds
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Finish ParamArray::Binarize
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Implement IdFosters With Literals
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Finish Literal De/Binarization Implementations
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Reformat Project In Preparation For The RV PreProcessor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(RV): Initial RV Pre Processor Commit
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Start Adding Elements To PreProcessor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Add Include Directive
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Add Remaining Directive Models
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Begin Work On RVLexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Start Work On Actual Pre Processor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Start Implementing Directive Processing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): More Work On PreProcessor Processing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Finish Directive Evaluation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix RVProcessor::Process
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Begin Writing Param Parser
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Working On Statement Parsing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Working On Literal Parsing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): More Parser Fixups
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(param): More Parser Fixes.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Start Work On Lexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Create Actual ParamLexer.cs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start working on tokenization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add tokenization to ParamLexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(param): Finish ParamLexer.cs Simple Types
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Add benchmarks (PR#13)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* test(pbo): Add benchmarks project
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(core): Add missing constructors to BisBinaryWriter
+----------------------------------------------------------------------------------------------------------------------------------------
+* test(pbo): Add binarization benchmark
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(pbo): Remove time measurement in DEBUG
+
+- Because there are benchmarks, there is no need to measure time with "Stopwatch", so the visual clutter can be removed.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(test): Add Solution Folders To Testing Folder
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add Literal Reading To ParamLexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Start Lexer implementations
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Start Work On Preprocessor Lexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Finish Up Non Keywords in Lexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Finish Keyword Tokenization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Add Undefine Directive
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(rv): Simplify RV Lexer. Remove Constructor To Lex Until End In BisPreProcessor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Create PreProcessLexer Method In RVPreProcessor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix: Fix Preprocessor layout.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix How Quoted Strings Are Handled When PreProcessing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Adjust Project Abstractions For Parsing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(rv): Neaten RVPreprocessor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* docs(core): Add Documentation To BisUtils.Core.Parsing
+
+Short and sweet XML documentation and summaries have been added across interfaces and classes in the Parsing package for improved readability and maintainability.
+
+ Changes also correct minor typos in method names (e.g., "PeekBackWard" to "PeekBackward")
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Start Work On RV Lexer Finalization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix ScanUntil Method
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix String Scanning
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix Bugs In Whitespace Tokenization and GetUntil
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix New Line Handling
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Start Adding Support For PreProcessable Parser.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(rv): Make Parser Not Statically Implemented
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Implementing ParamParser
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add RightCurly Support To Parser
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Add Variable Parsing Support
+
+Refactored and added new capabilities to the Param parser to add support for variable parsing. These updates are critical for expansion of variable parsing ability, improving user experience and program versatility.
+
+changes:
+- `TraverseWhitespace` method scope has been downgraded to private, streamlining access and enhancing encapsulation.
+- The 'ParamString' and 'ParamLexer' constructors have been updated to accept new parameters
+- A new method handling 'ParamVariable' creation has been added.
+- Error handling has been improved in the 'ToInt' method in the 'ParamString' class.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Addition of support for `delete` parsing and improved parsing for `enum`
+
+changes:
+- Modified `BisLexer.cs` to add optional reverse parsing functionality to `TokenizeWhile()` function, improving its flexibility.
+- Removed `OperatorOf` function, pushing its functionality directly into a switch case within `ParamVariable.CreateVariable()`. Which was refactored to improve readability and reduce unnecessary function calls.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* docs: Add Bits Of Documentation To Parser Bases
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* docs: Add Doxygen configuration files and scripts for BisUtils document generation.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* docs(core): Finish Core Documentation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* docs(rv): Add documentation to RVPreProcessor
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(rv): Change How Directives Are Evaluated
+
+changes:
+- Add new event and delegate for when a directive is matched in RVPreProcessor.
+- Changed types and methods that process directives and handle include files to work with IRVDirective and IRVDefineDirective.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(rv): Add Undefine Directive
+
+TODO: Directive starts at # and ends at new line. Currently the newline isn't removed as the methods used to read/process the directives do not consume the newline
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(rv): Fix Comment Parsing In RVLexer
+
+Previously, line comments were off by one.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(param): Add Curly Brackets To Lexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Work On Literal And Array Parsing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Implementing Param Binarization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Work On Binarization Rewrite
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Change How Literals Are Implemented
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Create Factory For Reading Binarized Literals
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(param): Change How Syntax Tree Is Structured
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(param): Neaten Up Codebase Yet Again
+
+changes:
+- Moved the logics to handle binary data into separate factory classes (ParamLiteralFactory and ParamStatementFactory), which isolates those responsibilities and increases maintainability.
+- Added exception handling in instances where Debinarizing could fail, providing clearer error indication.
+- Included the 'IParamLiteralHolder' interface in 'IParamVariable', which results in less code duplication and promotes the use of interfaces.
+- Improved the Debinarization process in param literals (ParamString, ParamFloat, ParamInt), making it more robust and readable.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Adding Error Detection
+
+- Some interfaces within literal models have also undergone modifications.
+- Added two more properties to `ParamOptions.cs` to account for missing parent and duplicate classname errors.
+- Improved error detection within the Param module.
+- Modified `ParamClass.cs`, allowing for better location and validation of param parent classes, as well as effectively locates multiple instances of classes.
+- Created two new error classes (`ParamStatementNotFoundError.cs` and `ParamDuplicateClassnameError.cs`) to manage statement and classname detection errors more accurately.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Add End User License Agreement
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Add BisUtils.All. Enable AOT Compatibility
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Finish Delete Validation
+
+- New property `MissingDeleteTargetIsError` was added to the `ParamOptions` class to track if a missing delete target should result in an error.
+- The `LocateDeleteTarget` and `Validate` methods in the `ParamDelete` class were implemented accordingly.
+- `VariableName` now has a default value of null in the `ParamVariable` class, thus eliminating manual null-check.
+- Lastly, an additional `StringBuilder` was involved in `ToParam` method of `ParamVariable` class to construct the string result. Maybe rethink the allocation of writing files.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Remove unused ParamStringStepper; Add SyncToContext methods to model stubs
+
+-'SyncToContext' has been added to the 'ParamCollection', 'ParamLiteral', and 'ParamStatement' classes in order to maintain the parent-child relationship during parsing.
+- Removed the nullability from the List return type in the 'ParamArray' class and added implicit and explicit conversions for better usability.
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add BisUtils.P3D Project
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add CSProj that was forgotten
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(shape): Small changes
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add ModelConfig
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(shape): Fix Model Config
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Create Main Abstraction For Models
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(shape): Make Lod Resolution Settable
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Start Working On MLOD Support
+
+Refactor and expand RVLod class to include support for MLOD (???Mesh??? Level of Detail) files in the BisUtils.P3D library.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): More Work On MLOD Debinarization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Start Work On Faces
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(shape): Mark BisUtils.P3D As AOT Compatible
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add RVPoint and RVVector classes
+
+- RVPoint and RVVector have been added to facilitate operations on 3D points and vectors respectively. RVPoint includes PointFlags for additional functionality.
+- RVLod class has been adjusted to accommodate an 'extendedFace' flag to account for newer versions of data.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* Remove unused code and refactor data types
+
+- Also added new files RVDataVertex.cs, RVFaceFlags.cs, and RVFaceOptions.cs to further abstract and encapsulate functionalities.
+- Renamed PointFlags from RVPointOptions to RVPointFlags in 'RVPoint.cs' for clarity and consistency with the rest of the code.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Finish RVFace Binarization
+
+- Delete RVFaceOptions and use RVShapeOptions in RVFace instead to reduce redundancy and maintain project organization.
+- The binarize and debinarize methods in RVFace were updated to support different options depending on the 'ExtendedFace' boolean and 'FaceVersion' integer from RVShapeOptions. This way, we can manage edge cases where the face version or type varies. Added more validation steps in these methods to ensure stability of data transformation.
+- In the model 'RVFace', nullable types are added to properties like Material and Flags to provide more flexibility in cases where these values might not be provided.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(rv): Remove Old Unused RV Lexer
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Misc Project Additions And Restructures
+
+- Add binary read function for an indexed list to support handling of large datasets.
+- Implement detailed and granular parsing for faces within the .P3D files, improving readability and interpretation of data.
+- Enhance error handling with inclusion of error classes for distinct error types during face parsing.
+- Reorganize relevant classes, methods, and extensions for clarity and accessibility.
+- Remove redundant or unused code blocks.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Refactor binary reader and rearrange model organization
+
+ - Updated the functionality of BisBinaryReader to accommodate extended input criteria removing redundancy across the model structure. This refactoring was done to increase extensibility and maintainability.
+ - RVLod class has been renamed to RVShapeData.
+ - Default constructors in RVFace and RVVector have been made public for better accessibility.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(shape): Project Restructure
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(shape): Rename enums and refactor classes to improve clarity
+
+Renamed 'RVLodType' enumerator to 'RVLodFlags' and moved it under 'Models.Lod' namespace for better context. This change reflects that these are not types but flags denoting different categories of Levels of Detail (LoD), enhancing code readability. The 'RVLod' class and other references were also updated accordingly. Further refactored 'RVShape' class to make it non-generic, applying these changes helps unify the approach across the LoD classes, making the codebase easier to maintain and understand.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Start Work On LOD Model
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): More Work On Lod Models
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add LocateLevel method to find specific LOD level
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Work On Lod Mass
+.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Finished MLOD Reading
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Move all implementations to their correct places.
+
+- Remove unused Tagg classes, update multiple related classes
+- Added new field in RVShapeOptions for ExtendedPoint. Changed property names and their implementation in RVFace. Also, because of changes in RVFace, RVRVector needed to be updated too. This involved renaming RVUVSet class to RVDataVertex and updating its methods. Necessary changes were made in other related classes like RVShape, RVConstants, and others, including renaming some classes and updating type references.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Finish Tagg Reading
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Helpers To RVShape.cs
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): More Work On MLOD Debinarization
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Support For Selections To Lod
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Implement Named Selections
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Move Vector To Core; Create Point Classes
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Animation Phases
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Support For SharpEdges Tagg
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Locked and Hidden Selections to RVLod
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Unnamed Selection Support To RVLod
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Small Fixups; Working MLOD Read
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Add Missing ShapeTest Library
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(shape): Typo 'ShapeEdges' to 'SharpEdges'
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add UV Warnings To Faces. Add support for face flags
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(shape): Skip unimplemented UVSet Tagg
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Create Projects For Textures And Materials
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore(shape): Rename Root Namespace To 'BisUtils.RVShape'
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Rename BisUtils.Bank to BisUtils.RVBank
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(bank): Rename And Refactor Bank Implementation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(shape): Rename Shape Errors To Conform To RV Prefix Convention
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(texture): Create Color; Add RVTexture project;
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(texture): Create Color Palette
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(material): Create RVMaterial File. Make ParamFile Filename Settable
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Start Refactoring Param Library
+
+- Made some adjustments in the class and function names to fit their functionality better.
+- Some null checking logic on variables have been revised or removed to improve performance.
+- The explicit type conversion between IParamLiteral and List has been added to ParamArray.cs for more intuitive code.
+- Redundant methods and regions were also cleaned up to simplify the code base.
+- Variable types of some properties were adjusted to match their actual usage.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Organize And Rewrite Param to streamline the code
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(param): Implement ParamFile::Debinarize
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Remove BisUtils.Core.Family
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* fix(shape): Fix Named Selections/Properties Reading
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Create BisFlaggable
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Make IBisFlaggable dynamic
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Refactored the handling and representation of flags in RVFace.
+
+- New BisFlagUtils class allows for the creation of flags
+- BisFlaggable interface has been simplified.
+- RVFace now utilises BisFlagUtils to create flags, replacing the former bitwise approach, improving readability.
+- Flags are now a nullable RVFaceFlag type, which was introduced to improve type safety and clarity.
+- The new optionally flaggable feature provides cleaner handling of instances where flags may not be present.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat: Move To IBisFlaggable
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Calculate UV MinMax
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(shape): Add Support For UVSets
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Create BisSynchronizable Abstractions
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Begin to make RVBank Synchronizable
+
+- Refactored RVBankDirectory and RVBank for synchronization purpose.
+- Moved some methods from RVBankDirectory to RVBankDirectoryExtensions for better expansion and decoupling.
+- Implemented BisSynchronizable<RVBankOptions> in RVBank.
+- Added new properties to RVBank, and removed invalid methods.
+- Updated related tests code for the change.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Make All Stubs Synchronizable Elements
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Small fixes to synchronization events.
+
+Added functionality to monitor and ignore elements.
+- A finalizer for BisSynchronizableElement is introduced to clean out any event when the element is destructed to ensure that the events get cleared out when necessary.
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Add Some Error Handling To BisSynchronizable
+In this commit, error handling has been added to BisSynchronizable class in BisUtils.Core to ensure that synchronization can only be performed from the root element. This change is essential to prevent possible errors or inconsistency during the synchronization operation. Also, a comment has been added to OnChangesSaved method in BisSynchronizableElement class to provide clarity on the sender's identity in potentially complex scenarios with child elements.
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Add Edit Support to VersionEntries
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Add Support For Moving Directories
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Implement IRVBankDataEntry::ExpandDirectoryStructure
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(core): Create BisCompatibleLZSS::Decode Method
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* refactor(core): Change BisCompatibleLZSS::Decode Signature To Accept Byte Array Instead Of Reader
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Make Entries Creatable
+
+- Change necessary data type from int to long for the bank's entries.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Make Entry/Properties List Mutable
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Add functionality for handling file and bank prefixes
+
+- Add property-centric extensions for ease of manipulation
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Implement Data Reading
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Finish Bank Reading
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(bank): Add Full Support For PBO Writing
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* feat(A2S): Add Library For A2S Server Queries
+
+----------------------------------------------------------------------------------------------------------------------------------------
+* chore: Flatten src directory structure
+
+---------
+
+Signed-off-by: ryann <flipperplz@protonmail.com>
+Co-authored-by: rvost <romanvost@gmail.com>
+Co-authored-by: Roman Vostrikov <48875452+rvost@users.noreply.github.com>

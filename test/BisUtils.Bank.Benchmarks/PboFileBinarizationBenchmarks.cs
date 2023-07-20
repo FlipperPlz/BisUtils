@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.Bank.Benchmarks;
 
 using BenchmarkDotNet.Attributes;
-using BisUtils.Core.IO;
+using Core.IO;
 using FResults;
 using RVBank.Model;
 
