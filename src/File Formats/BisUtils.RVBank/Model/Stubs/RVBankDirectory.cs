@@ -69,7 +69,6 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
         {
             throw new IOException("Cannot move this entry to a directory outside of the current pbo.");
         }
-
         ParentDirectory.RemoveDirectory(this);
         ParentDirectory = destination;
         OnChangesMade(this, EventArgs.Empty);

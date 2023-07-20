@@ -1,6 +1,7 @@
 namespace BisUtils.RVBank.Model;
 
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 using Core.Binarize.Synchronization;
 using Core.Extensions;
 using Core.IO;
@@ -11,6 +12,7 @@ using Stubs;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Misc;
 using Options;
 
 public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
@@ -144,18 +146,41 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             entry.InitializeData(reader, options);
         }
 
-        LastResult = Result.Merge(responses);
-        if (reader.BaseStream == SynchronizationStream)
+        var remaining = reader.BaseStream.Length - reader.BaseStream.Position;
+
+        switch (remaining)
         {
-            OnChangesSaved(EventArgs.Empty);
+            case < 20:
+                //TODO: Log and warn that a full checksum was not found; reading is finished
+                goto End;
+            case >= 20:
+                //TODO: Log and warn that extra data was found
+                break;
         }
 
-        if (IsFirstRead)
+        var calculatedDigest = CalculateDigest(reader.BaseStream);
+        var writtenDigest = ReadDigest(reader);
+        if (writtenDigest != calculatedDigest)
         {
-            IsFirstRead = false;
+            //TODO: Log and warn that invalid checksum was found
         }
 
-        return LastResult;
+        End:
+        {
+            LastResult = Result.Merge(responses);
+            if (reader.BaseStream == SynchronizationStream)
+            {
+                OnChangesSaved(EventArgs.Empty);
+            }
+
+
+            if (IsFirstRead)
+            {
+                IsFirstRead = false;
+            }
+
+            return LastResult;
+        }
     }
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
@@ -167,5 +192,24 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
 
-    public void Move(IRVBankDirectory destination) => throw new NotSupportedException();
+    private static RVBankDigest ReadDigest(BinaryReader reader) =>
+        new(reader.ReadBytes(20));
+
+#pragma warning disable SYSLIB0021
+#pragma warning disable CA5350
+    private static RVBankDigest CalculateDigest(Stream stream)
+    {
+        var oldPosition = stream.Position;
+        stream.Seek(0, SeekOrigin.Begin);
+
+
+        using var alg = new SHA1Managed();
+        var digest = new RVBankDigest(alg.ComputeHash(stream));
+
+        stream.Seek(oldPosition, SeekOrigin.Begin);
+
+        return digest;
+    }
+#pragma warning restore CA5350
+#pragma warning restore SYSLIB0021
 }

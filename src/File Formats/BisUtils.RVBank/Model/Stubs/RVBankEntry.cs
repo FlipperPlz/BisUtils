@@ -16,7 +16,6 @@ public interface IRVBankEntry : IRVBankVfsEntry
     bool IsEmptyMeta() =>
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
     bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
-    void Move(IRVBankDirectory destination);
 
 }
 

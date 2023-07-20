@@ -128,7 +128,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             {
 
                 var memoryStream = new MemoryStream();
-                const int BufferSize = 8192; // Or your preferred chunk size (8KB here)
+                const int BufferSize = 8192;
 
                 var iterations = DataSize / BufferSize;
 
