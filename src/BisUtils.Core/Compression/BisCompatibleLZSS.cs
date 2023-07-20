@@ -31,12 +31,12 @@ public sealed class BisCompatibleLzss
     private int matchPosition, matchLength;
 
 
-    public int Decode(BinaryReader input, BinaryWriter output)
+    public int Decode(byte[] input, BinaryWriter output)
     {
         int i;
         var flags = 0;
         var textSize = 0;
-        var inputLength = (int)input.BaseStream.Length;
+        var inputPosition = 0;
 
         for (i = 0; i < N - F; i++)
         {
@@ -44,25 +44,29 @@ public sealed class BisCompatibleLzss
         }
         var r = N - F;
 
-        while (input.BaseStream.Position < inputLength)
+        while (inputPosition < input.Length)
         {
             flags >>= 1;
             int c;
             if ((flags & 0x100) == 0)
             {
-                if ((c = input.Read()) < 0)
+                if (inputPosition >= input.Length)
                 {
                     break;
                 }
-                flags = c | 0xFF00;  /* uses higher byte cleverly */
-            }                       /* to count eight */
+
+                c = input[inputPosition++];
+                flags = c | 0xFF00;
+            }
 
             if ((flags & 1) != 0)
             {
-                if ((c = input.Read()) < 0)
+                if (inputPosition >= input.Length)
                 {
                     break;
                 }
+
+                c = input[inputPosition++];
                 output.Write((byte)c);
                 textSize++;
                 textBuffer[r++] = (byte)c;
@@ -70,16 +74,19 @@ public sealed class BisCompatibleLzss
             }
             else
             {
-                if ((i = input.Read()) < 0)
+                if (inputPosition >= input.Length)
                 {
                     break;
                 }
 
-                int j;
-                if ((j = input.Read()) < 0)
+                i = input[inputPosition++];
+
+                if (inputPosition >= input.Length)
                 {
                     break;
                 }
+
+                int j = input[inputPosition++];
 
                 i |= (j & 0xF0) << 4;
                 j = (j & 0x0F) + Threshold;
