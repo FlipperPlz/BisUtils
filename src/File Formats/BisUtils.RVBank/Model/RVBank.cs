@@ -133,4 +133,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     }
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
+
+    public void Move(IRVBankDirectory destination) => throw new NotSupportedException();
 }

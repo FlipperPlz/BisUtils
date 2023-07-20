@@ -2,6 +2,7 @@
 
 using Core.Parsing;
 using Model;
+using Model.Entry;
 using Model.Stubs;
 
 public static class RVBankDirectoryExtensions
@@ -48,4 +49,9 @@ public static class RVBankDirectoryExtensions
 
         return ret;
     }
+
+    public static void RemoveEntry(this IRVBankDirectory ctx, IRVBankEntry entry) => ctx.PboEntries.Remove(entry);
+
+    public static void RemoveDirectory(this IRVBankDirectory ctx, IRVBankDirectory directory) => ctx.PboEntries.Remove(directory);
+
 }

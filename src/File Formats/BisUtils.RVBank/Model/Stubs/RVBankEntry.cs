@@ -2,6 +2,7 @@ namespace BisUtils.RVBank.Model.Stubs;
 
 using Core.IO;
 using Enumerations;
+using Extensions;
 using Options;
 
 public interface IRVBankEntry : IRVBankVfsEntry
@@ -14,11 +15,12 @@ public interface IRVBankEntry : IRVBankVfsEntry
 
     bool IsEmptyMeta() =>
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
-
     bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
+    void Move(IRVBankDirectory destination);
+
 }
 
-public abstract class RVBankEntry : RVBankVfsEntry
+public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
 {
     private RVBankEntryMime entryMime = RVBankEntryMime.Decompressed;
     public RVBankEntryMime EntryMime
@@ -30,6 +32,7 @@ public abstract class RVBankEntry : RVBankVfsEntry
             entryMime = value;
         }
     }
+
 
     private int originalSize;
     public int OriginalSize
@@ -93,8 +96,21 @@ public abstract class RVBankEntry : RVBankVfsEntry
         DataSize = dataSize;
     }
 
+
     protected RVBankEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
+    }
+
+    public void Move(IRVBankDirectory destination)
+    {
+        if (destination.BankFile != BankFile)
+        {
+            throw new IOException("Cannot move this entry to a directory outside of the current pbo.");
+        }
+
+        ParentDirectory.RemoveEntry(this);
+        ParentDirectory = destination;
+        OnChangesMade(this, EventArgs.Empty);
     }
 
     public bool IsEmptyMeta() =>

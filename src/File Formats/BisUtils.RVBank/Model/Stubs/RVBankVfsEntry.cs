@@ -1,6 +1,7 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
 using Core.IO;
+using Extensions;
 using FResults;
 using Options;
 
@@ -10,6 +11,7 @@ public interface IRVBankVfsEntry : IRVBankElement
     string EntryName { get; set; }
     string Path { get; }
     string AbsolutePath { get; }
+
 }
 
 public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
@@ -27,7 +29,9 @@ public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
 
     public string Path => ParentDirectory is { } parentDirectory ? parentDirectory.Path + "\\" + EntryName : EntryName;
     public string AbsolutePath => ParentDirectory is { } parentDirectory ? parentDirectory.AbsolutePath + "\\" + EntryName : BankFile.AbsolutePath + "\\" + EntryName;
-    public IRVBankDirectory ParentDirectory { get; private set; }
+
+
+    public IRVBankDirectory ParentDirectory { get; protected set; }
 
     protected RVBankVfsEntry(IRVBank file, IRVBankDirectory parent, string name) : base(file)
     {
