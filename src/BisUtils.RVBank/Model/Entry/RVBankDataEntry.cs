@@ -55,10 +55,10 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         IRVBankDirectory parent,
         string fileName,
         RVBankEntryMime mime,
-        int originalSize,
-        int offset,
-        int timeStamp,
-        int dataSize
+        uint originalSize,
+        uint offset,
+        uint timeStamp,
+        uint dataSize
     ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
     {
     }
@@ -69,11 +69,11 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         IRVBankDirectory parent,
         string fileName,
         RVBankEntryMime mime,
-        long offset,
-        long timeStamp,
+        uint offset,
+        uint timeStamp,
         Stream entryData,
         RVBankDataType packingMethod
-    ) : base(file, parent, fileName, mime, entryData.Length, offset, timeStamp, 0) =>
+    ) : base(file, parent, fileName, mime, (uint) entryData.Length, offset, timeStamp, 0) =>
         PackingMethod = packingMethod;
 
     protected sealed override void OnChangesMade(object? sender, EventArgs? e) => base.OnChangesMade(sender, e);
@@ -87,7 +87,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
     }
 
-    public void SynchronizeMetaWithStream() => OriginalSize = (int)EntryData.Length;
+    public void SynchronizeMetaWithStream() => OriginalSize = (uint)EntryData.Length;
 
     public void ExpandDirectoryStructure()
     {
@@ -273,10 +273,10 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
     {
         LastResult = base.Debinarize(reader, options);
         EntryMime = (RVBankEntryMime)reader.ReadInt32(); // TODO WARN/ERROR then recover
-        OriginalSize = reader.ReadInt32();
-        TimeStamp = reader.ReadInt32();
-        Offset = reader.ReadInt32();
-        DataSize = reader.ReadInt32();
+        OriginalSize = reader.ReadUInt32();
+        TimeStamp = reader.ReadUInt32();
+        Offset = reader.ReadUInt32();
+        DataSize = reader.ReadUInt32();
 
         return LastResult;
     }

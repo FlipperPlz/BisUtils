@@ -22,6 +22,7 @@ public class ParamString : ParamLiteral<string>, IParamString
     public override byte LiteralId => 4;
     public override string Value { get; set; } = null!;
     public ParamStringType StringType { get; }
+    public static IParamString Nill { get; } = new ParamString(null!, null!, null!, null!);
 
     public ParamString(IParamFile file, IParamLiteralHolder parent, string value, ParamStringType stringType) : base(file, parent, value) =>
         StringType = stringType;

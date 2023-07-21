@@ -13,13 +13,13 @@ public interface IRVBankDirectory : IRVBankEntry
 {
     ObservableCollection<IRVBankEntry> PboEntries { get; }
 
-    long IRVBankEntry.OriginalSize => PboEntries.Sum(e => e.OriginalSize);
+    uint IRVBankEntry.OriginalSize => (uint) PboEntries.Sum(e => e.OriginalSize);
 
-    long IRVBankEntry.Offset => throw new NotSupportedException();
+    uint IRVBankEntry.Offset => throw new NotSupportedException();
 
-    long IRVBankEntry.TimeStamp => throw new NotSupportedException();
+    uint IRVBankEntry.TimeStamp => throw new NotSupportedException();
 
-    long IRVBankEntry.DataSize => PboEntries.Sum(e => e.DataSize);
+    uint IRVBankEntry.DataSize => (uint) PboEntries.Sum(e => e.DataSize);
 
     RVBankEntryMime IRVBankEntry.EntryMime => throw new NotSupportedException();
 }
@@ -74,5 +74,5 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
         OnChangesMade(this, EventArgs.Empty);
     }
 
-    public long CalculateLength(RVBankOptions options) => 0;
+    public uint CalculateLength(RVBankOptions options) => 0;
 }

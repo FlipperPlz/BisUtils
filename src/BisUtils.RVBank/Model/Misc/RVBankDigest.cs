@@ -14,24 +14,41 @@ public interface IRVBankDigest
     public int SectorE { get; }
 }
 
-[StructLayout(LayoutKind.Sequential)]
-public readonly struct RVBankDigest : IRVBankDigest
+public struct RVBankDigest : IRVBankDigest
 {
-    public int SectorA { get; private init; }
-    public int SectorB { get; private init; }
-    public int SectorC { get; private init; }
-    public int SectorD { get; private init; }
-    public int SectorE { get; private init; }
+    public int SectorA { get; private set; }
+    public int SectorB { get; private set; }
+    public int SectorC { get; private set; }
+    public int SectorD { get; private set; }
+    public int SectorE { get; private set; }
 
-    // ReSharper disable once SuggestBaseTypeForParameterInConstructor
-    public RVBankDigest(byte[] digest)
+
+    public RVBankDigest(BisBinaryReader reader) => Read(reader);
+
+    public RVBankDigest(byte[] c)
     {
-        var ptrDigest = GCHandle.Alloc(digest, GCHandleType.Pinned);
-        Marshal.PtrToStructure(ptrDigest.AddrOfPinnedObject(), this);
-        ptrDigest.Free();
+        if (c.Length < 20)
+        {
+            throw new ArgumentException("`c` must be at least 20 bytes.", nameof(c));
+        }
+
+        SectorA = BitConverter.ToInt32(c, 0);
+        SectorB = BitConverter.ToInt32(c, 4);
+        SectorC = BitConverter.ToInt32(c, 8);
+        SectorD = BitConverter.ToInt32(c, 12);
+        SectorE = BitConverter.ToInt32(c, 16);
     }
 
-    public void Write(BisBinaryWriter writer, RVBankOptions options)
+    public void Read(BisBinaryReader reader)
+    {
+        SectorA = reader.ReadInt32();
+        SectorB = reader.ReadInt32();
+        SectorC = reader.ReadInt32();
+        SectorD = reader.ReadInt32();
+        SectorE = reader.ReadInt32();
+    }
+
+    public void Write(BisBinaryWriter writer)
     {
         writer.Write(SectorA);
         writer.Write(SectorB);

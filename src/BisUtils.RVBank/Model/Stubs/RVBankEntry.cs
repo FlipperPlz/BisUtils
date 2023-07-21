@@ -8,16 +8,16 @@ using Options;
 public interface IRVBankEntry : IRVBankVfsEntry
 {
     RVBankEntryMime EntryMime { get; }
-    long OriginalSize { get; }
-    long Offset { get; }
-    long TimeStamp { get; }
-    long DataSize { get; }
+    uint OriginalSize { get; }
+    uint Offset { get; }
+    uint TimeStamp { get; }
+    uint DataSize { get; }
 
     bool IsEmptyMeta() =>
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
     bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
 
-    long CalculateLength(RVBankOptions options);
+    uint CalculateLength(RVBankOptions options);
 }
 
 public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
@@ -34,8 +34,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     }
 
 
-    private long originalSize;
-    public long OriginalSize
+    private uint originalSize;
+    public uint OriginalSize
     {
         get => originalSize;
         set
@@ -45,8 +45,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private long offset;
-    public long Offset
+    private uint offset;
+    public uint Offset
     {
         get => offset;
         set
@@ -56,8 +56,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private long timeStamp;
-    public long TimeStamp
+    private uint timeStamp;
+    public uint TimeStamp
     {
         get => timeStamp;
         set
@@ -67,8 +67,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private long dataSize;
-    public long DataSize
+    private uint dataSize;
+    public uint DataSize
     {
         get => dataSize;
         set
@@ -83,10 +83,10 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         IRVBankDirectory parent,
         string fileName,
         RVBankEntryMime mime,
-        long originalSize,
-        long offset,
-        long timeStamp,
-        long dataSize
+        uint originalSize,
+        uint offset,
+        uint timeStamp,
+        uint dataSize
     ) : base(file, parent, fileName)
     {
         EntryMime = mime;
@@ -118,5 +118,5 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
 
     public bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
 
-    public long CalculateLength(RVBankOptions options) => 21 + options.Charset.GetByteCount(EntryName);
+    public uint CalculateLength(RVBankOptions options) => (uint)(21 + options.Charset.GetByteCount(EntryName));
 }

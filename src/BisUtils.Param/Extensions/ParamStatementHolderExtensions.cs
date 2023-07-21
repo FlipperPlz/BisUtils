@@ -69,6 +69,36 @@ public static class ParamStatementHolderExtensions
     public static IParamVariable? LocateVariable<T>(this IParamStatementHolder holder, string name) where T : IParamLiteral =>
         LocateVariables<T>(holder, name).FirstOrDefault();
 
+    public static IEnumerable<T>? GetArrayValues<T>(this IParamStatementHolder context, string variableName) where T : IParamLiteral
+    {
+        if (context.LocateVariable<IParamArray>(variableName) is { } variable)
+        {
+            return ((ParamArray)variable.VariableValue).Value.OfType<T>();
+        }
+
+        return null;
+    }
+
+    public static T CreateVariable<T>(this IParamStatementHolder ctx, string name, T value) where T : IParamLiteral => (T) new ParamVariable(ctx.ParamFile, ctx, name, value).VariableValue;
+
+    public static T AddVariable<T>(this IParamStatementHolder ctx, string name, T value) where T : IParamLiteral
+    {
+        var variable = new ParamVariable(ctx.ParamFile, ctx, name, value);
+        ctx.Statements.Add(variable);
+        return (T)variable.VariableValue;
+
+    }
+
+    public static void RemoveStatement(this IParamStatementHolder holder, IParamStatement statement) => holder.Statements.Remove(statement);
+
+    public static void RemoveStatements(this IParamStatementHolder holder, IEnumerable<IParamStatement> statements)
+    {
+        foreach (var statement in statements)
+        {
+            holder.RemoveStatement(statement);
+        }
+    }
+
     public static T? EvaluateVariable<T>(this IParamStatementHolder holder, string name) where T : IParamLiteral =>
         (T?) LocateVariable<T>(holder, name)?.VariableValue;
 

@@ -32,7 +32,7 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-    public void Decode(BinaryReader reader, BinaryWriter output, long length)
+    public void Decode(BinaryReader reader, BinaryWriter output, uint length)
     {
         var r = N - F;
         var flags = 0;
@@ -75,7 +75,7 @@ public sealed class BisCompatibleLzss
         }
     }
 
-    public Stream Encode(Stream inputStream, out int outputSize)
+    public Stream Encode(Stream inputStream, out uint outputSize)
     {
         if (!inputStream.CanRead)
         {
@@ -94,7 +94,7 @@ public sealed class BisCompatibleLzss
         return encodedStream;
     }
 
-    public int Encode(Stream inputStream, BinaryWriter output)
+    public uint Encode(Stream inputStream, BinaryWriter output)
     {
         if (!inputStream.CanRead)
         {
@@ -106,11 +106,11 @@ public sealed class BisCompatibleLzss
         return Encode(memoryStream.ToArray(), output);
     }
 
-    public int Encode(byte[] input, BinaryWriter output)
+    public uint Encode(byte[] input, BinaryWriter output)
     {
         int i, len;
         byte mask;
-        var codeSize = 0;
+        uint codeSize = 0;
 
         var codeBufIdx = mask = 1;
         var s = 0;

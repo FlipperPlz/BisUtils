@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RVMaterial", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DZServerQuery", "src\BisUtils.DZServerQuery\BisUtils.DZServerQuery.csproj", "{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DZConfig", "src\BisUtils.DZConfig\BisUtils.DZConfig.csproj", "{84FACE60-3827-4810-A987-92FA811DB900}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84FACE60-3827-4810-A987-92FA811DB900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84FACE60-3827-4810-A987-92FA811DB900}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84FACE60-3827-4810-A987-92FA811DB900}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84FACE60-3827-4810-A987-92FA811DB900}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,5 +139,6 @@ Global
 		{2810E061-35DA-4B97-BA9B-CE9F17383A6A} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
 		{1C3D2806-0E33-4816-BF09-3A84CF50AA80} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
 		{F66B6237-15A8-4E5F-B8B5-503DEED19CC2} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
+		{84FACE60-3827-4810-A987-92FA811DB900} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
 	EndGlobalSection
 EndGlobal

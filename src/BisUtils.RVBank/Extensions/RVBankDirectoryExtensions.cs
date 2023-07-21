@@ -41,10 +41,10 @@ public static class RVBankDirectoryExtensions
     (
         this IRVBankDirectory ctx, string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        long originalSize = 0,
-        long offset = 0,
-        long timeStamp = 0,
-        long dataSize = 0,
+        uint originalSize = 0,
+        uint offset = 0,
+        uint timeStamp = 0,
+        uint dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     ) =>
         new RVBankVersionEntry(ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize, properties);
@@ -53,10 +53,10 @@ public static class RVBankDirectoryExtensions
     (
         this IRVBankDirectory ctx, string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        long originalSize = 0,
-        long offset = 0,
-        long timeStamp = 0,
-        long dataSize = 0,
+        uint originalSize = 0,
+        uint offset = 0,
+        uint timeStamp = 0,
+        uint dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     )
     {
@@ -80,6 +80,11 @@ public static class RVBankDirectoryExtensions
         return directory;
     }
 
+    public static IEnumerable<IRVBankDataEntry> GetFileEntries(this IRVBankDirectory ctx, string name, bool recursive = false) =>
+        GetFileEntries(ctx, recursive).Where(e => e.EntryName.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+    public static IRVBankDataEntry? GetFileEntry(this IRVBankDirectory ctx, string name, bool recursive = false) =>
+        GetFileEntries(ctx, name, recursive).LastOrDefault();
 
     public static IRVBankDirectory CreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node)
     {
@@ -125,10 +130,10 @@ public static class RVBankDirectoryExtensions
         this IRVBankDirectory ctx,
         string fileName,
         RVBankEntryMime mime,
-        int originalSize,
-        int offset,
-        int timeStamp,
-        int dataSize
+        uint originalSize,
+        uint offset,
+        uint timeStamp,
+        uint dataSize
     ) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize));
 
     public static void AddEntry(this IRVBankDirectory ctx, BisBinaryReader reader, RVBankOptions options) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, reader, options));
@@ -138,8 +143,8 @@ public static class RVBankDirectoryExtensions
         this IRVBankDirectory ctx,
         string fileName,
         RVBankEntryMime mime,
-        int offset,
-        int timeStamp,
+        uint offset,
+        uint timeStamp,
         Stream data,
         RVBankDataType packingMethod
     ) => ctx.PboEntries.Add(new RVBankDataEntry(ctx.BankFile, ctx, fileName, mime, offset, timeStamp, data, packingMethod));

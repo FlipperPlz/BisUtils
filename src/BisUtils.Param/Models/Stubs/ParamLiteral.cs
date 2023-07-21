@@ -14,9 +14,9 @@ public interface IParamLiteral : IParamElement
     void SyncToContext(IParamLiteralHolder holder);
 }
 
-public interface IParamLiteral<out T> : IParamLiteral
+public interface IParamLiteral<T> : IParamLiteral
 {
-    T Value { get; }
+    T Value { get; set; }
 }
 
 public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>

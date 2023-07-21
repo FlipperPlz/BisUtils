@@ -21,6 +21,7 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     public override List<IParamLiteral> Value { get; set; } = new List<IParamLiteral>();
     public IParamLiteralHolder? ParentHolder { get; set; } = null!;
     public List<IParamLiteral> Literals { get => Value; set => Value = value; }
+    public static IParamArray Nill { get; } = new ParamArray(null!, null!, null!);
 
     public ParamArray(IParamFile file, IParamLiteralHolder parent, List<IParamLiteral> value) : base(file, parent,
         value)

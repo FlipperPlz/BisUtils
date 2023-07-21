@@ -4,7 +4,9 @@ using Core.Extensions;
 using Core.IO;
 using FResults;
 using FResults.Extensions;
+using Lexer;
 using Options;
+using Parse;
 using Statements;
 using Stubs;
 
@@ -34,6 +36,30 @@ public class ParamFile : ParamClass, IParamFile
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
+
+    public static ParamFile ReadParamFile(string fileName, Stream stream, ParamOptions options)
+    {
+        using var reader = new BisBinaryReader(stream);
+        if (reader.ReadByte() != 0 ||
+            reader.ReadByte() != 'r' ||
+            reader.ReadByte() != 'a' ||
+            reader.ReadByte() != 'P')
+        {
+            reader.Dispose();
+            var streamReader = new StreamReader(stream);
+            var lexer = new ParamLexer(streamReader.ReadToEnd());
+            streamReader.Dispose();
+            var result = ParamParser.Instance.Parse(out var node, lexer);
+            if (node is null)
+            {
+                result.Throw();
+            }
+            node.LastResult = result;
+            return node;
+        }
+        reader.BaseStream.Seek(-4, SeekOrigin.Current);
+        return new ParamFile(fileName, reader, options);
+    }
 
     private new Result Debinarize(BisBinaryReader reader, ParamOptions options)
     {

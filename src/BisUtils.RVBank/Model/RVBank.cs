@@ -80,6 +80,12 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
+    public static RVBank ReadPbo(string path, RVBankOptions options, Stream? syncTo)
+    {
+        using var reader = new BisBinaryReader(File.OpenRead(path));
+        return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo);
+    }
+
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
         if(pboEntries.Count != 0)
@@ -205,14 +211,14 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(it => it.Binarize(writer, options).Reasons));
         writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
         var digest = CalculateDigest(writer.BaseStream);
-        digest.Write(writer, options);
+        digest.Write(writer);
         return LastResult;
     }
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
 
-    private static RVBankDigest ReadDigest(BinaryReader reader) =>
-        new(reader.ReadBytes(20));
+    private static RVBankDigest ReadDigest(BisBinaryReader reader) =>
+        new(reader);
 
 #pragma warning disable SYSLIB0021
 #pragma warning disable CA5350
@@ -231,5 +237,5 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     }
 #pragma warning restore CA5350
 #pragma warning restore SYSLIB0021
-    public long CalculateLength(RVBankOptions options) => pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
+    public uint CalculateLength(RVBankOptions options) => (uint) pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
 }

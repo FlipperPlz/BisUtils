@@ -49,16 +49,18 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         IRVBankDirectory parent,
         string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        long originalSize = 0,
-        long offset = 0,
-        long timeStamp = 0,
-        long dataSize = 0,
+        uint originalSize = 0,
+        uint offset = 0,
+        uint timeStamp = 0,
+        uint dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
         Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
 
     public RVBankVersionEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
     {
+        Properties = new ObservableCollection<IRVBankProperty>();
+
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
@@ -101,11 +103,11 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
         LastResult = base.Debinarize(reader, options);
-        EntryMime = (RVBankEntryMime)reader.ReadInt32(); // TODO WARN/ERROR then recover
-        OriginalSize = reader.ReadInt32();
-        TimeStamp = reader.ReadInt32();
-        Offset = reader.ReadInt32();
-        DataSize = reader.ReadInt32();
+        EntryMime = (RVBankEntryMime) reader.ReadInt32(); // TODO WARN/ERROR then recover
+        OriginalSize = reader.ReadUInt32();
+        TimeStamp = reader.ReadUInt32();
+        Offset = reader.ReadUInt32();
+        DataSize = reader.ReadUInt32();
         return LastResult.WithReasons(ReadPboProperties(reader, options).Reasons);
     }
 
