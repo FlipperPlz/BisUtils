@@ -7,15 +7,15 @@ using Param.Models.Statements;
 using Param.Models.Stubs;
 using Param.Utils;
 
-public interface IDzCfgPatches : IParamConfigAbstraction<ParamClass>
+public interface IDzCfgPatch : IParamConfigAbstraction<IParamClass>
 {
     public string PatchName { get; set; }
     public IEnumerable<string>? Dependencies { get; set; }
 }
 
-public class DzCfgPatches : ParamConfigAbstraction<ParamClass>, IDzCfgPatches
+public class DzCfgPatch : ParamConfigAbstraction<IParamClass>, IDzCfgPatch
 {
-    public DzCfgPatches(ParamClass ctx) : base(ctx)
+    public DzCfgPatch(IParamClass ctx) : base(ctx)
     {
     }
 

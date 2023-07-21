@@ -9,7 +9,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="" />
+    <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.DZConfig/DzConfig.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMods.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgPatch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzMod.cs" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,12 +30,10 @@
     <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet" root0="ESSENTIAL" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -47,7 +53,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;rewrite&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -134,6 +140,8 @@
       <workItem from="1689825182897" duration="1863000" />
       <workItem from="1689858668294" duration="18797000" />
       <workItem from="1689879002833" duration="2069000" />
+      <workItem from="1689966975601" duration="222000" />
+      <workItem from="1689968221172" duration="1606000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -223,7 +231,15 @@
       <option name="project" value="LOCAL" />
       <updated>1689880893736</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fix: Small Fixes Made To Bank Library. Additions To Param.&#10;&#10;This update fixes some minor issues found in the Bank library. Notably, it changes the return type of IRVBankEntry properties like Offset, OriginalSize, TimeStamp and others from long to uint. Furthermore, IRVBankEntry's method CalculateLength now returns uint as well.&#10;&#10;In addition to that, various changes were made to support new features in the Param library, such as the ability to obtain array values. Some additions were also made to provide more functionality such as creating, adding, and removing variables.&#10;&#10;The update also includes a new feature for reading param files located in ReadParamFile method inside Src/BisUtils.Param/Model/ParamFile.cs.&#10;&#10;Finally, the importance of properties like OriginalSize, Offset, TimeStamp in RVBankDirectory.cs has been changed to uint, for consistency with other parts of the system. The commit also includes minor code cleanups and improvements across multiple files.">
+      <option name="closed" value="true" />
+      <created>1689967091376</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1689967091376</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -243,6 +259,6 @@
     <MESSAGE value="feat(bank): Finish Bank Reading" />
     <MESSAGE value="feat(bank): Add Full Support For PBO Writing" />
     <MESSAGE value="feat(A2S): Add Library For A2S Server Queries" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(A2S): Add Library For A2S Server Queries" />
+    <MESSAGE value="fix: Small Fixes Made To Bank Library. Additions To Param.&#10;&#10;This update fixes some minor issues found in the Bank library. Notably, it changes the return type of IRVBankEntry properties like Offset, OriginalSize, TimeStamp and others from long to uint. Furthermore, IRVBankEntry's method CalculateLength now returns uint as well.&#10;&#10;In addition to that, various changes were made to support new features in the Param library, such as the ability to obtain array values. Some additions were also made to provide more functionality such as creating, adding, and removing variables.&#10;&#10;The update also includes a new feature for reading param files located in ReadParamFile method inside Src/BisUtils.Param/Model/ParamFile.cs.&#10;&#10;Finally, the importance of properties like OriginalSize, Offset, TimeStamp in RVBankDirectory.cs has been changed to uint, for consistency with other parts of the system. The commit also includes minor code cleanups and improvements across multiple files." />
   </component>
 </project>
