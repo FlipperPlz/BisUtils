@@ -10,8 +10,8 @@ public interface IRVBankEntry : IRVBankVfsEntry
     RVBankEntryMime EntryMime { get; }
     uint OriginalSize { get; }
     uint Offset { get; }
-    uint TimeStamp { get; }
-    uint DataSize { get; }
+    uint TimeStamp { get; set; }
+    uint DataSize { get;  }
 
     bool IsEmptyMeta() =>
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;

@@ -17,7 +17,11 @@ public interface IRVBankDirectory : IRVBankEntry
 
     uint IRVBankEntry.Offset => throw new NotSupportedException();
 
-    uint IRVBankEntry.TimeStamp => throw new NotSupportedException();
+    uint IRVBankEntry.TimeStamp
+    {
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
+    }
 
     uint IRVBankEntry.DataSize => (uint) PboEntries.Sum(e => e.DataSize);
 

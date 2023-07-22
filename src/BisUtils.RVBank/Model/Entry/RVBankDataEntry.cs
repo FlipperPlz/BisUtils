@@ -72,9 +72,27 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         uint offset,
         uint timeStamp,
         Stream entryData,
-        RVBankDataType packingMethod
+        RVBankDataType? packingMethod = null
     ) : base(file, parent, fileName, mime, (uint) entryData.Length, offset, timeStamp, 0) =>
-        PackingMethod = packingMethod;
+        this.packingMethod = packingMethod ?? AssumePackingMethod();
+
+    private RVBankDataType AssumePackingMethod()
+    {
+        switch (EntryMime)
+        {
+            case RVBankEntryMime.Encrypted:
+                return RVBankDataType.Encrypted;
+            case RVBankEntryMime.Decompressed:
+                return RVBankDataType.Original;
+            default:
+                if (OriginalSize == 0 || OriginalSize == DataSize)
+                {
+                    return RVBankDataType.Original;
+                }
+
+                return RVBankDataType.Compressed;
+        }
+    }
 
     protected sealed override void OnChangesMade(object? sender, EventArgs? e) => base.OnChangesMade(sender, e);
 
@@ -180,34 +198,12 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
-        IdentifyPackingMethod();
+        PackingMethod = AssumePackingMethod();
         return LastResult;
     }
 
     internal void SetEntryDataQuietly(Stream data) => entryData = data;
 
-    private void IdentifyPackingMethod()
-    {
-        if (EntryMime is RVBankEntryMime.Encrypted)
-        {
-            PackingMethod = RVBankDataType.Encrypted;
-            return;
-        }
-
-        if (OriginalSize <= 0)
-        {
-            PackingMethod = RVBankDataType.Original;
-            return;
-        }
-
-        if (DataSize != OriginalSize)
-        {
-            PackingMethod = RVBankDataType.Compressed;
-            return;
-        }
-
-        PackingMethod = RVBankDataType.Original;
-    }
 
     public sealed override Result Validate(RVBankOptions options)
     {
@@ -277,6 +273,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         TimeStamp = reader.ReadUInt32();
         Offset = reader.ReadUInt32();
         DataSize = reader.ReadUInt32();
+        packingMethod = AssumePackingMethod();
 
         return LastResult;
     }

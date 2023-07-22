@@ -37,24 +37,23 @@ public class ParamFile : ParamClass, IParamFile
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
 
-    public static ParamFile ReadParamFile(string fileName, Stream stream, ParamOptions options)
+    public static ParamFile? ReadParamFile(string fileName, Stream stream, ParamOptions options)
     {
-        using var reader = new BisBinaryReader(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        memory.Seek(0, SeekOrigin.Begin);
+
+        using var reader = new BisBinaryReader(memory);
         if (reader.ReadByte() != 0 ||
             reader.ReadByte() != 'r' ||
             reader.ReadByte() != 'a' ||
             reader.ReadByte() != 'P')
         {
-            reader.Dispose();
-            var streamReader = new StreamReader(stream);
-            var lexer = new ParamLexer(streamReader.ReadToEnd());
-            streamReader.Dispose();
+            var content = options.Charset.GetString(memory.ToArray());
+            Console.WriteLine(content);
+            var lexer = new ParamLexer(content);
             var result = ParamParser.Instance.Parse(out var node, lexer);
-            if (node is null)
-            {
-                result.Throw();
-            }
-            node.LastResult = result;
             return node;
         }
         reader.BaseStream.Seek(-4, SeekOrigin.Current);

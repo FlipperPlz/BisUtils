@@ -34,45 +34,72 @@ public sealed class BisCompatibleLzss
 
     public void Decode(BinaryReader reader, BinaryWriter output, uint length)
     {
-        var r = N - F;
-        var flags = 0;
-        var stopPos = reader.BaseStream.Position + length;
-        InitTree();
-        for (var i = 0; i < r; i++)
-        {
-            textBuffer[i] = Fill;
+        var text_buf = new byte[N + F - 1];
+        var outputBytes = new byte[length];
+
+        if (length <= 0) {
+            output.Write(outputBytes);
+            return;
         }
 
-        while (reader.BaseStream.Position < stopPos)
+        int i;
+        var flags = 0;
+        uint iDst = 0, bytesLeft = length;
+        Array.Fill(text_buf, Fill);
+        for (i = 0; i < N - F; i++)
         {
-            if (((flags >>= 1) & 256) != 256)
-            {
-                flags = reader.ReadByte() | 0xff00;  // Set flags with the 8th bit.  1 left shift = 1 byte read.
+            text_buf[i] = 0x20;
+        }
+
+        var r = N - F;
+
+        while (bytesLeft > 0) {
+            int c;
+            if (((flags >>= 1) & 256) == 0) {
+                c = reader.ReadByte();
+                flags = c | 0xff00;
             }
 
-            if ((flags & 1) == 1)
-            {
-                var c = reader.ReadByte();
-                output.Write(c);
-                textBuffer[r++] = c;
+            if ((flags & 1) != 0) {
+                c = reader.ReadByte();
+
+                // save byte
+                outputBytes[iDst++] = (byte) c;
+                bytesLeft--;
+                // continue decompression
+                text_buf[r] = (byte) c;
+                r++;
                 r &= N - 1;
             }
-            else
-            {
-                int i = reader.ReadByte(), j = reader.ReadByte();
-
+            else {
+                i = reader.ReadByte();
+                int j = reader.ReadByte();
                 i |= (j & 0xf0) << 4;
-                j = (j & 0xf) + Threshold;
+                j &= 0x0f;
+                j += Threshold;
 
-                for (var k = 0; k <= j; k++)
-                {
-                    var c = textBuffer[(i + k) & (N - 1)];
-                    output.Write(c);
-                    textBuffer[r++] = c;
+                int ii = r - i,
+                    jj = j + ii;
+
+                if (j + 1 > bytesLeft) {
+                    throw new ArgumentException("LZSS overflow");
+                }
+
+                for (; ii <= jj; ii++) {
+                    c = text_buf[ii & (N - 1)];
+
+                    // save byte
+                    outputBytes[iDst++] = (byte) c;
+                    bytesLeft--;
+                    // continue decompression
+                    text_buf[r] = (byte) c;
+                    r++;
                     r &= N - 1;
                 }
             }
         }
+        reader.ReadInt32();
+        output.Write(outputBytes);
     }
 
     public Stream Encode(Stream inputStream, out uint outputSize)

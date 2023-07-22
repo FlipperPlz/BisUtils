@@ -84,7 +84,7 @@ public static class RVBankDirectoryExtensions
         GetFileEntries(ctx, recursive).Where(e => e.EntryName.Equals(name, StringComparison.OrdinalIgnoreCase));
 
     public static IRVBankDataEntry? GetFileEntry(this IRVBankDirectory ctx, string name, bool recursive = false) =>
-        GetFileEntries(ctx, name, recursive).LastOrDefault();
+        GetFileEntries(ctx, name, recursive).FirstOrDefault();
 
     public static IRVBankDirectory CreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node)
     {

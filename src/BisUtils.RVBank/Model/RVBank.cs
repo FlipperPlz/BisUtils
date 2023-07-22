@@ -107,9 +107,13 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 _ => new RVBankDataEntry(this, this, reader, options)
             };
 
-            if (!options.FlatRead && currentEntry is RVBankDataEntry dataEntry)
+
+            if (currentEntry is RVBankDataEntry dataEntry)
             {
-                dataEntry.ExpandDirectoryStructure();
+                if (!options.FlatRead)
+                {
+                    dataEntry.ExpandDirectoryStructure();
+                }
             }
 
             var response = currentEntry.LastResult ?? Result.Fail("Unknown Error Occured");
