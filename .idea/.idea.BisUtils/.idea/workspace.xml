@@ -11,8 +11,14 @@
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/ParamTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ParamTest/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileCreationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileCreationBenchmarks.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,16 +28,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="HighlightingMarkupGrave">
-    <markupCoffin contentHash="-1420624023" url="file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs">
-      <highlighter start="13224" end="13232" layer="4000" target="0">
-        <option name="myExternalName" value="WARNING_ATTRIBUTES" />
-      </highlighter>
-    </markupCoffin>
-  </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet" root0="ESSENTIAL" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
@@ -43,7 +40,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectId" id="2SouImh2U3j6WVG2a13niYWFPE7" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -148,6 +145,8 @@
       <workItem from="1689995252395" duration="1213000" />
       <workItem from="1690207151655" duration="21000" />
       <workItem from="1690207331819" duration="2241000" />
+      <workItem from="1690216222541" duration="282000" />
+      <workItem from="1690216527563" duration="920000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />

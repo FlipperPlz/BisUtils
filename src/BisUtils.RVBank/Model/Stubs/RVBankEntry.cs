@@ -3,6 +3,7 @@ namespace BisUtils.RVBank.Model.Stubs;
 using Core.IO;
 using Enumerations;
 using Extensions;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IRVBankEntry : IRVBankVfsEntry
@@ -22,6 +23,8 @@ public interface IRVBankEntry : IRVBankVfsEntry
 
 public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
 {
+    protected readonly ILogger logger;
+
     private RVBankEntryMime entryMime = RVBankEntryMime.Decompressed;
     public RVBankEntryMime EntryMime
     {
@@ -79,6 +82,7 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     }
 
     protected RVBankEntry(
+        ILogger logger,
         IRVBank file,
         IRVBankDirectory parent,
         string fileName,
@@ -89,6 +93,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         uint dataSize
     ) : base(file, parent, fileName)
     {
+        this.logger = logger;
+
         EntryMime = mime;
         OriginalSize = originalSize;
         Offset = offset;
@@ -97,9 +103,7 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     }
 
 
-    protected RVBankEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
-    {
-    }
+    protected RVBankEntry(ILogger logger, IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options) => this.logger = logger;
 
     public void Move(IRVBankDirectory destination)
     {

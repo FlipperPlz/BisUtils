@@ -11,6 +11,7 @@ using Extensions;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 
@@ -51,6 +52,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     public RVBankDataEntry
     (
+        ILogger logger,
         IRVBank file,
         IRVBankDirectory parent,
         string fileName,
@@ -59,12 +61,13 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         uint offset,
         uint timeStamp,
         uint dataSize
-    ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
+    ) : base(logger, file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
     {
     }
 
     public RVBankDataEntry
     (
+        ILogger logger,
         IRVBank file,
         IRVBankDirectory parent,
         string fileName,
@@ -73,7 +76,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         uint timeStamp,
         Stream entryData,
         RVBankDataType? packingMethod = null
-    ) : base(file, parent, fileName, mime, (uint) entryData.Length, offset, timeStamp, 0) =>
+    ) : base(logger, file, parent, fileName, mime, (uint) entryData.Length, offset, timeStamp, 0) =>
         this.packingMethod = packingMethod ?? AssumePackingMethod();
 
     private RVBankDataType AssumePackingMethod()
@@ -96,7 +99,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     protected sealed override void OnChangesMade(object? sender, EventArgs? e) => base.OnChangesMade(sender, e);
 
-    public RVBankDataEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
+    public RVBankDataEntry(ILogger logger, IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(logger, file, parent, reader, options)
     {
         Debinarize(reader, options);
         if (LastResult!.IsFailed)

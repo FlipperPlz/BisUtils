@@ -9,6 +9,7 @@ using Enumerations;
 using Core.Extensions;
 using FResults;
 using FResults.Extensions;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 
@@ -45,6 +46,7 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
     }
 
     public RVBankVersionEntry(
+        ILogger logger,
         IRVBank file,
         IRVBankDirectory parent,
         string fileName = "",
@@ -54,10 +56,11 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         uint timeStamp = 0,
         uint dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
-    ) : base(file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
+    ) : base(logger, file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
         Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
 
-    public RVBankVersionEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options)
+
+    public RVBankVersionEntry(ILogger logger, IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(logger, file, parent, reader, options)
     {
         Properties = new ObservableCollection<IRVBankProperty>();
 
@@ -150,6 +153,6 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
     public IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options) => new RVBankProperty(BankFile, this, reader, options);
 
-    public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(BankFile, ParentDirectory, EntryName, EntryMime, OriginalSize, Offset,
+    public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(logger, BankFile, ParentDirectory, EntryName, EntryMime, OriginalSize, Offset,
         TimeStamp, DataSize, Properties);
 }
