@@ -202,6 +202,16 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                     var value = ParseLiteral(node, null, lexer, ref next);
 
                     context.Statements.Add(new ParamVariable(node, context, name, value, operation));
+                    if (lexer.PreviousChar == ';')
+                    {
+                        lexer.MoveBackward(2);
+                    }
+
+                    if (lexer.CurrentChar == ';')
+                    {
+                        lexer.MoveBackward();
+                    }
+
                     if (lexer.NextToken() != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
@@ -259,6 +269,10 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
             {
                 case '\n' or '\r':
                     goto Finish;
+                case ';' when !quoted:
+                {
+                    goto Finish;
+                }
                 case '"' when quoted:
                 {
                     if (lexer.MoveForward() != '"')
@@ -329,13 +343,16 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 default:
                 {
                     context.Value!.Add(ParseParamPrimitive(file, context, lexer, ';', '}', ','));
+                    lexer.MoveBackward();
                     continue;
                 }
             }
         }
 
-        lexer.MoveBackward();
-
+        while (lexer.CurrentChar != '}')
+        {
+            lexer.MoveBackward();
+        }
         return array;
     }
 
