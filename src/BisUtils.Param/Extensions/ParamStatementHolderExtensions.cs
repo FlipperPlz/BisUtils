@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Param.Extensions;
 
 using Enumerations;
+using Microsoft.Extensions.Logging;
 using Models.Literals;
 using Models.Statements;
 using Models.Stubs;
@@ -79,11 +80,11 @@ public static class ParamStatementHolderExtensions
         return null;
     }
 
-    public static T CreateVariable<T>(this IParamStatementHolder ctx, string name, T value) where T : IParamLiteral => (T) new ParamVariable(ctx.ParamFile, ctx, name, value).VariableValue;
+    public static T CreateVariable<T>(this IParamStatementHolder ctx, string name, T value, ILogger? logger) where T : IParamLiteral => (T) new ParamVariable(name, value, ParamOperatorType.Assign, ctx.ParamFile, ctx, logger).VariableValue;
 
-    public static T AddVariable<T>(this IParamStatementHolder ctx, string name, T value) where T : IParamLiteral
+    public static T AddVariable<T>(this IParamStatementHolder ctx, string name, T value, ILogger? logger) where T : IParamLiteral
     {
-        var variable = new ParamVariable(ctx.ParamFile, ctx, name, value);
+        var variable = new ParamVariable(name, value, ParamOperatorType.Assign, ctx.ParamFile, ctx, logger);
         ctx.Statements.Add(variable);
         return (T)variable.VariableValue;
 

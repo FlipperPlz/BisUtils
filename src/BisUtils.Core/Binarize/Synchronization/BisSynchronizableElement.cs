@@ -3,6 +3,7 @@
 using FResults;
 using Implementation;
 using IO;
+using Microsoft.Extensions.Logging;
 using Options;
 
 /// <summary>
@@ -43,7 +44,7 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
     public event EventHandler? ChangesMade;
     public event EventHandler? ChangesSaved;
 
-    protected BisSynchronizableElement(IBisSynchronizable<TOptions> synchronizationRoot)
+    protected BisSynchronizableElement(IBisSynchronizable<TOptions> synchronizationRoot, ILogger? logger) : base(logger)
     {
         IsStale = false;
         SynchronizationRoot = synchronizationRoot;
@@ -51,7 +52,7 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
     }
 
     protected BisSynchronizableElement(BisBinaryReader reader, TOptions options,
-        IBisSynchronizable<TOptions> synchronizationRoot) : base(reader, options)
+        IBisSynchronizable<TOptions> synchronizationRoot, ILogger? logger) : base(reader, options, logger)
     {
         IsStale = false;
         SynchronizationRoot = synchronizationRoot;
@@ -74,7 +75,7 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
     //Sender will usually be 'this' unless there are child elements
     protected virtual void OnChangesMade(object? sender, EventArgs e)
     {
-
+        Logger?.LogDebug("");
         IsStale = true;
         ChangesMade?.Invoke(sender, e);
     }

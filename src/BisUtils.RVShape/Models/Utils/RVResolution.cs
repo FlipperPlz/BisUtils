@@ -9,6 +9,8 @@ using BisUtils.Core.IO;
 using BisUtils.RVShape.Options;
 using FResults;
 using Lod;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public interface IRVResolution : IBinaryObject<RVShapeOptions>
 {
@@ -47,9 +49,9 @@ public sealed class RVResolution : BinaryObject<RVShapeOptions>, IRVResolution
     public bool IsShadow { get; private set; }
     public bool IsVisual { get; private set; }
 
-    public RVResolution(float value) => Value = value;
+    public RVResolution(float value, ILogger? logger) : base(logger) => Value = value;
 
-    public RVResolution(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    public RVResolution(BisBinaryReader reader, RVShapeOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {
@@ -58,7 +60,7 @@ public sealed class RVResolution : BinaryObject<RVShapeOptions>, IRVResolution
     }
 
     public static implicit operator float(RVResolution resolution) => resolution.Value;
-    public static explicit operator RVResolution(float resolution) => new(resolution);
+    public static explicit operator RVResolution(float resolution) => new(resolution, NullLogger.Instance);
 
     private static string GetLodName(float value, RVLodType? type = null)
     {

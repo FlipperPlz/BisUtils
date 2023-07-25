@@ -2,6 +2,7 @@
 
 using Core.IO;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Models;
 using Models.Literals;
 using Models.Stubs;
@@ -11,15 +12,15 @@ using Options;
 public static class ParamLiteralFactory
 {
 
-    public static Result ReadLiteral(IParamFile? file, IParamLiteralHolder? parent, BisBinaryReader reader,
-        ParamOptions options, out IParamLiteral? literal)
+    public static Result ReadLiteral(BisBinaryReader reader,
+        ParamOptions options, out IParamLiteral? literal, IParamFile file, IParamLiteralHolder parent, ILogger? logger)
     {
         literal = (options.LastLiteralId = reader.ReadByte()) switch
         {
-            0 => new ParamString(file, parent, reader, options),
-            1 => new ParamFloat(file, parent, reader, options),
-            2 => new ParamInt(file, parent, reader, options),
-            3 => new ParamArray(file, parent, reader, options),
+            0 => new ParamString(reader, options, file, parent, logger),
+            1 => new ParamFloat(reader, options, file, parent, logger),
+            2 => new ParamInt(reader, options, file, parent, logger),
+            3 => new ParamArray(reader, options, file, parent, logger),
             _ => null
         };//TODO: Get IDs From Types
         if (literal is null)

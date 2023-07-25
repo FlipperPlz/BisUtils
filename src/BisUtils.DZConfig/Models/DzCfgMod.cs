@@ -20,6 +20,7 @@ public interface IDzCfgMod : IParamConfigAbstraction<IParamClass>
 public class DzCfgMod : ParamConfigAbstraction<IParamClass>, IDzCfgMod
 {
     private IParamClass? DefinitionsClass { get; }
+    //TODO: Logger on ParamConfigAbstraction
     public IEnumerable<string>? Dependencies
     {
         get => GetArrayValues("dependencies");

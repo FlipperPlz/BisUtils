@@ -1,5 +1,7 @@
 ﻿namespace BisUtils.Core.Binarize;
 
+using Logging;
+using Microsoft.Extensions.Logging;
 using Options;
 
 /// <summary>
@@ -7,6 +9,6 @@ using Options;
 /// This interface is suitable for types needing to provide custom logic for both binary serialization and deserialization.
 /// </summary>
 /// <typeparam name="TOptions">Specifies the type of the binarization/debinarization options to be used by the Binarize and Debinarize methods.</typeparam>
-public interface IBinaryObject<in TOptions> : IBinarizable<TOptions>, IDebinarizable<TOptions> where TOptions : IBinarizationOptions
+public interface IBinaryObject<in TOptions> : IBisLoggable, IBinarizable<TOptions>, IDebinarizable<TOptions> where TOptions : IBinarizationOptions
 {
 }

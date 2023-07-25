@@ -6,6 +6,7 @@ using Core.Extensions;
 using Core.IO;
 using Core.Render.Color;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IRVPalette : IBinaryObject<RVTextureOptions>
@@ -26,7 +27,7 @@ public class RVPalette : BinaryObject<RVTextureOptions>, IRVPalette
     public bool IsAlpha { get; set; }
     public bool IsTransparent { get; set; }
 
-    public RVPalette(BisBinaryReader reader, RVTextureOptions options) : base(reader, options)
+    public RVPalette(BisBinaryReader reader, RVTextureOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {
@@ -34,7 +35,7 @@ public class RVPalette : BinaryObject<RVTextureOptions>, IRVPalette
         }
     }
 
-    public RVPalette(IColor maxColor, IColor averageColor, List<IColor> colors, bool isAlpha, bool isTransparent)
+    public RVPalette(IColor maxColor, IColor averageColor, List<IColor> colors, bool isAlpha, bool isTransparent, ILogger? logger) : base(logger)
     {
         MaxColor = maxColor;
         AverageColor = averageColor;

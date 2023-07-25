@@ -5,6 +5,7 @@ using BisUtils.Core.Extensions;
 using BisUtils.Core.IO;
 using BisUtils.RVShape.Options;
 using FResults;
+using Microsoft.Extensions.Logging;
 
 public interface IRVSharpEdge
 {
@@ -19,6 +20,7 @@ public struct RVSharpEdge : IRVSharpEdge, IBinaryObject<RVShapeOptions>
 {
     public int EdgeX { get; set; }
     public int EdgeY { get; set; }
+    public ILogger? Logger { get; }
 
     public static int CompareEdges(IRVSharpEdge edge0, IRVSharpEdge edge1)
     {
@@ -42,14 +44,16 @@ public struct RVSharpEdge : IRVSharpEdge, IBinaryObject<RVShapeOptions>
 
     public Result? LastResult { get; private set; }
 
-    public RVSharpEdge(int edgeX, int edgeY)
+    public RVSharpEdge(int edgeX, int edgeY, ILogger logger)
     {
         EdgeX = edgeX;
         EdgeY = edgeY;
+        Logger = logger;
     }
 
-    public RVSharpEdge(BisBinaryReader reader, RVShapeOptions options)
+    public RVSharpEdge(BisBinaryReader reader, RVShapeOptions options, ILogger logger)
     {
+        Logger = logger;
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
@@ -69,4 +73,5 @@ public struct RVSharpEdge : IRVSharpEdge, IBinaryObject<RVShapeOptions>
         EdgeY = reader.ReadInt32();
         return LastResult = Result.Ok();
     }
+
 }

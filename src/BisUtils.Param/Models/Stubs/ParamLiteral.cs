@@ -3,6 +3,7 @@
 using Core.IO;
 using FResults;
 using Holders;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IParamLiteral : IParamElement
@@ -25,14 +26,14 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>
     public IParamLiteralHolder Parent { get; set; }
     public abstract T Value { get; set; }
 
-    protected ParamLiteral(IParamFile file, IParamLiteralHolder parent, T? value) : base(file)
+    protected ParamLiteral(T? value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(file, logger)
     {
         ParamValue = value;
         Parent = parent;
     }
 
-    protected ParamLiteral(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options)
-        : base(file, reader, options) =>
+    protected ParamLiteral(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger)
+        : base(reader, options, file, logger) =>
         Parent = parent;
 
     public object? ParamValue

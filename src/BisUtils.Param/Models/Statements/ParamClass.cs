@@ -9,6 +9,7 @@ using Factories;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -29,20 +30,21 @@ public class ParamClass : ParamStatement, IParamClass
     public List<IParamStatement> Statements { get; set; }
 
     public ParamClass(
+        string className,
+        string? inheritedClassname,
+        List<IParamStatement>? statements,
         IParamFile file,
         IParamStatementHolder parent,
-        string className,
-        string? inheritedClassname = null,
-        List<IParamStatement>? statements = null
-    ) : base(file, parent)
+        ILogger? logger
+    ) : base(file, parent, logger)
     {
         Statements = statements ?? new List<IParamStatement>();
         ClassName = className;
         InheritedClassname = inheritedClassname;
     }
 
-    public ParamClass(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) :
-        base(file, parent, reader, options)
+    public ParamClass(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) :
+        base(reader, options, file, parent, logger)
     {
         Statements = new List<IParamStatement>();
         if (!Debinarize(reader, options))
@@ -93,7 +95,7 @@ public class ParamClass : ParamStatement, IParamClass
 
         for (var i = 0; i < reader.ReadCompactInteger(); i++)
         {
-            value.WithReasons(ParamStatementFactory.ReadStatement(ParamFile, this, reader, options, out var statement)
+            value.WithReasons(ParamStatementFactory.ReadStatement(reader, options, out var statement, ParamFile, this, Logger)
                 .Reasons);
             if (statement is null)
             {

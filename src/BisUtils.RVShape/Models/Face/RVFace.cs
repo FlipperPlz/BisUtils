@@ -9,6 +9,8 @@ using Options;
 using Core.Binarize.Flagging;
 using FResults;
 using FResults.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Utils;
 
 public interface IRVFace : IStrictBinaryObject<RVShapeOptions>, IBisOptionallyFlaggable<RVFaceFlag?>
@@ -29,7 +31,7 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
     public bool IsExtended => this.IsFlaggable();
     public RVFaceFlag? Flags { get; set; }
 
-    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, params RVFaceFlag[] flags)
+    public RVFace(string texture, string? material, List<IRVDataVertex> vertices, RVFaceFlag[] flags, ILogger? logger) : base(logger)
     {
         Vertices = vertices;
         Texture = texture.ToLower(CultureInfo.CurrentCulture);
@@ -37,12 +39,16 @@ public class RVFace : StrictBinaryObject<RVShapeOptions>, IRVFace
         Flags = BisFlagUtils.CreateFlagsFor<RVFaceFlag>(flags);
     }
 
-    public RVFace()
+    public RVFace(ILogger? logger) : base(logger)
+    {
+
+    }
+    public RVFace() : base(NullLogger.Instance)
     {
 
     }
 
-    public RVFace(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    public RVFace(BisBinaryReader reader, RVShapeOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {

@@ -18,6 +18,8 @@ using Face;
 using FResults;
 using FResults.Extensions;
 using FResults.Reasoning;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public interface IRVLod : IStrictBinaryObject<RVShapeOptions>
 {
@@ -54,11 +56,15 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
     public IRVSelection? HiddenSelection { get; private set; }
     public IRVSelection? LockedSelection { get; private set; }
 
-    public RVLod()
+    public RVLod() : base(NullLogger.Instance)
     {
     }
 
-    public RVLod(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    public RVLod(ILogger? logger) : base(logger)
+    {
+    }
+
+    public RVLod(BisBinaryReader reader, RVShapeOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {
@@ -72,8 +78,9 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         List<IRVPoint> points,
         List<IVector3D> normals,
         List<IRVFace> faces,
-        IRVPointAttrib<float> mass
-    )
+        IRVPointAttrib<float> mass,
+        ILogger? logger
+    ) : base(logger)
     {
         Resolution = resolution;
         Points = points;
@@ -147,7 +154,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 throw new NotImplementedException();
             }
         }
-
+        //TODO(MAJOR): LOGGER USAGE IN READINDEXEDLIST ******PLS FIX
         Points = reader
             .ReadIndexedList<RVPoint, IBinarizationOptions>(options, pointCount)
             .Cast<IRVPoint>()
@@ -191,7 +198,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
         //CalculateUVMinMax(out var uvMinMax);
 
         LastResult = ReadLodBody(reader, options);
-        Resolution = new RVResolution(reader, options);
+        Resolution = new RVResolution(reader, options, Logger);
         return LastResult;
     }
 
@@ -421,7 +428,7 @@ public class RVLod : StrictBinaryObject<RVShapeOptions>, IRVLod
                 }
                 case "#Animation#":
                 {
-                    AddAnimationPhase(new RVAnimationPhase(reader, options) { Parent = this });
+                    AddAnimationPhase(new RVAnimationPhase(reader, options, Logger) { Parent = this });
 
                     break;
                 }

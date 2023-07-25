@@ -25,13 +25,13 @@ public class PboFileCreationBenchmarks
     public void DebinarizeFlatReadSetup() => reader.BaseStream.Position = 0;
 
     [Benchmark(Baseline = true)]
-    public RVBank DebinarizeFlatRead() => new(logger,"structures_data", reader, flatReadOptions);
+    public RVBank DebinarizeFlatRead() => new("structures_data", reader, flatReadOptions, null, logger);
 
     [IterationSetup(Target = nameof(Debinarize))]
     public void DebinarizeSetup() => reader.BaseStream.Position = 0;
 
     [Benchmark]
-    public RVBank Debinarize() => new(logger, "structures_data", reader, options);
+    public RVBank Debinarize() => new("structures_data", reader, options, null, logger);
 
     [GlobalCleanup]
     public void Cleanup() => reader.Close();

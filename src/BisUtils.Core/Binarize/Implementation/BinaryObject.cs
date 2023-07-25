@@ -2,6 +2,7 @@
 
 using FResults;
 using IO;
+using Microsoft.Extensions.Logging;
 using Options;
 
 /// <summary>
@@ -18,22 +19,21 @@ public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarization
     /// </summary>
     public Result? LastResult { get; protected set; }
 
+
+    public ILogger? Logger { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BinaryObject{T}"/> class, using the specified binary reader and options for debinarization.
     /// </summary>
     /// <param name="reader">The binary reader to load data from.</param>
     /// <param name="options">The options controlling the debinarization process.</param>
-    protected BinaryObject(BisBinaryReader reader, T options)
-    {
-
-    }
+    /// <param name="logger">The logger to use </param>
+    protected BinaryObject(BisBinaryReader reader, T options, ILogger? logger) => Logger = logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BinaryObject{T}"/> class.
     /// </summary>
-    protected BinaryObject()
-    {
-    }
+    protected BinaryObject(ILogger? logger) => Logger = logger;
 
     /// <summary>
     /// Binarizes the current binary object state into a binary writer as per the provided options.
@@ -50,4 +50,5 @@ public abstract class BinaryObject<T> : IBinaryObject<T> where T : IBinarization
     /// <param name="options">The options controlling the debinarization process.</param>
     /// <returns>A Result that represents the outcome of the operation.</returns>
     public abstract Result Debinarize(BisBinaryReader reader, T options);
+
 }

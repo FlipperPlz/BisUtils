@@ -16,7 +16,7 @@ public class PboFileBinarizationBenchmarks
         using var fs = File.OpenRead(@"C:\Steam\steamapps\common\DayZ\Addons\weapons_data.pbo");
         using var reader = new BisBinaryReader(fs);
 
-        pbo = new RVBank(logger, "weapons_data", reader, new());
+        pbo = new RVBank("weapons_data", reader, new(), null, logger);
 
         destination = new BisBinaryWriter(new MemoryStream((int)fs.Length));
     }

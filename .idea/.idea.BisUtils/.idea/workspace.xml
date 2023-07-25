@@ -10,15 +10,65 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Logging/IBisLoggable.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/IBinaryObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/IBinaryObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Implementation/BinaryObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Implementation/BinaryObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Implementation/StrictBinaryObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Implementation/StrictBinaryObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizableElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizableElement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/ParserExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/ParserExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Render/Color/Color.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Render/Color/Color.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Render/Point/Point2D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Render/Point/Point2D.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Render/Point/Point3D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Render/Point/Point3D.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Render/Vector/Vector2D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Render/Vector/Vector2D.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Render/Vector/Vector3D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Render/Vector/Vector3D.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgPatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgPatch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Extensions/ParamStatementHolderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Extensions/ParamStatementHolderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Factories/ParamLiteralFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Factories/ParamLiteralFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Factories/ParamStatementFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Factories/ParamStatementFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamArray.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamArray.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamFloat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamFloat.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamInt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamInt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Literals/ParamString.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/ParamFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/ParamFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamClass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamDelete.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamDelete.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamExternalClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamExternalClass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamVariable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Statements/ParamVariable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Stubs/ParamElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Stubs/ParamElement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Stubs/ParamLiteral.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Stubs/ParamLiteral.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/Stubs/ParamStatement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/Stubs/ParamStatement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Utils/ParamConfigAbstraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Utils/ParamConfigAbstraction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Utils/ParamImplementation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Utils/ParamImplementation.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankDirectory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankDirectory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankElement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankProperty.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankProperty.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankVfsEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankVfsEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVAnimationPhase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVAnimationPhase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVModelConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVModelConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVSharpEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVSharpEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Face/RVFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Face/RVFace.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Lod/RVLod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Lod/RVLod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Point/RVPoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Point/RVPoint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/RVShape.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/RVShape.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVDataVertex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVDataVertex.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVResolution.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVResolution.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVTexture/Models/RVPalette.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVTexture/Models/RVPalette.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVTexture/Models/RVTexture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVTexture/Models/RVTexture.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileCreationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileCreationBenchmarks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/ParamTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ParamTest/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/ShapeTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ShapeTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,11 +76,30 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingMarkupGrave">
+    <markupCoffin contentHash="-1700151165" url="file://$PROJECT_DIR$/test/Scratches/ShapeTest/Program.cs">
+      <highlighter start="275" end="289" layer="3999" target="0">
+        <option name="myExternalName" value="SUGGESTION" />
+      </highlighter>
+      <highlighter start="343" end="348" layer="4001" target="0">
+        <option name="myExternalName" value="NOT_USED_ELEMENT_ATTRIBUTES" />
+      </highlighter>
+      <highlighter start="364" end="379" layer="3999" target="0">
+        <option name="myExternalName" value="SUGGESTION" />
+      </highlighter>
+    </markupCoffin>
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet" root0="ESSENTIAL" />
+    <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
@@ -48,27 +117,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "feature/logging",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\ryann\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
+      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
+      "C:\\Users\\ryann\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.ParamTest">
     <configuration name="Publish BisUtils.RVBank to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
       <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/src/BisUtils.RVBank/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="-775555546124957071" uuid_low="-8586648064013952717" />
@@ -147,6 +216,7 @@
       <workItem from="1690207331819" duration="2241000" />
       <workItem from="1690216222541" duration="282000" />
       <workItem from="1690216527563" duration="920000" />
+      <workItem from="1690293944544" duration="7224000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -281,65 +351,26 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
-          <line>210</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="206" containingFunctionPresentation="Method 'Parse'">
-            <startOffsets>
-              <option value="8364" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8412" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
-          <line>201</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="201" containingFunctionPresentation="Method 'Parse'">
-            <startOffsets>
-              <option value="7948" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8002" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
-          <line>203</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="203" containingFunctionPresentation="Method 'Parse'">
-            <startOffsets>
-              <option value="8024" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8105" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
-          <line>317</line>
+          <line>319</line>
           <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="313" containingFunctionPresentation="Method 'ParseParamArray'">
             <startOffsets>
-              <option value="12135" />
+              <option value="12396" />
             </startOffsets>
             <endOffsets>
-              <option value="12154" />
+              <option value="12415" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
-          <line>340</line>
+          <line>342</line>
           <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="336" containingFunctionPresentation="Method 'ParseParamArray'">
             <startOffsets>
-              <option value="12866" />
+              <option value="13135" />
             </startOffsets>
             <endOffsets>
-              <option value="12875" />
+              <option value="13144" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="7" />

@@ -7,6 +7,7 @@ using Core.Extensions;
 using Entry;
 using FResults;
 using FResults.Extensions;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IRVBankProperty : IRVBankElement, IBisCloneable<IRVBankProperty>
@@ -42,7 +43,7 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
         }
     }
 
-    public RVBankProperty(IRVBank file, IRVBankVersionEntry parent, string name, string value) : base(file)
+    public RVBankProperty(string name, string value, IRVBank file, IRVBankVersionEntry parent, ILogger? logger) : base(file, logger)
     {
         VersionEntry = parent;
         VersionEntry.ChangesSaved += OnChangesSaved;
@@ -52,7 +53,7 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
         Value = value;
     }
 
-    public RVBankProperty(IRVBank file, IRVBankVersionEntry parent, BisBinaryReader reader, RVBankOptions options) : base(file, reader, options)
+    public RVBankProperty(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankVersionEntry parent, ILogger? logger) : base(reader, options, file, logger)
     {
         VersionEntry = parent;
         VersionEntry.ChangesSaved += OnChangesSaved;

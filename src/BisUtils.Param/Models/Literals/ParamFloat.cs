@@ -4,6 +4,7 @@ using System.Text;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -18,11 +19,11 @@ public class ParamFloat : ParamLiteral<float>, IParamFloat
     public override byte LiteralId => 1;
     public override float Value { get; set; }
 
-    public ParamFloat(IParamFile file, IParamLiteralHolder parent, float value) : base(file, parent, value)
+    public ParamFloat(float value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
     {
     }
 
-    public ParamFloat(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamFloat(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

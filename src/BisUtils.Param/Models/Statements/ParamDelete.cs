@@ -5,6 +5,7 @@ using Core.Extensions;
 using Core.IO;
 using Extensions;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -20,10 +21,10 @@ public class ParamDelete : ParamStatement, IParamDelete
     public override byte StatementId => 4;
     public string DeleteTargetName { get; set; } = null!;
 
-    public ParamDelete(IParamFile file, IParamStatementHolder parent, string target) : base(file, parent) =>
+    public ParamDelete(string target, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger) =>
         DeleteTargetName = target;
 
-    public ParamDelete(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamDelete(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

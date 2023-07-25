@@ -3,6 +3,7 @@
 using System.Text;
 using FResults;
 using Lexer;
+using Microsoft.Extensions.Logging;
 
 #pragma warning disable CA1000
 
@@ -19,8 +20,9 @@ public interface IBisParser<TAstNode, in TLexer, TTypes> where TLexer : BisLexer
     /// </summary>
     /// <param name="node">The output abstract syntax tree node.</param>
     /// <param name="lexer">The lexer to parse.</param>
+    /// <param name="logger">The logger used for parsing.</param>
     /// <returns>A result of the parsing operation.</returns>
-    public Result Parse(out TAstNode? node, TLexer lexer);
+    public Result Parse(out TAstNode? node, TLexer lexer, ILogger? logger);
 }
 
 /// <summary>
@@ -37,20 +39,23 @@ public interface IBisParser<TAstNode, in TLexer, TTypes, in TPreprocessor> : IBi
     /// </summary>
     /// <param name="node">The output abstract syntax tree node.</param>
     /// <param name="lexer">The lexer to parse.</param>
+    /// <param name="logger">The logger used for parsing</param>
     /// <param name="preprocessor">The preprocessor to use. If not specified, a new instance of `TPreprocessor` is created.</param>
     /// <returns>A result of the parsing and preprocessing operation.</returns>
     public Result ProcessAndParse
     (
         out TAstNode? node,
         TLexer lexer,
+        ILogger logger,
         TPreprocessor? preprocessor = null
+
     )
     {
         var builder = new StringBuilder();
         preprocessor ??= new TPreprocessor();
         preprocessor.EvaluateLexer(lexer, builder);
         lexer.ResetLexer(builder.ToString());
-        return Parse(out node, lexer);
+        return Parse(out node, lexer, logger);
     }
 }
 

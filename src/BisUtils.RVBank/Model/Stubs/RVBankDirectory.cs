@@ -7,6 +7,7 @@ using Entry;
 using Extensions;
 using FResults;
 using FResults.Extensions;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IRVBankDirectory : IRVBankEntry
@@ -48,14 +49,15 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
     public IEnumerable<IRVBankDirectory> Directories => PboEntries.OfType<IRVBankDirectory>();
 
     public RVBankDirectory(
+        IEnumerable<IRVBankEntry> entries,
+        string directoryName,
         IRVBank file,
         IRVBankDirectory parent,
-        IEnumerable<IRVBankEntry> entries,
-        string directoryName
-    ) : base(file, parent, directoryName) =>
+        ILogger? logger
+    ) : base(directoryName, file, parent, logger) =>
         PboEntries = new ObservableCollection<IRVBankEntry>(entries);
 
-    protected RVBankDirectory(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options) =>
+    protected RVBankDirectory(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(reader, options, file, parent, logger) =>
         PboEntries = new ObservableCollection<IRVBankEntry>();
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>

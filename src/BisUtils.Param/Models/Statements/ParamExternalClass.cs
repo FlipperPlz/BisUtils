@@ -4,6 +4,7 @@ using System.Text;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -18,9 +19,9 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
     public string ClassName { get; set; } = null!;
     public override byte StatementId => 3;
 
-    public ParamExternalClass(IParamFile file, IParamStatementHolder parent, string className) : base(file, parent) => ClassName = className;
+    public ParamExternalClass(string className, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger) => ClassName = className;
 
-    public ParamExternalClass(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamExternalClass(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

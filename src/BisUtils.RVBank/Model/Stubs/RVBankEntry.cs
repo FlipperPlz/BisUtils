@@ -23,7 +23,6 @@ public interface IRVBankEntry : IRVBankVfsEntry
 
 public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
 {
-    protected readonly ILogger logger;
 
     private RVBankEntryMime entryMime = RVBankEntryMime.Decompressed;
     public RVBankEntryMime EntryMime
@@ -82,18 +81,17 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     }
 
     protected RVBankEntry(
-        ILogger logger,
-        IRVBank file,
-        IRVBankDirectory parent,
         string fileName,
         RVBankEntryMime mime,
         uint originalSize,
         uint offset,
         uint timeStamp,
-        uint dataSize
-    ) : base(file, parent, fileName)
+        uint dataSize,
+        IRVBank file,
+        IRVBankDirectory parent,
+        ILogger? logger
+    ) : base(fileName, file, parent, logger)
     {
-        this.logger = logger;
 
         EntryMime = mime;
         OriginalSize = originalSize;
@@ -103,7 +101,11 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     }
 
 
-    protected RVBankEntry(ILogger logger, IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(file, parent, reader, options) => this.logger = logger;
+    protected RVBankEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent,
+        ILogger? logger) : base(reader, options, file, parent, logger)
+    {
+        
+    }
 
     public void Move(IRVBankDirectory destination)
     {

@@ -7,6 +7,8 @@ using Core.IO;
 using Data;
 using Options;
 using FResults;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public interface IRVDataVertex : IBinaryObject<RVShapeOptions>, IRVUvMap
 {
@@ -23,7 +25,7 @@ public class RVDataVertex : BinaryObject<RVShapeOptions>, IRVDataVertex
     public float MapV { get; set;  }
     public IRVUvMap? FaceUV { get; set; }
 
-    public RVDataVertex(int point, int normal, float mapU, float mapV, IRVUvMap? uvMap)
+    public RVDataVertex(int point, int normal, float mapU, float mapV, IRVUvMap? uvMap, ILogger? logger) : base(logger)
     {
         FaceUV = uvMap;
         Point = point;
@@ -32,12 +34,17 @@ public class RVDataVertex : BinaryObject<RVShapeOptions>, IRVDataVertex
         MapV = mapV;
     }
 
-    public RVDataVertex()
+    public RVDataVertex(ILogger? logger) : base(logger)
     {
 
     }
 
-    public RVDataVertex(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    public RVDataVertex() : base(NullLogger.Instance)
+    {
+
+    }
+
+    public RVDataVertex(BisBinaryReader reader, RVShapeOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {

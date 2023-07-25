@@ -2,6 +2,7 @@
 
 using Core.Binarize.Synchronization;
 using Core.IO;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IRVBankElement : IBisSynchronizableElement<RVBankOptions>
@@ -14,10 +15,10 @@ public abstract class RVBankElement : BisSynchronizableElement<RVBankOptions>, I
     public IRVBank BankFile { get; set; }
     public bool IsFirstRead { get; private set; }
 
-    protected RVBankElement(IRVBank file) : base(file) =>
+    protected RVBankElement(IRVBank file, ILogger? logger) : base(file, logger) =>
         BankFile = file;
 
-    protected RVBankElement(IRVBank file, BisBinaryReader reader, RVBankOptions options) : base(reader, options, file) =>
+    protected RVBankElement(BisBinaryReader reader, RVBankOptions options, IRVBank file, ILogger? logger) : base(reader, options, file, logger) =>
         BankFile = file;
 
     protected override void OnChangesMade(object? sender, EventArgs? e)

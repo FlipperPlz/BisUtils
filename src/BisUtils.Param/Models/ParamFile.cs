@@ -5,6 +5,7 @@ using Core.IO;
 using FResults;
 using FResults.Extensions;
 using Lexer;
+using Microsoft.Extensions.Logging;
 using Options;
 using Parse;
 using Statements;
@@ -19,13 +20,13 @@ public class ParamFile : ParamClass, IParamFile
 {
     public string FileName { get => ClassName; set => ClassName = value; }
 
-    public ParamFile(string fileName, List<IParamStatement> statements ) : base(null!, null!, fileName, null, statements)
+    public ParamFile(string fileName, List<IParamStatement> statements, ILogger? logger) : base( fileName, null, statements, null!, null!, logger)
     {
         FileName = fileName;
         Statements = statements;
     }
 
-    public ParamFile(string fileName, BisBinaryReader reader, ParamOptions options) : base(null!, null!, reader, options)
+    public ParamFile(string fileName, BisBinaryReader reader, ParamOptions options, ILogger? logger) : base(reader, options, null!, null!, logger)
     {
         FileName = fileName;
         if (!Debinarize(reader, options))
@@ -37,7 +38,7 @@ public class ParamFile : ParamClass, IParamFile
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
 
-    public static ParamFile? ReadParamFile(string fileName, Stream stream, ParamOptions options)
+    public static ParamFile? ReadParamFile(string fileName, Stream stream, ParamOptions options, ILogger? logger)
     {
         stream.Seek(0, SeekOrigin.Begin);
         using var memory = new MemoryStream();
@@ -53,11 +54,11 @@ public class ParamFile : ParamClass, IParamFile
             var content = options.Charset.GetString(memory.ToArray());
             Console.WriteLine(content);
             var lexer = new ParamLexer(content);
-            var result = ParamParser.Instance.Parse(out var node, lexer);
+            var result = ParamParser.Instance.Parse(out var node, lexer, logger);
             return node;
         }
         reader.BaseStream.Seek(-4, SeekOrigin.Current);
-        return new ParamFile(fileName, reader, options);
+        return new ParamFile(fileName, reader, options, logger);
     }
 
     private new Result Debinarize(BisBinaryReader reader, ParamOptions options)
