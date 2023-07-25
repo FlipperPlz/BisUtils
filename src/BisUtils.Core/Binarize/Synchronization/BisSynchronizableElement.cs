@@ -75,7 +75,6 @@ public abstract class BisSynchronizableElement<TOptions> : BinaryObject<TOptions
     //Sender will usually be 'this' unless there are child elements
     protected virtual void OnChangesMade(object? sender, EventArgs e)
     {
-        Logger?.LogDebug("");
         IsStale = true;
         ChangesMade?.Invoke(sender, e);
     }
