@@ -11,25 +11,53 @@ using Options;
 
 public static class RVBankDirectoryExtensions
 {
-    public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) =>
-        ctx.PboEntries.OfType<T>();
+    public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) where T: IRVBankEntry =>
+        ctx.PboEntries.Where( it => it is T).Cast<T>();
 
     public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx, string name) where T: IRVBankEntry=>
-        GetEntries<T>(ctx).Where(it => it.EntryName == name);
+        ctx.PboEntries.Where( it => it is T && it.EntryName == name).Cast<T>();
 
-    public static IEnumerable<IRVBankVfsEntry> GetVfsEntries(this IRVBankDirectory ctx, bool recursive = false) =>
-        GetEntries<IRVBankVfsEntry>(ctx);
+    public static bool IsEmpty(this IRVBankDirectory ctx, bool recursive = false)
+    {
+        if(ctx.PboEntries.Count == 0)
+        {
+            return true;
+        }
 
-    public static IEnumerable<IRVBankDataEntry> GetFileEntries(this IRVBankDirectory ctx, bool recursive = false) =>
-        !recursive ? GetEntries<IRVBankDataEntry>(ctx) : GetDirectories(ctx).SelectMany(it => it.GetFileEntries(recursive))
-            .Concat(GetEntries<IRVBankDataEntry>(ctx));
+        return !GetFileEntries(ctx, true).Any();
+    }
+
+    public static IEnumerable<IRVBankDataEntry> GetFileEntries(this IRVBankDirectory ctx, bool recursive = false)
+    {
+        switch (recursive)
+        {
+            case true:
+            {
+                var entries = new List<IRVBankDataEntry>();
+                foreach (var directory in ctx.PboEntries)
+                {
+                    if (directory is IRVBankDirectory { } dir)
+                    {
+                        entries.AddRange(dir.GetFileEntries(true));
+                    } else if (directory is IRVBankDataEntry data)
+                    {
+                        entries.Add(data);
+                    }
+                }
+
+                return entries;
+            }
+            case false:
+                return ctx.PboEntries.OfType<IRVBankDataEntry>();
+        }
+    }
 
 
     public static IEnumerable<IRVBankDirectory> GetDirectories(this IRVBankDirectory ctx) =>
-        GetEntries<IRVBankDirectory>(ctx);
+        ctx.PboEntries.Where( it => it is IRVBankDirectory).Cast<IRVBankDirectory>();
 
     public static IEnumerable<IRVBankVersionEntry> GetVersionEntries(this IRVBankDirectory ctx) =>
-        GetEntries<IRVBankVersionEntry>(ctx);
+        ctx.PboEntries.Where( it => it is IRVBankVersionEntry).Cast<IRVBankVersionEntry>();
 
     public static IRVBankVersionEntry? GetVersionEntry(this IRVBankDirectory ctx) =>
         GetVersionEntries(ctx).FirstOrDefault();

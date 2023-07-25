@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Core.Compression;
 
+using System.Text;
 
 /// <summary>
 ///     Bis Lzss
@@ -32,14 +33,14 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-    public void Decode(BinaryReader reader, BinaryWriter output, uint length)
+    public long Decode(BinaryReader reader, BinaryWriter output, uint length)
     {
         var text_buf = new byte[N + F - 1];
         var outputBytes = new byte[length];
-
+        var start = reader.BaseStream.Position;
         if (length <= 0) {
             output.Write(outputBytes);
-            return;
+            return 0;
         }
 
         int i;
@@ -82,7 +83,7 @@ public sealed class BisCompatibleLzss
                     jj = j + ii;
 
                 if (j + 1 > bytesLeft) {
-                    throw new ArgumentException("LZSS overflow");
+                    return iDst;
                 }
 
                 for (; ii <= jj; ii++) {
@@ -100,6 +101,8 @@ public sealed class BisCompatibleLzss
         }
         reader.ReadInt32();
         output.Write(outputBytes);
+        return outputBytes.Length;
+
     }
 
     public Stream Encode(Stream inputStream, out uint outputSize)
@@ -113,7 +116,7 @@ public sealed class BisCompatibleLzss
         inputStream.CopyTo(memoryStream);
 
         var encodedStream = new MemoryStream();
-        using var binaryWriter = new BinaryWriter(encodedStream);
+        using var binaryWriter = new BinaryWriter(encodedStream, Encoding.UTF8, true);
 
         outputSize = Encode(memoryStream.ToArray(), binaryWriter);
 

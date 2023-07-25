@@ -138,22 +138,19 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             case RVBankDataType.Compressed:
             {
                 var start = reader.BaseStream.Position;
-                try
-                {
-                    var stream = new MemoryStream();
-                    using (var writer = new BinaryWriter(stream, options.Charset, true))
-                    {
-                        BisCompatibleLzss.Compressor.Decode(reader, writer, OriginalSize);
-                    }
 
+                var stream = new MemoryStream();
+                using var writer = new BinaryWriter(stream, options.Charset, true);
+                if (BisCompatibleLzss.Compressor.Decode(reader, writer, OriginalSize) is { } size && size != OriginalSize)
+                {
+                    reader.BaseStream.Seek(start + (DataSize - size), SeekOrigin.Begin);
+                }
+                else
+                {
                     entryData = stream;
                     return true;
                 }
-                catch (Exception)
-                {
-                    reader.BaseStream.Seek(start, SeekOrigin.Begin);
-                    goto default;
-                }
+                goto default;
             }
             default:
             {
@@ -196,7 +193,9 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             default:
             {
                 streamWasCompressed = false;
-                return entryData;
+                var data = new MemoryStream();
+                entryData.CopyTo(data);
+                return data;
             }
         }
 

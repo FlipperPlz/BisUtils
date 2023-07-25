@@ -93,7 +93,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         {
             PboEntries.Clear();
         }
-        Logger?.LogInformation("Debinarization has started on bank {BankName}", FileName);
 
         var responses = new List<Result>();
         var markedForRemoval = new List<IRVBankEntry>();
@@ -162,7 +161,10 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
             if (options.IgnoreDuplicateFiles && currentEntry.RetrieveDuplicateEntry() is { } removeThis)
             {
-                markedForRemoval.Add(removeThis);
+                if (!markedForRemoval.Contains(removeThis))
+                {
+                    markedForRemoval.Add(removeThis);
+                }
             }
         } while (true);
 
@@ -173,14 +175,14 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             if (markedForRemoval.Contains(entry))
             {
                 reader.BaseStream.Seek(entry.DataSize, SeekOrigin.Current);
-                continue;
             }
-
-
-            if (!entry.InitializeData(reader, options))
+            else if (!entry.InitializeData(reader, options))
             {
                 markedForRemoval.Add(entry);
             }
+
+
+
         }
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
 
@@ -223,7 +225,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 IsFirstRead = false;
             }
-            Logger?.LogInformation("Debinarization has finished on bank {BankName}", FileName);
 
             return LastResult;
         }
@@ -231,25 +232,24 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        var headerStart = writer.BaseStream.Position;
-        var headerLength = PboEntries.Sum(it => it.CalculateLength(options));
-        //var dataStart = writer.BaseStream.Position;
-        //long dataLength = 0;
-        writer.BaseStream.Seek(headerLength, SeekOrigin.Current);
-        foreach (var entry in this.GetFileEntries(true))
+        foreach (var directory in this.GetDirectories().ToList().Where(directory => directory.IsEmpty(true)))
         {
-            var data = entry.RetrieveFinalStream(out var compressed);
-            //dataLength += data.Length;
-            writer.Write(data);
-            if (compressed)
-            {
-                data.Close();
-            }
+            directory.ParentDirectory.RemoveDirectory(directory);
         }
-        var dataEnd = writer.BaseStream.Position;
-        writer.BaseStream.Seek(headerStart, SeekOrigin.Begin);
-        LastResult = Result.Ok().WithReasons(PboEntries.SelectMany(it => it.Binarize(writer, options).Reasons));
-        writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
+        var dataEntries = this.GetFileEntries(true).ToList();
+        this.GetVersionEntry()?.Binarize(writer, options);
+        foreach (var entry in dataEntries)
+        {
+            entry.Binarize(writer, options);
+        }
+        writer.Write(new byte[21]);
+        foreach (var entry in dataEntries)
+        {
+            using var stream = entry.RetrieveFinalStream(out var compressed);
+            stream.CopyTo(writer.BaseStream);
+            //dataLength += data.Length;
+            // writer.BaseStream.Seek(stream.Length, SeekOrigin.Current);
+        }
         var digest = CalculateDigest(writer.BaseStream);
         digest.Write(writer);
         return LastResult;
