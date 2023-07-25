@@ -81,7 +81,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public static RVBank ReadPbo(ILogger logger, string path, RVBankOptions options, Stream? syncTo)
+    public static RVBank ReadPbo(string path, RVBankOptions options, Stream? syncTo, ILogger logger)
     {
         using var reader = new BisBinaryReader(File.OpenRead(path));
         return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
@@ -93,13 +93,18 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         {
             PboEntries.Clear();
         }
+        Logger?.LogInformation("Debinarization has started on bank {BankName}", FileName);
 
         var responses = new List<Result>();
         var markedForRemoval = new List<IRVBankEntry>();
+        Logger?.LogDebug("Entry loop started at {Start}", reader.BaseStream.Position);
+
         var first = true;
         do
         {
+
             var start = reader.BaseStream.Position;
+
             responses.Add(reader.SkipAsciiZ(options));
             var mime = (RVBankEntryMime?)reader.ReadInt64();
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
@@ -122,6 +127,8 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
             if (first && currentEntry is not IRVBankVersionEntry)
             {
+                Logger?.LogInformation("First entry is not a version entry... this is weird");
+
                 response.WithWarning(new Warning
                 {
                     Message = "The first entry in a PBO should always be a version entry.",
@@ -135,10 +142,11 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 if (options.AlwaysSeparateOnDummy)
                 {
+                    Logger?.LogDebug("Located ending magic at {Pos}... breaking entry loop.", reader.BaseStream.Position);
                     break;
                 }
 
-                throw new NotImplementedException("TODO: Recover On Empty Not Implemented");
+                Logger?.LogDebug("Located ending magic. Peeking for extra data and attempting to recover...");
             }
 
             if (first)
@@ -152,11 +160,13 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 PboEntries.Add(currentEntry);
             }
 
-            if (options.IgnoreDuplicateFiles)
+            if (options.IgnoreDuplicateFiles && currentEntry.RetrieveDuplicateEntry() is { } removeThis)
             {
-                markedForRemoval.AddRange(currentEntry.RetrieveDuplicateEntries());
+                markedForRemoval.Add(removeThis);
             }
         } while (true);
+
+        Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
 
         foreach (var entry in this.GetFileEntries())
         {
@@ -165,7 +175,20 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 reader.BaseStream.Seek(entry.DataSize, SeekOrigin.Current);
                 continue;
             }
-            entry.InitializeData(reader, options);
+
+
+            if (!entry.InitializeData(reader, options))
+            {
+                markedForRemoval.Add(entry);
+            }
+        }
+        Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
+
+        Logger?.LogDebug("Removing deleted/stale entries from the directory structure.");
+
+        foreach (var removable in markedForRemoval)
+        {
+            removable.ParentDirectory.RemoveEntry(removable);
         }
 
         var remaining = reader.BaseStream.Length - reader.BaseStream.Position;
@@ -200,6 +223,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 IsFirstRead = false;
             }
+            Logger?.LogInformation("Debinarization has finished on bank {BankName}", FileName);
 
             return LastResult;
         }

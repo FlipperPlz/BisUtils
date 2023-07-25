@@ -5,4 +5,6 @@ using Model.Stubs;
 public static class RVBankEntryExtensions
 {
     public static IEnumerable<IRVBankEntry> RetrieveDuplicateEntries(this IRVBankEntry ctx) => ctx.ParentDirectory.GetEntries<IRVBankEntry>().Where(it => it.EntryName == ctx.EntryName && it != ctx);
+    public static IRVBankEntry? RetrieveDuplicateEntry(this IRVBankEntry ctx) => ctx.ParentDirectory.GetEntries<IRVBankEntry>().FirstOrDefault(it => it.EntryName == ctx.EntryName && it != ctx);
+
 }

@@ -20,7 +20,7 @@ public interface IRVBankDataEntry : IRVBankEntry
     Stream EntryData { get; }
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
-    void InitializeData(BisBinaryReader reader, RVBankOptions options);
+    bool InitializeData(BisBinaryReader reader, RVBankOptions options);
     public Stream RetrieveFinalStream(out bool streamWasCompressed);
 }
 
@@ -126,25 +126,34 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         Move(ParentDirectory);
     }
 
-    public void InitializeData(BisBinaryReader reader, RVBankOptions options)
+    public bool InitializeData(BisBinaryReader reader, RVBankOptions options)
     {
         switch (PackingMethod)
         {
-            case RVBankDataType.Compressed:
-            {
-                var stream = new MemoryStream();
-                using (var writer = new BinaryWriter(stream, options.Charset, true))
-                {
 
-                    BisCompatibleLzss.Compressor.Decode(reader, writer, OriginalSize);
-                }
-
-                entryData = stream;
-                break;
-            }
             case RVBankDataType.Encrypted:
             {
                 throw new RVEncryptedBankException();
+            }
+            case RVBankDataType.Compressed:
+            {
+                var start = reader.BaseStream.Position;
+                try
+                {
+                    var stream = new MemoryStream();
+                    using (var writer = new BinaryWriter(stream, options.Charset, true))
+                    {
+                        BisCompatibleLzss.Compressor.Decode(reader, writer, OriginalSize);
+                    }
+
+                    entryData = stream;
+                    return true;
+                }
+                catch (Exception)
+                {
+                    reader.BaseStream.Seek(start, SeekOrigin.Begin);
+                    goto default;
+                }
             }
             default:
             {
@@ -168,7 +177,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
                 }
 
                 entryData = memoryStream;
-                break;
+                return PackingMethod is not RVBankDataType.Compressed;
             }
         }
     }

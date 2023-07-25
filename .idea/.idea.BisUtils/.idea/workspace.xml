@@ -10,12 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankEntryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +25,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="feature/logging" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -48,8 +43,10 @@
     <setting file="mock:///AIAssistantSnippet" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -69,7 +66,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/logging&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/duplicate-bank-entries&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -163,7 +160,7 @@
       <workItem from="1690207331819" duration="2241000" />
       <workItem from="1690216222541" duration="282000" />
       <workItem from="1690216527563" duration="920000" />
-      <workItem from="1690293944544" duration="9795000" />
+      <workItem from="1690293944544" duration="10847000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -277,7 +274,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690301406374</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="feat(bank): Work On Duplicate Entries">
+      <option name="closed" value="true" />
+      <created>1690304093653</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1690304093653</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,7 +305,8 @@
     <MESSAGE value="fix: Small Fixes Made To Bank Library. Additions To Param.&#10;&#10;This update fixes some minor issues found in the Bank library. Notably, it changes the return type of IRVBankEntry properties like Offset, OriginalSize, TimeStamp and others from long to uint. Furthermore, IRVBankEntry's method CalculateLength now returns uint as well.&#10;&#10;In addition to that, various changes were made to support new features in the Param library, such as the ability to obtain array values. Some additions were also made to provide more functionality such as creating, adding, and removing variables.&#10;&#10;The update also includes a new feature for reading param files located in ReadParamFile method inside Src/BisUtils.Param/Model/ParamFile.cs.&#10;&#10;Finally, the importance of properties like OriginalSize, Offset, TimeStamp in RVBankDirectory.cs has been changed to uint, for consistency with other parts of the system. The commit also includes minor code cleanups and improvements across multiple files." />
     <MESSAGE value="feat(dzconfig): Crudely Finished DZConfig Implementation&#10;&#10;- Remove DzCfgMods.cs and DzMod.cs, rename DzCfgPatches to DzCfgPatch, add DzConfig.cs and DzCfgMod.cs&#10;- Models DzCfgMods and DzMod are deleted as they were redundant and inefficient.&#10;- DzCfgPatches is renamed to DzCfgPatch to accurately represent its functionality." />
     <MESSAGE value="feat(logging): Add logging infrastructure to the BisUtils project via 'IBisLoggable' and 'IBinaryObject'" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(logging): Add logging infrastructure to the BisUtils project via 'IBisLoggable' and 'IBinaryObject'" />
+    <MESSAGE value="feat(bank): Work On Duplicate Entries" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(bank): Work On Duplicate Entries" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
