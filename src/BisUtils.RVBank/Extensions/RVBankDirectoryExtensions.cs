@@ -14,6 +14,9 @@ public static class RVBankDirectoryExtensions
     public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) =>
         ctx.PboEntries.OfType<T>();
 
+    public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx, string name) where T: IRVBankEntry=>
+        GetEntries<T>(ctx).Where(it => it.EntryName == name);
+
     public static IEnumerable<IRVBankVfsEntry> GetVfsEntries(this IRVBankDirectory ctx, bool recursive = false) =>
         GetEntries<IRVBankVfsEntry>(ctx);
 

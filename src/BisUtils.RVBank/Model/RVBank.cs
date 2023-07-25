@@ -63,14 +63,14 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public RVBank(string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo, ILogger logger) : base(synchronizeTo, logger)
+    public RVBank(string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo, ILogger? logger) : base(synchronizeTo, logger)
     {
         BankFile = this;
         FileName = filename;
         PboEntries = new ObservableCollection<IRVBankEntry>(entries);
     }
 
-    public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo, ILogger logger) : base(reader, options, synchronizeTo, logger)
+    public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo, ILogger? logger) : base(reader, options, synchronizeTo, logger)
     {
         BankFile = this;
         FileName = filename;
@@ -95,6 +95,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
 
         var responses = new List<Result>();
+        var markedForRemoval = new List<IRVBankEntry>();
         var first = true;
         do
         {
@@ -150,10 +151,20 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 PboEntries.Add(currentEntry);
             }
+
+            if (options.IgnoreDuplicateFiles)
+            {
+                markedForRemoval.AddRange(currentEntry.RetrieveDuplicateEntries());
+            }
         } while (true);
 
         foreach (var entry in this.GetFileEntries())
         {
+            if (markedForRemoval.Contains(entry))
+            {
+                reader.BaseStream.Seek(entry.DataSize, SeekOrigin.Current);
+                continue;
+            }
             entry.InitializeData(reader, options);
         }
 

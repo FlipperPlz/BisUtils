@@ -68,6 +68,7 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
         SynchronizationRoot = this;
         ChangesMade += OnChangesMade;
         SynchronizationStream = syncTo;
+
     }
 
 

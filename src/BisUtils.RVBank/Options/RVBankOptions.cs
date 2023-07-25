@@ -18,7 +18,7 @@ public class RVBankOptions : IBinarizationOptions, IAsciizLimiterOptions
     public bool AllowMultipleVersion { get; set; } //= false;
     public bool FlatRead { get; set; } = true; //= false;
     public bool AlwaysSeparateOnDummy { get; set; } = true;
-    public bool AllowDuplicateFileNames { get; set; } //= false;
+    public bool IgnoreDuplicateFiles { get; set; } = true;
     public bool RegisterEmptyEntries { get; set; } = true;
     public bool AllowObfuscated { get; set; } //= false;
     public bool AllowEncrypted { get; set; } //= false;
