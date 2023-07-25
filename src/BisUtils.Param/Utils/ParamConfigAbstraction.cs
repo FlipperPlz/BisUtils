@@ -1,7 +1,9 @@
 ﻿namespace BisUtils.Param.Utils;
 
+using Core.Logging;
 using Enumerations;
 using Extensions;
+using Microsoft.Extensions.Logging;
 using Models;
 using Models.Literals;
 using Models.Statements;
@@ -11,11 +13,12 @@ public interface IParamConfigAbstraction<TCtx> where TCtx : IParamClass
 {
     public TCtx ParamContext { get; set; }
     public string ClassName { get; set; }
+    public ILogger? Logger { get; }
 }
 
 
 //TODO(DRY): Refactor
-public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx> where TCtx : IParamClass
+public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx> where TCtx : class, IParamClass
 {
     public TCtx ParamContext { get; set; }
 
@@ -25,7 +28,13 @@ public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx
         set => ParamContext.ClassName = value;
     }
 
-    public ParamConfigAbstraction(TCtx ctx) => ParamContext = ctx;
+    public ILogger? Logger { get; }
+
+    protected ParamConfigAbstraction(TCtx ctx)
+    {
+        ParamContext = ctx;
+        Logger = ((IBisLoggable)ParamContext).Logger;
+    }
 
     protected IEnumerable<string>? GetArrayValues( string variableName)
     {
@@ -66,11 +75,11 @@ public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx
         }
         if (ParamContext.LocateVariable<IParamString>(variableName) is not { } variable)
         {
-            var added = ParamContext.AddVariable<IParamString>(variableName, ParamString.Nill);
+            var added = ParamContext.AddVariable<IParamString>(variableName, ParamString.EmptyNoParents, Logger);
             variable = (IParamVariable) added.Parent;
         }
 
-        variable.VariableValue = (IParamLiteral) new ParamString(ParamContext.ParamFile, variable, value, ParamStringType.Quoted);
+        variable.VariableValue = (IParamLiteral) new ParamString(value, ParamStringType.Quoted, ParamContext.ParamFile, variable, Logger);
 
     }
 
@@ -83,11 +92,11 @@ public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx
         }
         if (ParamContext.LocateVariable<IParamArray>(variableName) is not { } variable)
         {
-            var added = ParamContext.AddVariable<IParamArray>(variableName, ParamArray.Nill);
+            var added = ParamContext.AddVariable<IParamArray>(variableName, ParamArray.Nill, Logger);
             variable = (IParamVariable) added.Parent;
         }
 
-        variable.VariableValue = new ParamArray(ParamContext.ParamFile, variable, values.Select(it =>
-            (IParamLiteral)new ParamString(ParamContext.ParamFile, variable, it, ParamStringType.Quoted)));
+        variable.VariableValue = new ParamArray( values.Select(it =>
+            (IParamLiteral)new ParamString(it, ParamStringType.Quoted, ParamContext.ParamFile, variable, Logger)), ParamContext.ParamFile, variable, Logger);
     }
 }

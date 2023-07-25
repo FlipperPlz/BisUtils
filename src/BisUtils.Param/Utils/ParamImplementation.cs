@@ -5,7 +5,9 @@ using Core.Binarize.Implementation;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Models;
+using Models.Stubs;
 using Options;
 
 public interface IParamImplementation : IBinaryObject<ParamOptions>
@@ -19,11 +21,11 @@ public class ParamImplementation : BinaryObject<ParamOptions>, IParamImplementat
     public IParamFile ParamFile { get; set; }
     public string Name { get => ParamFile.FileName; set => ParamFile.FileName = value; }
 
-    protected ParamImplementation(IParamFile paramFile) => ParamFile = paramFile;
+    protected ParamImplementation(IParamFile paramFile) : base(((ParamElement)paramFile).Logger) => ParamFile = paramFile;
 
-    protected ParamImplementation(string name, BisBinaryReader reader, ParamOptions options)
+    protected ParamImplementation(string name, BisBinaryReader reader, ParamOptions options, ILogger? logger) : base(logger)
     {
-        ParamFile = new ParamFile(name, reader, options);
+        ParamFile = new ParamFile(name, reader, options, logger);
         if (ParamFile.LastResult is { } result && result)
         {
             result.Throw();

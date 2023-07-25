@@ -5,6 +5,8 @@ using Binarize.Options;
 using Extensions;
 using FResults;
 using IO;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public interface IVector3D : IVector2D
 {
@@ -36,7 +38,7 @@ public readonly struct Vector3D : IVector3D
     public Vector3D(int x, int y, int z) : this(Convert.ToSingle(x), Convert.ToSingle(y), Convert.ToSingle(z))
     {
     }
-    public static implicit operator BinarizableVector3D(Vector3D point) => new(point.X, point.Y, point.Z);
+    public static implicit operator BinarizableVector3D(Vector3D point) => new(point.X, point.Y, point.Z, null);
     public static explicit operator Vector3D(BinarizableVector3D point) => new(point.X, point.Y, point.Z);
 }
 
@@ -47,27 +49,32 @@ public class BinarizableVector3D : BinaryObject<IBinarizationOptions>, IVector3D
     public float Z { get; private set; }
 
     public static implicit operator Vector3D(BinarizableVector3D point) => new(point.X, point.Y, point.Z);
-    public static explicit operator BinarizableVector3D(Vector3D point) => new(point.X, point.Y, point.Z);
+    public static explicit operator BinarizableVector3D(Vector3D point) => new(point.X, point.Y, point.Z, null!);
 
-    public BinarizableVector3D(float x, float y, float z)
+    public BinarizableVector3D(float x, float y, float z, ILogger? logger) : base(logger)
     {
         X = x;
         Y = y;
         Z = z;
     }
 
-    public BinarizableVector3D()
+    public BinarizableVector3D() : base(NullLogger.Instance)
+    {
+
+    }
+
+    public BinarizableVector3D(ILogger? logger) : base(logger)
     {
 
     }
 
     // ReSharper disable once UnusedParameter.Local
-    protected BinarizableVector3D(BisBinaryReader reader, IBinarizationOptions options, bool _) : base(reader, options)
+    protected BinarizableVector3D(BisBinaryReader reader, IBinarizationOptions options, bool _, ILogger? logger) : base(reader, options, logger)
     {
 
     }
 
-    public BinarizableVector3D(BisBinaryReader reader, IBinarizationOptions options) : base(reader, options)
+    public BinarizableVector3D(BisBinaryReader reader, IBinarizationOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {

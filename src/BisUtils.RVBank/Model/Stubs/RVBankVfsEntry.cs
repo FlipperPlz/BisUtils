@@ -2,6 +2,7 @@ namespace BisUtils.RVBank.Model.Stubs;
 
 using Core.IO;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IRVBankVfsEntry : IRVBankElement
@@ -31,14 +32,14 @@ public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
 
     public IRVBankDirectory ParentDirectory { get; protected set; }
 
-    protected RVBankVfsEntry(IRVBank file, IRVBankDirectory parent, string name) : base(file)
+    protected RVBankVfsEntry(string name, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(file, logger)
     {
         ParentDirectory = parent;
         EntryName = name;
     }
 
-    protected RVBankVfsEntry(IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) :
-        base(file, reader, options) => ParentDirectory = parent;
+    protected RVBankVfsEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) :
+        base(reader, options, file, logger) => ParentDirectory = parent;
 
     public override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {

@@ -4,6 +4,7 @@ using FResults;
 using FResults.Extensions;
 using Implementation;
 using IO;
+using Microsoft.Extensions.Logging;
 using Options;
 
 /// <summary>
@@ -51,18 +52,18 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     }
 
 
-    protected BisSynchronizable(BisBinaryReader reader, TOptions options, Stream? syncTo) : base(reader, options)
+    protected BisSynchronizable(BisBinaryReader reader, TOptions options, Stream? syncTo, ILogger logger) : base(reader, options, logger)
     {
         SynchronizationRoot = this;
         SynchronizationStream = syncTo;
     }
 
-    protected BisSynchronizable()
+    protected BisSynchronizable(ILogger? logger) : base(logger)
     {
 
     }
 
-    protected BisSynchronizable(Stream? syncTo)
+    protected BisSynchronizable(Stream? syncTo, ILogger? logger) : base(logger)
     {
         SynchronizationRoot = this;
         ChangesMade += OnChangesMade;

@@ -9,6 +9,7 @@ using BisUtils.Core.Render.Vector;
 using BisUtils.RVShape.Models.Lod;
 using BisUtils.RVShape.Options;
 using FResults;
+using Microsoft.Extensions.Logging;
 
 public interface IRVAnimationPhase : IBinaryObject<RVShapeOptions>
 {
@@ -23,7 +24,7 @@ public class RVAnimationPhase : BinaryObject<RVShapeOptions>, IRVAnimationPhase
     public List<IVector3D> Points { get; private set; } = null!;
     public float Time { get; set;  }
 
-    public RVAnimationPhase(BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    public RVAnimationPhase(BisBinaryReader reader, RVShapeOptions options, ILogger? logger) : base(reader, options, logger)
     {
         if (!Debinarize(reader, options))
         {
@@ -31,7 +32,7 @@ public class RVAnimationPhase : BinaryObject<RVShapeOptions>, IRVAnimationPhase
         }
     }
 
-    public RVAnimationPhase(float time, List<IVector3D> points)
+    public RVAnimationPhase(float time, List<IVector3D> points, ILogger? logger) : base(logger)
     {
         Points = points;
         Time = time;

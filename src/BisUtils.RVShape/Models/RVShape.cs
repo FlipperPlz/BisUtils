@@ -10,6 +10,7 @@ using Errors;
 using FResults;
 using FResults.Extensions;
 using Lod;
+using Microsoft.Extensions.Logging;
 using Utils;
 
 public interface IRVShape: IStrictBinaryObject<RVShapeOptions>
@@ -81,13 +82,13 @@ public class RVShape : StrictBinaryObject<RVShapeOptions>, IRVShape
         }
     }
 
-    public RVShape(string modelName, List<IRVLod> levelsOfDetail)
+    public RVShape(string modelName, List<IRVLod> levelsOfDetail, ILogger? logger) : base(logger)
     {
         ModelName = modelName;
         LevelsOfDetail = levelsOfDetail;
     }
 
-    public RVShape(string modelName, BisBinaryReader reader, RVShapeOptions options) : base(reader, options)
+    public RVShape(string modelName, BisBinaryReader reader, RVShapeOptions options, ILogger? logger) : base(reader, options, logger)
     {
         ModelName = modelName;
         if (!Debinarize(reader, options))

@@ -46,21 +46,21 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
     }
 
     public RVBankVersionEntry(
-        ILogger logger,
+        string fileName,
+        RVBankEntryMime mime,
+        uint originalSize,
+        uint offset,
+        uint timeStamp,
+        uint dataSize,
+        IEnumerable<IRVBankProperty>? properties,
         IRVBank file,
         IRVBankDirectory parent,
-        string fileName = "",
-        RVBankEntryMime mime = RVBankEntryMime.Version,
-        uint originalSize = 0,
-        uint offset = 0,
-        uint timeStamp = 0,
-        uint dataSize = 0,
-        IEnumerable<IRVBankProperty>? properties = null
-    ) : base(logger, file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize) =>
+        ILogger? logger
+    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize, file, parent, logger) =>
         Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
 
 
-    public RVBankVersionEntry(ILogger logger, IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(logger, file, parent, reader, options)
+    public RVBankVersionEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         Properties = new ObservableCollection<IRVBankProperty>();
 
@@ -74,7 +74,7 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
     public Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options)
     {
         LastResult = Result.Ok();
-        var property = new RVBankProperty(BankFile, this, string.Empty, string.Empty);
+        var property = new RVBankProperty(string.Empty, string.Empty, BankFile, this, Logger);
         Result result;
         while (!(result = property.Debinarize(reader, options)).HasError<RVBankEmptyPropertyNameError>())
         {
@@ -149,10 +149,10 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
     public new long CalculateLength(RVBankOptions options) => base.CalculateLength(options) + 1 + Properties.Sum(property =>
         2 + options.Charset.GetByteCount(property.Name) + options.Charset.GetByteCount(property.Value));
 
-    public IRVBankProperty CreateVersionProperty(string name, string value) => new RVBankProperty(BankFile, this, name, value);
+    public IRVBankProperty CreateVersionProperty(string name, string value) => new RVBankProperty(name, value, BankFile, this, Logger);
 
-    public IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options) => new RVBankProperty(BankFile, this, reader, options);
+    public IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options) => new RVBankProperty(reader, options, BankFile, this, Logger);
 
-    public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(logger, BankFile, ParentDirectory, EntryName, EntryMime, OriginalSize, Offset,
-        TimeStamp, DataSize, Properties);
+    public IRVBankVersionEntry BisClone() => new RVBankVersionEntry(EntryName, EntryMime, OriginalSize, Offset,
+        TimeStamp, DataSize, Properties, BankFile, ParentDirectory, Logger );
 }

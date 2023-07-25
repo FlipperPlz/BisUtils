@@ -4,6 +4,7 @@ using Binarize;
 using Extensions;
 using FResults;
 using IO;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IColor : IBinaryObject<IBisColorOptions>
@@ -24,6 +25,7 @@ public struct Color : IColor
     public float Green { get; private set; }
     public float Blue { get; private set; }
     public float Alpha { get; private set; }
+    public ILogger? Logger { get; }
 
     public int PackColor()
     {
@@ -35,20 +37,23 @@ public struct Color : IColor
         return value;
     }
 
-    public Color(float red, float green, float blue, float alpha)
+    public Color(float red, float green, float blue, float alpha, ILogger? logger)
     {
         Red = red;
         Green = green;
         Blue = blue;
         Alpha = alpha;
+        Logger = logger;
     }
 
-    public Color(BisBinaryReader reader, IBisColorOptions options)
+    public Color(BisBinaryReader reader, IBisColorOptions options, ILogger? logger)
     {
+        Logger = logger;
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
         }
+
     }
 
     public Color(BisBinaryReader reader, bool writePacked)
@@ -105,4 +110,5 @@ public struct Color : IColor
             }
         }
     }
+
 }

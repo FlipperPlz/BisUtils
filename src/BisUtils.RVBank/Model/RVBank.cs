@@ -40,12 +40,10 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 {
     public string FileName { get; set; }
 
-    protected readonly ILogger logger;
-
     public string BankPrefix
     {
         get => this.GetVersionEntry()?.GetPropertyValue("prefix") ?? FileName;
-        set => (this.GetVersionEntry() ?? this.AddVersionEntry(logger)).SetOrCreateProperty("prefix", value);
+        set => (this.GetVersionEntry() ?? this.AddVersionEntry(Logger)).SetOrCreateProperty("prefix", value);
     }
     public IRVBank BankFile { get; }
 
@@ -65,17 +63,15 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public RVBank(ILogger logger, string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo = null) : base(synchronizeTo)
+    public RVBank(string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo, ILogger logger) : base(synchronizeTo, logger)
     {
-        this.logger = logger;
         BankFile = this;
         FileName = filename;
         PboEntries = new ObservableCollection<IRVBankEntry>(entries);
     }
 
-    public RVBank(ILogger logger, string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo = null) : base(reader, options, synchronizeTo)
+    public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo, ILogger logger) : base(reader, options, synchronizeTo, logger)
     {
-        this.logger = logger;
         BankFile = this;
         FileName = filename;
         PboEntries = new ObservableCollection<IRVBankEntry>();
@@ -88,7 +84,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     public static RVBank ReadPbo(ILogger logger, string path, RVBankOptions options, Stream? syncTo)
     {
         using var reader = new BisBinaryReader(File.OpenRead(path));
-        return new RVBank(logger, Path.GetFileNameWithoutExtension(path), reader, options, syncTo);
+        return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
@@ -108,8 +104,8 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
             IRVBankEntry currentEntry = mime switch
             {
-                RVBankEntryMime.Version => new RVBankVersionEntry(logger, this, this, reader, options),
-                _ => new RVBankDataEntry(logger, this, this, reader, options)
+                RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, this, this, Logger),
+                _ => new RVBankDataEntry(reader, options, this, this, Logger)
             };
 
 

@@ -5,6 +5,7 @@ using Core.Extensions;
 using Core.IO;
 using Enumerations;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -22,13 +23,13 @@ public class ParamString : ParamLiteral<string>, IParamString
     public override byte LiteralId => 4;
     public override string Value { get; set; } = null!;
     public ParamStringType StringType { get; }
-    public static IParamString Nill { get; } = new ParamString(null!, null!, null!, null!);
+    public static IParamString EmptyNoParents { get; } = new ParamString(null!, null!, null!, null!, null);
 
-    public ParamString(IParamFile file, IParamLiteralHolder parent, string value, ParamStringType stringType) : base(file, parent, value) =>
+    public ParamString(string value, ParamStringType stringType, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger) =>
         StringType = stringType;
 
-    public ParamString(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options) :
-        base(file, parent, reader, options)
+    public ParamString(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) :
+        base(reader, options, file, parent, logger)
     {
         StringType = ParamStringType.Quoted;
         if (!Debinarize(reader, options))
@@ -69,7 +70,7 @@ public class ParamString : ParamLiteral<string>, IParamString
     }
 #pragma warning disable CA1305 //TODO: Options with locale
 
-    public bool ToInt(out ParamInt paramInt)
+    public bool ToInt(out ParamInt? paramInt)
     {
         var response = int.TryParse(Value, out var parsedInt);
         if (!response)
@@ -78,11 +79,11 @@ public class ParamString : ParamLiteral<string>, IParamString
             return response;
         }
 
-        paramInt = new ParamInt(ParamFile, Parent, parsedInt);
+        paramInt = new ParamInt(parsedInt, ParamFile, Parent, Logger);
         return true;
     }
 
-    public bool ToFloat(out ParamFloat paramFloat)
+    public bool ToFloat(out ParamFloat? paramFloat)
     {
         var response = float.TryParse(Value, out var parsedInt);
         if (!response)
@@ -90,17 +91,17 @@ public class ParamString : ParamLiteral<string>, IParamString
             paramFloat = null;
             return response;
         }
-        paramFloat = new ParamFloat(ParamFile, Parent, parsedInt);
+        paramFloat = new ParamFloat(parsedInt, ParamFile, Parent, null);
         return true;
     }
 
-    public IParamFloat ToFloat()
+    public IParamFloat? ToFloat()
     {
         ToFloat(out var paramFloat);
         return paramFloat;
     }
 
-    public IParamInt ToInt()
+    public IParamInt? ToInt()
     {
         ToInt(out var paramInt);
         return paramInt;

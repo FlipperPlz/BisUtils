@@ -2,6 +2,7 @@
 
 using System.Text;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Parsing;
 using Parsing.Lexer;
 
@@ -12,6 +13,7 @@ public static class ParserExtensions
         this IBisParser<TAstNode, TLexer, TTypes, TPreProcessor> parser,
         out TAstNode? node,
         TLexer lexer,
+        ILogger? logger,
         TPreProcessor? preprocessor = null
     ) where TLexer : BisLexer<TTypes> where TTypes : Enum where TPreProcessor : BisPreProcessorBase, new()
     {
@@ -19,6 +21,6 @@ public static class ParserExtensions
         preprocessor ??= new TPreProcessor();
         preprocessor.EvaluateLexer(lexer, builder);
         lexer.ResetLexer(builder.ToString());
-        return parser.Parse(out node, lexer);
+        return parser.Parse(out node, lexer, logger);
     }
 }

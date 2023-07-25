@@ -61,22 +61,22 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         uint offset,
         uint timeStamp,
         uint dataSize
-    ) : base(logger, file, parent, fileName, mime, originalSize, offset, timeStamp, dataSize)
+    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize, file, parent, logger)
     {
     }
 
     public RVBankDataEntry
     (
-        ILogger logger,
-        IRVBank file,
-        IRVBankDirectory parent,
         string fileName,
         RVBankEntryMime mime,
         uint offset,
         uint timeStamp,
         Stream entryData,
-        RVBankDataType? packingMethod = null
-    ) : base(logger, file, parent, fileName, mime, (uint) entryData.Length, offset, timeStamp, 0) =>
+        RVBankDataType? packingMethod,
+        IRVBank file,
+        IRVBankDirectory parent,
+        ILogger? logger
+    ) : base(fileName, mime, (uint) entryData.Length, offset, timeStamp, 0, file, parent, logger) =>
         this.packingMethod = packingMethod ?? AssumePackingMethod();
 
     private RVBankDataType AssumePackingMethod()
@@ -99,7 +99,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     protected sealed override void OnChangesMade(object? sender, EventArgs? e) => base.OnChangesMade(sender, e);
 
-    public RVBankDataEntry(ILogger logger, IRVBank file, IRVBankDirectory parent, BisBinaryReader reader, RVBankOptions options) : base(logger, file, parent, reader, options)
+    public RVBankDataEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         Debinarize(reader, options);
         if (LastResult!.IsFailed)
@@ -122,7 +122,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
         EntryName = RVPathUtilities.GetFilename(EntryName);
 
-        ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile);
+        ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger);
         Move(ParentDirectory);
     }
 

@@ -3,6 +3,7 @@
 using Core.IO;
 using FResults;
 using Holders;
+using Microsoft.Extensions.Logging;
 using Options;
 
 public interface IParamStatement : IParamElement
@@ -14,11 +15,11 @@ public interface IParamStatement : IParamElement
 
 public abstract class ParamStatement : ParamElement, IParamStatement
 {
-    protected ParamStatement(IParamFile file, IParamStatementHolder parent) : base(file) =>
+    protected ParamStatement(IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, logger) =>
         ParentClass = parent;
 
-    protected ParamStatement(IParamFile file, IParamStatementHolder parent, BisBinaryReader reader,
-        ParamOptions options) : base(file, reader, options) =>
+    protected ParamStatement(  BisBinaryReader reader,
+        ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base( reader, options, file, logger) =>
         ParentClass = parent;
 
     public abstract byte StatementId { get; }

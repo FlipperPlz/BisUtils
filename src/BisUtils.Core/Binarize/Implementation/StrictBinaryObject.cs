@@ -2,6 +2,7 @@
 
 using FResults;
 using IO;
+using Microsoft.Extensions.Logging;
 using Options;
 
 /// <summary>
@@ -18,14 +19,15 @@ public abstract class StrictBinaryObject<T> : BinaryObject<T>, IStrictBinaryObje
     /// </summary>
     /// <param name="reader">The binary reader to load data from.</param>
     /// <param name="options">The options controlling the debinarization process.</param>
-    protected StrictBinaryObject(BisBinaryReader reader, T options) : base(reader, options)
+    /// <param name="logger">The logger to use for this object</param>
+    protected StrictBinaryObject(BisBinaryReader reader, T options, ILogger? logger) : base(reader, options, logger)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StrictBinaryObject{T}" /> class.
     /// </summary>
-    protected StrictBinaryObject()
+    protected StrictBinaryObject(ILogger? logger) : base(logger)
     {
     }
 

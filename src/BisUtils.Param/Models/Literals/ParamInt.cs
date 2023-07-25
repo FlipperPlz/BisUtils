@@ -5,6 +5,7 @@ using System.Text;
 using Core.Extensions;
 using Core.IO;
 using FResults;
+using Microsoft.Extensions.Logging;
 using Options;
 using Stubs;
 using Stubs.Holders;
@@ -19,11 +20,11 @@ public class ParamInt : ParamLiteral<int>, IParamInt
     public override byte LiteralId => 2;
     public override int Value { get; set; }
 
-    public ParamInt(IParamFile file, IParamLiteralHolder parent, int value) : base(file, parent, value)
+    public ParamInt(int value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
     {
     }
 
-    public ParamInt(IParamFile file, IParamLiteralHolder parent, BisBinaryReader reader, ParamOptions options) : base(file, parent, reader, options)
+    public ParamInt(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

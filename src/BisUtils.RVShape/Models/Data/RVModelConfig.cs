@@ -5,6 +5,7 @@ using BisUtils.Param.Models;
 using BisUtils.Param.Models.Statements;
 using BisUtils.Param.Models.Stubs;
 using BisUtils.Param.Options;
+using Microsoft.Extensions.Logging;
 
 public interface IRVModelConfig : IParamFile
 {
@@ -21,15 +22,15 @@ public class RVModelConfig : ParamFile, IRVModelConfig
     public IParamClass? ModelConfigs { get; }
     public IParamClass? ModelConfig { get; }
 
-    public RVModelConfig(string modelName, List<IParamStatement> statements) : base(modelName, statements)
+    public RVModelConfig(string modelName, List<IParamStatement> statements, ILogger? logger) : base(modelName, statements, logger)
     {
         SkeletonConfigs = null;
         ModelConfigs = null;
         ModelConfig = ModelConfigs is not null ? ModelConfigs >> ModelName : null;
     }
 
-    public RVModelConfig(string modelName, BisBinaryReader reader, ParamOptions options) : base(modelName, reader,
-        options)
+    public RVModelConfig(string modelName, BisBinaryReader reader, ParamOptions options, ILogger? logger) : base(modelName, reader,
+        options, logger)
     {
         SkeletonConfigs = null;
         ModelConfigs = null;

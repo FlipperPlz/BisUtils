@@ -1,10 +1,6 @@
 ﻿namespace BisUtils.DZConfig.Models;
 
-using Param.Enumerations;
-using Param.Extensions;
-using Param.Models.Literals;
 using Param.Models.Statements;
-using Param.Models.Stubs;
 using Param.Utils;
 
 public interface IDzCfgPatch : IParamConfigAbstraction<IParamClass>
