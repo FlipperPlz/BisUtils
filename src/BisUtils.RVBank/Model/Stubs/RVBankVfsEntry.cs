@@ -26,8 +26,8 @@ public abstract class RVBankVfsEntry : RVBankElement, IRVBankVfsEntry
         }
     }
 
-    public string Path => ParentDirectory is { } parentDirectory ? parentDirectory.Path + "\\" + EntryName : EntryName;
-    public string AbsolutePath => ParentDirectory is { } parentDirectory ? parentDirectory.AbsolutePath + "\\" + EntryName : BankFile.AbsolutePath + "\\" + EntryName;
+    public string Path => (ParentDirectory is { } parentDirectory ? parentDirectory.Path + "\\" + EntryName : EntryName).TrimStart('\\');
+    public string AbsolutePath => (ParentDirectory is { } parentDirectory ? parentDirectory.AbsolutePath + "\\" + EntryName : BankFile.AbsolutePath + "\\" + EntryName).TrimStart('\\');
 
 
     public IRVBankDirectory ParentDirectory { get; protected set; }

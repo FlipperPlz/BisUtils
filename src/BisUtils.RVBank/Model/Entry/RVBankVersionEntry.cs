@@ -102,7 +102,7 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        writer.WriteAsciiZ(EntryName, options);
+        writer.WriteAsciiZ(Path, options);
         writer.Write((int)EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
@@ -154,7 +154,7 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
         return LastResult;
     }
-    public override uint CalculateLength(RVBankOptions options) =>  (uint) (21 + options.Charset.GetByteCount(EntryName)) + 1 +  (uint)Properties.Sum(property =>
+    public override uint CalculateLength(RVBankOptions options) =>  (uint) (21 + options.Charset.GetByteCount(Path)) + 1 +  (uint)Properties.Sum(property =>
         2 + options.Charset.GetByteCount(property.Name) + options.Charset.GetByteCount(property.Value));
 
     public IRVBankProperty CreateVersionProperty(string name, string value) => new RVBankProperty(name, value, BankFile, this, Logger);

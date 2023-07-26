@@ -206,14 +206,14 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        LastResult = base.Binarize(writer, options);
+        writer.Write(Path);
         writer.Write((long)EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
         PackingMethod = AssumePackingMethod();
-        return LastResult;
+        return LastResult = Result.Ok();
     }
 
     internal void SetEntryDataQuietly(Stream data) => entryData = data;
@@ -292,5 +292,5 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         return LastResult;
     }
 
-    public override uint CalculateLength(RVBankOptions options) =>  21 + (uint) options.Charset.GetByteCount(EntryName);
+    public override uint CalculateLength(RVBankOptions options) =>  21 + (uint) options.Charset.GetByteCount(Path);
 }
