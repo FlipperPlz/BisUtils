@@ -40,8 +40,8 @@ public static class RVPathUtilities
         return new string(result, 0, charsWritten);
     }
 
-    public static string GetFilename(string path) =>
-        path.Remove(0, path.LastIndexOf('\\') + 1);
+    public static string GetFilename(string path) =>  path.Split('\\')[^1];
+
 
     public static string GetParent(string path) =>
         path.Remove(path.LastIndexOf('\\') + 1);

@@ -116,6 +116,7 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
 
         ParentDirectory.RemoveEntry(this);
         ParentDirectory = destination;
+        destination.PboEntries.Add(this);
         OnChangesMade(this, EventArgs.Empty);
     }
 
