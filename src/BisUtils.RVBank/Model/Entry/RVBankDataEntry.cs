@@ -128,22 +128,47 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     public bool InitializeData(BisBinaryReader reader, RVBankOptions options)
     {
+
+        var stream = new MemoryStream();
+
+        const int BufferSize = 8192;
+
+        var iterations = DataSize / BufferSize;
+
+        for (long i = 0; i < iterations; i++)
+        {
+            var chunk = reader.ReadBytes(BufferSize);
+            stream.Write(chunk, 0, chunk.Length);
+        }
+
+        var remainder = (int)(DataSize % BufferSize);
+        if (remainder > 0)
+        {
+            var chunk = reader.ReadBytes(remainder);
+            stream.Write(chunk, 0, chunk.Length);
+        }
+
+        entryData = stream;
+        entryData.Seek(0, SeekOrigin.Begin);
         switch (PackingMethod)
         {
 
             case RVBankDataType.Encrypted:
             {
-                throw new RVEncryptedBankException();
+                Logger?.LogCritical("Found encrypted entry {Path}", Path);
+                return default;
             }
             case RVBankDataType.Compressed:
             {
-                var start = reader.BaseStream.Position;
-
-                var stream = new MemoryStream();
+                var bytes = stream.ToArray();
+                entryData.Seek(0, SeekOrigin.Begin);
+                entryData.SetLength(bytes.LongLength);
                 using var writer = new BinaryWriter(stream, options.Charset, true);
-                if (BisCompatibleLzss.Compressor.Decode(reader.ReadBytes((int) DataSize), writer, OriginalSize) is { } size && size != OriginalSize)
+                if (BisCompatibleLzss.Compressor.Decode(bytes, writer, OriginalSize) is { } size && size != OriginalSize)
                 {
-                    reader.BaseStream.Seek(start + (DataSize - size), SeekOrigin.Begin);
+                    stream.Close();
+                    Logger?.LogDebug("What the fuck expected {OG} got {WTF}", OriginalSize, size);
+                    entryData = new MemoryStream(bytes);
                 }
                 else
                 {
@@ -156,26 +181,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             default:
             {
 
-                var memoryStream = new MemoryStream();
-                const int BufferSize = 8192;
-
-                var iterations = DataSize / BufferSize;
-
-                for (long i = 0; i < iterations; i++)
-                {
-                    var chunk = reader.ReadBytes(BufferSize);
-                    memoryStream.Write(chunk, 0, chunk.Length);
-                }
-
-                var remainder = (int)(DataSize % BufferSize);
-                if (remainder > 0)
-                {
-                    var chunk = reader.ReadBytes(remainder);
-                    memoryStream.Write(chunk, 0, chunk.Length);
-                }
-
-                entryData = memoryStream;
-                entryData.Seek(0, SeekOrigin.Begin);
 
                 return PackingMethod is not RVBankDataType.Compressed;
             }

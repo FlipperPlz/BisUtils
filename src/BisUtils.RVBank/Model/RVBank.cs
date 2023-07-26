@@ -175,14 +175,14 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
         foreach (var entry in entries)
         {
-            Logger?.LogDebug("Reading data for entry '{EntryName}' at '{Position}", entry.Path, reader.BaseStream.Position);
+            Logger?.LogDebug("Reading data for entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, reader.BaseStream.Position, entry.DataSize);
             if (markedForRemoval.Contains(entry))
             {
                 reader.BaseStream.Seek(entry.DataSize, SeekOrigin.Current);
             }
             else if (!entry.InitializeData(reader, options))
             {
-                Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.EntryName);
+                Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.AbsolutePath);
                 markedForRemoval.Add(entry);
             }
         }
