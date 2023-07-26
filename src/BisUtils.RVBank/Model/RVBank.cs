@@ -96,6 +96,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
         var responses = new List<Result>();
         var markedForRemoval = new List<IRVBankEntry>();
+        var entries = new List<RVBankDataEntry>();
         Logger?.LogDebug("Entry loop started at {Start}", reader.BaseStream.Position);
 
         var first = true;
@@ -107,15 +108,28 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             responses.Add(reader.SkipAsciiZ(options));
             var mime = (RVBankEntryMime?)reader.ReadInt64();
             reader.BaseStream.Seek(start, SeekOrigin.Begin);
-            IRVBankEntry currentEntry = mime switch
+            IRVBankEntry currentEntry =  mime switch
             {
                 RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, this, this, Logger),
                 _ => new RVBankDataEntry(reader, options, this, this, Logger)
             };
 
 
-            if (currentEntry is RVBankDataEntry dataEntry)
+            if (currentEntry is RVBankDataEntry dataEntry )
             {
+                if(currentEntry.IsDummyEntry())
+                {
+                    if (options.AlwaysSeparateOnDummy)
+                    {
+                        Logger?.LogDebug("Located ending magic at {Pos}... breaking entry loop.", reader.BaseStream.Position);
+                        break;
+                    }
+
+                    Logger?.LogDebug("Located ending magic. Peeking for extra data and attempting to recover...");
+                    throw new NotImplementedException();
+                }
+
+                entries.Add(dataEntry);
                 if (!options.FlatRead)
                 {
                     dataEntry.ExpandDirectoryStructure();
@@ -135,17 +149,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                     AlertScope = typeof(RVBank),
                     IsError = options.RequireFirstEntryIsVersion
                 });
-            }
-
-            if (currentEntry is IRVBankDataEntry && currentEntry.IsDummyEntry())
-            {
-                if (options.AlwaysSeparateOnDummy)
-                {
-                    Logger?.LogDebug("Located ending magic at {Pos}... breaking entry loop.", reader.BaseStream.Position);
-                    break;
-                }
-
-                Logger?.LogDebug("Located ending magic. Peeking for extra data and attempting to recover...");
             }
 
             if (first)
@@ -170,8 +173,9 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
         Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
 
-        foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
+        foreach (var entry in entries)
         {
+            Logger?.LogDebug("Reading data for entry '{EntryName}' at '{Position}", entry.Path, reader.BaseStream.Position);
             if (markedForRemoval.Contains(entry))
             {
                 reader.BaseStream.Seek(entry.DataSize, SeekOrigin.Current);

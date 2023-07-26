@@ -11,10 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +35,8 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -350,7 +349,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690392206287</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure">
+      <option name="closed" value="true" />
+      <created>1690401479906</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1690401479906</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -404,7 +411,8 @@
     <MESSAGE value="fix(bank): Fix RVBankEntry::Move" />
     <MESSAGE value="fix(bank): Write Path Instead Of Name" />
     <MESSAGE value="fix(bank): Fix RVBankDirectory::CalculateLength" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(bank): Fix RVBankDirectory::CalculateLength" />
+    <MESSAGE value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -450,26 +458,26 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>233</line>
+          <line>236</line>
           <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="237" containingFunctionPresentation="Method 'Binarize'">
             <startOffsets>
-              <option value="7594" />
+              <option value="7702" />
             </startOffsets>
             <endOffsets>
-              <option value="7686" />
+              <option value="7794" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>170</line>
+          <line>173</line>
           <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="170" containingFunctionPresentation="Method 'Debinarize'">
             <startOffsets>
-              <option value="5369" />
+              <option value="5518" />
             </startOffsets>
             <endOffsets>
-              <option value="5569" />
+              <option value="5718" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="33" />

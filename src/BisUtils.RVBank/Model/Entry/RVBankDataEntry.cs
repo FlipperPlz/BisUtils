@@ -141,7 +141,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
                 var stream = new MemoryStream();
                 using var writer = new BinaryWriter(stream, options.Charset, true);
-                if (BisCompatibleLzss.Compressor.Decode(reader, writer, OriginalSize) is { } size && size != OriginalSize)
+                if (BisCompatibleLzss.Compressor.Decode(reader.ReadBytes((int) DataSize), writer, OriginalSize) is { } size && size != OriginalSize)
                 {
                     reader.BaseStream.Seek(start + (DataSize - size), SeekOrigin.Begin);
                 }

@@ -42,6 +42,10 @@ public static class RVBankDirectoryExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
 
+    public static IEnumerable<IRVBankDataEntry> GetDataEntries(this IRVBankDirectory ctx, string name,
+        SearchOption option = SearchOption.TopDirectoryOnly) =>
+        GetDataEntries(ctx, option).Where(it => it.EntryName == name);
+
     public static bool IsEmpty(this IRVBankDirectory ctx) => !ctx.PboEntries.Any();
 
     public static IEnumerable<IRVBankVersionEntry> GetVersionEntries(this IRVBankDirectory ctx,

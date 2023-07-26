@@ -33,11 +33,11 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-    public long Decode(BinaryReader reader, BinaryWriter output, uint length)
+    public int Decode(byte[] input, BinaryWriter output, uint length)
     {
         var text_buf = new byte[N + F - 1];
         var outputBytes = new byte[length];
-        var start = reader.BaseStream.Position;
+        var start = 0;
         if (length <= 0) {
             output.Write(outputBytes);
             return 0;
@@ -49,20 +49,31 @@ public sealed class BisCompatibleLzss
         Array.Fill(text_buf, Fill);
         for (i = 0; i < N - F; i++)
         {
-            text_buf[i] = 0x20;
+            text_buf[i] = Fill;
         }
 
         var r = N - F;
+        var iSrc = 0;
 
-        while (bytesLeft > 0) {
+        while (bytesLeft > 0 && iSrc <= input.Length) {
             int c;
-            if (((flags >>= 1) & 256) == 0) {
-                c = reader.ReadByte();
+            if (((flags >>= 1) & 256) == 0)
+            {
+                if(input.Length <= iSrc)
+                {
+                    return outputBytes.Length; //Failed here out of bounds
+                }
+                c = input[iSrc++];
+
                 flags = c | 0xff00;
             }
 
             if ((flags & 1) != 0) {
-                c = reader.ReadByte();
+                if(input.Length <= iSrc)
+                {
+                    return outputBytes.Length; //Failed here out of bounds
+                }
+                c =  input[iSrc++];
 
                 // save byte
                 outputBytes[iDst++] = (byte) c;
@@ -73,8 +84,17 @@ public sealed class BisCompatibleLzss
                 r &= N - 1;
             }
             else {
-                i = reader.ReadByte();
-                int j = reader.ReadByte();
+                if(input.Length <= iSrc)
+                {
+                    return outputBytes.Length; //Failed here out of bounds
+                }
+                i = input[iSrc++];
+                if(input.Length <= iSrc)
+                {
+                    return outputBytes.Length; //Failed here out of bounds
+                }
+                int j = input[iSrc++];
+
                 i |= (j & 0xf0) << 4;
                 j &= 0x0f;
                 j += Threshold;
@@ -83,7 +103,7 @@ public sealed class BisCompatibleLzss
                     jj = j + ii;
 
                 if (j + 1 > bytesLeft) {
-                    return iDst;
+                    return outputBytes.Length;
                 }
 
                 for (; ii <= jj; ii++) {
@@ -99,7 +119,7 @@ public sealed class BisCompatibleLzss
                 }
             }
         }
-        reader.ReadInt32();
+
         output.Write(outputBytes);
         return outputBytes.Length;
 
