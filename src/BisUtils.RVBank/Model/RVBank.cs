@@ -170,7 +170,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
         Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
 
-        foreach (var entry in this.GetFileEntries())
+        foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
         {
             if (markedForRemoval.Contains(entry))
             {
@@ -180,9 +180,11 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 markedForRemoval.Add(entry);
             }
+        }
 
-
-
+        foreach (var directory in this.GetDirectories().ToList().Where(directory => directory.IsEmpty()))
+        {
+            directory.ParentDirectory.RemoveDirectory(directory);
         }
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
 
@@ -232,11 +234,8 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        foreach (var directory in this.GetDirectories().ToList().Where(directory => directory.IsEmpty(true)))
-        {
-            directory.ParentDirectory.RemoveDirectory(directory);
-        }
-        var dataEntries = this.GetFileEntries(true).ToList();
+
+        var dataEntries = this.GetDataEntries(SearchOption.AllDirectories).ToList();
         this.GetVersionEntry()?.Binarize(writer, options);
         foreach (var entry in dataEntries)
         {
