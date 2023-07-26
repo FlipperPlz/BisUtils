@@ -178,6 +178,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             }
             else if (!entry.InitializeData(reader, options))
             {
+                Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.EntryName);
                 markedForRemoval.Add(entry);
             }
         }
@@ -247,6 +248,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             entry.Binarize(writer, options);
         }
         writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
+        writer.Write((byte)0);
         var digest = CalculateDigest(writer.BaseStream);
         digest.Write(writer);
         return LastResult!;

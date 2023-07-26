@@ -31,7 +31,13 @@ var bankOptions = new RVBankOptions()
     AsciiLengthTimeout = 510,
     AllowEncrypted = true
 };
-
-var bank = RVBank.ReadPbo(@"C:\Users\ryann\Downloads\Ryann\HDSN_BreachingCharge.pbo", bankOptions, File.Open(@"C:\Users\ryann\Downloads\Ryann\out\out.pbo", FileMode.OpenOrCreate, FileAccess.ReadWrite), NullLogger.Instance);
+var output = @"C:\Users\ryann\Downloads\Ryann\out\out.pbo";
+File.Delete(output);
+var outStream = File.Open(output, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+var bank = RVBank.ReadPbo(@"C:\Users\ryann\Downloads\Ryann\HDSN_BreachingCharge.pbo", bankOptions, outStream, NullLogger.Instance);
 bank.SynchronizeWithStream(bankOptions);
+outStream.Close();
 Console.WriteLine();
+
+var outBank = RVBank.ReadPbo(output, bankOptions, null, NullLogger.Instance);
+

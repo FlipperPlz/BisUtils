@@ -80,5 +80,5 @@ public class RVBankDirectory : RVBankVfsEntry, IRVBankDirectory
         OnChangesMade(this, EventArgs.Empty);
     }
 
-    public uint CalculateLength(RVBankOptions options) => 0;
+    public uint CalculateLength(RVBankOptions options) => (uint) pboEntries.Sum(it => it.CalculateLength(options));
 }

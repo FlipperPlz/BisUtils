@@ -1,5 +1,6 @@
 namespace BisUtils.RVBank.Model.Entry;
 
+using System.Text;
 using Alerts.Errors;
 using Core.Binarize.Exceptions;
 using Core.IO;
@@ -206,13 +207,12 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        writer.Write(Path);
-        writer.Write((long)EntryMime);
+        writer.WriteAsciiZ(Path, options);
+        writer.Write((uint)EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
-        PackingMethod = AssumePackingMethod();
         return LastResult = Result.Ok();
     }
 
