@@ -12,8 +12,9 @@
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -439,10 +440,10 @@
           <line>41</line>
           <properties documentPath="E:\projects\csharp\BisUtils\test\Scratches\BankTest\Program.cs" initialLine="41" containingFunctionPresentation="">
             <startOffsets>
-              <option value="1399" />
+              <option value="1414" />
             </startOffsets>
             <endOffsets>
-              <option value="1476" />
+              <option value="1491" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="27" />
@@ -460,6 +461,19 @@
           </properties>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
+          <line>170</line>
+          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="170" containingFunctionPresentation="Method 'Debinarize'">
+            <startOffsets>
+              <option value="5369" />
+            </startOffsets>
+            <endOffsets>
+              <option value="5569" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
@@ -469,5 +483,10 @@
         <PinnedItemInfo parentTag="Type#BisUtils.RVBank.Model.RVBank" memberName="PboEntries" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="DotNetProject">
+        <watch expression="new System.Collections.Generic.CollectionDebugView&lt;BisUtils.RVBank.Model.Stubs.IRVBankEntry&gt;(this.PboEntries).Items[1]" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

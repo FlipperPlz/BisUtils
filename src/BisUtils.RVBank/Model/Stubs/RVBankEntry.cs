@@ -114,9 +114,9 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
             throw new IOException("Cannot move this entry to a directory outside of the current pbo.");
         }
 
+        destination.PboEntries.Add(this);
         ParentDirectory.RemoveEntry(this);
         ParentDirectory = destination;
-        destination.PboEntries.Add(this);
         OnChangesMade(this, EventArgs.Empty);
     }
 

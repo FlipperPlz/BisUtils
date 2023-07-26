@@ -31,10 +31,10 @@ var bankOptions = new RVBankOptions()
     AsciiLengthTimeout = 510,
     AllowEncrypted = true
 };
-var output = @"C:\Users\ryann\Downloads\Ryann\out\out.pbo";
+var output = @"C:\Users\ryann\Downloads\Ryann\LBMaster\out.pbo";
 File.Delete(output);
 var outStream = File.Open(output, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-var bank = RVBank.ReadPbo(@"C:\Users\ryann\Downloads\Ryann\HDSN_BreachingCharge.pbo", bankOptions, outStream, NullLogger.Instance);
+var bank = RVBank.ReadPbo(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
 bank.SynchronizeWithStream(bankOptions);
 outStream.Close();
 Console.WriteLine();

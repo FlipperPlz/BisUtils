@@ -123,8 +123,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
         EntryName = RVPathUtilities.GetFilename(EntryName);
 
-        ParentDirectory = BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger);
-        Move(ParentDirectory);
+        Move(BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));
     }
 
     public bool InitializeData(BisBinaryReader reader, RVBankOptions options)
