@@ -11,8 +11,9 @@ using Options;
 
 public static class RVBankDirectoryExtensions
 {
+    //ctx.PboOptions is an ObeservableCollection<IRVBankDirectory>
     public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) where T : IRVBankEntry =>
-        ctx.PboEntries.Where(it => it is T).Cast<T>();
+        ctx.PboEntries.OfType<T>();
 
     public static IEnumerable<IRVBankEntry> GetEntries(this IRVBankDirectory ctx, RVBankEntryMime mime) =>
         ctx.PboEntries.Where(it => it.EntryMime == mime);
@@ -23,8 +24,8 @@ public static class RVBankDirectoryExtensions
     public static IEnumerable<IRVBankDirectory> GetDirectories(this IRVBankDirectory ctx, SearchOption option = SearchOption.TopDirectoryOnly) =>
         option switch
         {
-            SearchOption.AllDirectories => EnumerateDirectoryChildren(GetEntries<IRVBankDirectory>(ctx).ToList()),
-            SearchOption.TopDirectoryOnly => GetEntries<IRVBankDirectory>(ctx),
+            SearchOption.AllDirectories => EnumerateDirectoryChildren(ctx.GetEntries<IRVBankDirectory>().ToList()),
+            SearchOption.TopDirectoryOnly => ctx.GetEntries<IRVBankDirectory>(),
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
 
@@ -34,23 +35,27 @@ public static class RVBankDirectoryExtensions
     public static IEnumerable<IRVBankDataEntry> GetDataEntries(this IRVBankDirectory ctx, SearchOption option = SearchOption.TopDirectoryOnly) =>
         option switch
         {
-            SearchOption.AllDirectories => DataEntriesFor(EnumerateDirectoryChildren(GetEntries<IRVBankDirectory>(ctx).ToList())).Concat(GetEntries<IRVBankDataEntry>(ctx)),
-            SearchOption.TopDirectoryOnly => GetEntries<IRVBankDataEntry>(ctx),
+            SearchOption.AllDirectories => DataEntriesFor(
+                    EnumerateDirectoryChildren(ctx.GetEntries<IRVBankDirectory>().ToList()))
+                .Concat(ctx.GetEntries<IRVBankDataEntry>()),
+            SearchOption.TopDirectoryOnly => ctx.GetEntries<IRVBankDataEntry>(),
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
 
     public static bool IsEmpty(this IRVBankDirectory ctx) => !ctx.PboEntries.Any();
 
-    public static IEnumerable<IRVBankVersionEntry> GetVersionEntries(this IRVBankDirectory ctx, SearchOption option = SearchOption.TopDirectoryOnly) =>
+    public static IEnumerable<IRVBankVersionEntry> GetVersionEntries(this IRVBankDirectory ctx,
+        SearchOption option = SearchOption.TopDirectoryOnly) =>
         option switch
         {
-            SearchOption.AllDirectories => VersionEntriesFor(EnumerateDirectoryChildren(GetEntries<IRVBankDirectory>(ctx).ToList())).Concat(GetEntries<IRVBankVersionEntry>(ctx)),
-            SearchOption.TopDirectoryOnly => GetEntries<IRVBankVersionEntry>(ctx),
+            SearchOption.AllDirectories => VersionEntriesFor(
+                    EnumerateDirectoryChildren(ctx.GetEntries<IRVBankDirectory>().ToList()))
+                .Concat(ctx.GetEntries<IRVBankVersionEntry>()),
+            SearchOption.TopDirectoryOnly => ctx.GetEntries<IRVBankVersionEntry>(),
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
 
-    public static IRVBankVersionEntry? GetVersionEntry(this IRVBankDirectory ctx,
-        SearchOption option = SearchOption.TopDirectoryOnly) =>
+    public static IRVBankVersionEntry? GetVersionEntry(this IRVBankDirectory ctx, SearchOption option = SearchOption.TopDirectoryOnly) =>
         GetVersionEntries(ctx, option).FirstOrDefault();
 
     private static IEnumerable<IRVBankVersionEntry> VersionEntriesFor(IEnumerable<IRVBankDirectory> directories) =>
@@ -61,9 +66,15 @@ public static class RVBankDirectoryExtensions
 
     private static IEnumerable<IRVBankDirectory> EnumerateDirectoryChildren(List<IRVBankDirectory> directories)
     {
-        directories.AddRange(directories.SelectMany(it => it.GetDirectories(SearchOption.AllDirectories)));
-        return directories;
+        var allDirectories = new List<IRVBankDirectory>();
+        foreach (var directory in directories)
+        {
+            allDirectories.Add(directory);
+            allDirectories.AddRange(directory.GetDirectories(SearchOption.AllDirectories));
+        }
+        return allDirectories;
     }
+
     public static IRVBankVersionEntry CreateVersionEntry(this IRVBankDirectory ctx, ILogger? logger, BisBinaryReader reader,
         RVBankOptions options) =>
         new RVBankVersionEntry(reader, options, ctx.BankFile, ctx, logger);

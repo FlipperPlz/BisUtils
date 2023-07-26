@@ -12,8 +12,13 @@
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +177,7 @@
       <workItem from="1690293944544" duration="10847000" />
       <workItem from="1690313313597" duration="365000" />
       <workItem from="1690316514893" duration="6136000" />
-      <workItem from="1690383860142" duration="1922000" />
+      <workItem from="1690383860142" duration="4267000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -310,7 +315,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690322160548</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="fix(bank): Rewrite DirectoryExtensions">
+      <option name="closed" value="true" />
+      <created>1690385840705</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1690385840706</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -359,7 +372,8 @@
     <MESSAGE value="feat(bank): Work On Duplicate Entries" />
     <MESSAGE value="feat(bank): Refactor RVBank &amp; RVBankDirectoryExtensions: Clean-up and Optimization. RVBankDirectoryExtensions needs some MAJOR fixes - has been giving me a headache&#10;&#10;The `RVBank.cs` and `RVBankDirectoryExtensions.cs` have been deeply refactored to improve readability, and optimize performance by minimizing excess operations during binarization and debinarization.  &#10;Log messages about the start and end of debinarization were removed from the `RVBank.cs`.&#10;Also, an addition of bank test project was made to the solution file `BisUtils.sln` while the `BisCompatibleLZSS.cs` class now decodes and compresses using encoding UTF8 and returns byte arrays.&#10;&#10;These changes are necessary to improve the performance of data debinarization and binarization, and ultimately enhance the overall efficiency of the project." />
     <MESSAGE value="chore(bank): Add BankTest Project" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore(bank): Add BankTest Project" />
+    <MESSAGE value="fix(bank): Rewrite DirectoryExtensions" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(bank): Rewrite DirectoryExtensions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -395,44 +409,33 @@
           <line>36</line>
           <properties documentPath="E:\projects\csharp\BisUtils\test\Scratches\BankTest\Program.cs" initialLine="37" containingFunctionPresentation="">
             <startOffsets>
-              <option value="1268" />
+              <option value="1290" />
             </startOffsets>
             <endOffsets>
-              <option value="1288" />
+              <option value="1310" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>239</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="240" containingFunctionPresentation="Method 'Binarize'">
-            <startOffsets>
-              <option value="7788" />
-            </startOffsets>
-            <endOffsets>
-              <option value="7822" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
           <line>237</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="238" containingFunctionPresentation="Method 'Binarize'">
+          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="237" containingFunctionPresentation="Method 'Binarize'">
             <startOffsets>
-              <option value="7644" />
+              <option value="7744" />
             </startOffsets>
             <endOffsets>
-              <option value="7720" />
+              <option value="7771" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="20" />
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
+        <PinnedItemInfo parentTag="Type#BisUtils.Core.Binarize.Implementation.BinaryObject`1" memberName="Logger" />
+        <PinnedItemInfo parentTag="Type#BisUtils.Core.Binarize.Synchronization.BisSynchronizable`1" memberName="SynchronizationStream" />
         <PinnedItemInfo parentTag="Type#BisUtils.RVBank.Model.RVBank" memberName="PboEntries" />
       </pinned-members>
     </pin-to-top-manager>
