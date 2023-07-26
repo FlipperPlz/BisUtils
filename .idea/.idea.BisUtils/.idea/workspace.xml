@@ -12,11 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/IO/BisBinaryWriter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/IO/BisBinaryWriter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankDirectory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankDirectory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +171,7 @@
       <workItem from="1690293944544" duration="10847000" />
       <workItem from="1690313313597" duration="365000" />
       <workItem from="1690316514893" duration="6136000" />
-      <workItem from="1690383860142" duration="8194000" />
+      <workItem from="1690383860142" duration="8999000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -344,7 +341,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690390125975</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="fix(bank): Fix RVBankDirectory::CalculateLength">
+      <option name="closed" value="true" />
+      <created>1690392206287</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1690392206287</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -397,6 +402,8 @@
     <MESSAGE value="fix(bank): Fix Entry Length Calculation; Fix Extensions" />
     <MESSAGE value="fix(bank): Fix RVBankEntry::Move" />
     <MESSAGE value="fix(bank): Write Path Instead Of Name" />
+    <MESSAGE value="fix(bank): Fix RVBankDirectory::CalculateLength" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(bank): Fix RVBankDirectory::CalculateLength" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -442,13 +449,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>237</line>
+          <line>233</line>
           <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="237" containingFunctionPresentation="Method 'Binarize'">
             <startOffsets>
-              <option value="7786" />
+              <option value="7594" />
             </startOffsets>
             <endOffsets>
-              <option value="7878" />
+              <option value="7686" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="31" />

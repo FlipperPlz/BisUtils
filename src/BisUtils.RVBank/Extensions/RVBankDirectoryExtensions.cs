@@ -187,8 +187,29 @@ public static class RVBankDirectoryExtensions
         RVBankDataType packingMethod
     ) => ctx.PboEntries.Add(new RVBankDataEntry(fileName, mime, offset, timeStamp, data, packingMethod, ctx.BankFile, ctx, logger));
 
-    public static void RemoveEntry(this IRVBankDirectory ctx, IRVBankEntry entry) => ctx.PboEntries.Remove(entry);
+    public static void RemoveEntry(this IRVBankDirectory ctx, IRVBankEntry entry)
+    {
+        ctx.PboEntries.Remove(entry);
+        if (ctx.IsEmpty())
+        {
+            ctx.ParentDirectory.RemoveDirectory(ctx);
+        }
+    }
 
-    public static void RemoveDirectory(this IRVBankDirectory ctx, IRVBankDirectory directory) => ctx.PboEntries.Remove(directory);
+    public static void RemoveDirectory(this IRVBankDirectory ctx, IRVBankDirectory directory)
+    {
+        while (true)
+        {
+            ctx.PboEntries.Remove(directory);
+            if (ctx.IsEmpty())
+            {
+                var ctx1 = ctx;
+                ctx = ctx.ParentDirectory;
+                directory = ctx1;
+                continue;
+            }
 
+            break;
+        }
+    }
 }

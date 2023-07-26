@@ -183,10 +183,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             }
         }
 
-        foreach (var directory in this.GetDirectories().ToList().Where(directory => directory.IsEmpty()))
-        {
-            directory.ParentDirectory.RemoveDirectory(directory);
-        }
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
 
         Logger?.LogDebug("Removing deleted/stale entries from the directory structure.");
