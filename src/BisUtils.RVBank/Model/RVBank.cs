@@ -170,7 +170,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
         Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
 
-        foreach (var entry in this.GetFileEntries())
+        foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
         {
             if (markedForRemoval.Contains(entry))
             {
@@ -178,12 +178,11 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             }
             else if (!entry.InitializeData(reader, options))
             {
+                Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.EntryName);
                 markedForRemoval.Add(entry);
             }
-
-
-
         }
+
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
 
         Logger?.LogDebug("Removing deleted/stale entries from the directory structure.");
@@ -232,27 +231,23 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        foreach (var directory in this.GetDirectories().ToList().Where(directory => directory.IsEmpty(true)))
+        writer.BaseStream.Seek(pboEntries.Sum(it => it.CalculateLength(options)), SeekOrigin.Begin);
+        writer.Write(new byte[21]);
+        foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
         {
-            directory.ParentDirectory.RemoveDirectory(directory);
+            writer.Write(entry.RetrieveFinalStream(out var compressed));
         }
-        var dataEntries = this.GetFileEntries(true).ToList();
-        this.GetVersionEntry()?.Binarize(writer, options);
-        foreach (var entry in dataEntries)
+        var dataEnd = writer.BaseStream.Position;
+        writer.BaseStream.Seek(0, SeekOrigin.Begin);
+        foreach (var entry in pboEntries)
         {
             entry.Binarize(writer, options);
         }
-        writer.Write(new byte[21]);
-        foreach (var entry in dataEntries)
-        {
-            using var stream = entry.RetrieveFinalStream(out var compressed);
-            stream.CopyTo(writer.BaseStream);
-            //dataLength += data.Length;
-            // writer.BaseStream.Seek(stream.Length, SeekOrigin.Current);
-        }
+        writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
+        writer.Write((byte)0);
         var digest = CalculateDigest(writer.BaseStream);
         digest.Write(writer);
-        return LastResult;
+        return LastResult!;
     }
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();

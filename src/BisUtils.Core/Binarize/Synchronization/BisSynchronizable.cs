@@ -82,6 +82,7 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
         if (SynchronizationStream is { } stream)
         {
             var writer = new BisBinaryWriter(stream, options.Charset, true);
+            writer.Seek(0, SeekOrigin.Begin);
             LastResult = Binarize(writer, options);
         }
 

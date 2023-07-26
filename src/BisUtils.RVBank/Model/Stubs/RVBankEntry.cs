@@ -104,7 +104,7 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
     protected RVBankEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent,
         ILogger? logger) : base(reader, options, file, parent, logger)
     {
-        
+
     }
 
     public void Move(IRVBankDirectory destination)
@@ -116,6 +116,7 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
 
         ParentDirectory.RemoveEntry(this);
         ParentDirectory = destination;
+        destination.PboEntries.Add(this);
         OnChangesMade(this, EventArgs.Empty);
     }
 
@@ -123,6 +124,5 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
 
     public bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
-
-    public uint CalculateLength(RVBankOptions options) => (uint)(21 + options.Charset.GetByteCount(EntryName));
+    public abstract uint CalculateLength(RVBankOptions options);
 }

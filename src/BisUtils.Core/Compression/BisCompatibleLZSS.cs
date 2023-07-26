@@ -105,7 +105,7 @@ public sealed class BisCompatibleLzss
 
     }
 
-    public Stream Encode(Stream inputStream, out uint outputSize)
+    public byte[] Encode(Stream inputStream, out uint outputSize)
     {
         if (!inputStream.CanRead)
         {
@@ -121,7 +121,7 @@ public sealed class BisCompatibleLzss
         outputSize = Encode(memoryStream.ToArray(), binaryWriter);
 
         encodedStream.Seek(0, SeekOrigin.Begin);
-        return encodedStream;
+        return encodedStream.ToArray();
     }
 
     public uint Encode(Stream inputStream, BinaryWriter output)

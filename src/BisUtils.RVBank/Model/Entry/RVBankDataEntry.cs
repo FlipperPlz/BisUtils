@@ -1,5 +1,6 @@
 namespace BisUtils.RVBank.Model.Entry;
 
+using System.Text;
 using Alerts.Errors;
 using Core.Binarize.Exceptions;
 using Core.IO;
@@ -21,7 +22,7 @@ public interface IRVBankDataEntry : IRVBankEntry
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
     bool InitializeData(BisBinaryReader reader, RVBankOptions options);
-    public Stream RetrieveFinalStream(out bool streamWasCompressed);
+    public byte[] RetrieveFinalStream(out bool streamWasCompressed);
 }
 
 public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
@@ -148,6 +149,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
                 else
                 {
                     entryData = stream;
+                    entryData.Seek(0, SeekOrigin.Begin);
                     return true;
                 }
                 goto default;
@@ -174,12 +176,14 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
                 }
 
                 entryData = memoryStream;
+                entryData.Seek(0, SeekOrigin.Begin);
+
                 return PackingMethod is not RVBankDataType.Compressed;
             }
         }
     }
 
-    public Stream RetrieveFinalStream(out bool streamWasCompressed)
+    public byte[] RetrieveFinalStream(out bool streamWasCompressed)
     {
         switch (PackingMethod)
         {
@@ -193,9 +197,9 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             default:
             {
                 streamWasCompressed = false;
-                var data = new MemoryStream();
+                using var data = new MemoryStream();
                 entryData.CopyTo(data);
-                return data;
+                return data.ToArray();
             }
         }
 
@@ -203,14 +207,13 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        LastResult = base.Binarize(writer, options);
-        writer.Write((long)EntryMime);
+        writer.WriteAsciiZ(Path, options);
+        writer.Write((uint)EntryMime);
         writer.Write(OriginalSize);
         writer.Write(Offset);
         writer.Write(TimeStamp);
         writer.Write(DataSize);
-        PackingMethod = AssumePackingMethod();
-        return LastResult;
+        return LastResult = Result.Ok();
     }
 
     internal void SetEntryDataQuietly(Stream data) => entryData = data;
@@ -289,4 +292,5 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         return LastResult;
     }
 
+    public override uint CalculateLength(RVBankOptions options) =>  21 + (uint) options.Charset.GetByteCount(Path);
 }
