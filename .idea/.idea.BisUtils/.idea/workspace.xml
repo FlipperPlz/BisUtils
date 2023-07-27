@@ -11,19 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDirectory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankEntryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankEntryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankVersionEntryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankVersionEntryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankDirectory.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankVfsEntry.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,12 +33,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ab621a475ad1855b32c8fb94315b33ee28b6996ed15846c8c5651a4fd81dbb1/Sum.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3d5314c4b5f391de6f26e7ce0d430d6d2aa1d7a44530b874fdbb1a4a97374/File.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/685740393f59fd572ad94c27112a77e0c086f741e99c9c979bf92113ae/Encoding.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6b328b91f273b497721dcead23dabd813c6a99f9c5613a78ea1cee575b273b/Stream.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -186,7 +175,7 @@
       <workItem from="1690383860142" duration="8999000" />
       <workItem from="1690409067247" duration="1667000" />
       <workItem from="1690413697489" duration="2610000" />
-      <workItem from="1690464575651" duration="6566000" />
+      <workItem from="1690464575651" duration="10071000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -372,7 +361,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690401479906</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="feat(bank): Start Another Bank Rewrite ;-;">
+      <option name="closed" value="true" />
+      <created>1690471493018</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1690471493018</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -427,7 +424,8 @@
     <MESSAGE value="fix(bank): Write Path Instead Of Name" />
     <MESSAGE value="fix(bank): Fix RVBankDirectory::CalculateLength" />
     <MESSAGE value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
+    <MESSAGE value="feat(bank): Start Another Bank Rewrite ;-;" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(bank): Start Another Bank Rewrite ;-;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -470,19 +468,6 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>227</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="225" containingFunctionPresentation="Method 'Debinarize'">
-            <startOffsets>
-              <option value="7856" />
-            </startOffsets>
-            <endOffsets>
-              <option value="7857" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="37" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

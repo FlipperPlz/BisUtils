@@ -22,7 +22,60 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 
     public string BankPrefix { get; set; }
 
+    string IRVBankEntry.Path => "";
 
+    string IRVBankEntry.AbsolutePath => BankPrefix;
+
+    IRVBankDirectory IRVBankEntry.ParentDirectory
+    {
+        get => this;
+        set => throw new NotSupportedException();
+    }
+
+    string IRVBankEntry.EntryName
+    {
+        get => BankPrefix;
+        set => BankPrefix = value;
+    }
+
+    RVBankEntryMime IRVBankEntry.EntryMime
+    {
+        get => RVBankEntryMime.Decompressed;
+        set => throw new NotSupportedException();
+    }
+
+    int IRVBankEntry.OriginalSize
+    {
+        get => PboEntries.Sum(it => it.OriginalSize);
+        set => throw new NotSupportedException();
+    }
+
+    int IRVBankEntry.Offset
+    {
+        get => 0;
+        set => throw new NotSupportedException();
+    }
+
+    int IRVBankEntry.TimeStamp
+    {
+        get => PboEntries.Max(it => it.TimeStamp);
+        set => throw new NotSupportedException();
+    }
+
+    int IRVBankEntry.DataSize
+    {
+        get => PboEntries.Sum(it => it.DataSize);
+        set => throw new NotSupportedException();
+    }
+
+    void IRVBankEntry.Move(IRVBankDirectory directory) =>
+        throw new NotSupportedException();
+
+    void IRVBankEntry.Copy(IRVBankDirectory directory) =>
+        throw new NotSupportedException();
+
+    void IRVBankEntry.Delete() =>
+        throw new NotSupportedException();
 }
 
 public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
@@ -270,20 +323,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 #pragma warning restore CA5350
 #pragma warning restore SYSLIB0021
     // public int CalculateLength(RVBankOptions options) => pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
-    public IRVBankDirectory ParentDirectory { get; set; }
-    public string Path { get; }
-    public string AbsolutePath { get; }
-    public string EntryName { get; set; }
-    public RVBankEntryMime EntryMime { get; set; }
-    public int OriginalSize { get; set; }
-    public int Offset { get; set; }
-    public int TimeStamp { get; set; }
-    public int DataSize { get; set; }
-    public void Move(IRVBankDirectory directory) => throw new NotImplementedException();
-
-    public void Copy(IRVBankDirectory directory) => throw new NotImplementedException();
-
-    public void Delete() => throw new NotImplementedException();
 
     public int CalculateHeaderLength(RVBankOptions options) => throw new NotImplementedException();
 }
