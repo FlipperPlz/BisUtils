@@ -17,20 +17,33 @@ using Stubs;
 public interface IRVBankDataEntry : IRVBankEntry
 {
     long StreamOffset { get; }
+    MemoryStream EntryData { get; set; }
 
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
-    void InitializeStreamOffset(BisBinaryReader reader);
+    void InitializeStreamOffset(long offset);
+    bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options);
     byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options);
-    public byte[] RetrieveBuffer(BisBinaryReader reader, RVBankOptions options);
-
+    public byte[]? RetrieveBuffer(BisBinaryReader reader, RVBankOptions options);
 }
 
-public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
+public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
 {
-
+    private bool disposed;
     private RVBankDataType packingMethod;
     public long StreamOffset { get; protected set; }
+
+    private MemoryStream entryData = null!;
+    public MemoryStream EntryData
+    {
+        get => entryData;
+        set
+        {
+            OnChangesMade(this, EventArgs.Empty);
+            entryData.Dispose();
+            entryData = value;
+        }
+    }
 
     public RVBankDataType PackingMethod
     {
@@ -85,7 +98,19 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         Move(BankFile.GetOrCreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));
     }
 
-    public void InitializeStreamOffset(BisBinaryReader reader) => StreamOffset = reader.BaseStream.Position;
+
+
+    public void InitializeStreamOffset(long offset) => StreamOffset = offset;
+
+    public bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options)
+    {
+        if (RetrieveBuffer(reader, options) is not { } buffer)
+        {
+            return false;
+        }
+        entryData = new MemoryStream(buffer, false);
+        return true;
+    }
 
     public byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options)
     {
@@ -96,18 +121,20 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         return buffer;
     }
 
-    public byte[] RetrieveBuffer(BisBinaryReader reader, RVBankOptions options)
+    public virtual byte[]? RetrieveBuffer(BisBinaryReader reader, RVBankOptions options)
     {
         var buffer = RetrieveRawBuffer(reader, options);
-        if (PackingMethod is RVBankDataType.Compressed)
+        if (PackingMethod is not RVBankDataType.Compressed)
         {
-            using var stream = new MemoryStream();
-            using var writer = new BinaryWriter(stream, options.Charset, true);
+            return buffer;
+        }
 
-            if (!(BisCompatibleLzss.Compressor.Decode(buffer, writer, OriginalSize) is { } size && size != OriginalSize))
-            {
-                return stream.ToArray();
-            }
+        using var stream = new MemoryStream();
+        using var writer = new BinaryWriter(stream, options.Charset, true);
+
+        if (!(BisCompatibleLzss.Compressor.Decode(buffer, writer, OriginalSize) is { } size && size != OriginalSize))
+        {
+            return null;
         }
 
         return buffer;
@@ -174,4 +201,16 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
     }
 
     public sealed override int CalculateHeaderLength(RVBankOptions options) => base.CalculateHeaderLength(options);
+
+    public void Dispose()
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        entryData.Dispose();
+        GC.SuppressFinalize(this);
+        disposed = true;
+    }
 }

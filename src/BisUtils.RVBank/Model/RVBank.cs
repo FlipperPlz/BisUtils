@@ -126,7 +126,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     public static RVBank ReadPbo(string path, RVBankOptions options, Stream? syncTo, ILogger logger)
     {
         using var reader = new BisBinaryReader(File.OpenRead(path));
-        return new RVBank(System.IO.Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
+        return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
@@ -218,44 +218,21 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         {
             var entrySize = entry.DataSize == 0 ? entry.OriginalSize : entry.DataSize;
             end += entrySize;
-            entry.Offset = (int)end;
-            // if (headerEnd <= entry.Offset || entry.Offset <= 0 || CalculateLength(options) <= 0 || entry.Offset >= reader.BaseStream.Length)
-            // {
-            //     markedForRemoval.Add(entry);
-            // }
-        }
-
-        foreach (var entry in entries)
-        {
-            if (entry.Offset < reader.BaseStream.Length && entry.Offset > 0 && !markedForRemoval.Contains(entry) )
+            if (headerEnd < end && entry.CalculateHeaderLength(options) > 0 && end < reader.BaseStream.Length &&
+                entry.InitializeFull(end, reader, options))
             {
-                reader.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
 
-                // if(!entry.InitializeData(reader, options) || !entry.IsDataInitialized())
-                // {
-                //     Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.AbsolutePath);
-                //     markedForRemoval.Add(entry);
-                // }
-
-
+                continue;
             }
-            else
-            {
-                Logger?.LogInformation("Ignoring malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.Offset, entry.DataSize);
-                markedForRemoval.Add(entry);
-            }
+            Logger?.LogInformation("Ignoring malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.Offset, entry.DataSize);
 
+            markedForRemoval.Add(entry);
         }
 
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
 
-        Logger?.LogDebug("Removing deleted/stale entries from the directory structure.");
-
-
-        foreach (var removable in markedForRemoval)
-        {
-            //removable.ParentDirectory.RemoveEntry(removable);
-        }
+        Logger?.LogDebug("Removing all {IgnoreCount} deleted/stale entries from the directory structure.", markedForRemoval.Count);
+        markedForRemoval.ForEach(it => it.Delete());
         var positionToRead = Math.Max(0, reader.BaseStream.Length - 21);
         reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
 
