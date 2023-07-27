@@ -52,7 +52,7 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     }
 
 
-    protected BisSynchronizable(BisBinaryReader reader, TOptions options, Stream? syncTo, ILogger logger) : base(reader, options, logger)
+    protected BisSynchronizable(BisBinaryReader reader, TOptions options, Stream? syncTo, ILogger? logger) : base(reader, options, logger)
     {
         SynchronizationRoot = this;
         SynchronizationStream = syncTo;

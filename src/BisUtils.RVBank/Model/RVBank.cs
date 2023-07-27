@@ -71,8 +71,7 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
     void IRVBankEntry.Move(IRVBankDirectory directory) =>
         throw new NotSupportedException();
 
-    void IRVBankEntry.Copy(IRVBankDirectory directory) =>
-        throw new NotSupportedException();
+    IEnumerable<IRVBankEntry> IRVBankEntry.MoveAndReplace(IRVBankDirectory directory) => throw new NotSupportedException();
 
     void IRVBankEntry.Delete() =>
         throw new NotSupportedException();

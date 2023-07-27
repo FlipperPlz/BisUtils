@@ -11,10 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDataEntryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +176,7 @@
       <workItem from="1690383860142" duration="8999000" />
       <workItem from="1690409067247" duration="1667000" />
       <workItem from="1690413697489" duration="2610000" />
-      <workItem from="1690464575651" duration="12366000" />
+      <workItem from="1690464575651" duration="14083000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -378,7 +378,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690474797210</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="feat(bank): Adjustments To Bank Debinarization">
+      <option name="closed" value="true" />
+      <created>1690477130394</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1690477130394</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -410,7 +418,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank): Add Support For Moving Directories" />
     <MESSAGE value="feat(bank): Implement IRVBankDataEntry::ExpandDirectoryStructure" />
     <MESSAGE value="feat(core): Create BisCompatibleLZSS::Decode Method" />
     <MESSAGE value="refactor(core): Change BisCompatibleLZSS::Decode Signature To Accept Byte Array Instead Of Reader" />
@@ -435,7 +442,8 @@
     <MESSAGE value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
     <MESSAGE value="feat(bank): Start Another Bank Rewrite ;-;" />
     <MESSAGE value="feat(bank): Start Working On RVBankDataEntry" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(bank): Start Working On RVBankDataEntry" />
+    <MESSAGE value="feat(bank): Adjustments To Bank Debinarization" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(bank): Adjustments To Bank Debinarization" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

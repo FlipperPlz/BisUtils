@@ -194,20 +194,10 @@ public static class RVBankDirectoryExtensions
     public static void RemoveEntry(this IRVBankDirectory ctx, IRVBankEntry entry)
     {
         ctx.PboEntries.Remove(entry);
-        if (ctx.IsEmpty())
+        if (ctx.IsEmpty() && ctx != ctx.BankFile)
         {
-            ctx.ParentDirectory.RemoveDirectory(ctx);
+            ctx.Delete();
         }
     }
 
-    public static void RemoveDirectory(this IRVBankDirectory ctx, IRVBankDirectory directory)
-    {
-        ctx.PboEntries.Remove(directory);
-        ctx.PboEntries.Remove(directory);
-        if (ctx.IsEmpty() && ctx.ParentDirectory != ctx.BankFile) // Check if ctx.ParentDirectory is not null
-        {
-            ctx.ParentDirectory.RemoveDirectory(ctx);
-        }
-
-    }
 }

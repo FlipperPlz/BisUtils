@@ -20,7 +20,7 @@ public interface IRVBankDataEntry : IRVBankEntry
     MemoryStream EntryData { get; set; }
 
     RVBankDataType PackingMethod { get; set; }
-    void ExpandDirectoryStructure();
+    IEnumerable<IRVBankEntry> ExpandDirectoryStructure();
     void InitializeStreamOffset(long offset);
     bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options);
     byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options);
@@ -83,7 +83,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
         }
     }
 
-    public void ExpandDirectoryStructure()
+    public IEnumerable<IRVBankEntry> ExpandDirectoryStructure()
     {
         ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
 
@@ -91,13 +91,12 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
 
         if (!EntryName.Contains('\\'))
         {
-            return;
+            return ArraySegment<IRVBankEntry>.Empty;
         }
         EntryName = RVPathUtilities.GetFilename(EntryName);
 
-        Move(BankFile.GetOrCreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));
+        return MoveAndReplace(BankFile.GetOrCreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));
     }
-
 
 
     public void InitializeStreamOffset(long offset) => StreamOffset = offset;
@@ -142,7 +141,8 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
 
 
 
-    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options) => base.Binarize(writer, options);
+    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>
+        base.Binarize(writer, options);
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {

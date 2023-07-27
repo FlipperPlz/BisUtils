@@ -4,6 +4,7 @@ using Core.IO;
 using Core.Parsing;
 using Entry;
 using Enumerations;
+using Extensions;
 using FResults;
 using Microsoft.Extensions.Logging;
 using Options;
@@ -22,9 +23,8 @@ public interface IRVBankEntry : IRVBankElement
     int DataSize { get; set; }
 
     void Move(IRVBankDirectory directory);
-    void Copy(IRVBankDirectory directory);
     void Delete();
-
+    IEnumerable<IRVBankEntry> MoveAndReplace(IRVBankDirectory directory);
 
     int CalculateHeaderLength(RVBankOptions options);
 }
@@ -141,11 +141,33 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
 
     protected void QuietlySetSize(int size) => dataSize = size;
 
-    public virtual void Move(IRVBankDirectory directory) => throw new NotImplementedException();
+    public virtual void Move(IRVBankDirectory directory)
+    {
+        if (directory.BankFile != BankFile)
+        {
+            throw new IOException("Cannot move this entry to a directory outside of the current pbo.");
+        }
+        ParentDirectory.RemoveEntry(this);
+        ParentDirectory = directory;
+        ParentDirectory.PboEntries.Add(this);
+        OnChangesMade(this, EventArgs.Empty);
+    }
 
-    public virtual void Copy(IRVBankDirectory directory) => throw new NotImplementedException();
 
-    public virtual void Delete() => throw new NotImplementedException();
+    public virtual void Delete()
+    {
+        ParentDirectory.RemoveEntry(this);
+        OnChangesMade(this, EventArgs.Empty);
+    }
+
+    public virtual IEnumerable<IRVBankEntry> MoveAndReplace(IRVBankDirectory directory)
+    {
+        Move(directory);
+        foreach (var duplicate in this.RetrieveDuplicateEntries())
+        {
+            yield return duplicate;
+        }
+    }
 
     public virtual int CalculateHeaderLength(RVBankOptions options) => 21 + options.Charset.GetByteCount(Path);
 
