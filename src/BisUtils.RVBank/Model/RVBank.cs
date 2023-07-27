@@ -22,17 +22,6 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 
     public string BankPrefix { get; set; }
 
-    IRVBankDirectory IRVBankVfsEntry.ParentDirectory => this;
-
-    string IRVBankVfsEntry.Path => "";
-
-    string IRVBankVfsEntry.AbsolutePath => BankPrefix;
-
-    string IRVBankVfsEntry.EntryName
-    {
-        get => BankPrefix;
-        set => BankPrefix = value;
-    }
 
 }
 
@@ -43,7 +32,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     public string BankPrefix
     {
         get => this.GetVersionEntry()?.GetPropertyValue("prefix") ?? FileName;
-        set => (this.GetVersionEntry() ?? this.AddVersionEntry(Logger)).SetOrCreateProperty("prefix", value);
+        set => (this.GetVersionEntry() ?? this.AddVersionEntry(Logger)).SetOrCreateProperty("prefix", value, Logger);
     }
     public IRVBank BankFile { get; }
 
@@ -84,7 +73,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     public static RVBank ReadPbo(string path, RVBankOptions options, Stream? syncTo, ILogger logger)
     {
         using var reader = new BisBinaryReader(File.OpenRead(path));
-        return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
+        return new RVBank(System.IO.Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
@@ -114,7 +103,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 _ => new RVBankDataEntry(reader, options, this, this, Logger)
             };
 
-
+            pboEntries.Add(currentEntry);
             if (currentEntry is RVBankDataEntry dataEntry )
             {
                 if(currentEntry.IsDummyEntry())
@@ -133,6 +122,14 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 if (!options.FlatRead)
                 {
                     dataEntry.ExpandDirectoryStructure();
+                }
+
+                if (options.IgnoreDuplicateFiles && currentEntry.RetrieveDuplicateEntry() is { } removeThis)
+                {
+                    if (!markedForRemoval.Contains(removeThis))
+                    {
+                        markedForRemoval.Add(removeThis);
+                    }
                 }
             }
 
@@ -157,56 +154,57 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             }
 
             responses.Add(response);
-            if (currentEntry.ParentDirectory == this)
-            {
-                PboEntries.Add(currentEntry);
-            }
 
-            if (options.IgnoreDuplicateFiles && currentEntry.RetrieveDuplicateEntry() is { } removeThis)
-            {
-                if (!markedForRemoval.Contains(removeThis))
-                {
-                    markedForRemoval.Add(removeThis);
-                }
-            }
+
         } while (true);
 
         Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
+        var headerEnd = reader.BaseStream.Position;
+        var end = headerEnd;
+        foreach (var entry in entries)
+        {
+            var entrySize = entry.DataSize == 0 ? entry.OriginalSize : entry.DataSize;
+            end += entrySize;
+            entry.Offset = (int)end;
+            // if (headerEnd <= entry.Offset || entry.Offset <= 0 || CalculateLength(options) <= 0 || entry.Offset >= reader.BaseStream.Length)
+            // {
+            //     markedForRemoval.Add(entry);
+            // }
+        }
 
         foreach (var entry in entries)
         {
-            Logger?.LogDebug("Reading data for entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, reader.BaseStream.Position, entry.DataSize);
-            if (markedForRemoval.Contains(entry))
+            if (entry.Offset < reader.BaseStream.Length && entry.Offset > 0 && !markedForRemoval.Contains(entry) )
             {
-                reader.BaseStream.Seek(entry.DataSize, SeekOrigin.Current);
+                reader.BaseStream.Seek(entry.Offset, SeekOrigin.Begin);
+
+                // if(!entry.InitializeData(reader, options) || !entry.IsDataInitialized())
+                // {
+                //     Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.AbsolutePath);
+                //     markedForRemoval.Add(entry);
+                // }
+
+
             }
-            else if (!entry.InitializeData(reader, options))
+            else
             {
-                Logger?.LogCritical("There was a critical error while decompressing '{EntryName}', Saving compressed data.", entry.AbsolutePath);
+                Logger?.LogInformation("Ignoring malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.Offset, entry.DataSize);
                 markedForRemoval.Add(entry);
             }
+
         }
 
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
 
         Logger?.LogDebug("Removing deleted/stale entries from the directory structure.");
 
+
         foreach (var removable in markedForRemoval)
         {
-            removable.ParentDirectory.RemoveEntry(removable);
+            //removable.ParentDirectory.RemoveEntry(removable);
         }
-
-        var remaining = reader.BaseStream.Length - reader.BaseStream.Position;
-
-        switch (remaining)
-        {
-            case < 20:
-                //TODO: Log and warn that a full checksum was not found; reading is finished
-                goto End;
-            case >= 20:
-                //TODO: Log and warn that extra data was found
-                break;
-        }
+        var positionToRead = Math.Max(0, reader.BaseStream.Length - 21);
+        reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
 
         var calculatedDigest = CalculateDigest(reader.BaseStream);
         var writtenDigest = ReadDigest(reader);
@@ -218,11 +216,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         End:
         {
             LastResult = Result.Merge(responses);
-            if (reader.BaseStream == SynchronizationStream)
-            {
-                OnChangesSaved(EventArgs.Empty);
-            }
-
 
             if (IsFirstRead)
             {
@@ -235,22 +228,22 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        writer.BaseStream.Seek(pboEntries.Sum(it => it.CalculateLength(options)), SeekOrigin.Begin);
-        writer.Write(new byte[21]);
-        foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
-        {
-            writer.Write(entry.RetrieveFinalStream(out var compressed));
-        }
-        var dataEnd = writer.BaseStream.Position;
-        writer.BaseStream.Seek(0, SeekOrigin.Begin);
-        foreach (var entry in pboEntries)
-        {
-            entry.Binarize(writer, options);
-        }
-        writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
-        writer.Write((byte)0);
-        var digest = CalculateDigest(writer.BaseStream);
-        digest.Write(writer);
+        // writer.BaseStream.Seek(pboEntries.Sum(it => it.CalculateLength(options)), SeekOrigin.Begin);
+        // writer.Write(new byte[21]);
+        // foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
+        // {
+        //     writer.Write(entry.RetrieveFinalStream(out var compressed));
+        // }
+        // var dataEnd = writer.BaseStream.Position;
+        // writer.BaseStream.Seek(0, SeekOrigin.Begin);
+        // foreach (var entry in pboEntries)
+        // {
+        //     entry.Binarize(writer, options);
+        // }
+        // writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
+        // writer.Write((byte)0);
+        // var digest = CalculateDigest(writer.BaseStream);
+        // digest.Write(writer);
         return LastResult!;
     }
 
@@ -276,5 +269,21 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     }
 #pragma warning restore CA5350
 #pragma warning restore SYSLIB0021
-    public uint CalculateLength(RVBankOptions options) => (uint) pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
+    // public int CalculateLength(RVBankOptions options) => pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
+    public IRVBankDirectory ParentDirectory { get; set; }
+    public string Path { get; }
+    public string AbsolutePath { get; }
+    public string EntryName { get; set; }
+    public RVBankEntryMime EntryMime { get; set; }
+    public int OriginalSize { get; set; }
+    public int Offset { get; set; }
+    public int TimeStamp { get; set; }
+    public int DataSize { get; set; }
+    public void Move(IRVBankDirectory directory) => throw new NotImplementedException();
+
+    public void Copy(IRVBankDirectory directory) => throw new NotImplementedException();
+
+    public void Delete() => throw new NotImplementedException();
+
+    public int CalculateHeaderLength(RVBankOptions options) => throw new NotImplementedException();
 }

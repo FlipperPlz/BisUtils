@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Text;
+﻿using System.Text;
 using BisUtils.RVBank.Model;
 using BisUtils.RVBank.Options;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -40,4 +38,4 @@ outStream.Close();
 Console.WriteLine();
 
 var outBank = RVBank.ReadPbo(output, bankOptions, null, NullLogger.Instance);
-
+Console.WriteLine();

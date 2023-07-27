@@ -87,10 +87,10 @@ public static class RVBankDirectoryExtensions
     (
         this IRVBankDirectory ctx, ILogger? logger, string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        uint originalSize = 0,
-        uint offset = 0,
-        uint timeStamp = 0,
-        uint dataSize = 0,
+        int originalSize = 0,
+        int offset = 0,
+        int timeStamp = 0,
+        int dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     ) =>
         new RVBankVersionEntry(fileName, mime, originalSize, offset, timeStamp, dataSize, properties, ctx.BankFile, ctx, logger);
@@ -99,10 +99,10 @@ public static class RVBankDirectoryExtensions
     (
         this IRVBankDirectory ctx, ILogger? logger, string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        uint originalSize = 0,
-        uint offset = 0,
-        uint timeStamp = 0,
-        uint dataSize = 0,
+        int originalSize = 0,
+        int offset = 0,
+        int timeStamp = 0,
+        int dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     )
     {
@@ -121,12 +121,12 @@ public static class RVBankDirectoryExtensions
 
     public static IRVBankDirectory AddDirectory(this IRVBankDirectory ctx, string name, IRVBank node, ILogger? logger)
     {
-        var directory = CreateDirectory(ctx, name, node, logger);
+        var directory = GetOrCreateDirectory(ctx, name, node, logger);
         ctx.PboEntries.Add(directory);
         return directory;
     }
 
-    public static IRVBankDirectory CreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node, ILogger? logger)
+    public static IRVBankDirectory GetOrCreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node, ILogger? logger)
     {
         var split = name.Split('\\', 2);
         IRVBankDirectory ret;
@@ -148,48 +148,48 @@ public static class RVBankDirectoryExtensions
                 ctx.PboEntries.Add(i);
             }
 
-            ret = i.CreateDirectory(split[1], node, logger);
+            ret = i.GetOrCreateDirectory(split[1], node, logger);
 
             return ret;
         }
 
-        var directory = new RVBankDirectory(new List<IRVBankEntry>(), RVPathUtilities.GetFilename(split[0]), node, ctx, logger);
+        var directory = new RVBankDirectory(RVPathUtilities.GetFilename(split[0]), new List<IRVBankEntry>(), node, ctx, logger);
         ctx.PboEntries.Add(directory);
         if (split[1].Length == 0)
         {
             return directory;
         }
 
-        ret = directory.CreateDirectory(split[1], node, logger);
+        ret = directory.GetOrCreateDirectory(split[1], node, logger);
 
         return ret;
     }
-
-    public static void AddEntry
-    (
-        this IRVBankDirectory ctx,
-        ILogger logger,
-        string fileName,
-        RVBankEntryMime mime,
-        uint originalSize,
-        uint offset,
-        uint timeStamp,
-        uint dataSize
-    ) => ctx.PboEntries.Add(new RVBankDataEntry(logger, ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize));
-
-    public static void AddEntry(this IRVBankDirectory ctx, ILogger logger, BisBinaryReader reader, RVBankOptions options) => ctx.PboEntries.Add(new RVBankDataEntry(reader, options, ctx.BankFile, ctx, logger));
-
-    public static void AddEntry
-    (
-        this IRVBankDirectory ctx,
-        ILogger logger,
-        string fileName,
-        RVBankEntryMime mime,
-        uint offset,
-        uint timeStamp,
-        Stream data,
-        RVBankDataType packingMethod
-    ) => ctx.PboEntries.Add(new RVBankDataEntry(fileName, mime, offset, timeStamp, data, packingMethod, ctx.BankFile, ctx, logger));
+    //
+    // public static void AddEntry
+    // (
+    //     this IRVBankDirectory ctx,
+    //     ILogger logger,
+    //     string fileName,
+    //     RVBankEntryMime mime,
+    //     int originalSize,
+    //     int offset,
+    //     int timeStamp,
+    //     int dataSize
+    // ) => ctx.PboEntries.Add(new RVBankDataEntry(logger, ctx.BankFile, ctx, fileName, mime, originalSize, offset, timeStamp, dataSize));
+    //
+    // public static void AddEntry(this IRVBankDirectory ctx, ILogger logger, BisBinaryReader reader, RVBankOptions options) => ctx.PboEntries.Add(new RVBankDataEntry(reader, options, ctx.BankFile, ctx, logger));
+    //
+    // public static void AddEntry
+    // (
+    //     this IRVBankDirectory ctx,
+    //     ILogger logger,
+    //     string fileName,
+    //     RVBankEntryMime mime,
+    //     int offset,
+    //     int timeStamp,
+    //     Stream data,
+    //     RVBankDataType packingMethod
+    // ) => ctx.PboEntries.Add(new RVBankDataEntry(fileName, mime, offset, timeStamp, data, packingMethod, ctx.BankFile, ctx, logger));
 
     public static void RemoveEntry(this IRVBankDirectory ctx, IRVBankEntry entry)
     {
@@ -202,18 +202,12 @@ public static class RVBankDirectoryExtensions
 
     public static void RemoveDirectory(this IRVBankDirectory ctx, IRVBankDirectory directory)
     {
-        while (true)
+        ctx.PboEntries.Remove(directory);
+        ctx.PboEntries.Remove(directory);
+        if (ctx.IsEmpty() && ctx.ParentDirectory != ctx.BankFile) // Check if ctx.ParentDirectory is not null
         {
-            ctx.PboEntries.Remove(directory);
-            if (ctx.IsEmpty())
-            {
-                var ctx1 = ctx;
-                ctx = ctx.ParentDirectory;
-                directory = ctx1;
-                continue;
-            }
-
-            break;
+            ctx.ParentDirectory.RemoveDirectory(ctx);
         }
+
     }
 }

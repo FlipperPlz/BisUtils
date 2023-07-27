@@ -1,31 +1,53 @@
 namespace BisUtils.RVBank.Model.Stubs;
 
 using Core.IO;
+using Core.Parsing;
+using Entry;
 using Enumerations;
-using Extensions;
+using FResults;
 using Microsoft.Extensions.Logging;
 using Options;
 
-public interface IRVBankEntry : IRVBankVfsEntry
+public interface IRVBankEntry : IRVBankElement
 {
-    RVBankEntryMime EntryMime { get; }
-    uint OriginalSize { get; }
-    uint Offset { get; }
-    uint TimeStamp { get; set; }
-    uint DataSize { get;  }
+    IRVBankDirectory ParentDirectory { get; set; }
+    string Path { get; }
+    string AbsolutePath { get; }
 
-    bool IsEmptyMeta() =>
-        OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
-    bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
+    string EntryName { get; set; }
+    RVBankEntryMime EntryMime { get; set; }
+    int OriginalSize { get; set; }
+    int Offset { get; set; }
+    int TimeStamp { get; set; }
+    int DataSize { get; set; }
 
-    uint CalculateLength(RVBankOptions options);
+    void Move(IRVBankDirectory directory);
+    void Copy(IRVBankDirectory directory);
+    void Delete();
+
+
+    int CalculateHeaderLength(RVBankOptions options);
 }
 
-public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
+public abstract class RVBankEntry : RVBankElement, IRVBankEntry
 {
+    public IRVBankDirectory ParentDirectory { get; set; }
+    public virtual string Path => $"{ParentDirectory.Path}\\{EntryName}";
+    public virtual string AbsolutePath => $"{ParentDirectory.AbsolutePath}\\{EntryName}";
+
+    private string entryName = "";
+    public virtual string EntryName
+    {
+        get => RVPathUtilities.NormalizePboPath(entryName);
+        set
+        {
+            OnChangesMade(this, EventArgs.Empty);
+            entryName = value;
+        }
+    }
 
     private RVBankEntryMime entryMime = RVBankEntryMime.Decompressed;
-    public RVBankEntryMime EntryMime
+    public virtual RVBankEntryMime EntryMime
     {
         get => entryMime;
         set
@@ -35,9 +57,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-
-    private uint originalSize;
-    public uint OriginalSize
+    private int originalSize;
+    public virtual int OriginalSize
     {
         get => originalSize;
         set
@@ -47,8 +68,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private uint offset;
-    public uint Offset
+    private int offset;
+    public virtual int Offset
     {
         get => offset;
         set
@@ -58,8 +79,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private uint timeStamp;
-    public uint TimeStamp
+    private int timeStamp;
+    public virtual int TimeStamp
     {
         get => timeStamp;
         set
@@ -69,8 +90,8 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
         }
     }
 
-    private uint dataSize;
-    public uint DataSize
+    private int dataSize;
+    public virtual int DataSize
     {
         get => dataSize;
         set
@@ -79,50 +100,53 @@ public abstract class RVBankEntry : RVBankVfsEntry, IRVBankEntry
             dataSize = value;
         }
     }
+    //TODO: Constructor with path maybe and no parent arg
 
     protected RVBankEntry(
-        string fileName,
-        RVBankEntryMime mime,
-        uint originalSize,
-        uint offset,
-        uint timeStamp,
-        uint dataSize,
         IRVBank file,
         IRVBankDirectory parent,
         ILogger? logger
-    ) : base(fileName, file, parent, logger)
-    {
+    ) : base(file, logger) =>
+        ParentDirectory = parent;
 
-        EntryMime = mime;
-        OriginalSize = originalSize;
-        Offset = offset;
-        TimeStamp = timeStamp;
-        DataSize = dataSize;
+    protected RVBankEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(reader, options, file, logger) =>
+        ParentDirectory = parent;
+
+    public override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
+    {
+        reader.ReadAsciiZ(out entryName, options);
+        entryMime = (RVBankEntryMime)reader.ReadInt32();
+        originalSize = reader.ReadInt32();
+        offset = reader.ReadInt32();
+        timeStamp = reader.ReadInt32();
+        dataSize = reader.ReadInt32();
+        return LastResult = Result.Ok();
     }
 
-
-    protected RVBankEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent,
-        ILogger? logger) : base(reader, options, file, parent, logger)
+    public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-
+        writer.WriteAsciiZ(Path, options);
+        writer.Write((int) EntryMime);
+        writer.Write(OriginalSize);
+        writer.Write(Offset);
+        writer.Write(TimeStamp);
+        writer.Write(DataSize);
+        return LastResult = Result.Ok();
     }
 
-    public void Move(IRVBankDirectory destination)
-    {
-        if (destination.BankFile != BankFile)
-        {
-            throw new IOException("Cannot move this entry to a directory outside of the current pbo.");
-        }
+    protected void QuietlySetName(string name) => entryName = name;
+    protected void QuietlySetMime(RVBankEntryMime mime) => entryMime = mime;
+    protected void QuietlySetOriginalSize(int ogSize) => originalSize = ogSize;
+    protected void QuietlySetTimestamp(int time) => timeStamp = time;
 
-        destination.PboEntries.Add(this);
-        ParentDirectory.RemoveEntry(this);
-        ParentDirectory = destination;
-        OnChangesMade(this, EventArgs.Empty);
-    }
+    protected void QuietlySetSize(int size) => dataSize = size;
 
-    public bool IsEmptyMeta() =>
-        OriginalSize == 0 && Offset == 0 && TimeStamp == 0 && DataSize == 0;
+    public virtual void Move(IRVBankDirectory directory) => throw new NotImplementedException();
 
-    public bool IsDummyEntry() => IsEmptyMeta() && EntryName == "";
-    public abstract uint CalculateLength(RVBankOptions options);
+    public virtual void Copy(IRVBankDirectory directory) => throw new NotImplementedException();
+
+    public virtual void Delete() => throw new NotImplementedException();
+
+    public virtual int CalculateHeaderLength(RVBankOptions options) => 21 + options.Charset.GetByteCount(Path);
+
 }

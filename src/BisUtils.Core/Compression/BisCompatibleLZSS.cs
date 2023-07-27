@@ -33,7 +33,7 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-    public int Decode(byte[] input, BinaryWriter output, uint length)
+    public int Decode(byte[] input, BinaryWriter output, int length)
     {
         var text_buf = new byte[N + F - 1];
         var outputBytes = new byte[length];
@@ -45,7 +45,7 @@ public sealed class BisCompatibleLzss
 
         int i;
         var flags = 0;
-        uint iDst = 0, bytesLeft = length;
+        uint iDst = 0, bytesLeft = (uint)length;
         Array.Fill(text_buf, Fill);
         for (i = 0; i < N - F; i++)
         {
