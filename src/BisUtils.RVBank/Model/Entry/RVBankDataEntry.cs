@@ -20,7 +20,7 @@ public interface IRVBankDataEntry : IRVBankEntry
     MemoryStream EntryData { get; set; }
 
     RVBankDataType PackingMethod { get; set; }
-    IEnumerable<IRVBankEntry> ExpandDirectoryStructure();
+    void ExpandDirectoryStructure();
     void InitializeStreamOffset(long offset);
     bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options);
     byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options);
@@ -83,15 +83,23 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
         }
     }
 
-    public IEnumerable<IRVBankEntry> ExpandDirectoryStructure()
+    public void ExpandDirectoryStructure()
     {
         ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
 
-        var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
+        var normalizePath = EntryName;
 
-        EntryName = RVPathUtilities.GetFilename(EntryName);
+        EntryName = RVPathUtilities.GetFilename(normalizePath);
 
-        return MoveAndReplace(BankFile.GetOrCreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));
+        var parentName = RVPathUtilities.GetParent(normalizePath);
+        if (parentName == "")
+        {
+            BankFile.PboEntries.Add(this);
+            return;
+        }
+        var parent = BankFile.GetOrCreateDirectory(parentName, BankFile, Logger);
+
+        Move(parent);
     }
 
 

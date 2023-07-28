@@ -158,6 +158,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
             if (currentEntry is RVBankDataEntry dataEntry )
             {
+
                 if(currentEntry.IsDummyEntry())
                 {
                     if (options.AlwaysSeparateOnDummy)
@@ -176,21 +177,13 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                     dataEntry.ExpandDirectoryStructure();
                 }
 
-                if (options.IgnoreDuplicateFiles && currentEntry.RetrieveDuplicateEntry() is { } removeThis)
-                {
-                    if (!markedForRemoval.Contains(removeThis))
-                    {
-                        markedForRemoval.Add(removeThis);
-                    }
-                }
+                markedForRemoval.AddRange(dataEntry.RetrieveDuplicateEntries());
             }
             else
             {
                 pboEntries.Add(currentEntry);
 
             }
-
-
 
             var response = currentEntry.LastResult ?? Result.Fail("Unknown Error Occured");
 
@@ -216,24 +209,44 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
 
         } while (true);
-        markedForRemoval.ForEach(it => it.Delete());
 
         Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
         var headerEnd = reader.BaseStream.Position;
         var end = headerEnd;
         foreach (var entry in entries)
         {
-            var entrySize = entry.DataSize == 0 ? entry.OriginalSize : entry.DataSize;
-            end += entrySize;
-            if (headerEnd < end && entry.CalculateHeaderLength(options) > 0 && end < reader.BaseStream.Length &&
-                entry.InitializeFull(end, reader, options))
+
+            Logger?.LogDebug("{End}", entry.DataSize);
+
+            if (end <= headerEnd || end >= reader.BaseStream.Length )
+            {
+                goto Ignore;
+            }
+            entry.InitializeStreamOffset(end);
+
+            if (
+                entry.InitializeBuffer(reader, options))
             {
 
+                end += entry.DataSize;
                 continue;
             }
-            Logger?.LogInformation("Ignoring malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.Offset, entry.DataSize);
+            Ignore:
+
+            end += entry.DataSize;
+            if (entry.EntryMime is RVBankEntryMime.Encrypted)
+            {
+                Logger?.LogInformation("Ignoring Encrypted entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, end, entry.DataSize);
+
+            }
+            if (entry.EntryName.Contains("config.cpp"))
+            {
+                Logger?.LogInformation("Ignoring malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, end, entry.DataSize);
+
+            }
 
             markedForRemoval.Add(entry);
+            continue;
         }
 
         Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);

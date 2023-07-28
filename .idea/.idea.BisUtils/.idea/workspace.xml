@@ -12,10 +12,10 @@
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/RVPathUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/RVPathUtilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDataEntryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDataEntryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +32,36 @@
     <option name="SIGN_OFF_COMMIT" value="true" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ab621a475ad1855b32c8fb94315b33ee28b6996ed15846c8c5651a4fd81dbb1/Sum.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3d5314c4b5f391de6f26e7ce0d430d6d2aa1d7a44530b874fdbb1a4a97374/File.cs" root0="SKIP_HIGHLIGHTING" />
@@ -178,6 +208,7 @@
       <workItem from="1690409067247" duration="1667000" />
       <workItem from="1690413697489" duration="2610000" />
       <workItem from="1690464575651" duration="14083000" />
+      <workItem from="1690518173576" duration="4209000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -387,7 +418,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690477130394</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="refactor(bank): Refactor ExpandDirectoryStructure feature">
+      <option name="closed" value="true" />
+      <created>1690514015690</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1690514015690</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -419,7 +458,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank): Implement IRVBankDataEntry::ExpandDirectoryStructure" />
     <MESSAGE value="feat(core): Create BisCompatibleLZSS::Decode Method" />
     <MESSAGE value="refactor(core): Change BisCompatibleLZSS::Decode Signature To Accept Byte Array Instead Of Reader" />
     <MESSAGE value="feat(bank): Make Entries Creatable&#10;&#10;- Change necessary data type from int to long for the bank's entries." />
@@ -444,12 +482,13 @@
     <MESSAGE value="feat(bank): Start Another Bank Rewrite ;-;" />
     <MESSAGE value="feat(bank): Start Working On RVBankDataEntry" />
     <MESSAGE value="feat(bank): Adjustments To Bank Debinarization" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(bank): Adjustments To Bank Debinarization" />
+    <MESSAGE value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+        <line-breakpoint type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
           <line>319</line>
           <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="313" containingFunctionPresentation="Method 'ParseParamArray'">
@@ -462,7 +501,7 @@
           </properties>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+        <line-breakpoint type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
           <line>342</line>
           <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="336" containingFunctionPresentation="Method 'ParseParamArray'">
@@ -480,26 +519,26 @@
           <line>35</line>
           <properties documentPath="E:\projects\csharp\BisUtils\test\Scratches\BankTest\Program.cs" initialLine="35" containingFunctionPresentation="">
             <startOffsets>
-              <option value="1267" />
+              <option value="1268" />
             </startOffsets>
             <endOffsets>
-              <option value="1307" />
+              <option value="1308" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>220</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="215" containingFunctionPresentation="Method 'Debinarize'">
+          <line>237</line>
+          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="232" containingFunctionPresentation="Method 'Debinarize'">
             <startOffsets>
-              <option value="6640" />
+              <option value="7441" />
             </startOffsets>
             <endOffsets>
-              <option value="6840" />
+              <option value="7441" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="42" />
+          <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
