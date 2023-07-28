@@ -89,10 +89,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
 
         var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
 
-        if (!EntryName.Contains('\\'))
-        {
-            return ArraySegment<IRVBankEntry>.Empty;
-        }
         EntryName = RVPathUtilities.GetFilename(EntryName);
 
         return MoveAndReplace(BankFile.GetOrCreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));

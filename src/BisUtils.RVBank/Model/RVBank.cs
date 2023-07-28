@@ -155,7 +155,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                 _ => new RVBankDataEntry(reader, options, this, this, Logger)
             };
 
-            pboEntries.Add(currentEntry);
+
             if (currentEntry is RVBankDataEntry dataEntry )
             {
                 if(currentEntry.IsDummyEntry())
@@ -184,6 +184,13 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                     }
                 }
             }
+            else
+            {
+                pboEntries.Add(currentEntry);
+
+            }
+
+
 
             var response = currentEntry.LastResult ?? Result.Fail("Unknown Error Occured");
 
@@ -209,6 +216,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
 
         } while (true);
+        markedForRemoval.ForEach(it => it.Delete());
 
         Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
         var headerEnd = reader.BaseStream.Position;

@@ -128,41 +128,58 @@ public static class RVBankDirectoryExtensions
 
     public static IRVBankDirectory GetOrCreateDirectory(this IRVBankDirectory ctx, string name, IRVBank node, ILogger? logger)
     {
-        var split = name.Split('\\', 2);
-        IRVBankDirectory ret;
-
-        if (split[0].Length == 0)
+        var fileName = string.Empty;
+        if (!name.Contains('\\'))
+        {
+            goto LocateOrCreate;
+        }
+        if (name == string.Empty)
         {
             return ctx;
         }
 
-        if (GetDirectory(ctx, split[0]) is { } i)
         {
-            if (split[1].Length == 0)
+            var split = name.Split('\\', 2);
+            name = split[0];
+            fileName = split[1];
+        }
+
+        if (name.Length == 0)
+        {
+            return ctx;
+        }
+
+        LocateOrCreate:
+        {
+            IRVBankDirectory ret;
+            if (GetDirectory(ctx, name) is { } i)
             {
-                return i;
+                if (fileName.Length == 0)
+                {
+                    return i;
+                }
+
+                if (!ctx.PboEntries.Contains(i))
+                {
+                    ctx.PboEntries.Add(i);
+                }
+
+                ret = i.GetOrCreateDirectory(fileName, node, logger);
+
+                return ret;
             }
 
-            if (!ctx.PboEntries.Contains(i))
+            var directory = new RVBankDirectory(name, new List<IRVBankEntry>(), node, ctx, logger);
+            ctx.PboEntries.Add(directory);
+            if (fileName.Length == 0)
             {
-                ctx.PboEntries.Add(i);
+                return directory;
             }
 
-            ret = i.GetOrCreateDirectory(split[1], node, logger);
+            ret = directory.GetOrCreateDirectory(fileName, node, logger);
 
             return ret;
         }
-
-        var directory = new RVBankDirectory(RVPathUtilities.GetFilename(split[0]), new List<IRVBankEntry>(), node, ctx, logger);
-        ctx.PboEntries.Add(directory);
-        if (split[1].Length == 0)
-        {
-            return directory;
-        }
-
-        ret = directory.GetOrCreateDirectory(split[1], node, logger);
-
-        return ret;
     }
     //
     // public static void AddEntry
