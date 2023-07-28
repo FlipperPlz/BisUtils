@@ -1,0 +1,24 @@
+@startuml
+interface IRVBankDigest {
+    + SectorA : int <<get>>
+    + SectorB : int <<get>>
+    + SectorC : int <<get>>
+    + SectorD : int <<get>>
+    + SectorE : int <<get>>
+}
+class RVBankDigest <<struct>> {
+    + SectorA : int <<get>>
+    + SectorB : int <<get>>
+    + SectorC : int <<get>>
+    + SectorD : int <<get>>
+    + SectorE : int <<get>>
+    + RVBankDigest(reader:BisBinaryReader)
+    + RVBankDigest(c:byte[])
+    + Read(reader:BisBinaryReader) : void
+    + Write(writer:BisBinaryWriter) : void
+    + Equals(other:RVBankDigest) : bool
+    + <<override>> Equals(obj:object?) : bool
+    + <<override>> GetHashCode() : int
+}
+IRVBankDigest <|-- RVBankDigest
+@enduml

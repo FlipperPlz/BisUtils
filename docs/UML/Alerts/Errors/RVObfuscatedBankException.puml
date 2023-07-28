@@ -1,0 +1,6 @@
+@startuml
+class RVObfuscatedBankException {
+    + RVObfuscatedBankException()
+}
+IOException <|-- RVObfuscatedBankException
+@enduml

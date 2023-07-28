@@ -1,0 +1,35 @@
+@startuml
+!include .\\Enumerations\RVBankDataType.puml
+!include .\\Enumerations\RVBankEntryMime.puml
+!include .\\Enumerations\RVBankSection.puml
+!include .\\Extensions\RVBankDataEntryExtensions.puml
+!include .\\Extensions\RVBankDirectoryExtensions.puml
+!include .\\Extensions\RVBankEntryExtensions.puml
+!include .\\Extensions\RVBankVersionEntryExtensions.puml
+!include .\\Model\RVBank.puml
+!include .\\Options\RVBankOptions.puml
+!include .\\Alerts\Errors\RVBankEmptyPropertyNameError.puml
+!include .\\Alerts\Errors\RVEncryptedBankException.puml
+!include .\\Alerts\Errors\RVObfuscatedBankException.puml
+!include .\\Alerts\Warnings\RVBankEncryptedEntryWarning.puml
+!include .\\Alerts\Warnings\RVBankImproperMetaWarning.puml
+!include .\\Alerts\Warnings\RVBankImproperMimeWarning.puml
+!include .\\Alerts\Warnings\RVBankNamedVersionEntryWarning.puml
+!include .\\Alerts\Warnings\RVBankUnnamedEntryWarning.puml
+!include .\\Model\Entry\RVBankDataEntry.puml
+!include .\\Model\Entry\RVBankDirectory.puml
+!include .\\Model\Entry\RVBankVersionEntry.puml
+!include .\\Model\Misc\RVBankDigest.puml
+!include .\\Model\Stubs\RVBankElement.puml
+!include .\\Model\Stubs\RVBankEntry.puml
+!include .\\Model\Stubs\RVBankProperty.puml
+!include .\\obj\Debug\net7.0\.NETCoreApp,Version=v7.0.AssemblyAttributes.puml
+!include .\\obj\Debug\net7.0\BisUtils.RVBank.AssemblyInfo.puml
+!include .\\obj\Debug\net7.0\BisUtils.RVBank.GlobalUsings.g.puml
+!include .\\obj\Release\net7.0\.NETCoreApp,Version=v7.0.AssemblyAttributes.puml
+!include .\\obj\Release\net7.0\BisUtils.RVBank.AssemblyInfo.puml
+!include .\\obj\Release\net7.0\BisUtils.RVBank.GlobalUsings.g.puml
+!include .\\obj\Release\net7.0\win-x64\.NETCoreApp,Version=v7.0.AssemblyAttributes.puml
+!include .\\obj\Release\net7.0\win-x64\BisUtils.RVBank.AssemblyInfo.puml
+!include .\\obj\Release\net7.0\win-x64\BisUtils.RVBank.GlobalUsings.g.puml
+@enduml

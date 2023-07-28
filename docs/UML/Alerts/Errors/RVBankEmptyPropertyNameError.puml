@@ -1,0 +1,11 @@
+@startuml
+class RVBankEmptyPropertyNameError {
+    + {static} <<readonly>> Instance : RVBankEmptyPropertyNameError
+    - RVBankEmptyPropertyNameError()
+    + <<override>> AlertName : string? <<get>> <<init>>
+    + <<override>> AlertScope : Type? <<get>> <<init>>
+    + <<override>> Message : string? <<get>> <<set>>
+    + {static} CreateInstanceWithData(metadata:Dictionary<string, object>) : RVBankEmptyPropertyNameError
+}
+ErrorBase <|-- RVBankEmptyPropertyNameError
+@enduml

@@ -48,6 +48,27 @@ public struct RVBankDigest : IRVBankDigest
         SectorE = reader.ReadInt32();
     }
 
+    public byte[] ToByteArray()
+    {
+        var byteArray = new byte[20];
+
+        WriteBytes(SectorA, 0);
+        WriteBytes(SectorB, 4);
+        WriteBytes(SectorC, 8);
+        WriteBytes(SectorD, 12);
+        WriteBytes(SectorE, 16);
+
+        return byteArray;
+
+        void WriteBytes(int value, int start)
+        {
+            byteArray[start] = (byte)value;
+            byteArray[start + 1] = (byte)(value >> 8);
+            byteArray[start + 2] = (byte)(value >> 16);
+            byteArray[start + 3] = (byte)(value >> 24);
+        }
+    }
+
     public void Write(BisBinaryWriter writer)
     {
         writer.Write(SectorA);

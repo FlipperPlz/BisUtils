@@ -139,7 +139,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         var markedForRemoval = new List<IRVBankEntry>();
         var entries = new List<RVBankDataEntry>();
         Logger?.LogDebug("Entry loop started at {Start}", reader.BaseStream.Position);
-
+        var headerStart = reader.BaseStream.Position;
         var first = true;
         do
         {
@@ -177,7 +177,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                     dataEntry.ExpandDirectoryStructure();
                 }
 
-                markedForRemoval.AddRange(dataEntry.RetrieveDuplicateEntries());
+                // markedForRemoval.AddRange(dataEntry.RetrieveDuplicateEntries());
             }
             else
             {
@@ -210,48 +210,50 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
         } while (true);
 
-        Logger?.LogDebug("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
+        Logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
         var headerEnd = reader.BaseStream.Position;
-        var end = headerEnd;
+        var headerLength = headerEnd - headerStart;
+        var bufferEnd = reader.BaseStream.Length - (headerLength + 21);
+        var iOffset = 0;
         foreach (var entry in entries)
         {
-
-            Logger?.LogDebug("{End}", entry.DataSize);
-
-            if (end <= headerEnd || end >= reader.BaseStream.Length )
+            var shouldRemove = false;
+            if ( iOffset >= bufferEnd || iOffset < headerEnd )
             {
-                goto Ignore;
+                shouldRemove = true;
+                goto Continue;
             }
-            entry.InitializeStreamOffset(end);
-
-            if (
-                entry.InitializeBuffer(reader, options))
+            entry.InitializeStreamOffset(headerEnd + iOffset);
+            var entryEnd = entry.StreamOffset + entry.DataSize;
+            if
+            (
+                entry.StreamOffset >= headerEnd &&
+                entryEnd >= headerEnd &&
+                entryEnd < bufferEnd &&
+                entry.InitializeBuffer(reader, options)
+            )
             {
-
-                end += entry.DataSize;
                 continue;
             }
-            Ignore:
+            shouldRemove = true;
+            Continue:
+            iOffset += entry.DataSize;
 
-            end += entry.DataSize;
             if (entry.EntryMime is RVBankEntryMime.Encrypted)
             {
-                Logger?.LogInformation("Ignoring Encrypted entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, end, entry.DataSize);
-
+                shouldRemove = true;
             }
-            if (entry.EntryName.Contains("config.cpp"))
+
+            if (!shouldRemove)
             {
-                Logger?.LogInformation("Ignoring malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, end, entry.DataSize);
-
+                continue;
             }
+            //Logger?.LogDebug("Ignoring Encrypted entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, iOffset, entry.DataSize);
 
             markedForRemoval.Add(entry);
-            continue;
         }
 
-        Logger?.LogDebug("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused data.", reader.BaseStream.Position, markedForRemoval.Count);
-
-        Logger?.LogDebug("Removing all {IgnoreCount} deleted/stale entries from the directory structure.", markedForRemoval.Count);
+        Logger?.LogInformation("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused and/or malformed data.", reader.BaseStream.Position, markedForRemoval.Count);
         markedForRemoval.ForEach(it => it.Delete());
         var positionToRead = Math.Max(0, reader.BaseStream.Length - 21);
         reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
@@ -260,7 +262,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         var writtenDigest = ReadDigest(reader);
         if (writtenDigest != calculatedDigest)
         {
-            //TODO: Log and warn that invalid checksum was found
+            Logger?.LogWarning("The checksum in this pbo appears to be incorrect. Expected '{ActualDigest}', but instead got '{WrittenDigest}'.", Convert.ToBase64String(calculatedDigest.ToByteArray()), Convert.ToBase64String(writtenDigest.ToByteArray()));
         }
 
         End:

@@ -1,0 +1,31 @@
+@startuml
+interface IRVBankVersionEntry {
+    Properties : ObservableCollection<IRVBankProperty> <<get>>
+}
+class RVBankVersionEntry {
+    + {static} <<readonly>> UsedPboProperties : string[]
+    - <<readonly>> properties : ObservableCollection<IRVBankProperty>
+    + Properties : ObservableCollection<IRVBankProperty> <<get>> <<init>>
+    + <<sealed>> <<override>> EntryName : string <<get>> <<set>>
+    + <<sealed>> <<override>> EntryMime : RVBankEntryMime <<get>> <<set>>
+    + <<sealed>> <<override>> OriginalSize : int <<get>> <<set>>
+    + <<sealed>> <<override>> Offset : int <<get>> <<set>>
+    + <<sealed>> <<override>> TimeStamp : int <<get>> <<set>>
+    + <<sealed>> <<override>> DataSize : int <<get>> <<set>>
+    + RVBankVersionEntry(fileName:string, mime:RVBankEntryMime, originalSize:int, offset:int, timeStamp:int, dataSize:int, properties:IEnumerable<IRVBankProperty>?, file:IRVBank, parent:IRVBankDirectory, logger:ILogger?)
+    + RVBankVersionEntry(reader:BisBinaryReader, options:RVBankOptions, file:IRVBank, parent:IRVBankDirectory, logger:ILogger?)
+    + <<sealed>> <<override>> Debinarize(reader:BisBinaryReader, options:RVBankOptions) : Result
+    + <<sealed>> <<override>> Binarize(writer:BisBinaryWriter, options:RVBankOptions) : Result
+    - ReadPboProperties(reader:BisBinaryReader, options:RVBankOptions) : Result
+    + WritePboProperties(writer:BisBinaryWriter, options:RVBankOptions) : Result
+    + <<sealed>> <<override>> Validate(options:RVBankOptions) : Result
+    + <<sealed>> <<override>> CalculateHeaderLength(options:RVBankOptions) : int
+    + CreateVersionProperty(name:string, value:string) : IRVBankProperty
+    + CreateVersionProperty(reader:BisBinaryReader, options:RVBankOptions) : IRVBankProperty
+    + BisClone() : IRVBankVersionEntry
+}
+IRVBankEntry <|-- IRVBankVersionEntry
+"IBisCloneable`1" "<IRVBankVersionEntry>" <|-- IRVBankVersionEntry
+RVBankEntry <|-- RVBankVersionEntry
+IRVBankVersionEntry <|-- RVBankVersionEntry
+@enduml
