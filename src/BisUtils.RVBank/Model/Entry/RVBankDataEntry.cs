@@ -132,17 +132,8 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
             return buffer;
         }
 
-        using var stream = new MemoryStream();
-        using var writer = new BinaryWriter(stream, options.Charset, true);
-
-        var writtenSize = BisCompatibleLzss.Compressor.Decode(buffer, writer, OriginalSize);
-        if (writtenSize != OriginalSize)
-        {
-
-            return null;
-        }
-
-        return stream.ToArray();
+        var writtenSize = BisCompatibleLzss.Compressor.Decode(buffer, out var data, OriginalSize);
+        return writtenSize != OriginalSize ? null : data;
     }
 
 

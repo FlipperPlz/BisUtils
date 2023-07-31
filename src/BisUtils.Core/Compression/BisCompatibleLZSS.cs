@@ -33,13 +33,12 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-    public int Decode(byte[] input, BinaryWriter output, int length)
+    public int Decode(byte[] input, out byte[] output, int length)
     {
         var text_buf = new byte[N + F - 1];
-        var outputBytes = new byte[length];
+        output = new byte[length];
         var start = 0;
         if (length <= 0) {
-            output.Write(outputBytes);
             return 0;
         }
 
@@ -61,7 +60,7 @@ public sealed class BisCompatibleLzss
             {
                 if(input.Length <= iSrc)
                 {
-                    return outputBytes.Length; //Failed here out of bounds
+                    return output.Length; //Failed here out of bounds
                 }
                 c = input[iSrc++];
 
@@ -71,12 +70,12 @@ public sealed class BisCompatibleLzss
             if ((flags & 1) != 0) {
                 if(input.Length <= iSrc)
                 {
-                    return outputBytes.Length; //Failed here out of bounds
+                    return output.Length; //Failed here out of bounds
                 }
                 c =  input[iSrc++];
 
                 // save byte
-                outputBytes[iDst++] = (byte) c;
+                output[iDst++] = (byte) c;
                 bytesLeft--;
                 // continue decompression
                 text_buf[r] = (byte) c;
@@ -86,12 +85,12 @@ public sealed class BisCompatibleLzss
             else {
                 if(input.Length <= iSrc)
                 {
-                    return outputBytes.Length; //Failed here out of bounds
+                    return output.Length; //Failed here out of bounds
                 }
                 i = input[iSrc++];
                 if(input.Length <= iSrc)
                 {
-                    return outputBytes.Length; //Failed here out of bounds
+                    return output.Length; //Failed here out of bounds
                 }
                 int j = input[iSrc++];
 
@@ -103,14 +102,14 @@ public sealed class BisCompatibleLzss
                     jj = j + ii;
 
                 if (j + 1 > bytesLeft) {
-                    return outputBytes.Length;
+                    return output.Length;
                 }
 
                 for (; ii <= jj; ii++) {
                     c = text_buf[ii & (N - 1)];
 
                     // save byte
-                    outputBytes[iDst++] = (byte) c;
+                    output[iDst++] = (byte) c;
                     bytesLeft--;
                     // continue decompression
                     text_buf[r] = (byte) c;
@@ -120,9 +119,7 @@ public sealed class BisCompatibleLzss
             }
         }
 
-        output.Write(outputBytes);
-        return outputBytes.Length;
-
+        return output.Length;
     }
 
     public byte[] Encode(Stream inputStream, out uint outputSize)
