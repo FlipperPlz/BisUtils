@@ -2,6 +2,7 @@
 namespace BisUtils.RVBank.Model.Misc;
 
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using Core.IO;
 using Options;
 
@@ -47,6 +48,49 @@ public struct RVBankDigest : IRVBankDigest
         SectorD = reader.ReadInt32();
         SectorE = reader.ReadInt32();
     }
+
+    public byte[] ToByteArray()
+    {
+        var byteArray = new byte[20];
+
+        WriteBytes(SectorA, 0);
+        WriteBytes(SectorB, 4);
+        WriteBytes(SectorC, 8);
+        WriteBytes(SectorD, 12);
+        WriteBytes(SectorE, 16);
+
+        return byteArray;
+
+        void WriteBytes(int value, int start)
+        {
+            byteArray[start] = (byte)value;
+            byteArray[start + 1] = (byte)(value >> 8);
+            byteArray[start + 2] = (byte)(value >> 16);
+            byteArray[start + 3] = (byte)(value >> 24);
+        }
+    }
+
+
+#pragma warning disable SYSLIB0021
+#pragma warning disable CA5350
+    public static RVBankDigest CalculateStreamDigest(Stream stream, bool resetPosition = false)
+    {
+        var oldPosition = stream.Position;
+        stream.Seek(0, SeekOrigin.Begin);
+
+
+        using var alg = new SHA1Managed();
+        var digest = new RVBankDigest(alg.ComputeHash(stream));
+
+        if (resetPosition)
+        {
+            stream.Seek(oldPosition, SeekOrigin.Begin);
+        }
+
+        return digest;
+    }
+#pragma warning restore CA5350
+#pragma warning restore SYSLIB0021
 
     public void Write(BisBinaryWriter writer)
     {

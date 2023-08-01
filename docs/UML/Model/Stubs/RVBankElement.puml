@@ -1,0 +1,15 @@
+@startuml
+interface IRVBankElement {
+    BankFile : IRVBank <<get>>
+}
+abstract class RVBankElement {
+    + BankFile : IRVBank <<get>> <<set>>
+    + IsFirstRead : bool <<get>>
+    # RVBankElement(file:IRVBank, logger:ILogger?)
+    # RVBankElement(reader:BisBinaryReader, options:RVBankOptions, file:IRVBank, logger:ILogger?)
+    # <<override>> OnChangesMade(sender:object?, e:EventArgs?) : void
+}
+"IBisSynchronizableElement`1" "<RVBankOptions>" <|-- IRVBankElement
+"BisSynchronizableElement`1" "<RVBankOptions>" <|-- RVBankElement
+IRVBankElement <|-- RVBankElement
+@enduml

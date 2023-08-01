@@ -5,6 +5,7 @@ using Core.IO;
 using Alerts.Errors;
 using Core.Extensions;
 using Entry;
+using Extensions;
 using FResults;
 using FResults.Extensions;
 using Microsoft.Extensions.Logging;
@@ -94,5 +95,5 @@ public class RVBankProperty : RVBankElement, IRVBankProperty
         return LastResult;
     }
 
-    public IRVBankProperty BisClone() => VersionEntry.CreateVersionProperty(Name, Value);
+    public IRVBankProperty BisClone() => VersionEntry.CreateVersionProperty(Name, Value, Logger);
 }

@@ -7,6 +7,7 @@ using Alerts.Errors;
 using Alerts.Warnings;
 using Enumerations;
 using Core.Extensions;
+using Extensions;
 using FResults;
 using FResults.Extensions;
 using Microsoft.Extensions.Logging;
@@ -16,12 +17,6 @@ using Stubs;
 public interface IRVBankVersionEntry : IRVBankEntry, IBisCloneable<IRVBankVersionEntry>
 {
     ObservableCollection<IRVBankProperty> Properties { get; }
-
-    Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options);
-    Result WritePboProperties(BisBinaryWriter writer, RVBankOptions options);
-
-    IRVBankProperty CreateVersionProperty(string name, string value);
-    IRVBankProperty CreateVersionProperty(BisBinaryReader reader, RVBankOptions options);
 
 }
 
@@ -45,20 +40,35 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         }
     }
 
+    public sealed override string EntryName { get => base.EntryName; set => base.EntryName = value; }
+    public sealed override RVBankEntryMime EntryMime { get => base.EntryMime; set => base.EntryMime = value; }
+    public sealed override uint OriginalSize { get => base.OriginalSize; set => base.OriginalSize = value; }
+    public sealed override ulong Offset { get => base.Offset; set => base.Offset = value; }
+    public sealed override ulong TimeStamp { get => base.TimeStamp; set => base.TimeStamp = value; }
+    public sealed override ulong DataSize { get => base.DataSize; set => base.DataSize = value; }
+
     public RVBankVersionEntry(
         string fileName,
         RVBankEntryMime mime,
         uint originalSize,
-        uint offset,
-        uint timeStamp,
-        uint dataSize,
+        ulong offset,
+        ulong timeStamp,
+        ulong dataSize,
         IEnumerable<IRVBankProperty>? properties,
         IRVBank file,
         IRVBankDirectory parent,
         ILogger? logger
-    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize, file, parent, logger) =>
+    ) : base(file, parent, logger)
+    {
         Properties = properties is { } props ? new ObservableCollection<IRVBankProperty>(props) : new ObservableCollection<IRVBankProperty>();
+        EntryName = fileName;
+        EntryMime = mime;
+        OriginalSize = originalSize;
+        Offset = offset;
+        TimeStamp = timeStamp;
+        DataSize = dataSize;
 
+    }
 
     public RVBankVersionEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
@@ -70,8 +80,19 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         }
     }
 
+    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
+    {
+        LastResult = base.Debinarize(reader, options);
+        ReadPboProperties(reader, options);
+        return LastResult;
+    }
 
-    public Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options)
+
+    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>
+        Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));
+
+
+    private Result ReadPboProperties(BisBinaryReader reader, RVBankOptions options)
     {
         LastResult = Result.Ok();
         var property = new RVBankProperty(string.Empty, string.Empty, BankFile, this, Logger);
@@ -100,29 +121,6 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         return LastResult;
     }
 
-    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
-    {
-        writer.WriteAsciiZ(Path, options);
-        writer.Write((int)EntryMime);
-        writer.Write(OriginalSize);
-        writer.Write(Offset);
-        writer.Write(TimeStamp);
-        writer.Write(DataSize);
-        return WritePboProperties(writer, options);
-    }
-
-
-    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
-    {
-        LastResult = base.Debinarize(reader, options);
-        EntryMime = (RVBankEntryMime) reader.ReadInt32(); // TODO WARN/ERROR then recover
-        OriginalSize = reader.ReadUInt32();
-        TimeStamp = reader.ReadUInt32();
-        Offset = reader.ReadUInt32();
-        DataSize = reader.ReadUInt32();
-        return LastResult.WithReasons(ReadPboProperties(reader, options).Reasons);
-    }
-
 
     public Result WritePboProperties(BisBinaryWriter writer, RVBankOptions options)
     {
@@ -141,7 +139,7 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
                     .WithWarning(new RVBankImproperMimeWarning(options.RequireVersionMimeOnVersion,
                         typeof(RVBankVersionEntry)))
                 : Result.ImmutableOk(),
-            !IsEmptyMeta()
+            !this.IsEmptyMeta()
                 ? Result.Ok()
                     .WithWarning(new RVBankImproperMetaWarning(options.RequireEmptyVersionMeta, typeof(RVBankVersionEntry)))
                 : Result.ImmutableOk(),
@@ -154,7 +152,8 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
         return LastResult;
     }
-    public override uint CalculateLength(RVBankOptions options) =>  (uint) (21 + options.Charset.GetByteCount(Path)) + 1 +  (uint)Properties.Sum(property =>
+
+    public sealed override int CalculateHeaderLength(RVBankOptions options) => 22 + options.Charset.GetByteCount(Path) + Properties.Sum(property =>
         2 + options.Charset.GetByteCount(property.Name) + options.Charset.GetByteCount(property.Value));
 
     public IRVBankProperty CreateVersionProperty(string name, string value) => new RVBankProperty(name, value, BankFile, this, Logger);

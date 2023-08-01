@@ -1,7 +1,5 @@
 namespace BisUtils.RVBank.Model.Entry;
 
-using System.Text;
-using Alerts.Errors;
 using Core.Binarize.Exceptions;
 using Core.IO;
 using Alerts.Warnings;
@@ -18,17 +16,35 @@ using Stubs;
 
 public interface IRVBankDataEntry : IRVBankEntry
 {
-    Stream EntryData { get; }
+    ulong StreamOffset { get; }
+    MemoryStream EntryData { get; set; }
+
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
-    bool InitializeData(BisBinaryReader reader, RVBankOptions options);
-    public byte[] RetrieveFinalStream(out bool streamWasCompressed);
+    void InitializeStreamOffset(ulong offset);
+    bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options);
+    byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options);
+    public byte[]? RetrieveBuffer(BisBinaryReader reader, RVBankOptions options);
 }
 
-public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
+public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
 {
-
+    private bool disposed;
     private RVBankDataType packingMethod;
+    public ulong StreamOffset { get; protected set; }
+
+    private MemoryStream entryData = null!;
+    public MemoryStream EntryData
+    {
+        get => entryData;
+        set
+        {
+            OnChangesMade(this, EventArgs.Empty);
+            entryData.Dispose();
+            entryData = value;
+        }
+    }
+
     public RVBankDataType PackingMethod
     {
         get => packingMethod;
@@ -38,47 +54,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
             packingMethod = value;
         }
     }
-
-
-    private Stream entryData = Stream.Null;
-    public Stream EntryData
-    {
-        get => entryData;
-        set
-        {
-            OnChangesMade(this, EventArgs.Empty);
-            entryData = value;
-        }
-    }
-
-    public RVBankDataEntry
-    (
-        ILogger logger,
-        IRVBank file,
-        IRVBankDirectory parent,
-        string fileName,
-        RVBankEntryMime mime,
-        uint originalSize,
-        uint offset,
-        uint timeStamp,
-        uint dataSize
-    ) : base(fileName, mime, originalSize, offset, timeStamp, dataSize, file, parent, logger)
-    {
-    }
-
-    public RVBankDataEntry
-    (
-        string fileName,
-        RVBankEntryMime mime,
-        uint offset,
-        uint timeStamp,
-        Stream entryData,
-        RVBankDataType? packingMethod,
-        IRVBank file,
-        IRVBankDirectory parent,
-        ILogger? logger
-    ) : base(fileName, mime, (uint) entryData.Length, offset, timeStamp, 0, file, parent, logger) =>
-        this.packingMethod = packingMethod ?? AssumePackingMethod();
 
     private RVBankDataType AssumePackingMethod()
     {
@@ -98,7 +73,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
     }
 
-    protected sealed override void OnChangesMade(object? sender, EventArgs? e) => base.OnChangesMade(sender, e);
 
     public RVBankDataEntry(BisBinaryReader reader, RVBankOptions options, IRVBank file, IRVBankDirectory parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
@@ -109,119 +83,75 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         }
     }
 
-    public void SynchronizeMetaWithStream() => OriginalSize = (uint)EntryData.Length;
-
     public void ExpandDirectoryStructure()
     {
         ArgumentNullException.ThrowIfNull(BankFile, "When expanding a Pbo Entry, The node must be established");
 
-        var normalizePath = EntryName = RVPathUtilities.NormalizePboPath(EntryName);
+        var normalizePath = EntryName;
 
-        if (!EntryName.Contains('\\'))
+        EntryName = RVPathUtilities.GetFilename(normalizePath);
+
+        var parentName = RVPathUtilities.GetParent(normalizePath);
+        if (parentName == "")
         {
+            BankFile.PboEntries.Add(this);
             return;
         }
-        EntryName = RVPathUtilities.GetFilename(EntryName);
+        var parent = BankFile.GetOrCreateDirectory(parentName, BankFile, Logger);
 
-        Move(BankFile.CreateDirectory(RVPathUtilities.GetParent(normalizePath), BankFile, Logger));
+        Move(parent);
     }
 
-    public bool InitializeData(BisBinaryReader reader, RVBankOptions options)
+
+    public void InitializeStreamOffset(ulong offset) => StreamOffset = offset;
+
+    public bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options)
     {
-
-        var stream = new MemoryStream();
-
-        const int BufferSize = 8192;
-
-        var iterations = DataSize / BufferSize;
-
-        for (long i = 0; i < iterations; i++)
+        if (RetrieveBuffer(reader, options) is not { } buffer)
         {
-            var chunk = reader.ReadBytes(BufferSize);
-            stream.Write(chunk, 0, chunk.Length);
+            return false;
         }
-
-        var remainder = (int)(DataSize % BufferSize);
-        if (remainder > 0)
-        {
-            var chunk = reader.ReadBytes(remainder);
-            stream.Write(chunk, 0, chunk.Length);
-        }
-
-        entryData = stream;
-        entryData.Seek(0, SeekOrigin.Begin);
-        switch (PackingMethod)
-        {
-
-            case RVBankDataType.Encrypted:
-            {
-                Logger?.LogCritical("Found encrypted entry {Path}", Path);
-                return default;
-            }
-            case RVBankDataType.Compressed:
-            {
-                var bytes = stream.ToArray();
-                entryData.Seek(0, SeekOrigin.Begin);
-                entryData.SetLength(bytes.LongLength);
-                using var writer = new BinaryWriter(stream, options.Charset, true);
-                if (BisCompatibleLzss.Compressor.Decode(bytes, writer, OriginalSize) is { } size && size != OriginalSize)
-                {
-                    stream.Close();
-                    Logger?.LogDebug("What the fuck expected {OG} got {WTF}", OriginalSize, size);
-                    entryData = new MemoryStream(bytes);
-                }
-                else
-                {
-                    entryData = stream;
-                    entryData.Seek(0, SeekOrigin.Begin);
-                    return true;
-                }
-                goto default;
-            }
-            default:
-            {
-
-
-                return PackingMethod is not RVBankDataType.Compressed;
-            }
-        }
+        entryData = new MemoryStream(buffer, false);
+        return true;
     }
 
-    public byte[] RetrieveFinalStream(out bool streamWasCompressed)
+    public byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options)
     {
-        switch (PackingMethod)
+        var start = reader.BaseStream.Position;
+        reader.BaseStream.Seek((long) StreamOffset, SeekOrigin.Begin);
+        var dataSize = unchecked((uint)DataSize);
+        if (DataSize > int.MaxValue)
         {
-            case RVBankDataType.Compressed:
-            {
-                streamWasCompressed = true;
-                var stream = BisCompatibleLzss.Compressor.Encode(entryData, out var compressedSize);
-                DataSize = compressedSize;
-                return stream;
-            }
-            default:
-            {
-                streamWasCompressed = false;
-                using var data = new MemoryStream();
-                entryData.CopyTo(data);
-                return data.ToArray();
-            }
+            return Array.Empty<byte>();
+        }
+        var buffer = reader.ReadBytes((int)dataSize);
+        reader.BaseStream.Seek(start, SeekOrigin.Begin);
+        return buffer;
+    }
+
+    public virtual byte[]? RetrieveBuffer(BisBinaryReader reader, RVBankOptions options)
+    {
+        var buffer = RetrieveRawBuffer(reader, options);
+        if (PackingMethod is not RVBankDataType.Compressed)
+        {
+            return buffer;
         }
 
+        var writtenSize = BisCompatibleLzss.Compressor.Decode(buffer, out var data, OriginalSize);
+        return writtenSize != OriginalSize ? null : data;
     }
 
-    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
+
+
+    public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>
+        base.Binarize(writer, options);
+
+    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
-        writer.WriteAsciiZ(Path, options);
-        writer.Write((uint)EntryMime);
-        writer.Write(OriginalSize);
-        writer.Write(Offset);
-        writer.Write(TimeStamp);
-        writer.Write(DataSize);
-        return LastResult = Result.Ok();
+        var result = base.Debinarize(reader, options);
+        packingMethod = AssumePackingMethod();
+        return result;
     }
-
-    internal void SetEntryDataQuietly(Stream data) => entryData = data;
-
 
     public sealed override Result Validate(RVBankOptions options)
     {
@@ -245,17 +175,6 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         if (EntryName.Length == 0)
         {
             LastResult.WithWarning(new RVBankUnnamedEntryWarning(!options.AllowUnnamedDataEntries, typeof(IRVBankDataEntry)));
-        }
-
-        if (EntryData.Length != DataSize && options.CurrentSection != RVBankSection.Header)
-        {
-            LastResult.WithWarning(new Warning
-            {
-                AlertScope = typeof(IRVBankDataEntry),
-                AlertName = "EntryReadError",
-                Message = "Incorrect Stream/DataSize Value.",
-                IsError = !options.IgnoreInvalidStreamSize
-            });
         }
 
         if (DataSize <= 0)
@@ -283,18 +202,17 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry
         return LastResult;
     }
 
-    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
+    public sealed override int CalculateHeaderLength(RVBankOptions options) => base.CalculateHeaderLength(options);
+
+    public void Dispose()
     {
-        LastResult = base.Debinarize(reader, options);
-        EntryMime = (RVBankEntryMime)reader.ReadInt32(); // TODO WARN/ERROR then recover
-        OriginalSize = reader.ReadUInt32();
-        TimeStamp = reader.ReadUInt32();
-        Offset = reader.ReadUInt32();
-        DataSize = reader.ReadUInt32();
-        packingMethod = AssumePackingMethod();
+        if (disposed)
+        {
+            return;
+        }
 
-        return LastResult;
+        entryData.Dispose();
+        GC.SuppressFinalize(this);
+        disposed = true;
     }
-
-    public override uint CalculateLength(RVBankOptions options) =>  21 + (uint) options.Charset.GetByteCount(Path);
 }

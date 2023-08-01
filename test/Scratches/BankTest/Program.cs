@@ -1,6 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Text;
+﻿using System.Text;
+using BisUtils.RVBank.Extensions;
 using BisUtils.RVBank.Model;
 using BisUtils.RVBank.Options;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -31,13 +30,19 @@ var bankOptions = new RVBankOptions()
     AsciiLengthTimeout = 510,
     AllowEncrypted = true
 };
-var output = @"C:\Users\ryann\Downloads\Ryann\LBMaster\out.pbo";
+var output = @"C:\Users\ryann\Downloads\Ryann\LBMaster\out2w.pbo";
 File.Delete(output);
+File.Delete(@"C:\Users\ryann\Desktop\test.cpp");
 var outStream = File.Open(output, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-var bank = RVBank.ReadPbo(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
+var bank = new RVBank(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
 bank.SynchronizeWithStream(bankOptions);
+var config = bank.GetDataEntries("config.cpp", SearchOption.TopDirectoryOnly).FirstOrDefault() ??
+             throw new IOException("No config.cpp entry found.");
+File.WriteAllBytes(@"C:\Users\ryann\Desktop\test.cpp", config.EntryData.ToArray());
+
+
 outStream.Close();
 Console.WriteLine();
 
-var outBank = RVBank.ReadPbo(output, bankOptions, null, NullLogger.Instance);
-
+var outBank = new RVBank(output, bankOptions, null, NullLogger.Instance);
+Console.WriteLine();

@@ -1,0 +1,13 @@
+@startuml
+class RVBankVersionEntryExtensions <<static>> {
+    + {static} CreateVersionProperty(ctx:IRVBankVersionEntry, reader:BisBinaryReader, options:RVBankOptions, logger:ILogger?) : IRVBankProperty
+    + {static} CreateVersionProperty(ctx:IRVBankVersionEntry, name:string, value:string, logger:ILogger?) : IRVBankProperty
+    + {static} AddVersionEntry(ctx:IRVBankVersionEntry, reader:BisBinaryReader, options:RVBankOptions, logger:ILogger?) : IRVBankProperty
+    + {static} AddVersionEntry(ctx:IRVBankVersionEntry, name:string, value:string, logger:ILogger?) : IRVBankProperty
+    + {static} GetProperties(ctx:IRVBankVersionEntry, name:string) : IEnumerable<IRVBankProperty>
+    + {static} GetOrCreateProperty(ctx:IRVBankVersionEntry, name:string, value:string, logger:ILogger?) : IRVBankProperty
+    + {static} SetOrCreateProperty(ctx:IRVBankVersionEntry, name:string, value:string, logger:ILogger?) : IRVBankProperty
+    + {static} GetProperty(ctx:IRVBankVersionEntry, name:string) : IRVBankProperty?
+    + {static} GetPropertyValue(ctx:IRVBankVersionEntry, name:string) : string?
+}
+@enduml

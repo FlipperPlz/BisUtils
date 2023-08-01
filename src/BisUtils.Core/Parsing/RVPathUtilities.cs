@@ -10,7 +10,7 @@ public static class RVPathUtilities
         }
 
         var result = new char[path.Length];
-        var lastWasSeparator = false; // Initialize flag to track if the last character was a separator
+        var lastWasSeparator = true; // Initialize flag to track if the last character was a separator
         var charsWritten = 0; // counter to keep track of the number of characters written to the result array
 
         foreach (var c in path)

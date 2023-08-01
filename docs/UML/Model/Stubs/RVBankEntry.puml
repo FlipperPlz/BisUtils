@@ -1,0 +1,50 @@
+@startuml
+interface IRVBankEntry {
+    ParentDirectory : IRVBankDirectory <<get>> <<set>>
+    Path : string <<get>>
+    AbsolutePath : string <<get>>
+    EntryName : string <<get>> <<set>>
+    EntryMime : RVBankEntryMime <<get>> <<set>>
+    OriginalSize : int <<get>> <<set>>
+    Offset : int <<get>> <<set>>
+    TimeStamp : int <<get>> <<set>>
+    DataSize : int <<get>> <<set>>
+    Move(directory:IRVBankDirectory) : void
+    Delete() : void
+    MoveAndReplace(directory:IRVBankDirectory) : IEnumerable<IRVBankEntry>
+    CalculateHeaderLength(options:RVBankOptions) : int
+}
+abstract class RVBankEntry {
+    + ParentDirectory : IRVBankDirectory <<get>> <<set>>
+    + <<virtual>> Path : string <<get>>
+    + <<virtual>> AbsolutePath : string <<get>>
+    - entryName : string = ""
+    + <<virtual>> EntryName : string <<get>> <<set>>
+    - entryMime : RVBankEntryMime
+    + <<virtual>> EntryMime : RVBankEntryMime <<get>> <<set>>
+    - originalSize : int
+    + <<virtual>> OriginalSize : int <<get>> <<set>>
+    - offset : int
+    + <<virtual>> Offset : int <<get>> <<set>>
+    - timeStamp : int
+    + <<virtual>> TimeStamp : int <<get>> <<set>>
+    - dataSize : int
+    + <<virtual>> DataSize : int <<get>> <<set>>
+    # RVBankEntry(file:IRVBank, parent:IRVBankDirectory, logger:ILogger?)
+    # RVBankEntry(reader:BisBinaryReader, options:RVBankOptions, file:IRVBank, parent:IRVBankDirectory, logger:ILogger?)
+    + <<override>> Debinarize(reader:BisBinaryReader, options:RVBankOptions) : Result
+    + <<override>> Binarize(writer:BisBinaryWriter, options:RVBankOptions) : Result
+    # QuietlySetName(name:string) : void
+    # QuietlySetMime(mime:RVBankEntryMime) : void
+    # QuietlySetOriginalSize(ogSize:int) : void
+    # QuietlySetTimestamp(time:int) : void
+    # QuietlySetSize(size:int) : void
+    + <<virtual>> Move(directory:IRVBankDirectory) : void
+    + <<virtual>> Delete() : void
+    + <<virtual>> MoveAndReplace(directory:IRVBankDirectory) : IEnumerable<IRVBankEntry>
+    + <<virtual>> CalculateHeaderLength(options:RVBankOptions) : int
+}
+IRVBankElement <|-- IRVBankEntry
+RVBankElement <|-- RVBankEntry
+IRVBankEntry <|-- RVBankEntry
+@enduml
