@@ -33,7 +33,7 @@ var bankOptions = new RVBankOptions()
 var output = @"C:\Users\ryann\Downloads\Ryann\LBMaster\out2w.pbo";
 File.Delete(output);
 var outStream = File.Open(output, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-var bank = RVBank.ReadPbo(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
+var bank = new RVBank(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
 bank.SynchronizeWithStream(bankOptions);
 var config = bank.GetDataEntries("config.cpp", SearchOption.TopDirectoryOnly).FirstOrDefault() ??
              throw new IOException("No config.cpp entry found.");
@@ -44,5 +44,5 @@ File.WriteAllBytes(@"C:\Users\ryann\Desktop\test.cpp", config.EntryData.ToArray(
 outStream.Close();
 Console.WriteLine();
 
-var outBank = RVBank.ReadPbo(output, bankOptions, null, NullLogger.Instance);
+var outBank = new RVBank(output, bankOptions, null, NullLogger.Instance);
 Console.WriteLine();

@@ -11,12 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Exceptions/RVBankChecksumMismatch.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/BisUtils.RVBank.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/BisUtils.RVBank.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Misc/RVBankDigest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Misc/RVBankDigest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +187,7 @@
       <workItem from="1690574297987" duration="233000" />
       <workItem from="1690817042256" duration="1503000" />
       <workItem from="1690826101525" duration="4514000" />
-      <workItem from="1690903346564" duration="3285000" />
+      <workItem from="1690903346564" duration="4592000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -407,7 +405,15 @@
       <option name="project" value="LOCAL" />
       <updated>1690514015690</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="refactor(bank): Removed some of the clutter in the RVBank::Debinarize function to simplify logic and improve readability.&#10;&#10; The earlier logic that looped through bank entries and handled multiple conditions was unwrapped into self-contained functions. This change makes the code easier to follow and reason about. &#10; &#10; - Moreover, a new exception 'RVBankChecksumMismatch' is introduced to handle cases of digest mismatch between actual and expected, enhancing error reporting in the application">
+      <option name="closed" value="true" />
+      <created>1690906813429</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1690906813429</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -439,8 +445,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(core): Create BisCompatibleLZSS::Decode Method" />
-    <MESSAGE value="refactor(core): Change BisCompatibleLZSS::Decode Signature To Accept Byte Array Instead Of Reader" />
     <MESSAGE value="feat(bank): Make Entries Creatable&#10;&#10;- Change necessary data type from int to long for the bank's entries." />
     <MESSAGE value="feat(bank): Make Entry/Properties List Mutable" />
     <MESSAGE value="feat(bank): Add functionality for handling file and bank prefixes&#10;&#10;- Add property-centric extensions for ease of manipulation" />
@@ -464,7 +468,9 @@
     <MESSAGE value="feat(bank): Start Working On RVBankDataEntry" />
     <MESSAGE value="feat(bank): Adjustments To Bank Debinarization" />
     <MESSAGE value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
+    <MESSAGE value="refactor(bank): Declutter RVBank::Debinarize Function&#10;" />
+    <MESSAGE value="refactor(bank): Removed some of the clutter in the RVBank::Debinarize function to simplify logic and improve readability.&#10;&#10; The earlier logic that looped through bank entries and handled multiple conditions was unwrapped into self-contained functions. This change makes the code easier to follow and reason about. &#10; &#10; - Moreover, a new exception 'RVBankChecksumMismatch' is introduced to handle cases of digest mismatch between actual and expected, enhancing error reporting in the application" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(bank): Removed some of the clutter in the RVBank::Debinarize function to simplify logic and improve readability.&#10;&#10; The earlier logic that looped through bank entries and handled multiple conditions was unwrapped into self-contained functions. This change makes the code easier to follow and reason about. &#10; &#10; - Moreover, a new exception 'RVBankChecksumMismatch' is introduced to handle cases of digest mismatch between actual and expected, enhancing error reporting in the application" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -500,10 +506,10 @@
           <line>40</line>
           <properties documentPath="E:\projects\csharp\BisUtils\test\Scratches\BankTest\Program.cs" initialLine="40" containingFunctionPresentation="">
             <startOffsets>
-              <option value="1529" />
+              <option value="1525" />
             </startOffsets>
             <endOffsets>
-              <option value="1612" />
+              <option value="1608" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="49" />

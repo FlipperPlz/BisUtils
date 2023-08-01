@@ -1,7 +1,6 @@
 namespace BisUtils.RVBank.Model;
 
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
 using Alerts.Exceptions;
 using Core.Binarize.Synchronization;
 using Core.Extensions;
@@ -11,8 +10,6 @@ using Entry;
 using Extensions;
 using Stubs;
 using FResults;
-using FResults.Extensions;
-using FResults.Reasoning;
 using Microsoft.Extensions.Logging;
 using Misc;
 using Options;
@@ -105,14 +102,16 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public RVBank(string filename, IEnumerable<IRVBankEntry> entries, Stream? synchronizeTo, ILogger? logger) : base(synchronizeTo, logger)
+    protected RVBank(string filename, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
     {
         BankFile = this;
         FileName = filename;
-        PboEntries = new ObservableCollection<IRVBankEntry>(entries);
     }
 
-    public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? synchronizeTo, ILogger? logger) : base(reader, options, synchronizeTo, logger)
+    public RVBank(string filename, IEnumerable<IRVBankEntry>? entries, Stream? syncTo, ILogger? logger) : this(filename, syncTo, logger) =>
+        PboEntries = entries != null ? new ObservableCollection<IRVBankEntry>(entries) : new ObservableCollection<IRVBankEntry>();
+
+    public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? syncTo, ILogger? logger) : base(reader, options, syncTo, logger)
     {
         BankFile = this;
         FileName = filename;
@@ -123,11 +122,23 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public static RVBank ReadPbo(string path, RVBankOptions options, Stream? syncTo, ILogger logger)
+    public RVBank(string fileName, Stream buffer, RVBankOptions options, Stream? syncTo, ILogger logger) : this(fileName, syncTo, logger)
+    {
+        using var reader = new BisBinaryReader(buffer, options.Charset);
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
+    }
+
+    public RVBank(string path, RVBankOptions options, Stream? syncTo, ILogger logger) : this(Path.GetFileNameWithoutExtension(path), syncTo, logger)
     {
         using var stream = File.OpenRead(path);
         using var reader = new BisBinaryReader(stream, options.Charset);
-        return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
+        if (!Debinarize(reader, options))
+        {
+            LastResult!.Throw();
+        }
     }
 
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
@@ -148,6 +159,9 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             out _,
             out var dataEntries,
             out var queuedForRemoval,
+            PboEntries,
+            this,
+            Logger,
             reader,
             options
         );
@@ -163,7 +177,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         Logger?.LogInformation("Starting data sweep at {Pos}.", reader.BaseStream.Position);
         foreach (var entry in dataEntries)
         {
-            var shouldRemove = false;
+            bool shouldRemove;
             var entryOffset =  entry.StreamOffset + headerEnd;
             entry.InitializeStreamOffset(entryOffset);
             Console.WriteLine(entry.StreamOffset + " " + entry.DataSize);
@@ -220,24 +234,38 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    private int ReadBankHeader(long bankLength, out int bufferEnd, out int headerLength, out int headerEnd, out int headerStart, out List<IRVBankDataEntry> dataEntries , out List<IRVBankEntry> queuedForRemoval, BisBinaryReader reader, RVBankOptions options)
+    public static int ReadBankHeader
+    (
+        long bankLength,
+        out int bufferEnd,
+        out int headerLength,
+        out int headerEnd,
+        out int headerStart,
+        out List<IRVBankDataEntry> dataEntries,
+        out List<IRVBankEntry> queuedForRemoval,
+        ICollection<IRVBankEntry> directoryStructure,
+        IRVBank parent,
+        ILogger? logger,
+        BisBinaryReader reader,
+        RVBankOptions options
+    )
     {
         var fileCount = 0;
         bufferEnd = 0;
         headerStart = Convert.ToInt32(reader.BaseStream.Position);
         queuedForRemoval = new List<IRVBankEntry>();
         dataEntries = new List<IRVBankDataEntry>();
-        Logger?.LogDebug("Entry loop started at {Start}", headerStart);
+        logger?.LogDebug("Entry loop started at {Start}", headerStart);
         for (;;)
         {
-            ReadBankInfo(out var entry, reader, options);
+            ReadBankInfo(out var entry,parent, logger, reader, options);
 
             if(entry.IsDummyEntry() && entry is not RVBankVersionEntry)
             {
                 break;
             }
             fileCount++;
-            PboEntries.Add(entry);
+            directoryStructure.Add(entry);
 
             if (entry is IRVBankDataEntry dataEntry)
             {
@@ -258,12 +286,12 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             throw new OverflowException(
                 $"Bank file supplied is to short to contain data for the files written in its dictionary. Need at least {bufferEnd} bytes, instead found {bankLength}!");
         }
-        Logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", headerEnd, fileCount, queuedForRemoval.Count);
+        logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", headerEnd, fileCount, queuedForRemoval.Count);
         return fileCount;
     }
 
 
-    private bool ReadBankInfo(out IRVBankEntry entry, BisBinaryReader reader, RVBankOptions options) {
+    public static bool ReadBankInfo(out IRVBankEntry entry, IRVBank parent, ILogger? logger, BisBinaryReader reader, RVBankOptions options) {
         var start = reader.BaseStream.Position;
 
         reader.SkipAsciiZ(options);
@@ -271,36 +299,18 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         reader.BaseStream.Seek(start, SeekOrigin.Begin);
         entry = mime switch
         {
-            RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, this, this, Logger),
-            _ => new RVBankDataEntry(reader, options, this, this, Logger)
+            RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, parent, parent, logger),
+            _ => new RVBankDataEntry(reader, options, parent, parent, logger)
         };
         return entry is IRVBankVersionEntry;
     }
 
-    public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
-    {
-        //writer.BaseStream.Seek(pboEntries.Sum(it => it.CalculateLength(options)), SeekOrigin.Begin);
-        // writer.Write(new byte[21]);
-        // foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
-        // {
-        //     writer.Write(entry.RetrieveFinalStream(out var compressed));
-        // }
-        // var dataEnd = writer.BaseStream.Position;
-        // writer.BaseStream.Seek(0, SeekOrigin.Begin);
-        // foreach (var entry in pboEntries)
-        // {
-        //     entry.Binarize(writer, options);
-        // }
-        // writer.BaseStream.Seek(dataEnd, SeekOrigin.Begin);
-        // writer.Write((byte)0);
-        // var digest = CalculateDigest(writer.BaseStream);
-        // digest.Write(writer);
-        return LastResult!;
-    }
+    //TODO(bank): Binarize
+    public override Result Binarize(BisBinaryWriter writer, RVBankOptions options) => LastResult!;
 
+    //TODO(bank): Validate
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
 
-    // public int CalculateLength(RVBankOptions options) => pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
-
+    //TODO(bank): CalculateHeaderLength
     public int CalculateHeaderLength(RVBankOptions options) => throw new NotImplementedException();
 }
