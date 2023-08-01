@@ -11,10 +11,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/UnsignedLinqExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Binarize/Synchronization/BisSynchronizable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Compression/BisCompatibleLZSS.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +43,10 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/789e27cba9588f1571c230f9598f299a91666d8b5347a0338dc840e88a742980/BinaryWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/RVBank.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/RVBank.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/RVBank.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -189,7 +195,7 @@
       <workItem from="1690574297987" duration="233000" />
       <workItem from="1690817042256" duration="1503000" />
       <workItem from="1690826101525" duration="4514000" />
-      <workItem from="1690903346564" duration="5877000" />
+      <workItem from="1690903346564" duration="8628000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -423,7 +429,23 @@
       <option name="project" value="LOCAL" />
       <updated>1690908117181</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls">
+      <option name="closed" value="true" />
+      <created>1690909399174</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1690909399174</updated>
+    </task>
+    <task id="LOCAL-00031" summary="fix(bank): Fix BufferToShort Logic">
+      <option name="closed" value="true" />
+      <created>1690909631850</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1690909631850</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,8 +477,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank): Add functionality for handling file and bank prefixes&#10;&#10;- Add property-centric extensions for ease of manipulation" />
-    <MESSAGE value="feat(bank): Implement Data Reading" />
     <MESSAGE value="feat(bank): Finish Bank Reading" />
     <MESSAGE value="feat(bank): Add Full Support For PBO Writing" />
     <MESSAGE value="feat(A2S): Add Library For A2S Server Queries" />
@@ -480,7 +500,9 @@
     <MESSAGE value="refactor(bank): Removed some of the clutter in the RVBank::Debinarize function to simplify logic and improve readability.&#10;&#10; The earlier logic that looped through bank entries and handled multiple conditions was unwrapped into self-contained functions. This change makes the code easier to follow and reason about. &#10; &#10; - Moreover, a new exception 'RVBankChecksumMismatch' is introduced to handle cases of digest mismatch between actual and expected, enhancing error reporting in the application" />
     <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;" />
     <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;- Made abstracted methods from last commit static&#10;- Refactored RVBank.cs to use new or explicit constructors instead of a static method for reading PBO files. Simplified the process of reading and initializing an RVBank object, providing better support for different sources (files, streams) and conditions." />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;- Made abstracted methods from last commit static&#10;- Refactored RVBank.cs to use new or explicit constructors instead of a static method for reading PBO files. Simplified the process of reading and initializing an RVBank object, providing better support for different sources (files, streams) and conditions." />
+    <MESSAGE value="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls" />
+    <MESSAGE value="fix(bank): Fix BufferToShort Logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(bank): Fix BufferToShort Logic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -510,45 +532,6 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs</url>
-          <line>294</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\RVBank.cs" initialLine="294" containingFunctionPresentation="Method 'ReadBankInfo'">
-            <startOffsets>
-              <option value="9610" />
-            </startOffsets>
-            <endOffsets>
-              <option value="9649" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs</url>
-          <line>84</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\Entry\RVBankVersionEntry.cs" initialLine="84" containingFunctionPresentation="Method 'Debinarize'">
-            <startOffsets>
-              <option value="2844" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2890" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankProperty.cs</url>
-          <line>48</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\Stubs\RVBankProperty.cs" initialLine="48" containingFunctionPresentation="Constructor 'RVBankProperty'">
-            <startOffsets>
-              <option value="1121" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1143" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="54" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

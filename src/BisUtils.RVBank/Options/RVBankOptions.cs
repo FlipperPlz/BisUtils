@@ -29,7 +29,7 @@ public class RVBankOptions : IBinarizationOptions, IAsciizLimiterOptions
     [FunctionallyAccurate] public bool RemoveBenignProperties { get; set; } = true;
     [FunctionallyAccurate] public bool RequireVersionMimeOnVersion { get; set; } = true;
     [FunctionallyAccurate] public bool RespectEntryOffsets { get; set; } = false;
-    [FunctionallyAccurate] public int AsciiLengthTimeout { get; set; } = 1024;
+    [FunctionallyAccurate] public int AsciiLengthTimeout { get; set; } = 1023;
     [FunctionallyAccurate] public Encoding Charset { get; set; } = Encoding.UTF8;
     [FunctionallyAccurate] public Endianness ByteOrder { get; set; } = Endianness.Little;
     public bool IgnoreValidation { get; set; } //= false;

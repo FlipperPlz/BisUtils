@@ -42,18 +42,18 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
 
     public sealed override string EntryName { get => base.EntryName; set => base.EntryName = value; }
     public sealed override RVBankEntryMime EntryMime { get => base.EntryMime; set => base.EntryMime = value; }
-    public sealed override int OriginalSize { get => base.OriginalSize; set => base.OriginalSize = value; }
-    public sealed override int Offset { get => base.Offset; set => base.Offset = value; }
-    public sealed override int TimeStamp { get => base.TimeStamp; set => base.TimeStamp = value; }
-    public sealed override int DataSize { get => base.DataSize; set => base.DataSize = value; }
+    public sealed override uint OriginalSize { get => base.OriginalSize; set => base.OriginalSize = value; }
+    public sealed override ulong Offset { get => base.Offset; set => base.Offset = value; }
+    public sealed override ulong TimeStamp { get => base.TimeStamp; set => base.TimeStamp = value; }
+    public sealed override ulong DataSize { get => base.DataSize; set => base.DataSize = value; }
 
     public RVBankVersionEntry(
         string fileName,
         RVBankEntryMime mime,
-        int originalSize,
-        int offset,
-        int timeStamp,
-        int dataSize,
+        uint originalSize,
+        ulong offset,
+        ulong timeStamp,
+        ulong dataSize,
         IEnumerable<IRVBankProperty>? properties,
         IRVBank file,
         IRVBankDirectory parent,

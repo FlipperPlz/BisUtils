@@ -16,7 +16,7 @@ using Stubs;
 
 public interface IRVBankDataEntry : IRVBankEntry
 {
-    long StreamOffset { get; }
+    ulong StreamOffset { get; }
     MemoryStream EntryData { get; set; }
 
     RVBankDataType PackingMethod { get; set; }
@@ -31,7 +31,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
 {
     private bool disposed;
     private RVBankDataType packingMethod;
-    public long StreamOffset { get; protected set; }
+    public ulong StreamOffset { get; protected set; }
 
     private MemoryStream entryData = null!;
     public MemoryStream EntryData
@@ -103,7 +103,8 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
     }
 
 
-    public void InitializeStreamOffset(long offset) => StreamOffset = offset;
+    public void InitializeStreamOffset(long offset) => StreamOffset = unchecked((ulong)offset);
+    public void InitializeStreamOffset(int offset) => StreamOffset = (ulong) unchecked((uint)offset);
 
     public bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options)
     {
@@ -118,8 +119,8 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
     public byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options)
     {
         var start = reader.BaseStream.Position;
-        reader.BaseStream.Seek(StreamOffset, SeekOrigin.Begin);
-        var buffer = reader.ReadBytes(DataSize);
+        reader.BaseStream.Seek((long) StreamOffset, SeekOrigin.Begin);
+        var buffer = reader.ReadBytes((int)DataSize);
         reader.BaseStream.Seek(start, SeekOrigin.Begin);
         return buffer;
     }

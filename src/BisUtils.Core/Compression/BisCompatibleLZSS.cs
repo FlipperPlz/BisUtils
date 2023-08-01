@@ -33,7 +33,7 @@ public sealed class BisCompatibleLzss
     /// </summary>
     private int matchPosition, matchLength;
 
-    public int Decode(byte[] input, out byte[] output, int length)
+    public int Decode(byte[] input, out byte[] output, uint length)
     {
         var text_buf = new byte[N + F - 1];
         output = new byte[length];

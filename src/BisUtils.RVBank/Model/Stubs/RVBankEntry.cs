@@ -17,10 +17,10 @@ public interface IRVBankEntry : IRVBankElement
 
     string EntryName { get; set; }
     RVBankEntryMime EntryMime { get; set; }
-    int OriginalSize { get; set; }
-    int Offset { get; set; }
-    int TimeStamp { get; set; }
-    int DataSize { get; set; }
+    uint OriginalSize { get; set; }
+    ulong Offset { get; set; }
+    ulong TimeStamp { get; set; }
+    ulong DataSize { get; set; }
 
     void Move(IRVBankDirectory directory);
     void Delete();
@@ -57,8 +57,8 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
         }
     }
 
-    private int originalSize;
-    public virtual int OriginalSize
+    private uint originalSize;
+    public virtual uint OriginalSize
     {
         get => originalSize;
         set
@@ -68,8 +68,8 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
         }
     }
 
-    private int offset;
-    public virtual int Offset
+    private ulong offset;
+    public virtual ulong Offset
     {
         get => offset;
         set
@@ -79,8 +79,8 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
         }
     }
 
-    private int timeStamp;
-    public virtual int TimeStamp
+    private ulong timeStamp;
+    public virtual ulong TimeStamp
     {
         get => timeStamp;
         set
@@ -90,8 +90,8 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
         }
     }
 
-    private int dataSize;
-    public virtual int DataSize
+    private ulong dataSize;
+    public virtual ulong DataSize
     {
         get => dataSize;
         set
@@ -116,10 +116,10 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
     {
         reader.ReadAsciiZ(out entryName, options);
         entryMime = (RVBankEntryMime)reader.ReadInt32();
-        originalSize = reader.ReadInt32();
-        offset = reader.ReadInt32();
-        timeStamp = reader.ReadInt32();
-        dataSize = reader.ReadInt32();
+        originalSize = (uint)reader.ReadInt32();
+        offset = (ulong)reader.ReadInt32();
+        timeStamp = (ulong)reader.ReadInt32();
+        dataSize = (ulong)reader.ReadInt32();
         return LastResult = Result.Ok();
     }
 
@@ -136,10 +136,10 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
 
     protected void QuietlySetName(string name) => entryName = name;
     protected void QuietlySetMime(RVBankEntryMime mime) => entryMime = mime;
-    protected void QuietlySetOriginalSize(int ogSize) => originalSize = ogSize;
-    protected void QuietlySetTimestamp(int time) => timeStamp = time;
+    protected void QuietlySetOriginalSize(int ogSize) => originalSize = unchecked((uint)ogSize);
+    protected void QuietlySetTimestamp(long time) => timeStamp = unchecked((ulong)time);
 
-    protected void QuietlySetSize(int size) => dataSize = size;
+    protected void QuietlySetSize(long size) => dataSize = unchecked((ulong)size);
 
     public virtual void Move(IRVBankDirectory directory)
     {

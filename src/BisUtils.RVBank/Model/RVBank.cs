@@ -42,25 +42,25 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
         set => throw new NotSupportedException();
     }
 
-    int IRVBankEntry.OriginalSize
+    uint IRVBankEntry.OriginalSize
     {
         get => PboEntries.Sum(it => it.OriginalSize);
         set => throw new NotSupportedException();
     }
 
-    int IRVBankEntry.Offset
+    ulong IRVBankEntry.Offset
     {
         get => 0;
         set => throw new NotSupportedException();
     }
 
-    int IRVBankEntry.TimeStamp
+    ulong IRVBankEntry.TimeStamp
     {
         get => PboEntries.Max(it => it.TimeStamp);
         set => throw new NotSupportedException();
     }
 
-    int IRVBankEntry.DataSize
+    ulong IRVBankEntry.DataSize
     {
         get => PboEntries.Sum(it => it.DataSize);
         set => throw new NotSupportedException();
@@ -178,18 +178,17 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         foreach (var entry in dataEntries)
         {
             bool shouldRemove;
-            var entryOffset =  entry.StreamOffset + headerEnd;
+            var entryOffset =  (int) entry.StreamOffset + headerEnd;
             entry.InitializeStreamOffset(entryOffset);
-            Console.WriteLine(entry.StreamOffset + " " + entry.DataSize);
             if ( entryOffset < headerEnd )
             {
                 shouldRemove = true;
                 goto Continue;
             }
-            var entryEnd = entry.StreamOffset + entry.DataSize;
+            var entryEnd =   (int) entry.StreamOffset + (int) entry.DataSize;
             if
             (
-                entry.StreamOffset >= headerEnd &&
+                (int) entry.StreamOffset >= headerEnd &&
                 entryEnd >= headerEnd &&
                 entry.InitializeBuffer(reader, options)
             )
@@ -276,7 +275,9 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
                     dataEntry.ExpandDirectoryStructure();
                 }
             }
-            bufferEnd += entry.DataSize;
+            Console.WriteLine(bufferEnd + " " + entry.DataSize);
+
+            bufferEnd += (int) entry.DataSize;
         }
         headerEnd = Convert.ToInt32(reader.BaseStream.Position);
         headerLength = headerEnd - headerStart;
