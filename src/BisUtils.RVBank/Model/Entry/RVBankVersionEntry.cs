@@ -80,8 +80,13 @@ public class RVBankVersionEntry : RVBankEntry, IRVBankVersionEntry
         }
     }
 
-    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options) =>
-        Result.Merge(base.Debinarize(reader, options), ReadPboProperties(reader, options));
+    public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
+    {
+        LastResult = base.Debinarize(reader, options);
+        ReadPboProperties(reader, options);
+        return LastResult;
+    }
+
 
     public sealed override Result Binarize(BisBinaryWriter writer, RVBankOptions options) =>
         Result.Merge(base.Binarize(writer, options), WritePboProperties(writer, options));

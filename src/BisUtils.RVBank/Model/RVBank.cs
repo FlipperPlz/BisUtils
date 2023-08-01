@@ -97,19 +97,19 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             pboEntries = value;
             pboEntries.CollectionChanged += (_, args) =>
             {
-                OnChangesMade(this, args);
+                //OnChangesMade(this, args);
             };
         }
     }
 
-    protected RVBank(string filename, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
+    protected RVBank(IEnumerable<IRVBankEntry>? entries, string filename, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
     {
         BankFile = this;
         FileName = filename;
+        PboEntries = entries != null ? new ObservableCollection<IRVBankEntry>(entries) : new ObservableCollection<IRVBankEntry>();
     }
 
-    public RVBank(string filename, IEnumerable<IRVBankEntry>? entries, Stream? syncTo, ILogger? logger) : this(filename, syncTo, logger) =>
-        PboEntries = entries != null ? new ObservableCollection<IRVBankEntry>(entries) : new ObservableCollection<IRVBankEntry>();
+
 
     public RVBank(string filename, BisBinaryReader reader, RVBankOptions options, Stream? syncTo, ILogger? logger) : base(reader, options, syncTo, logger)
     {
@@ -122,7 +122,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public RVBank(string fileName, Stream buffer, RVBankOptions options, Stream? syncTo, ILogger logger) : this(fileName, syncTo, logger)
+    public RVBank(string fileName, Stream buffer, RVBankOptions options, Stream? syncTo, ILogger logger) : this(null, fileName, syncTo, logger)
     {
         using var reader = new BisBinaryReader(buffer, options.Charset);
         if (!Debinarize(reader, options))
@@ -131,7 +131,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public RVBank(string path, RVBankOptions options, Stream? syncTo, ILogger logger) : this(Path.GetFileNameWithoutExtension(path), syncTo, logger)
+    public RVBank(string path, RVBankOptions options, Stream? syncTo, ILogger logger) : this(null, Path.GetFileNameWithoutExtension(path), syncTo, logger)
     {
         using var stream = File.OpenRead(path);
         using var reader = new BisBinaryReader(stream, options.Charset);

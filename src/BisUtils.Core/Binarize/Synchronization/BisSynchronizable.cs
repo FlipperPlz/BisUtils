@@ -66,7 +66,6 @@ public abstract class BisSynchronizable<TOptions> : StrictBinaryObject<TOptions>
     protected BisSynchronizable(Stream? syncTo, ILogger? logger) : base(logger)
     {
         SynchronizationRoot = this;
-        ChangesMade += OnChangesMade;
         SynchronizationStream = syncTo;
 
     }
