@@ -141,6 +141,79 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
+    public static int ReadBankHeader
+    (
+        long bankLength,
+        out int bufferEnd,
+        out int headerLength,
+        out int headerEnd,
+        out int headerStart,
+        out List<IRVBankDataEntry> dataEntries,
+        out List<IRVBankEntry> queuedForRemoval,
+        ICollection<IRVBankEntry> directoryStructure,
+        IRVBank parent,
+        ILogger? logger,
+        BisBinaryReader reader,
+        RVBankOptions options
+    )
+    {
+        var fileCount = 0;
+        bufferEnd = 0;
+        headerStart = Convert.ToInt32(reader.BaseStream.Position);
+        queuedForRemoval = new List<IRVBankEntry>();
+        dataEntries = new List<IRVBankDataEntry>();
+        logger?.LogDebug("Entry loop started at {Start}", headerStart);
+        for (;;)
+        {
+            ReadBankInfo(out var entry,parent, logger, reader, options);
+
+            if(entry.IsDummyEntry() && entry is not RVBankVersionEntry)
+            {
+                break;
+            }
+            fileCount++;
+            directoryStructure.Add(entry);
+
+            if (entry is IRVBankDataEntry dataEntry)
+            {
+                dataEntries.Add(dataEntry);
+                dataEntry.InitializeStreamOffset((uint) bufferEnd);
+                if (!options.FlatRead)
+                {
+                    dataEntry.ExpandDirectoryStructure();
+                }
+
+            }
+
+            bufferEnd += (int) entry.DataSize;
+        }
+        headerEnd = Convert.ToInt32(reader.BaseStream.Position);
+        headerLength = headerEnd - headerStart;
+        bufferEnd += headerLength;
+        if (bufferEnd > bankLength)
+        {
+            throw new OverflowException(
+                $"Bank file supplied is to short to contain data for the files written in its dictionary. Need at least {bufferEnd} bytes, instead found {bankLength}!");
+        }
+        logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", headerEnd, fileCount, queuedForRemoval.Count);
+        return fileCount;
+    }
+
+
+    public static bool ReadBankInfo(out IRVBankEntry entry, IRVBank parent, ILogger? logger, BisBinaryReader reader, RVBankOptions options) {
+        var start = reader.BaseStream.Position;
+
+        reader.SkipAsciiZ(options);
+        var mime = (RVBankEntryMime?)reader.ReadInt64();
+        reader.BaseStream.Seek(start, SeekOrigin.Begin);
+        entry = mime switch
+        {
+            RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, parent, parent, logger),
+            _ => new RVBankDataEntry(reader, options, parent, parent, logger)
+        };
+        return entry is IRVBankVersionEntry;
+    }
+
     public sealed override Result Debinarize(BisBinaryReader reader, RVBankOptions options)
     {
         if(pboEntries.Count != 0)
@@ -165,30 +238,33 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             reader,
             options
         );
-        CalculateEntryOffsets(dataEntries, queuedForRemoval, headerEnd, reader, options);
+
+        //Offsets are up to par with bankrev's at this point
+        CalculateEntryOffsets(dataEntries, queuedForRemoval, unchecked((uint) headerEnd), reader, options);
         //queuedForRemoval.ForEach(it => it.Delete());
         ReadDigest(bufferEnd, reader, options);
 
         return LastResult;
     }
 
-    private void CalculateEntryOffsets(List<IRVBankDataEntry> dataEntries, ICollection<IRVBankEntry> queuedForRemoval, int headerEnd, BisBinaryReader reader, RVBankOptions options)
+    private void CalculateEntryOffsets(List<IRVBankDataEntry> dataEntries, ICollection<IRVBankEntry> queuedForRemoval, uint headerEnd, BisBinaryReader reader, RVBankOptions options)
     {
         Logger?.LogInformation("Starting data sweep at {Pos}.", reader.BaseStream.Position);
         foreach (var entry in dataEntries)
         {
             bool shouldRemove;
-            var entryOffset =  (int) entry.StreamOffset + headerEnd;
+            var entryOffset = entry.StreamOffset + headerEnd;
             entry.InitializeStreamOffset(entryOffset);
             if ( entryOffset < headerEnd )
             {
                 shouldRemove = true;
                 goto Continue;
             }
-            var entryEnd =   (int) entry.StreamOffset + (int) entry.DataSize;
+
+            var entryEnd =  entry.StreamOffset + entry.DataSize;
             if
             (
-                (int) entry.StreamOffset >= headerEnd &&
+                entry.StreamOffset >= headerEnd &&
                 entryEnd >= headerEnd &&
                 entry.InitializeBuffer(reader, options)
             )
@@ -233,78 +309,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
     }
 
-    public static int ReadBankHeader
-    (
-        long bankLength,
-        out int bufferEnd,
-        out int headerLength,
-        out int headerEnd,
-        out int headerStart,
-        out List<IRVBankDataEntry> dataEntries,
-        out List<IRVBankEntry> queuedForRemoval,
-        ICollection<IRVBankEntry> directoryStructure,
-        IRVBank parent,
-        ILogger? logger,
-        BisBinaryReader reader,
-        RVBankOptions options
-    )
-    {
-        var fileCount = 0;
-        bufferEnd = 0;
-        headerStart = Convert.ToInt32(reader.BaseStream.Position);
-        queuedForRemoval = new List<IRVBankEntry>();
-        dataEntries = new List<IRVBankDataEntry>();
-        logger?.LogDebug("Entry loop started at {Start}", headerStart);
-        for (;;)
-        {
-            ReadBankInfo(out var entry,parent, logger, reader, options);
 
-            if(entry.IsDummyEntry() && entry is not RVBankVersionEntry)
-            {
-                break;
-            }
-            fileCount++;
-            directoryStructure.Add(entry);
-
-            if (entry is IRVBankDataEntry dataEntry)
-            {
-                dataEntries.Add(dataEntry);
-                dataEntry.InitializeStreamOffset(bufferEnd);
-                if (!options.FlatRead)
-                {
-                    dataEntry.ExpandDirectoryStructure();
-                }
-            }
-            Console.WriteLine(bufferEnd + " " + entry.DataSize);
-
-            bufferEnd += (int) entry.DataSize;
-        }
-        headerEnd = Convert.ToInt32(reader.BaseStream.Position);
-        headerLength = headerEnd - headerStart;
-        bufferEnd += headerLength;
-        if (bufferEnd > bankLength)
-        {
-            throw new OverflowException(
-                $"Bank file supplied is to short to contain data for the files written in its dictionary. Need at least {bufferEnd} bytes, instead found {bankLength}!");
-        }
-        logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", headerEnd, fileCount, queuedForRemoval.Count);
-        return fileCount;
-    }
-
-
-    public static bool ReadBankInfo(out IRVBankEntry entry, IRVBank parent, ILogger? logger, BisBinaryReader reader, RVBankOptions options) {
-        var start = reader.BaseStream.Position;
-
-        reader.SkipAsciiZ(options);
-        var mime = (RVBankEntryMime?)reader.ReadInt64();
-        reader.BaseStream.Seek(start, SeekOrigin.Begin);
-        entry = mime switch
-        {
-            RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, parent, parent, logger),
-            _ => new RVBankDataEntry(reader, options, parent, parent, logger)
-        };
-        return entry is IRVBankVersionEntry;
-    }
 
     //TODO(bank): Binarize
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options) => LastResult!;

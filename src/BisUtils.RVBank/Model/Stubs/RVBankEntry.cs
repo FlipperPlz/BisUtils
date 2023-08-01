@@ -116,10 +116,10 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
     {
         reader.ReadAsciiZ(out entryName, options);
         entryMime = (RVBankEntryMime)reader.ReadInt32();
-        originalSize = (uint)reader.ReadInt32();
-        offset = (ulong)reader.ReadInt32();
-        timeStamp = (ulong)reader.ReadInt32();
-        dataSize = (ulong)reader.ReadInt32();
+        originalSize = reader.ReadUInt32();
+        offset = reader.ReadUInt32();
+        timeStamp = reader.ReadUInt32();
+        dataSize = reader.ReadUInt32();
         return LastResult = Result.Ok();
     }
 
@@ -128,9 +128,9 @@ public abstract class RVBankEntry : RVBankElement, IRVBankEntry
         writer.WriteAsciiZ(Path, options);
         writer.Write((int) EntryMime);
         writer.Write(OriginalSize);
-        writer.Write(Offset);
-        writer.Write(TimeStamp);
-        writer.Write(DataSize);
+        writer.Write(unchecked((uint)Offset));
+        writer.Write(unchecked((uint)TimeStamp));
+        writer.Write(unchecked((uint)DataSize));
         return LastResult = Result.Ok();
     }
 

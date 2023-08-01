@@ -21,7 +21,7 @@ public interface IRVBankDataEntry : IRVBankEntry
 
     RVBankDataType PackingMethod { get; set; }
     void ExpandDirectoryStructure();
-    void InitializeStreamOffset(long offset);
+    void InitializeStreamOffset(ulong offset);
     bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options);
     byte[] RetrieveRawBuffer(BisBinaryReader reader, RVBankOptions options);
     public byte[]? RetrieveBuffer(BisBinaryReader reader, RVBankOptions options);
@@ -103,8 +103,7 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
     }
 
 
-    public void InitializeStreamOffset(long offset) => StreamOffset = unchecked((ulong)offset);
-    public void InitializeStreamOffset(int offset) => StreamOffset = (ulong) unchecked((uint)offset);
+    public void InitializeStreamOffset(ulong offset) => StreamOffset = offset;
 
     public bool InitializeBuffer(BisBinaryReader reader, RVBankOptions options)
     {
@@ -120,7 +119,12 @@ public class RVBankDataEntry : RVBankEntry, IRVBankDataEntry, IDisposable
     {
         var start = reader.BaseStream.Position;
         reader.BaseStream.Seek((long) StreamOffset, SeekOrigin.Begin);
-        var buffer = reader.ReadBytes((int)DataSize);
+        var dataSize = unchecked((uint)DataSize);
+        if (DataSize > int.MaxValue)
+        {
+            return Array.Empty<byte>();
+        }
+        var buffer = reader.ReadBytes((int)dataSize);
         reader.BaseStream.Seek(start, SeekOrigin.Begin);
         return buffer;
     }
