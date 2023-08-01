@@ -316,5 +316,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
 
     //TODO(bank): CalculateHeaderLength
-    public int CalculateHeaderLength(RVBankOptions options) => throw new NotImplementedException();
+    public int CalculateHeaderLength(RVBankOptions options) =>
+        PboEntries.Sum(s => s.CalculateHeaderLength(options)) + 21;
 }
