@@ -238,10 +238,8 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             reader,
             options
         );
-
-        //Offsets are up to par with bankrev's at this point
         CalculateEntryOffsets(dataEntries, queuedForRemoval, unchecked((uint) headerEnd), reader, options);
-        //queuedForRemoval.ForEach(it => it.Delete());
+        queuedForRemoval.ForEach(it => it.Delete());
         ReadDigest(bufferEnd, reader, options);
 
         return LastResult;
