@@ -2,6 +2,7 @@ namespace BisUtils.RVBank.Model;
 
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
+using Alerts.Exceptions;
 using Core.Binarize.Synchronization;
 using Core.Extensions;
 using Core.IO;
@@ -124,7 +125,8 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public static RVBank ReadPbo(string path, RVBankOptions options, Stream? syncTo, ILogger logger)
     {
-        using var reader = new BisBinaryReader(File.OpenRead(path));
+        using var stream = File.OpenRead(path);
+        using var reader = new BisBinaryReader(stream, options.Charset);
         return new RVBank(Path.GetFileNameWithoutExtension(path), reader, options, syncTo, logger);
     }
 
@@ -135,101 +137,46 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             PboEntries.Clear();
         }
 
-        var responses = new List<Result>();
-        var markedForRemoval = new List<IRVBankEntry>();
-        var entries = new List<RVBankDataEntry>();
-        Logger?.LogDebug("Entry loop started at {Start}", reader.BaseStream.Position);
-        var headerStart = reader.BaseStream.Position;
-        var first = true;
-        do
-        {
+        LastResult = Result.Ok();
+        var bankLength = reader.BaseStream.Length;
+        ReadBankHeader
+        (
+            bankLength,
+            out var bufferEnd,
+            out _,
+            out var headerEnd,
+            out _,
+            out var dataEntries,
+            out var queuedForRemoval,
+            reader,
+            options
+        );
+        CalculateEntryOffsets(dataEntries, queuedForRemoval, headerEnd, reader, options);
+        //queuedForRemoval.ForEach(it => it.Delete());
+        ReadDigest(bufferEnd, reader, options);
 
-            var start = reader.BaseStream.Position;
+        return LastResult;
+    }
 
-            responses.Add(reader.SkipAsciiZ(options));
-            var mime = (RVBankEntryMime?)reader.ReadInt64();
-            reader.BaseStream.Seek(start, SeekOrigin.Begin);
-            IRVBankEntry currentEntry =  mime switch
-            {
-                RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, this, this, Logger),
-                _ => new RVBankDataEntry(reader, options, this, this, Logger)
-            };
-
-
-            if (currentEntry is RVBankDataEntry dataEntry )
-            {
-
-                if(currentEntry.IsDummyEntry())
-                {
-                    if (options.AlwaysSeparateOnDummy)
-                    {
-                        Logger?.LogDebug("Located ending magic at {Pos}... breaking entry loop.", reader.BaseStream.Position);
-                        break;
-                    }
-
-                    Logger?.LogDebug("Located ending magic. Peeking for extra data and attempting to recover...");
-                    throw new NotImplementedException();
-                }
-
-                entries.Add(dataEntry);
-                if (!options.FlatRead)
-                {
-                    dataEntry.ExpandDirectoryStructure();
-                }
-
-                // markedForRemoval.AddRange(dataEntry.RetrieveDuplicateEntries());
-            }
-            else
-            {
-                pboEntries.Add(currentEntry);
-
-            }
-
-            var response = currentEntry.LastResult ?? Result.Fail("Unknown Error Occured");
-
-            if (first && currentEntry is not IRVBankVersionEntry)
-            {
-                Logger?.LogInformation("First entry is not a version entry... this is weird");
-
-                response.WithWarning(new Warning
-                {
-                    Message = "The first entry in a PBO should always be a version entry.",
-                    AlertName = "FirstIsNotVersion",
-                    AlertScope = typeof(RVBank),
-                    IsError = options.RequireFirstEntryIsVersion
-                });
-            }
-
-            if (first)
-            {
-                first = false;
-            }
-
-            responses.Add(response);
-
-
-        } while (true);
-
-        Logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", reader.BaseStream.Position, pboEntries.Count, markedForRemoval.Count);
-        var headerEnd = reader.BaseStream.Position;
-        var headerLength = headerEnd - headerStart;
-        var bufferEnd = reader.BaseStream.Length - (headerLength + 21);
-        var iOffset = 0;
-        foreach (var entry in entries)
+    private void CalculateEntryOffsets(List<IRVBankDataEntry> dataEntries, ICollection<IRVBankEntry> queuedForRemoval, int headerEnd, BisBinaryReader reader, RVBankOptions options)
+    {
+        Logger?.LogInformation("Starting data sweep at {Pos}.", reader.BaseStream.Position);
+        foreach (var entry in dataEntries)
         {
             var shouldRemove = false;
-            if ( iOffset >= bufferEnd || iOffset < headerEnd )
+            var entryOffset =  entry.StreamOffset + headerEnd;
+            entry.InitializeStreamOffset(entryOffset);
+            Console.WriteLine(entry.StreamOffset + " " + entry.DataSize);
+            if ( entryOffset < headerEnd )
             {
                 shouldRemove = true;
                 goto Continue;
             }
-            entry.InitializeStreamOffset(headerEnd + iOffset);
             var entryEnd = entry.StreamOffset + entry.DataSize;
             if
             (
                 entry.StreamOffset >= headerEnd &&
                 entryEnd >= headerEnd &&
-                entryEnd < bufferEnd &&
                 entry.InitializeBuffer(reader, options)
             )
             {
@@ -237,7 +184,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             }
             shouldRemove = true;
             Continue:
-            iOffset += entry.DataSize;
 
             if (entry.EntryMime is RVBankEntryMime.Encrypted)
             {
@@ -248,39 +194,92 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 continue;
             }
-            //Logger?.LogDebug("Ignoring Encrypted entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, iOffset, entry.DataSize);
+            Logger?.LogDebug("Ignoring encrypted or malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.StreamOffset, entry.DataSize);
 
-            markedForRemoval.Add(entry);
+            queuedForRemoval.Add(entry);
+        }
+        Logger?.LogInformation("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused and/or malformed data.", reader.BaseStream.Position, queuedForRemoval.Count);
+    }
+
+
+    private void ReadDigest(int bufferEnd, BisBinaryReader reader, RVBankOptions options)
+    {
+        reader.BaseStream.Seek(bufferEnd + 1, SeekOrigin.Begin);
+
+        var calculatedDigest = RVBankDigest.CalculateStreamDigest(reader.BaseStream, true);
+        var writtenDigest = new RVBankDigest(reader);
+        if (writtenDigest == calculatedDigest)
+        {
+            return;
         }
 
-        Logger?.LogInformation("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused and/or malformed data.", reader.BaseStream.Position, markedForRemoval.Count);
-        markedForRemoval.ForEach(it => it.Delete());
-        var positionToRead = Math.Max(0, reader.BaseStream.Length - 21);
-        reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
-
-        var calculatedDigest = CalculateDigest(reader.BaseStream);
-        var writtenDigest = ReadDigest(reader);
-        if (writtenDigest != calculatedDigest)
+        Logger?.LogWarning("The checksum in this pbo appears to be incorrect. Expected '{ActualDigest}', but instead got '{WrittenDigest}'.", Convert.ToBase64String(calculatedDigest.ToByteArray()), Convert.ToBase64String(writtenDigest.ToByteArray()));
+        if (options.RequireValidSignature)
         {
-            Logger?.LogWarning("The checksum in this pbo appears to be incorrect. Expected '{ActualDigest}', but instead got '{WrittenDigest}'.", Convert.ToBase64String(calculatedDigest.ToByteArray()), Convert.ToBase64String(writtenDigest.ToByteArray()));
+            throw new RVBankChecksumMismatch(calculatedDigest, writtenDigest);
         }
+    }
 
-        End:
+    private int ReadBankHeader(long bankLength, out int bufferEnd, out int headerLength, out int headerEnd, out int headerStart, out List<IRVBankDataEntry> dataEntries , out List<IRVBankEntry> queuedForRemoval, BisBinaryReader reader, RVBankOptions options)
+    {
+        var fileCount = 0;
+        bufferEnd = 0;
+        headerStart = Convert.ToInt32(reader.BaseStream.Position);
+        queuedForRemoval = new List<IRVBankEntry>();
+        dataEntries = new List<IRVBankDataEntry>();
+        Logger?.LogDebug("Entry loop started at {Start}", headerStart);
+        for (;;)
         {
-            LastResult = Result.Merge(responses);
+            ReadBankInfo(out var entry, reader, options);
 
-            if (IsFirstRead)
+            if(entry.IsDummyEntry() && entry is not RVBankVersionEntry)
             {
-                IsFirstRead = false;
+                break;
             }
+            fileCount++;
+            PboEntries.Add(entry);
 
-            return LastResult;
+            if (entry is IRVBankDataEntry dataEntry)
+            {
+                dataEntries.Add(dataEntry);
+                dataEntry.InitializeStreamOffset(bufferEnd);
+                if (!options.FlatRead)
+                {
+                    dataEntry.ExpandDirectoryStructure();
+                }
+            }
+            bufferEnd += entry.DataSize;
         }
+        headerEnd = Convert.ToInt32(reader.BaseStream.Position);
+        headerLength = headerEnd - headerStart;
+        bufferEnd += headerLength;
+        if (bankLength > bufferEnd)
+        {
+            throw new OverflowException(
+                $"Bank file supplied is to short to contain data for the files written in its dictionary. Need at least {bufferEnd} bytes, instead found {bankLength}!");
+        }
+        Logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", headerEnd, fileCount, queuedForRemoval.Count);
+        return fileCount;
+    }
+
+
+    private bool ReadBankInfo(out IRVBankEntry entry, BisBinaryReader reader, RVBankOptions options) {
+        var start = reader.BaseStream.Position;
+
+        reader.SkipAsciiZ(options);
+        var mime = (RVBankEntryMime?)reader.ReadInt64();
+        reader.BaseStream.Seek(start, SeekOrigin.Begin);
+        entry = mime switch
+        {
+            RVBankEntryMime.Version => new RVBankVersionEntry(reader, options, this, this, Logger),
+            _ => new RVBankDataEntry(reader, options, this, this, Logger)
+        };
+        return entry is IRVBankVersionEntry;
     }
 
     public override Result Binarize(BisBinaryWriter writer, RVBankOptions options)
     {
-        // writer.BaseStream.Seek(pboEntries.Sum(it => it.CalculateLength(options)), SeekOrigin.Begin);
+        //writer.BaseStream.Seek(pboEntries.Sum(it => it.CalculateLength(options)), SeekOrigin.Begin);
         // writer.Write(new byte[21]);
         // foreach (var entry in this.GetDataEntries(SearchOption.AllDirectories))
         // {
@@ -301,26 +300,6 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
 
     public override Result Validate(RVBankOptions options) => throw new NotImplementedException();
 
-    private static RVBankDigest ReadDigest(BisBinaryReader reader) =>
-        new(reader);
-
-#pragma warning disable SYSLIB0021
-#pragma warning disable CA5350
-    private static RVBankDigest CalculateDigest(Stream stream)
-    {
-        var oldPosition = stream.Position;
-        stream.Seek(0, SeekOrigin.Begin);
-
-
-        using var alg = new SHA1Managed();
-        var digest = new RVBankDigest(alg.ComputeHash(stream));
-
-        stream.Seek(oldPosition, SeekOrigin.Begin);
-
-        return digest;
-    }
-#pragma warning restore CA5350
-#pragma warning restore SYSLIB0021
     // public int CalculateLength(RVBankOptions options) => pboEntries.Sum(it => it.CalculateLength(options) + it.DataSize) + 20;
 
     public int CalculateHeaderLength(RVBankOptions options) => throw new NotImplementedException();

@@ -11,6 +11,7 @@
     <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
 
 
+
   </ItemGroup>
 
 
