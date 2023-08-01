@@ -97,7 +97,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             pboEntries = value;
             pboEntries.CollectionChanged += (_, args) =>
             {
-                //OnChangesMade(this, args);
+                OnChangesMade(this, args);
             };
         }
     }
@@ -281,7 +281,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         headerEnd = Convert.ToInt32(reader.BaseStream.Position);
         headerLength = headerEnd - headerStart;
         bufferEnd += headerLength;
-        if (bankLength > bufferEnd)
+        if (bufferEnd > bankLength)
         {
             throw new OverflowException(
                 $"Bank file supplied is to short to contain data for the files written in its dictionary. Need at least {bufferEnd} bytes, instead found {bankLength}!");
