@@ -44,7 +44,7 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 
     uint IRVBankEntry.OriginalSize
     {
-        get => PboEntries.Sum(it => it.OriginalSize);
+        get => PboEntries.UnsignedSum(it => it.OriginalSize);
         set => throw new NotSupportedException();
     }
 
@@ -62,7 +62,7 @@ public interface IRVBank : IBisSynchronizable<RVBankOptions>, IRVBankDirectory
 
     ulong IRVBankEntry.DataSize
     {
-        get => PboEntries.Sum(it => it.DataSize);
+        get => PboEntries.UnsignedSum(it => it.DataSize);
         set => throw new NotSupportedException();
     }
 

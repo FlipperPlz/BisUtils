@@ -2,7 +2,7 @@
 
 public static class UnsignedLinqExtensions
 {
-    public static uint Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> selector)
+    public static uint UnsignedSum<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> selector)
     {
         if (source == null)
         {
@@ -17,7 +17,7 @@ public static class UnsignedLinqExtensions
         return source.Aggregate<TSource?, uint>(0, (current, item) => current + selector(item));
     }
 
-    public static ulong Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, ulong> selector)
+    public static ulong UnsignedSum<TSource>(this IEnumerable<TSource> source, Func<TSource, ulong> selector)
     {
         if (source == null)
         {

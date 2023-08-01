@@ -1,6 +1,7 @@
 namespace BisUtils.RVBank.Model.Entry;
 
 using System.Collections.ObjectModel;
+using Core.Extensions;
 using Core.IO;
 using Enumerations;
 using Options;
@@ -35,27 +36,27 @@ public class RVBankDirectory : RVBankEntry, IRVBankDirectory
         set => throw new NotSupportedException();
     }
 
-    public override int OriginalSize
+    public override uint OriginalSize
     {
-        get => pboEntries.Sum(it => it.OriginalSize);
+        get => pboEntries.UnsignedSum(it => it.OriginalSize);
         set => throw new NotSupportedException();
     }
 
-    public override int TimeStamp
+    public override ulong TimeStamp
     {
         get => pboEntries.Max(it => it.TimeStamp);
         set => throw new NotSupportedException();
     }
 
-    public override int Offset
+    public override ulong Offset
     {
         get => 0;
         set => throw new NotSupportedException();
     }
 
-    public override int DataSize
+    public override ulong DataSize
     {
-        get => pboEntries.Sum(it => it.DataSize);
+        get => PboEntries.UnsignedSum(it => it.DataSize);
         set => throw new NotSupportedException();
     }
 

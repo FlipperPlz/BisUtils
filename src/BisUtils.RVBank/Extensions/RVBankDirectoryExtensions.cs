@@ -87,10 +87,10 @@ public static class RVBankDirectoryExtensions
     (
         this IRVBankDirectory ctx, ILogger? logger, string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        int originalSize = 0,
-        int offset = 0,
-        int timeStamp = 0,
-        int dataSize = 0,
+        uint originalSize = 0,
+        ulong offset = 0,
+        ulong timeStamp = 0,
+        ulong dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     ) =>
         new RVBankVersionEntry(fileName, mime, originalSize, offset, timeStamp, dataSize, properties, ctx.BankFile, ctx, logger);
@@ -99,10 +99,10 @@ public static class RVBankDirectoryExtensions
     (
         this IRVBankDirectory ctx, ILogger? logger, string fileName = "",
         RVBankEntryMime mime = RVBankEntryMime.Version,
-        int originalSize = 0,
-        int offset = 0,
-        int timeStamp = 0,
-        int dataSize = 0,
+        uint originalSize = 0,
+        ulong offset = 0,
+        ulong timeStamp = 0,
+        ulong dataSize = 0,
         IEnumerable<IRVBankProperty>? properties = null
     )
     {
