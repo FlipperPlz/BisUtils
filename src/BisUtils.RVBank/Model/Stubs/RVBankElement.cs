@@ -2,10 +2,11 @@
 
 using Core.Binarize.Synchronization;
 using Core.IO;
+using Core.Logging;
 using Microsoft.Extensions.Logging;
 using Options;
 
-public interface IRVBankElement : IBisSynchronizableElement<RVBankOptions>
+public interface IRVBankElement : IBisLoggable, IBisSynchronizableElement<RVBankOptions>
 {
     IRVBank BankFile { get; }
 }

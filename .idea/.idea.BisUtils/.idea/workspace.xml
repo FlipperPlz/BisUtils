@@ -12,11 +12,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/BisUtils.Extensions.RVBank.DzConfigExtensions.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankElement.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,9 +42,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/RVBank.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/RVBank.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RVBank/Model/RVBank.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -214,7 +210,7 @@
       <workItem from="1690817042256" duration="1503000" />
       <workItem from="1690826101525" duration="4514000" />
       <workItem from="1690903346564" duration="14916000" />
-      <workItem from="1690946785174" duration="1319000" />
+      <workItem from="1690946785174" duration="2544000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -504,7 +500,23 @@
       <option name="project" value="LOCAL" />
       <updated>1690921917622</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="feat(bank.extensions): Create RVBank.DzConfigExtensions">
+      <option name="closed" value="true" />
+      <created>1690948163283</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1690948163283</updated>
+    </task>
+    <task id="LOCAL-00038" summary="refactor(bank): Small Syntax Changes">
+      <option name="closed" value="true" />
+      <created>1690948233184</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1690948233184</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -536,8 +548,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank): Work On Duplicate Entries" />
-    <MESSAGE value="feat(bank): Refactor RVBank &amp; RVBankDirectoryExtensions: Clean-up and Optimization. RVBankDirectoryExtensions needs some MAJOR fixes - has been giving me a headache&#10;&#10;The `RVBank.cs` and `RVBankDirectoryExtensions.cs` have been deeply refactored to improve readability, and optimize performance by minimizing excess operations during binarization and debinarization.  &#10;Log messages about the start and end of debinarization were removed from the `RVBank.cs`.&#10;Also, an addition of bank test project was made to the solution file `BisUtils.sln` while the `BisCompatibleLZSS.cs` class now decodes and compresses using encoding UTF8 and returns byte arrays.&#10;&#10;These changes are necessary to improve the performance of data debinarization and binarization, and ultimately enhance the overall efficiency of the project." />
     <MESSAGE value="chore(bank): Add BankTest Project" />
     <MESSAGE value="fix(bank): Rewrite DirectoryExtensions" />
     <MESSAGE value="fix(bank): Fix Entry Length Calculation; Fix Extensions" />
@@ -561,7 +571,9 @@
     <MESSAGE value="feat(bank): More DataType Finalization" />
     <MESSAGE value="feat(bank): Remove Prints; Finalize Changes" />
     <MESSAGE value="feat(bank): Finalize Bank Offset Logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(bank): Finalize Bank Offset Logic" />
+    <MESSAGE value="feat(bank.extensions): Create RVBank.DzConfigExtensions" />
+    <MESSAGE value="refactor(bank): Small Syntax Changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(bank): Small Syntax Changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
