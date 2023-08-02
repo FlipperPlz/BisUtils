@@ -28,12 +28,7 @@ public static class RVBankDirectoryExtensions
     public static DzConfig? LocateAddonConfig(this RVBankDirectory directory, ParamOptions paramOptions)
     {
         var param = LocateConfigFile(directory, paramOptions);
-        if (param is null)
-        {
-            return null;
-        }
-
-        return new DzConfig(param);
+        return param is null ? null : new DzConfig(param);
     }
 
 }
