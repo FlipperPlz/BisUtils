@@ -10,14 +10,13 @@ public interface IEsPackElement
     IEsPackFile PackFile { get; }
 }
 
-public abstract class EsPackElement : BisSynchronizableElement<EsPackOptions>
+public abstract class EsPackElement : BisSynchronizableElement<EsPackOptions>, IEsPackElement
 {
-    protected EsPackElement(IEsPackFile synchronizationRoot, ILogger? logger) : base(synchronizationRoot, logger)
-    {
-    }
+    public IEsPackFile PackFile { get; }
 
-    protected EsPackElement(BisBinaryReader reader, EsPackOptions options, IEsPackFile synchronizationRoot, ILogger? logger) : base(reader, options, synchronizationRoot, logger)
-    {
-    }
+    protected EsPackElement(IEsPackFile file, ILogger? logger) : base(file, logger) =>
+        PackFile = file;
 
+    protected EsPackElement(BisBinaryReader reader, EsPackOptions options, IEsPackFile file, ILogger? logger) : base(reader, options, file, logger) =>
+        PackFile = file;
 }
