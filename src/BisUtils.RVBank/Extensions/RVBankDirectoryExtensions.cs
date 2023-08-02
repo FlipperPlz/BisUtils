@@ -21,6 +21,12 @@ public static class RVBankDirectoryExtensions
     public static IEnumerable<IRVBankEntry> GetEntries(this IRVBankDirectory ctx, string name) =>
         ctx.PboEntries.Where(it => it.EntryName == name);
 
+    public static IRVBankEntry? GetEntry(this IRVBankDirectory ctx, string name) =>
+        GetEntries(ctx, name).FirstOrDefault();
+
+    public static IRVBankDataEntry? GetDataEntry(this IRVBankDirectory ctx, string name) =>
+        (IRVBankDataEntry?) GetEntries(ctx, name).FirstOrDefault(it => it is IRVBankDataEntry);
+
     public static IEnumerable<IRVBankDirectory> GetDirectories(this IRVBankDirectory ctx, SearchOption option = SearchOption.TopDirectoryOnly) =>
         option switch
         {
@@ -41,6 +47,10 @@ public static class RVBankDirectoryExtensions
             SearchOption.TopDirectoryOnly => ctx.GetEntries<IRVBankDataEntry>(),
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
+
+    public static IRVBankDataEntry? GetDataEntry(this IRVBankDirectory ctx,
+        SearchOption option = SearchOption.TopDirectoryOnly) => GetDataEntries(ctx, option).FirstOrDefault();
+
 
     public static IEnumerable<IRVBankDataEntry> GetDataEntries(this IRVBankDirectory ctx, string name,
         SearchOption option = SearchOption.TopDirectoryOnly) =>
