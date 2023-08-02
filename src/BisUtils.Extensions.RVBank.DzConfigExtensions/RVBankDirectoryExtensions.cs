@@ -1,11 +1,11 @@
-﻿namespace BisUtils.Extensions.RVBank.DzConfigExtensions;
+﻿namespace BisUtils.RVBank.Extensions.DzConfigExtensions;
 
+using BisUtils.Core.IO;
+using BisUtils.DZConfig;
+using BisUtils.Param.Models;
+using BisUtils.Param.Options;
 using BisUtils.RVBank.Extensions;
 using BisUtils.RVBank.Model.Entry;
-using Core.IO;
-using DZConfig;
-using Param.Models;
-using Param.Options;
 
 public static class RVBankDirectoryExtensions
 {

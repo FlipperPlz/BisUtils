@@ -4,6 +4,8 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyName>BisUtils.RVBank.Extensions.DzConfigExtensions</AssemblyName>
+        <RootNamespace>BisUtils.RVBank.Extensions.DzConfigExtensions</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

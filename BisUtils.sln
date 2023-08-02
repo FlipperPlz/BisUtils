@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.EnfPack", "src\Bis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackTest", "test\Scratches\PackTest\PackTest.csproj", "{67134839-E95C-471D-81D1-3975E38E554D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.Extensions.RVBank.Extras", "src\BisUtils.Extensions.RVBank.Extras\BisUtils.Extensions.RVBank.Extras.csproj", "{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,10 @@ Global
 		{67134839-E95C-471D-81D1-3975E38E554D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67134839-E95C-471D-81D1-3975E38E554D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67134839-E95C-471D-81D1-3975E38E554D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -168,5 +174,6 @@ Global
 		{CCAF99C5-8ADB-457E-9A9A-F031C65F6E1D} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
 		{77184712-FD83-4901-9442-3638ED918E1A} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
 		{67134839-E95C-471D-81D1-3975E38E554D} = {E42E6EAA-8D4A-4077-AD7E-56EABDE2F4B5}
+		{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A} = {9E3CD3FE-A652-47E7-B4D8-67B1287851CE}
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BisUtils.Extensions.RVBank.Extras;
 using BisUtils.RVBank.Extensions;
 using BisUtils.RVBank.Model;
 using BisUtils.RVBank.Options;
@@ -35,6 +36,10 @@ File.Delete(output);
 File.Delete(@"C:\Users\ryann\Desktop\test.cpp");
 var outStream = File.Open(output, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 var bank = new RVBank(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
+foreach (var treeLevel in bank.DirectoryTree())
+{
+    Console.WriteLine(treeLevel);
+}
 bank.SynchronizeWithStream(bankOptions);
 var config = bank.GetDataEntries("config.cpp", SearchOption.TopDirectoryOnly).FirstOrDefault() ??
              throw new IOException("No config.cpp entry found.");
