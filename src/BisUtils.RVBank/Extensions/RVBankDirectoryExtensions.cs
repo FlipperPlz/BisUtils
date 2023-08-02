@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.RVBank.Extensions;
 
+using System.Diagnostics;
 using Core.IO;
 using Core.Parsing;
 using Enumerations;
@@ -11,6 +12,7 @@ using Options;
 
 public static class RVBankDirectoryExtensions
 {
+    public static readonly Stopwatch Stopwatch = new Stopwatch();
     //ctx.PboOptions is an ObeservableCollection<IRVBankDirectory>
     public static IEnumerable<T> GetEntries<T>(this IRVBankDirectory ctx) where T : IRVBankEntry =>
         ctx.PboEntries.OfType<T>();
@@ -190,6 +192,7 @@ public static class RVBankDirectoryExtensions
 
             return ret;
         }
+
     }
     //
     // public static void AddEntry
