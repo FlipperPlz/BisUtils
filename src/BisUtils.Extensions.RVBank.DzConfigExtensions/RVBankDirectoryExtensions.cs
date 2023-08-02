@@ -60,13 +60,13 @@ public static class RVBankDirectoryExtensions
         return configs;
     }
 
-    public static IEnumerable<IParamFile> LocateConfigFile(this IRVBankDirectory directory, ParamOptions paramOptions, SearchOption option) =>
+    public static IEnumerable<IParamFile> LocateConfigFiles(this IRVBankDirectory directory, ParamOptions paramOptions, SearchOption option) =>
         LocateConfigEntries(directory, option).Select(it =>
         {
             using var reader = new BisBinaryReader(it.EntryData, paramOptions.Charset, true);
             return new ParamFile("config", reader, paramOptions, directory.Logger);
         });
 
-    public static IEnumerable<DzConfig> LocateAddonConfig(this IRVBankDirectory directory, ParamOptions paramOptions,
-        SearchOption option) => LocateConfigFile(directory, paramOptions, option).Select(it => new DzConfig(it));
+    public static IEnumerable<DzConfig> LocateAddonConfigs(this IRVBankDirectory directory, ParamOptions paramOptions,
+        SearchOption option) => LocateConfigFiles(directory, paramOptions, option).Select(it => new DzConfig(it));
 }
