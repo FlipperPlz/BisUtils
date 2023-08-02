@@ -178,7 +178,7 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
             {
                 dataEntries.Add(dataEntry);
                 dataEntry.InitializeStreamOffset((uint) bufferEnd);
-                if (!options.FlatRead)
+                if (!options.FlatRead && !queuedForRemoval.Contains(dataEntry) && dataEntry.DataSize != 0)
                 {
                     dataEntry.ExpandDirectoryStructure();
                 }
@@ -197,6 +197,25 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         }
         logger?.LogInformation("Entry loop ended at {Pos} with {Count} entry(s) found and {DupesCount} duplicate entries, starting data sweep", headerEnd, fileCount, queuedForRemoval.Count);
         return fileCount;
+    }
+
+    private static bool ShouldRemoveEntry(IRVBankDataEntry entry, uint headerLength)
+    {
+        var entryOffset = entry.StreamOffset + headerLength;
+
+        if (entryOffset < headerLength)
+        {
+            return true;
+        }
+
+        var entryEnd = entry.StreamOffset + entry.DataSize;
+
+        if (!(entry.StreamOffset >= headerLength && entryEnd >= headerLength))
+        {
+            return true;
+        }
+
+        return entry.EntryMime is RVBankEntryMime.Encrypted;
     }
 
 
@@ -250,40 +269,19 @@ public class RVBank : BisSynchronizable<RVBankOptions>, IRVBank
         Logger?.LogInformation("Starting data sweep at {Pos}.", reader.BaseStream.Position);
         foreach (var entry in dataEntries)
         {
-            bool shouldRemove;
             var entryOffset = entry.StreamOffset + headerEnd;
             entry.InitializeStreamOffset(entryOffset);
-            if ( entryOffset < headerEnd )
-            {
-                shouldRemove = true;
-                goto Continue;
-            }
 
-            var entryEnd =  entry.StreamOffset + entry.DataSize;
-            if
-            (
-                entry.StreamOffset >= headerEnd &&
-                entryEnd >= headerEnd &&
-                entry.InitializeBuffer(reader, options)
-            )
+            if (ShouldRemoveEntry(entry, headerEnd))
             {
-                continue;
+                Logger?.LogDebug("Ignoring encrypted or malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.StreamOffset, entry.DataSize);
+                queuedForRemoval.Add(entry);
             }
-            shouldRemove = true;
-            Continue:
-
-            if (entry.EntryMime is RVBankEntryMime.Encrypted)
+            else if (!entry.InitializeBuffer(reader, options))
             {
-                shouldRemove = true;
+                Logger?.LogDebug("Failed to read entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.StreamOffset, entry.DataSize);
+                queuedForRemoval.Add(entry);
             }
-
-            if (!shouldRemove)
-            {
-                continue;
-            }
-            Logger?.LogDebug("Ignoring encrypted or malformed entry '{EntryName}' at '{Position}' with length '{Length}", entry.AbsolutePath, entry.StreamOffset, entry.DataSize);
-
-            queuedForRemoval.Add(entry);
         }
         Logger?.LogInformation("Data sweep ended at {Pos}. {IgnoreCount} entry(s) were skipped to avoid the extraction of unused and/or malformed data.", reader.BaseStream.Position, queuedForRemoval.Count);
     }
