@@ -15,9 +15,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.g4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.bnf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.g4" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.g4" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -272,7 +272,7 @@
       <workItem from="1690989673846" duration="14048000" />
       <workItem from="1691019447769" duration="36000" />
       <workItem from="1691031622334" duration="1703000" />
-      <workItem from="1691072372786" duration="2647000" />
+      <workItem from="1691072372786" duration="6027000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -634,7 +634,15 @@
       <option name="project" value="LOCAL" />
       <updated>1691032128244</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="feat(enconfig): Create Basic Antlr Writeup For Config Language">
+      <option name="closed" value="true" />
+      <created>1691076239980</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1691076239980</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -666,7 +674,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank): Start Another Bank Rewrite ;-;" />
     <MESSAGE value="feat(bank): Start Working On RVBankDataEntry" />
     <MESSAGE value="feat(bank): Adjustments To Bank Debinarization" />
     <MESSAGE value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
@@ -691,7 +698,8 @@
     <MESSAGE value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
     <MESSAGE value="chore: Restructure Solution Layout" />
     <MESSAGE value="feat(EnConfig): Initial Commit; Create EnConfig Project" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(EnConfig): Initial Commit; Create EnConfig Project" />
+    <MESSAGE value="feat(enconfig): Create Basic Antlr Writeup For Config Language" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(enconfig): Create Basic Antlr Writeup For Config Language" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,0 +1,15 @@
+﻿<config> ::= { <node> } <EOF>
+
+<node> ::= <identifier> [<identifier>] [<stringLiteral>] [<nodeExtension>] <literal> EOL
+<nodeExtension> ::= ":" <stringLiteral>
+<literal> ::= <objectLiteral> | <stringLiteral> | <intLiteral> | <floatLiteral> | <arrayLiteral> | <enumLiteral>;
+
+<identifier> ::= <Identifier>;
+<enumLiteral> ::= <Identifier>;
+
+<objectLiteral> ::= '{' EOL { <node> } '}';
+<arrayLiteral> ::= '{' { <literal> } '}';
+
+
+
+<EOL> ::= '\r\n' | '\n' | '\r';
