@@ -72,6 +72,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.EnConfig", "src\Bi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnConfigGrammar", "test\Scratches\EnConfigGrammar\EnConfigGrammar.csproj", "{98EF4F7E-F465-4CAA-9F4D-AC80A5CA35B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.EnLex", "src\BisUtils.EnLex\BisUtils.EnLex.csproj", "{1034FDDF-92FD-417D-8A16-F78C456C62D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +164,10 @@ Global
 		{98EF4F7E-F465-4CAA-9F4D-AC80A5CA35B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98EF4F7E-F465-4CAA-9F4D-AC80A5CA35B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98EF4F7E-F465-4CAA-9F4D-AC80A5CA35B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1034FDDF-92FD-417D-8A16-F78C456C62D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1034FDDF-92FD-417D-8A16-F78C456C62D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1034FDDF-92FD-417D-8A16-F78C456C62D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1034FDDF-92FD-417D-8A16-F78C456C62D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,5 +204,6 @@ Global
 		{4668F0FB-95C4-44ED-964B-CCCEBC2C1C7A} = {007C525D-37F5-4B3B-8BCD-1915AC4AFD34}
 		{9D43E6C1-5844-4D59-9847-F38D74AF66FB} = {F096CD3B-FD87-4C76-B280-E237FE3BB49B}
 		{98EF4F7E-F465-4CAA-9F4D-AC80A5CA35B0} = {E42E6EAA-8D4A-4077-AD7E-56EABDE2F4B5}
+		{1034FDDF-92FD-417D-8A16-F78C456C62D2} = {F096CD3B-FD87-4C76-B280-E237FE3BB49B}
 	EndGlobalSection
 EndGlobal
