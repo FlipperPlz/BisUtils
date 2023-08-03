@@ -13,6 +13,7 @@ literal:
     floatLiteral |
     arrayLiteral |
     enumLiteral;
+
 identifier: Identifier;
 enumLiteral: Identifier;
 objectLiteral: LCurly node* RCurly;
@@ -20,6 +21,7 @@ stringLiteral: StringLiteral;
 intLiteral: NumericLiteral;
 floatLiteral: DecimalLiteral;
 arrayLiteral: LCurly literal* RCurly;
+
 WS: [ \t]+ -> skip;
 LCurly: '{' EOL;
 RCurly: '}';
