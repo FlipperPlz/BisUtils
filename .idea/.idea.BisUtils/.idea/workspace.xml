@@ -15,14 +15,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.Extras/RVBankDirectoryTreeExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/BisUtils_ProgDoc.chm" beforeDir="false" afterPath="$PROJECT_DIR$/docs/BisUtils_ProgDoc.chm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/BisUtils_ProgDoc.chw" beforeDir="false" afterPath="$PROJECT_DIR$/docs/BisUtils_ProgDoc.chw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/BisUtils.Extensions.RVBank.DzConfigExtensions.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/BisUtils.Extensions.RVBank.DzConfigExtensions.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/BankTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/BankTest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/BisUtils.EnfPack.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/BisUtils.EnPack.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Enumerations/EsPackCompressionType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Enumerations/EnPackCompressionType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Extensions/EsPackReaderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Extensions/EnPackReaderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackDataEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackDirectory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackDirectory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackElement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Options/EsPackOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Options/EnPackOptions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/PackTest/PackTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/PackTest/PackTest.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/PackTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/PackTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,30 +73,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "XThreadsFramesViewSplitterKey": "0.3719583",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "E:/projects/csharp/BisUtils/BisUtils.sln",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.3719583&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/projects/csharp/BisUtils/BisUtils.sln&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
-      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
-      "C:\\Users\\ryann\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\ryann\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Project.BankTest">
     <configuration name="Publish BisUtils.RVBank to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
       <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/src/BisUtils.RVBank/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="-775555546124957071" uuid_low="-8586648064013952717" />
@@ -141,7 +146,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.EnfPack/BisUtils.EnfPack.csproj" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.EnPack/BisUtils.EnPack.csproj" />
       <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
@@ -274,7 +279,9 @@
       <workItem from="1690826101525" duration="4514000" />
       <workItem from="1690903346564" duration="14916000" />
       <workItem from="1690946785174" duration="4522000" />
-      <workItem from="1690989673846" duration="13847000" />
+      <workItem from="1690989673846" duration="14048000" />
+      <workItem from="1691019447769" duration="36000" />
+      <workItem from="1691031622334" duration="322000" />
     </task>
     <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
       <option name="closed" value="true" />
@@ -604,7 +611,23 @@
       <option name="project" value="LOCAL" />
       <updated>1691001013128</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="feat(bank.extras): Create BisUtils.Extensions.RVBank.Extras">
+      <option name="closed" value="true" />
+      <created>1691019313324</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1691019313324</updated>
+    </task>
+    <task id="LOCAL-00043" summary="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project">
+      <option name="closed" value="true" />
+      <created>1691019381588</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1691019381588</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -636,8 +659,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fix(bank): Fix RVBankEntry::Move" />
-    <MESSAGE value="fix(bank): Write Path Instead Of Name" />
     <MESSAGE value="fix(bank): Fix RVBankDirectory::CalculateLength" />
     <MESSAGE value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
     <MESSAGE value="feat(bank): Start Another Bank Rewrite ;-;" />
@@ -661,7 +682,9 @@
     <MESSAGE value="feat(bank.extensions): Create Enumerable Functions For Reading ParamFiles" />
     <MESSAGE value="feat(pak): Add Start To Pak Project" />
     <MESSAGE value="feat(pak): Finish Up Pak Library" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(pak): Finish Up Pak Library" />
+    <MESSAGE value="feat(bank.extras): Create BisUtils.Extensions.RVBank.Extras" />
+    <MESSAGE value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -691,19 +714,6 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs</url>
-          <line>120</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.RVBank\Model\Entry\RVBankDataEntry.cs" initialLine="120" containingFunctionPresentation="Method 'RetrieveRawBuffer'">
-            <startOffsets>
-              <option value="3420" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3482" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/test/Scratches/BankTest/Program.cs</url>

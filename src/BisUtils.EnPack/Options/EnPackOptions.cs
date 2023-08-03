@@ -1,10 +1,10 @@
-﻿namespace BisUtils.EnfPack.Options;
+﻿namespace BisUtils.EnPack.Options;
 
 using System.Text;
-using Core.Binarize.Options;
-using Core.Binarize.Utils;
+using BisUtils.Core.Binarize.Options;
+using BisUtils.Core.Binarize.Utils;
 
-public class EsPackOptions : IBinarizationOptions
+public class EnPackOptions : IBinarizationOptions
 {
     public Encoding Charset { get; set; } = Encoding.UTF8;
     public Endianness ByteOrder { get; set; } = Endianness.Big;

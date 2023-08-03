@@ -1,37 +1,37 @@
-﻿namespace BisUtils.EnfPack.Models;
+﻿namespace BisUtils.EnPack.Models;
 
-using Core.Extensions;
-using Core.IO;
-using Enumerations;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.EnPack.Enumerations;
 using FResults;
 using Microsoft.Extensions.Logging;
 using Options;
 
-public interface IEsPackDataEntry : IEsPackEntry
+public interface IEnPackDataEntry : IEnPackEntry
 {
     public uint Offset { get; set; }
     public uint PackedSize { get; set; }
     public uint OriginalSize { get; set; }
     public uint Crc { get; set; }
-    public EsPackCompressionType CompressionType { get; set; }
+    public EnPackCompressionType CompressionType { get; set; }
     public byte CompressionLevel { get; set; }
 }
 
 
-public class EsPackDataEntry : EsPackEntry, IEsPackDataEntry
+public class EnPackDataEntry : EnPackEntry, IEnPackDataEntry
 {
     public uint Offset { get; set; }
     public uint PackedSize { get; set; }
     public uint OriginalSize { get; set; }
     public uint Crc { get; set; }
-    public EsPackCompressionType CompressionType { get; set; }
+    public EnPackCompressionType CompressionType { get; set; }
     public byte CompressionLevel { get; set; }
 
-    public EsPackDataEntry(IEsPackFile file, IEsPackDirectory parent, ILogger? logger) : base(file, parent, logger)
+    public EnPackDataEntry(IEnPackFile file, IEnPackDirectory parent, ILogger? logger) : base(file, parent, logger)
     {
     }
 
-    public EsPackDataEntry(BisBinaryReader reader, EsPackOptions options, IEsPackDirectory parent, IEsPackFile synchronizationRoot, ILogger? logger) : base(reader, options, parent, synchronizationRoot, logger, true)
+    public EnPackDataEntry(BisBinaryReader reader, EnPackOptions options, IEnPackDirectory parent, IEnPackFile synchronizationRoot, ILogger? logger) : base(reader, options, parent, synchronizationRoot, logger, true)
     {
         if (!Debinarize(reader, options))
         {
@@ -39,7 +39,7 @@ public class EsPackDataEntry : EsPackEntry, IEsPackDataEntry
         }
     }
 
-    public override Result Binarize(BisBinaryWriter writer, EsPackOptions options)
+    public override Result Binarize(BisBinaryWriter writer, EnPackOptions options)
     {
         LastResult = base.Binarize(writer, options);
         writer.Write(Offset);
@@ -52,19 +52,19 @@ public class EsPackDataEntry : EsPackEntry, IEsPackDataEntry
         return LastResult;
     }
 
-    public sealed override Result Debinarize(BisBinaryReader reader, EsPackOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, EnPackOptions options)
     {
         LastResult = base.Debinarize(reader, options);
         Offset = reader.ReadUInt32();
         PackedSize = reader.ReadUInt32();
         OriginalSize = reader.ReadUInt32();
         Crc = reader.ReadUInt32();
-        CompressionType = (EsPackCompressionType)reader.ReadByte(); //Weird enum is more than 1 byte
+        CompressionType = (EnPackCompressionType)reader.ReadByte(); //Weird enum is more than 1 byte
         CompressionLevel = reader.ReadByte();
         reader.BaseStream.Seek(6, SeekOrigin.Current);
         return LastResult;
     }
 
-    public override Result Validate(EsPackOptions options) => throw new NotImplementedException();
+    public override Result Validate(EnPackOptions options) => throw new NotImplementedException();
 
 }

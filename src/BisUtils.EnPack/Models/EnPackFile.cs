@@ -1,25 +1,25 @@
-﻿namespace BisUtils.EnfPack.Models;
+﻿namespace BisUtils.EnPack.Models;
 
 using System.Collections.ObjectModel;
-using Core.Binarize.Synchronization;
-using Core.Extensions;
-using Core.IO;
-using Core.Parsing;
-using Extensions;
+using BisUtils.Core.Binarize.Synchronization;
+using BisUtils.Core.Extensions;
+using BisUtils.Core.IO;
+using BisUtils.Core.Parsing;
+using BisUtils.EnPack.Extensions;
 using FResults;
 using Microsoft.Extensions.Logging;
 using Options;
 
-public interface IEsPackFile : IEsPackDirectory, IBisSynchronizable<EsPackOptions>
+public interface IEnPackFile : IEnPackDirectory, IBisSynchronizable<EnPackOptions>
 {
-    bool IEsPackDirectory.IsInPackRoot => true;
+    bool IEnPackDirectory.IsInPackRoot => true;
 }
 
-public class EsPackFile : BisSynchronizable<EsPackOptions>, IEsPackFile
+public class EnPackFile : BisSynchronizable<EnPackOptions>, IEnPackFile
 {
-    public IEsPackFile PackFile { get; }
-    public IEsPackDirectory ParentDirectory { get; }
-    public ObservableCollection<IEsPackEntry> PackEntries { get; }
+    public IEnPackFile PackFile { get; }
+    public IEnPackDirectory ParentDirectory { get; }
+    public ObservableCollection<IEnPackEntry> PackEntries { get; }
     public virtual string Path => $"{ParentDirectory.Path}\\{EntryName}";
     public virtual string AbsolutePath => $"{ParentDirectory.AbsolutePath}\\{EntryName}";
 
@@ -34,27 +34,27 @@ public class EsPackFile : BisSynchronizable<EsPackOptions>, IEsPackFile
         }
     }
 
-    public EsPackFile(string name, IEnumerable<IEsPackEntry>? entries, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
+    public EnPackFile(string name, IEnumerable<IEnPackEntry>? entries, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
     {
         entryName = name;
         PackFile = this;
         ParentDirectory = this;
-        PackEntries = entries != null ? new ObservableCollection<IEsPackEntry>(entries) : new ObservableCollection<IEsPackEntry>();
+        PackEntries = entries != null ? new ObservableCollection<IEnPackEntry>(entries) : new ObservableCollection<IEnPackEntry>();
     }
 
-    public EsPackFile(string name, BisBinaryReader reader, EsPackOptions options, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
+    public EnPackFile(string name, BisBinaryReader reader, EnPackOptions options, Stream? syncTo, ILogger? logger) : base(syncTo, logger)
     {
         entryName = name;
         PackFile = this;
         ParentDirectory = this;
-        PackEntries = new ObservableCollection<IEsPackEntry>();
+        PackEntries = new ObservableCollection<IEnPackEntry>();
         if (!Debinarize(reader, options))
         {
             LastResult!.Throw();
         }
     }
 
-    public EsPackFile(string fileName, Stream buffer, EsPackOptions options, Stream? syncTo, ILogger logger) : this(fileName, (IEnumerable<EsPackEntry>) null!, syncTo, logger)
+    public EnPackFile(string fileName, Stream buffer, EnPackOptions options, Stream? syncTo, ILogger logger) : this(fileName, (IEnumerable<EnPackEntry>) null!, syncTo, logger)
     {
         using var reader = new BisBinaryReader(buffer, options.Charset);
         if (!Debinarize(reader, options))
@@ -63,7 +63,7 @@ public class EsPackFile : BisSynchronizable<EsPackOptions>, IEsPackFile
         }
     }
 
-    public EsPackFile(string path, EsPackOptions options, Stream? syncTo, ILogger logger) : this(System.IO.Path.GetFileNameWithoutExtension(path), (IEnumerable<EsPackEntry>) null!, syncTo, logger)
+    public EnPackFile(string path, EnPackOptions options, Stream? syncTo, ILogger logger) : this(System.IO.Path.GetFileNameWithoutExtension(path), (IEnumerable<EnPackEntry>) null!, syncTo, logger)
     {
         using var stream = File.OpenRead(path);
         using var reader = new BisBinaryReader(stream, options.Charset);
@@ -73,10 +73,10 @@ public class EsPackFile : BisSynchronizable<EsPackOptions>, IEsPackFile
         }
     }
 
-    public override Result Binarize(BisBinaryWriter writer, EsPackOptions options) =>
+    public override Result Binarize(BisBinaryWriter writer, EnPackOptions options) =>
         throw new NotImplementedException();
 
-    public sealed override Result Debinarize(BisBinaryReader reader, EsPackOptions options)
+    public sealed override Result Debinarize(BisBinaryReader reader, EnPackOptions options)
     {
         reader.ScanUntil(options, "FORM");
         reader.ScanUntil(options, "PAC1");
@@ -88,14 +88,14 @@ public class EsPackFile : BisSynchronizable<EsPackOptions>, IEsPackFile
         reader.BaseStream.Seek(2, SeekOrigin.Current); // Flags maybe
         do
         {
-            PackEntries.Add(EsPackEntry.ReadEntry(reader, options, this, this, Logger));
+            PackEntries.Add(EnPackEntry.ReadEntry(reader, options, this, this, Logger));
         } while (reader.BaseStream.Position < eof);
 
         return Result.Ok();
     }
 
 
-    public override Result Validate(EsPackOptions options) =>
+    public override Result Validate(EnPackOptions options) =>
         throw new NotImplementedException();
 
 

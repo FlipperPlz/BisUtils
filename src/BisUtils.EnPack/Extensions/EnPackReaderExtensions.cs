@@ -1,9 +1,9 @@
-﻿namespace BisUtils.EnfPack.Extensions;
+﻿namespace BisUtils.EnPack.Extensions;
 
 using Core.Binarize.Options;
 using Core.IO;
 
-public static class EsPackReaderExtensions
+public static class EnPackReaderExtensions
 {
 
     public static uint ReadUInt32BE(this BisBinaryReader reader)

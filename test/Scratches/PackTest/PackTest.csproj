@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\BisUtils.EnfPack\BisUtils.EnfPack.csproj" />
+      <ProjectReference Include="..\..\..\src\BisUtils.EnPack\BisUtils.EnPack.csproj" />
     </ItemGroup>
 
 </Project>
