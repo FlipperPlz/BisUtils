@@ -15,12 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Misc/BisSelfHolder.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisToken.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenSet.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/discord.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.g4" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -278,15 +277,8 @@
       <workItem from="1691019447769" duration="36000" />
       <workItem from="1691031622334" duration="1703000" />
       <workItem from="1691072372786" duration="8520000" />
-      <workItem from="1691084489223" duration="3374000" />
-    </task>
-    <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
-      <option name="closed" value="true" />
-      <created>1689826369896</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1689826369896</updated>
+      <workItem from="1691084489223" duration="3635000" />
+      <workItem from="1691090927198" duration="4590000" />
     </task>
     <task id="LOCAL-00002" summary="feat(bank): Implement IRVBankDataEntry::ExpandDirectoryStructure">
       <option name="closed" value="true" />
@@ -664,7 +656,23 @@
       <option name="project" value="LOCAL" />
       <updated>1691080009090</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="feat(core): Start Working On Parser Framework Overhaul">
+      <option name="closed" value="true" />
+      <created>1691088992354</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1691088992354</updated>
+    </task>
+    <task id="LOCAL-00050" summary="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig">
+      <option name="closed" value="true" />
+      <created>1691089060166</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1691089060166</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,8 +704,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
-    <MESSAGE value="refactor(bank): Declutter RVBank::Debinarize Function&#10;" />
     <MESSAGE value="refactor(bank): Removed some of the clutter in the RVBank::Debinarize function to simplify logic and improve readability.&#10;&#10; The earlier logic that looped through bank entries and handled multiple conditions was unwrapped into self-contained functions. This change makes the code easier to follow and reason about. &#10; &#10; - Moreover, a new exception 'RVBankChecksumMismatch' is introduced to handle cases of digest mismatch between actual and expected, enhancing error reporting in the application" />
     <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;" />
     <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;- Made abstracted methods from last commit static&#10;- Refactored RVBank.cs to use new or explicit constructors instead of a static method for reading PBO files. Simplified the process of reading and initializing an RVBank object, providing better support for different sources (files, streams) and conditions." />
@@ -721,7 +727,9 @@
     <MESSAGE value="feat(enconfig): Create Basic Antlr Writeup For Config Language" />
     <MESSAGE value="feat(enConfig): Finish Up Grammar Draft" />
     <MESSAGE value="feat(enConfig): Add csproj For Scratch Project" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(enConfig): Add csproj For Scratch Project" />
+    <MESSAGE value="feat(core): Start Working On Parser Framework Overhaul" />
+    <MESSAGE value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
