@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Core.Parsing.Lexer.Tokens;
+﻿namespace BisUtils.Core.Parsing.Token.Matching;
 
 public interface IBisTokenMatch
 {

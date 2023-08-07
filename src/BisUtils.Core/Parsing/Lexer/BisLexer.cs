@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Core.Parsing.Lexer;
 
-using Tokens;
+using Token;
+using Token.Matching;
 
 public interface IBisLexer<TTokens> : IBisMutableStringStepper where TTokens : IBisTokenSet
 {

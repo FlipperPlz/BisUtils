@@ -15,21 +15,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerOld.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenMatch.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/Tokens/BisWhitespaceToken.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionLexer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionTokens.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BisUtils.sln.DotSettings" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln.DotSettings" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/ParserExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/ParserExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisMutableStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisPreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisPreProcessor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/ParamLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/ParamLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Models/ParamFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Models/ParamFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/RVPreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/RVPreProcessor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.bnf" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/EnConfigGrammar/EnConfig.bnf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisToken.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/BisTokenSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/Tokens/Tokens/BisWhitespaceToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisWhitespaceToken.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -292,6 +288,7 @@
       <workItem from="1691338132592" duration="376000" />
       <workItem from="1691344645237" duration="1487000" />
       <workItem from="1691413652004" duration="1159000" />
+      <workItem from="1691427822088" duration="2071000" />
     </task>
     <task id="LOCAL-00003" summary="feat(core): Create BisCompatibleLZSS::Decode Method">
       <option name="closed" value="true" />
