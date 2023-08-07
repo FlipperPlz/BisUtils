@@ -7,9 +7,7 @@
 <identifier> ::= <Identifier>;
 <enumLiteral> ::= <Identifier>;
 
-<objectLiteral> ::= '{' EOL { <node> } '}';
+<objectLiteral> ::= '{' { <node> } '}';
 <arrayLiteral> ::= '{' { <literal> } '}';
-
-
 
 <EOL> ::= '\r\n' | '\n' | '\r';

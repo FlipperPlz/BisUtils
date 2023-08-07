@@ -2,66 +2,66 @@
 
 using Core.Parsing.Lexer;
 
-public class ParamLexer : BisLexer<ParamTypes>
+public class ParamLexerOld : BisLexerOld<ParamTypes>
 {
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition ErrorDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition ErrorDefinition =
         CreateTokenDefinition("param.error", ParamTypes.Invalid, -1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition EOFDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition EOFDefinition =
         CreateTokenDefinition("param.eof", ParamTypes.EOF, 200);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition LiteralDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition LiteralDefinition =
         CreateTokenDefinition("param.abs.literal", ParamTypes.AbsLiteral, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition WhitespaceDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition WhitespaceDefinition =
         CreateTokenDefinition("param.abs.whitespace", ParamTypes.AbsWhitespace, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition PreProcessDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition PreProcessDefinition =
         CreateTokenDefinition("param.abs.preprocess", ParamTypes.AbsPreprocess, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition IdentifierDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition IdentifierDefinition =
         CreateTokenDefinition("param.abs.identifier", ParamTypes.AbsIdentifier, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition ClassDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition ClassDefinition =
         CreateTokenDefinition("param.keyword.class", ParamTypes.KwClass, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition EnumDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition EnumDefinition =
         CreateTokenDefinition("param.keyword.enum", ParamTypes.KwEnum, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition DeleteDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition DeleteDefinition =
         CreateTokenDefinition("param.keyword.delete", ParamTypes.KwDelete, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition LCurlyDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition LCurlyDefinition =
         CreateTokenDefinition("param.symbol.curly.left", ParamTypes.SymLCurly, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition RCurlyDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition RCurlyDefinition =
         CreateTokenDefinition("param.symbol.curly.right", ParamTypes.SymRCurly, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition LSquareDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition LSquareDefinition =
         CreateTokenDefinition("param.symbol.square.left", ParamTypes.SymLSquare, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition RSquareDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition RSquareDefinition =
         CreateTokenDefinition("param.symbol.square.right", ParamTypes.SymRSquare, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition ColonDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition ColonDefinition =
         CreateTokenDefinition("param.symbol.colon", ParamTypes.SymColon, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition SeparatorDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition SeparatorDefinition =
         CreateTokenDefinition("param.symbol.separator", ParamTypes.SymSeparator, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition CommaDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition CommaDefinition =
         CreateTokenDefinition("param.symbol.comma", ParamTypes.SymComma, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition AssignDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition AssignDefinition =
         CreateTokenDefinition("param.operator.assign", ParamTypes.OpAssign, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition AddAssignDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition AddAssignDefinition =
         CreateTokenDefinition("param.operator.assign.add", ParamTypes.OpAddAssign, 1);
 
-    private static readonly IBisLexer<ParamTypes>.TokenDefinition SubAssignDefinition =
+    private static readonly IBisLexerOld<ParamTypes>.TokenDefinition SubAssignDefinition =
         CreateTokenDefinition("param.operator.assign.sub", ParamTypes.OpSubAssign, 1);
 
-    private static readonly IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenDefinitions = new[]
+    private static readonly IEnumerable<IBisLexerOld<ParamTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         ErrorDefinition, LiteralDefinition, PreProcessDefinition, ClassDefinition, EnumDefinition,
         DeleteDefinition, LCurlyDefinition, RCurlyDefinition, EOFDefinition, LSquareDefinition,
@@ -69,16 +69,16 @@ public class ParamLexer : BisLexer<ParamTypes>
         AddAssignDefinition, SubAssignDefinition, IdentifierDefinition, WhitespaceDefinition
     };
 
-    public override IEnumerable<IBisLexer<ParamTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
-    public override IBisLexer<ParamTypes>.TokenDefinition? ErrorToken => ErrorDefinition;
-    public override IBisLexer<ParamTypes>.TokenDefinition EOFToken => EOFDefinition;
+    public override IEnumerable<IBisLexerOld<ParamTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
+    public override IBisLexerOld<ParamTypes>.TokenDefinition? ErrorToken => ErrorDefinition;
+    public override IBisLexerOld<ParamTypes>.TokenDefinition EOFToken => EOFDefinition;
     public bool IsCurrentWhitespace => IsWhitespace();
 
-    public ParamLexer(string content) : base(content)
+    public ParamLexerOld(string content) : base(content)
     {
     }
 
-    public IBisLexer<ParamTypes>.TokenMatch NextLiteral(params char[] delimiters)
+    public IBisLexerOld<ParamTypes>.TokenMatch NextLiteral(params char[] delimiters)
     {
         MoveForward();
         var quoted = false;
@@ -147,7 +147,7 @@ public class ParamLexer : BisLexer<ParamTypes>
         return i;
     }
 
-    protected override IBisLexer<ParamTypes>.TokenMatch GetNextToken()
+    protected override IBisLexerOld<ParamTypes>.TokenMatch GetNextToken()
     {
         MoveForward();
 

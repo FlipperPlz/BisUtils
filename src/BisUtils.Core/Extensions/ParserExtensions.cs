@@ -15,7 +15,7 @@ public static class ParserExtensions
         TLexer lexer,
         ILogger? logger,
         TPreProcessor? preprocessor = null
-    ) where TLexer : BisLexer<TTypes> where TTypes : Enum where TPreProcessor : BisPreProcessorBase, new()
+    ) where TLexer : BisLexerOld<TTypes> where TTypes : Enum where TPreProcessor : BisPreProcessorBase, new()
     {
         var builder = new StringBuilder();
         preprocessor ??= new TPreProcessor();

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 /// <typeparam name="TAstNode">The type of the abstract syntax tree node to be output by the parser.</typeparam>
 /// <typeparam name="TLexer">The type of the lexer used by the parser. Must inherit from `BisLexer`.</typeparam>
 /// <typeparam name="TTypes">The type of the token types used by the parser.</typeparam>
-public interface IBisParser<TAstNode, in TLexer, TTypes> where TLexer : BisLexer<TTypes> where TTypes : Enum
+public interface IBisParser<TAstNode, in TLexer, TTypes> where TLexer : BisLexerOld<TTypes> where TTypes : Enum
 {
     /// <summary>
     /// Parses a lexer and outputs an abstract syntax tree node.
@@ -32,7 +32,7 @@ public interface IBisParser<TAstNode, in TLexer, TTypes> where TLexer : BisLexer
 /// <typeparam name="TLexer">The type of the lexer used by the parser. Must inherit from `BisLexer`.</typeparam>
 /// <typeparam name="TTypes">The type of the token types used by the parser.</typeparam>
 /// <typeparam name="TPreprocessor">The type of the preprocessor used by the parser. Must inherit from `BisPreProcessorBase` and have a parameterless constructor.</typeparam>
-public interface IBisParser<TAstNode, in TLexer, TTypes, in TPreprocessor> : IBisParser<TAstNode, TLexer, TTypes> where TLexer : BisLexer<TTypes> where TPreprocessor : BisPreProcessorBase, new() where TTypes : Enum
+public interface IBisParser<TAstNode, in TLexer, TTypes, in TPreprocessor> : IBisParser<TAstNode, TLexer, TTypes> where TLexer : BisLexerOld<TTypes> where TPreprocessor : BisPreProcessorBase, new() where TTypes : Enum
 {
     /// <summary>
     /// Processes a lexer using a preprocessor and outputs an abstract syntax tree node.

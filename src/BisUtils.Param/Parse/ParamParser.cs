@@ -19,7 +19,7 @@ using PreProcessor.RV;
 /// It specifically parses `ParamFile` nodes using the `ParamLexer` and `ParamTypes` types.
 /// It also uses `RVPreProcessor` for preprocessing.
 /// </summary>
-public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPreProcessor>
+public class ParamParser : IBisParser<ParamFile, ParamLexerOld, ParamTypes, RVPreProcessor>
 {
     /// <summary>
     /// Gets the current and only instance of the parser.
@@ -39,10 +39,10 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
     /// `NotSupportedException` for unexpected tokens or syntax.
     /// </summary>
     /// <param name="node">The output `ParamFile` node.</param>
-    /// <param name="lexer">The `ParamLexer` instance to be parsed.</param>
+    /// <param name="lexerOld">The `ParamLexer` instance to be parsed.</param>
     /// <param name="logger">Logger for parsing</param>
     /// <returns>A `Result` instance representing the result of the parsing operation.</returns>
-    public Result Parse(out ParamFile? node, ParamLexer lexer, ILogger? logger)
+    public Result Parse(out ParamFile? node, ParamLexerOld lexerOld, ILogger? logger)
     {
         var results = new List<Result>();
         node = new ParamFile("config", new List<IParamStatement>(), logger);
@@ -51,7 +51,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
         var context = stack.Peek();
         while (stack.Any())
         {
-            var next = lexer.NextToken();
+            var next = lexerOld.NextToken();
             switch ((ParamTypes) next)
             {
                 case ParamTypes.AbsWhitespace:
@@ -68,7 +68,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 case ParamTypes.SymRCurly:
                 {
-                    if ((next = lexer.NextToken()) != ParamTypes.SymSeparator)
+                    if ((next = lexerOld.NextToken()) != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
@@ -84,13 +84,13 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 case ParamTypes.KwClass:
                 {
-                    next = lexer.NextToken();
+                    next = lexerOld.NextToken();
                     if (next != ParamTypes.AbsWhitespace)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
 
-                    next = lexer.NextToken();
+                    next = lexerOld.NextToken();
                     if (next != ParamTypes.AbsIdentifier)
                     {
                         throw new NotSupportedException(); //TODO: Error
@@ -98,7 +98,7 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                     var classname = next.TokenText;
                     do
                     {
-                        next = lexer.NextToken();
+                        next = lexerOld.NextToken();
                     } while (next == ParamTypes.AbsWhitespace);
 
                     switch ((ParamTypes) next)
@@ -117,13 +117,13 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                     var superName = "";
                     if (next == ParamTypes.SymColon)
                     {
-                        if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.AbsIdentifier)
+                        if ((next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.AbsIdentifier)
                         {
                             throw new NotSupportedException(); //TODO: Error
                         }
 
                         superName = next.TokenText;
-                        next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
+                        next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace);
                     }
 
                     if (next != ParamTypes.SymLCurly)
@@ -137,17 +137,17 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 case ParamTypes.KwDelete:
                 {
-                    next = lexer.NextToken();
+                    next = lexerOld.NextToken();
                     if (next != ParamTypes.AbsWhitespace)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
-                    if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.AbsIdentifier)
+                    if ((next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.AbsIdentifier)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
 
-                    if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.SymSeparator)
+                    if ((next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
@@ -157,13 +157,13 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 case ParamTypes.KwEnum:
                 {
-                    if (lexer.NextToken() != ParamTypes.SymLCurly)
+                    if (lexerOld.NextToken() != ParamTypes.SymLCurly)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
                     //TODO: Handle Enum:
-                    lexer.TokenizeWhile(ParamTypes.SymRCurly);
-                    if (lexer.TokenizeWhile(ParamTypes.AbsWhitespace) != ParamTypes.SymSeparator)
+                    lexerOld.TokenizeWhile(ParamTypes.SymRCurly);
+                    if (lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace) != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
@@ -172,22 +172,22 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 case ParamTypes.AbsIdentifier:
                 {
                     var name = next.TokenText;
-                    next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
+                    next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace);
                     var foundSquare = false;
                     if (next == ParamTypes.SymLSquare)
                     {
                         foundSquare = true;
-                        if ((next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.SymRSquare)
+                        if ((next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace)) != ParamTypes.SymRSquare)
                         {
                             throw new NotSupportedException(); //TODO: Error
                         }
 
-                        next = lexer.NextToken();
+                        next = lexerOld.NextToken();
                     }
 
                     if (next == ParamTypes.AbsWhitespace)
                     {
-                        next = lexer.TokenizeWhile(ParamTypes.AbsWhitespace);
+                        next = lexerOld.TokenizeWhile(ParamTypes.AbsWhitespace);
                     }
 
                     var operation = (ParamTypes)next switch
@@ -201,20 +201,20 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                             : throw new NotSupportedException(), //TODO ERROR
                         _ => throw new NotSupportedException() //TODO: Error
                     };
-                    var value = ParseLiteral(node, null, logger, lexer, ref next);
+                    var value = ParseLiteral(node, null, logger, lexerOld, ref next);
 
                     context.Statements.Add(new ParamVariable(name, value, operation, node, context, logger));
-                    if (lexer.PreviousChar == ';')
+                    if (lexerOld.PreviousChar == ';')
                     {
-                        lexer.MoveBackward(2);
+                        lexerOld.MoveBackward(2);
                     }
 
-                    if (lexer.CurrentChar == ';')
+                    if (lexerOld.CurrentChar == ';')
                     {
-                        lexer.MoveBackward();
+                        lexerOld.MoveBackward();
                     }
 
-                    if (lexer.NextToken() != ParamTypes.SymSeparator)
+                    if (lexerOld.NextToken() != ParamTypes.SymSeparator)
                     {
                         throw new NotSupportedException(); //TODO: Error
                     }
@@ -235,17 +235,17 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
     /// `ParamInt` or `ParamString` depending on the literal token found.
     /// This method throws a `NotSupportedException` for unexpected or invalid literal tokens.
     /// </summary>
-    /// <param name="lexer">The `ParamLexer` providing the literal to parse.</param>
+    /// <param name="lexerOld">The `ParamLexer` providing the literal to parse.</param>
     /// <param name="next">Output parameter to hand back the next token after parsing the literal.</param>
     /// <returns>An `IParamLiteralBase` instance representing the parsed literal.</returns>
-    private static IParamLiteral ParseLiteral(IParamFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexer lexer, ref IBisLexer<ParamTypes>.TokenMatch next)
+    private static IParamLiteral ParseLiteral(IParamFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexerOld lexerOld, ref IBisLexerOld<ParamTypes>.TokenMatch next)
     {
         do
         {
-            lexer.MoveForward();
-        } while (lexer.IsCurrentWhitespace);
+            lexerOld.MoveForward();
+        } while (lexerOld.IsCurrentWhitespace);
 
-        return lexer.CurrentChar == '{' ? ParseParamArray(file, parent, logger, lexer) : ParseParamPrimitive(file, parent, logger, lexer);
+        return lexerOld.CurrentChar == '{' ? ParseParamArray(file, parent, logger, lexerOld) : ParseParamPrimitive(file, parent, logger, lexerOld);
     }
 
     private static IParamLiteral ParseParamPrimitive(IParamFile? file, IParamLiteralHolder? parent, ILogger? logger, IBisStringStepper lexer, params char[] delimiters)
@@ -311,14 +311,14 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
         }
     }
 
-    private static ParamArray ParseParamArray(IParamFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexer lexer)
+    private static ParamArray ParseParamArray(IParamFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexerOld lexerOld)
     {
         var results = new List<Result>();
         var array = new ParamArray(new List<IParamLiteral>(), file, parent, logger);
         var stack = new Stack<ParamArray>();
         stack.Push(array);
-        TraverseWhitespace(lexer);
-        if(lexer.CurrentChar != '{')
+        TraverseWhitespace(lexerOld);
+        if(lexerOld.CurrentChar != '{')
         {
             results.Add(Result.Fail("Couldn't find array start."));
         }
@@ -327,13 +327,13 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
         {
 
             var context = stack.Peek();
-            lexer.MoveForward();
-            TraverseWhitespace(lexer);
-            switch (lexer.CurrentChar)
+            lexerOld.MoveForward();
+            TraverseWhitespace(lexerOld);
+            switch (lexerOld.CurrentChar)
             {
                 case '{':
                 {
-                    context.Value!.Add(ParseParamArray(file, context, logger, lexer));
+                    context.Value!.Add(ParseParamArray(file, context, logger, lexerOld));
                     continue;
                 }
                 case ',': continue;
@@ -344,16 +344,16 @@ public class ParamParser : IBisParser<ParamFile, ParamLexer, ParamTypes, RVPrePr
                 }
                 default:
                 {
-                    context.Value!.Add(ParseParamPrimitive(file, context, logger, lexer, ';', '}', ','));
-                    lexer.MoveBackward();
+                    context.Value!.Add(ParseParamPrimitive(file, context, logger, lexerOld, ';', '}', ','));
+                    lexerOld.MoveBackward();
                     continue;
                 }
             }
         }
 
-        while (lexer.CurrentChar != '}')
+        while (lexerOld.CurrentChar != '}')
         {
-            lexer.MoveBackward();
+            lexerOld.MoveBackward();
         }
         return array;
     }
