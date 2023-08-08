@@ -9,6 +9,11 @@ public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens 
 {
 
     public IBisTokenType TryMatchComment(out string commentText);
+    public IBisTokenType TryMatchHash();
+    public IBisTokenType TryMatchDirective();
+    public IBisTokenType TryMatchCurly(bool isStartCurly);
+    public IBisTokenType TryMatchColon();
+
 }
 
 public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens> where TTokens : EnfusionTokenSet<TTokens>, new()
@@ -21,8 +26,13 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
         MoveForward() switch
         {
             '/' => TryMatchComment(out _),
+            '#' => TryMatchHash(),
+            '{' => TryMatchCurly(false),
+            '}' => TryMatchCurly(true),
+            ':' => TryMatchColon(),
             _ => BisInvalidTokeType.Instance
         };
+
 
     public IBisTokenType TryMatchComment(out string commentText)
     {
@@ -44,4 +54,53 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
         commentText = string.Empty;
         return BisInvalidTokeType.Instance;
     }
+
+    public IBisTokenType TryMatchHash()
+    {
+        if (CurrentChar != '#')
+        {
+            return BisInvalidTokeType.Instance;
+        }
+
+        var directiveType = TryMatchDirective();
+        return directiveType is BisInvalidTokeType ? directiveType : EnfusionTokenSet.EnfusionHashSymbol;
+    }
+
+    public IBisTokenType TryMatchDirective()
+    {
+        if (CurrentChar != '#')
+        {
+            return BisInvalidTokeType.Instance;
+        }
+
+        return PeekForward() switch
+        {
+            'd' => TryMatchText("#define", EnfusionTokenSet.EnfusionDefineDirective),
+            'e' => PeekForward(2) switch
+            {
+                'n' => TryMatchText("#endif", EnfusionTokenSet.EnfusionEndIfDirective),
+                'l' => TryMatchText("#else", EnfusionTokenSet.EnfusionElseDirective),
+                _ => BisInvalidTokeType.Instance
+            },
+            'i' => PeekForward(3) switch
+            {
+                'c' => TryMatchText("#include", EnfusionTokenSet.EnfusionIncludeDirective),
+                'd' => TryMatchText("#ifdef", EnfusionTokenSet.EnfusionIfDefinedDirective),
+                'n' => TryMatchText("#ifndef", EnfusionTokenSet.EnfusionIfNotDefinedDirective),
+                _ => BisInvalidTokeType.Instance
+            },
+            _ => BisInvalidTokeType.Instance
+        };
+    }
+
+    public IBisTokenType TryMatchCurly(bool isStartCurly)
+    {
+        if (isStartCurly)
+        {
+            return CurrentChar == '{' ? EnfusionTokenSet.EnfusionLCurly : BisInvalidTokeType.Instance;
+        }
+        return CurrentChar == '}' ? EnfusionTokenSet.EnfusionRCurly : BisInvalidTokeType.Instance;
+    }
+
+    public IBisTokenType TryMatchColon() => CurrentChar == ':' ? EnfusionTokenSet.EnfusionIncludeDirective : BisInvalidTokeType.Instance;
 }

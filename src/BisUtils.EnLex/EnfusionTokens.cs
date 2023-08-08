@@ -32,6 +32,9 @@ public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet
     public static readonly IBisTokenType EnfusionRCurly =
         new BisTokenType("enfusion.symbol.curly.right", "}");
 
+    public static readonly IBisTokenType EnfusionColon =
+        new BisTokenType("enfusion.symbol.colon", ":");
+
     public static readonly IBisTokenType EnfusionIncludeDirective =
         new BisTokenType("enfusion.directive.include", "#include");
 

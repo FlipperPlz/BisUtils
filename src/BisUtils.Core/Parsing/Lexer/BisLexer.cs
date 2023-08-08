@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.Core.Parsing.Lexer;
 
+using System.Text;
 using Extensions;
 using Token.Matching;
 using Token.Tokens;
@@ -45,6 +46,20 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         previousMatches.Add(match);
         OnTokenMatched.Invoke(this, match);
         return match;
+    }
+
+    protected IBisTokenType TryMatchText(string expectedText, IBisTokenType tokenType, bool consumeCurrent = false)
+    {
+        var start = consumeCurrent ? 1 : 0;
+        var matchText = consumeCurrent ? CurrentChar + PeekForwardMulti(expectedText.Length - start) : PeekForwardMulti(expectedText.Length);
+
+        if (matchText != expectedText)
+        {
+            return BisInvalidTokeType.Instance;
+        }
+
+        MoveForward(expectedText.Length - start);
+        return tokenType;
     }
 
     protected IBisTokenMatch CreateTokenMatch(IBisTokenType type, int tokenStart)
