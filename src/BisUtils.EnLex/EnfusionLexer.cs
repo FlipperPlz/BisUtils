@@ -8,11 +8,15 @@ public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens 
 {
 
     public IBisTokenType TryMatchComment(out string commentText);
+    public IBisTokenType TryMatchString(out string stringContent);
+    public IBisTokenType TryMatchIdentifier(out string id);
     public IBisTokenType TryMatchHash();
     public IBisTokenType TryMatchDirective();
     public IBisTokenType TryMatchCurly(bool isStartCurly);
     public IBisTokenType TryMatchColon();
     public IBisTokenType TryMatchNewLine();
+    public IBisTokenType TryMatchWhitespace();
+
 
 }
 
@@ -26,14 +30,39 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
     MoveForward() switch
     {
         '\r' or '\n'=> TryMatchNewLine(),
+        '"' => TryMatchString(out _),
         '/' => TryMatchComment(out _),
         '#' => TryMatchHash(),
         '{' => TryMatchCurly(false),
         '}' => TryMatchCurly(true),
         ':' => TryMatchColon(),
-        _ => BisInvalidTokeType.Instance
+        _ => TryMatchIdentifier(out _),
     };
 
+    public IBisTokenType TryMatchString(out string stringContent)
+    {
+        if (CurrentChar != '"')
+        {
+            stringContent = string.Empty;
+            return BisInvalidTokeType.Instance;
+        }
+
+        stringContent = GetWhile(_ => CurrentChar != '"' || PreviousChar == '\\');
+        return EnfusionTokenSet.EnfusionLiteralString;
+    }
+
+    public IBisTokenType TryMatchIdentifier(out string id)
+    {
+
+        if (!IsIdentifierChar(CurrentChar))
+        {
+            id = string.Empty;
+            return TryMatchWhitespace();
+        }
+
+        id = ScanUntil(e => !IsIdentifierChar(e), true);
+        return EnfusionTokenSet.EnfusionIdentifier;
+    }
 
     public IBisTokenType TryMatchNewLine()
     {
@@ -52,6 +81,17 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
             case '\n': return EnfusionTokenSet.EnfusionNewLine;
             default: return BisInvalidTokeType.Instance;
         }
+    }
+
+    public IBisTokenType TryMatchWhitespace()
+    {
+        if (CurrentChar is not (' ' or '\t'))
+        {
+            return BisInvalidTokeType.Instance;
+        }
+
+        ScanUntil(c => c is not (' ' or '\t'));
+        return EnfusionTokenSet.EnfusionWhitespace;
     }
 
 
@@ -121,6 +161,21 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
             return CurrentChar == '{' ? EnfusionTokenSet.EnfusionLCurly : BisInvalidTokeType.Instance;
         }
         return CurrentChar == '}' ? EnfusionTokenSet.EnfusionRCurly : BisInvalidTokeType.Instance;
+    }
+
+    public bool IsIdentifierChar(char? idChar, bool isFirst = false)
+    {
+        if (idChar is not { } currentChar)
+        {
+            return false;
+        }
+
+        if (isFirst && char.IsAsciiDigit(currentChar))
+        {
+            return false;
+        }
+
+        return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
 
     public IBisTokenType TryMatchColon() => CurrentChar == ':' ? EnfusionTokenSet.EnfusionIncludeDirective : BisInvalidTokeType.Instance;
