@@ -1,28 +1,43 @@
 ﻿namespace BisUtils.Core.Parsing.Token.Matching;
 
+using Extensions;
+using Lexer;
+
 public interface IBisTokenMatch
 {
-    public IBisToken TokenMatched { get; }
+    public IBisTokenType TokenType { get; }
     public string TokenText { get; }
-    public ulong TokenPosition { get; }
-    public ulong TokenLength { get; }
-    public byte TokenStage { get; }
+    public int TokenPosition { get; }
+    public int TokenLength { get; }
 }
 
-public readonly struct BisTokenMatch : IBisTokenMatch
+public struct BisTokenMatch : IBisTokenMatch
 {
-    public IBisToken TokenMatched { get; }
-    public string TokenText { get; }
-    public ulong TokenPosition { get; }
-    public ulong TokenLength { get; }
-    public byte TokenStage { get; }
+    private readonly IBisLexer lexer;
 
-    public BisTokenMatch(IBisToken tokenMatched, string tokenText, ulong tokenPosition, ulong tokenLength, byte tokenStage)
+    public IBisTokenType TokenType { get; private set; }
+    public string TokenText { get; private set; }
+    public int TokenPosition { get; }
+    public int TokenLength { get; private set; }
+
+    public BisTokenMatch(IBisLexer lexer, IBisTokenType type, string text, int pos, int length)
     {
-        TokenMatched = tokenMatched;
-        TokenText = tokenText;
-        TokenPosition = tokenPosition;
-        TokenLength = tokenLength;
-        TokenStage = tokenStage;
+        this.lexer = lexer;
+
+        TokenType = type;
+        TokenText = text;
+        TokenPosition = pos;
+        TokenLength = length;
     }
+
+
+    public void RemoveToken() => lexer.RemoveRange(this.GetTokenLocation(), out _);
+
+    public void SetTokenText(string text)
+    {
+        lexer.ReplaceRange(this.GetTokenLocation(), TokenText = text);
+        TokenLength = text.Length;
+    }
+
+    public void ReassignToken(IBisTokenType type) => TokenType = type;
 }
