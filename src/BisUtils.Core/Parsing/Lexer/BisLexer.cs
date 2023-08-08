@@ -7,15 +7,15 @@ using Token.Typing;
 
 public interface IBisLexer : IBisMutableStringStepper
 {
-    public event EventHandler<IBisTokenMatch> OnTokenMatched;
+    public event EventHandler<BisTokenMatch> OnTokenMatched;
 
     public bool MuteEvents { get; set; }
-    public IBisTokenMatch? LastMatchedToken { get; }
-    public IEnumerable<IBisTokenMatch> PreviousMatches { get; }
+    public BisTokenMatch? LastMatchedToken { get; }
+    public IEnumerable<BisTokenMatch> PreviousMatches { get; }
     public int LineNumber { get; }
 
-    public IBisTokenMatch? MatchForIndex(int tokenIndex);
-    public IBisTokenMatch LexToken();
+    public BisTokenMatch? MatchForIndex(int tokenIndex);
+    public BisTokenMatch LexToken();
 
 }
 
@@ -27,17 +27,17 @@ public interface IBisLexer<out TTokens> : IBisLexer where TTokens : IBisTokenTyp
 
 public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTokens> where TTokens : BisTokenTypeSet<TTokens>, new()
 {
-    public IBisTokenMatch? LastMatchedToken { get; private set; }
+    public BisTokenMatch? LastMatchedToken { get; private set; }
 
-    private readonly List<IBisTokenMatch> previousMatches = new();
-    public IEnumerable<IBisTokenMatch> PreviousMatches => previousMatches;
+    private readonly List<BisTokenMatch> previousMatches = new();
+    public IEnumerable<BisTokenMatch> PreviousMatches => previousMatches;
 
     public int LineNumber { get; protected set; } = 1;
     public int LineStart { get; protected set; }
     public int ColumnNumber => Position - LineStart;
     public bool MuteEvents { get; set; }
 
-    public event EventHandler<IBisTokenMatch> OnTokenMatched = delegate(object? sender, IBisTokenMatch match)
+    public event EventHandler<BisTokenMatch> OnTokenMatched = delegate
     {
 
     };
@@ -58,7 +58,7 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
     /// sparingly, especially on larger data sets to avoid performance
     /// implications.
     /// </remarks>
-    public IBisTokenMatch? MatchForIndex(int tokenIndex)
+    public BisTokenMatch? MatchForIndex(int tokenIndex)
     {
         int lowerBound = 0, upperBound = previousMatches.Count - 1;
         while (lowerBound <= upperBound)
@@ -86,9 +86,9 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         return null;
     }
 
-    public IBisTokenMatch LexToken() => RegisterNextMatch(Position);
+    public BisTokenMatch LexToken() => RegisterNextMatch(Position);
 
-    private IBisTokenMatch RegisterNextMatch(int tokenStart)
+    private BisTokenMatch RegisterNextMatch(int tokenStart)
     {
         //we pass our token start because we are so nice and thoughtful towards the people using
         //my shitty frameworks:)
@@ -101,7 +101,7 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         return match;
     }
 
-    private void TokenMatched(IBisTokenMatch match)
+    private void TokenMatched(BisTokenMatch match)
     {
         LastMatchedToken = match;
         AddPreviousMatch(match);
@@ -118,14 +118,14 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         }
     }
 
-    private void AddPreviousMatch(IBisTokenMatch match)
+    private void AddPreviousMatch(BisTokenMatch match)
     {
         if(previousMatches.Count == 0 || match.TokenPosition >= previousMatches[^1].TokenPosition)
         {
             previousMatches.Add(match);
         }
 
-        var index = previousMatches.BinarySearch(match, Comparer<IBisTokenMatch>.Create((x, y) => x.TokenPosition.CompareTo(y.TokenPosition)));
+        var index = previousMatches.BinarySearch(match, Comparer<BisTokenMatch>.Create((x, y) => x.TokenPosition.CompareTo(y.TokenPosition)));
         previousMatches.Insert(index < 0 ? ~index : index, match);
     }
 
@@ -150,13 +150,13 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         return tokenType;
     }
 
-    protected IBisTokenMatch CreateTokenMatch(IBisTokenType type, int tokenStart)
+    protected BisTokenMatch CreateTokenMatch(IBisTokenType type, int tokenStart)
     {
         var text = GetRange(tokenStart..Position);
         return new BisTokenMatch(this, type, text, tokenStart, text.Length);
     }
 
-    protected IBisTokenMatch CreateInvalidMatch(int tokenStart) =>
+    protected BisTokenMatch CreateInvalidMatch(int tokenStart) =>
         CreateTokenMatch(BisInvalidTokeType.Instance, tokenStart);
 
     public override char? JumpTo(int position)

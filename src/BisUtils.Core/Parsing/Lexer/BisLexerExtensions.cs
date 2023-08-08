@@ -4,11 +4,12 @@ public static class BisLexerExtensions
 {
     public static int GetFarthestIndexed(this IBisLexer lexer)
     {
-        var last = lexer.PreviousMatches.LastOrDefault();
-        if(last is null)
+        if (!lexer.PreviousMatches.Any())
         {
             return -1;
         }
+
+        var last = lexer.PreviousMatches.LastOrDefault();
 
         return last.TokenPosition + last.TokenLength;
     }

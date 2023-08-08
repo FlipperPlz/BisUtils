@@ -14,7 +14,7 @@ public interface IBisParser<
 {
     public TSyntaxTree Parse(TLexer lexer);
 
-    public void ParseToken(TSyntaxTree file, TLexer lexer, IBisTokenMatch match);
+    public void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match);
 }
 
 public abstract class BisParser<
@@ -27,7 +27,7 @@ public abstract class BisParser<
     where TSyntaxTree : new()
 {
 
-    public TSyntaxTree Parse(TLexer lexer)
+    public virtual TSyntaxTree Parse(TLexer lexer)
     {
         var file = new TSyntaxTree();
 
@@ -38,8 +38,10 @@ public abstract class BisParser<
             lexer.MuteEvents = false;
         };
 
+        //TODO lexer parseToEnd
+
         return file;
     }
 
-    public abstract void ParseToken(TSyntaxTree file, TLexer lexer, IBisTokenMatch match);
+    public abstract void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match);
 }

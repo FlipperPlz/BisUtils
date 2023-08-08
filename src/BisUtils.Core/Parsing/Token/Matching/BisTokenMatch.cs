@@ -30,7 +30,9 @@ public struct BisTokenMatch : IBisTokenMatch
         TokenPosition = pos;
         TokenLength = length;
     }
-
+    public static explicit operator BisTokenType(BisTokenMatch match) =>
+        // please replace this with your own conversion logic
+        (BisTokenType)match.TokenType;
 
     public void RemoveToken() => lexer.RemoveRange(this.GetTokenLocation(), out _);
 
