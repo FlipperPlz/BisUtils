@@ -2,6 +2,7 @@
 
 using Parsing.Lexer;
 using Parsing.Token;
+using Parsing.Token.Typing;
 
 public static class BisLexerExtensions
 {

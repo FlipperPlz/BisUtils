@@ -2,6 +2,7 @@
 
 using Extensions;
 using Lexer;
+using Typing;
 
 public interface IBisTokenMatch
 {

@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Core.Parsing.Token;
+﻿namespace BisUtils.Core.Parsing.Token.Typing;
 
 using System.Reflection;
 
@@ -28,7 +28,7 @@ public static class BisTokenExtensions
         return set;
     }
 
-    private static IEnumerable<IBisTokenType> LocateTokens<T>(IBisTokenTypeSet tokenSet, Type setType) where T : IBisTokenTypeSet<T>
+    private static IEnumerable<IBisTokenType> LocateTokens<T>(IBisTokenTypeSet tokenSet, IReflect setType) where T : IBisTokenTypeSet<T>
     {
         if (TokenTypes.TryGetValue(tokenSet, out var value))
         {

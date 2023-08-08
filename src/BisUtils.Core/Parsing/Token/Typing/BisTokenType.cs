@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Core.Parsing.Token;
+﻿namespace BisUtils.Core.Parsing.Token.Typing;
 
 public interface IBisTokenType
 {

@@ -15,16 +15,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenTypeSet.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatchExtensions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/BisTokenSet.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisWhitespaceToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisWhitespaceToken.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisWhitespaceToken.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionLexer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionTokens.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -290,15 +291,8 @@
       <workItem from="1691338132592" duration="376000" />
       <workItem from="1691344645237" duration="1487000" />
       <workItem from="1691413652004" duration="1159000" />
-      <workItem from="1691427822088" duration="6257000" />
-    </task>
-    <task id="LOCAL-00004" summary="refactor(core): Change BisCompatibleLZSS::Decode Signature To Accept Byte Array Instead Of Reader">
-      <option name="closed" value="true" />
-      <created>1689862345542</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1689862345542</updated>
+      <workItem from="1691427822088" duration="7171000" />
+      <workItem from="1691462731962" duration="3401000" />
     </task>
     <task id="LOCAL-00005" summary="feat(bank): Make Entries Creatable&#10;&#10;- Change necessary data type from int to long for the bank's entries.">
       <option name="closed" value="true" />
@@ -684,7 +678,15 @@
       <option name="project" value="LOCAL" />
       <updated>1691430715358</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="feat(lexer): Finish Up Lexer Implementation">
+      <option name="closed" value="true" />
+      <created>1691461325547</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1691461325547</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -716,7 +718,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;- Made abstracted methods from last commit static&#10;- Refactored RVBank.cs to use new or explicit constructors instead of a static method for reading PBO files. Simplified the process of reading and initializing an RVBank object, providing better support for different sources (files, streams) and conditions." />
     <MESSAGE value="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls" />
     <MESSAGE value="fix(bank): Fix BufferToShort Logic" />
     <MESSAGE value="refactor(bank): Move To Unsigned DataTypes To Improve Accuracy In Reading Entries.&#10; &#10; - Nothing more than UInt.MaxValue should ever be used, even if it is a ULong" />
@@ -741,7 +742,8 @@
     <MESSAGE value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
     <MESSAGE value="refactor(lexer): Edit TokenSet So Implementations Are Minimal" />
     <MESSAGE value="feat(EnLex): Start Working On EnfusionTokens.cs" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(EnLex): Start Working On EnfusionTokens.cs" />
+    <MESSAGE value="feat(lexer): Finish Up Lexer Implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(lexer): Finish Up Lexer Implementation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

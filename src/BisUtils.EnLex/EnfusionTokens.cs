@@ -1,20 +1,20 @@
 ﻿namespace BisUtils.EnLex;
 
-using Core.Parsing.Token;
+using Core.Parsing.Token.Typing;
 
 // ReSharper disable file StaticMemberInGenericType
-public class EnfusionTokensType<T> : BisTokenTypeSet<T> where T : EnfusionTokensType<T>
+public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet<T>
 {
+    public static readonly IBisTokenType EnfusionNewLine =
+        new BisTokenType("enfusion.abstract.newline", "(\r?\n)");
+
     public static readonly IBisTokenType EnfusionWhitespace =
-        new BisTokenType("enfusion.whitespace", "[\t\n\r]");
+        new BisTokenType("enfusion.abstract.whitespace", "[\t ]");
 
-    public static readonly IBisTokenType EnfusionDelimitedCommentStart =
-        new BisTokenType("enfusion.comment.delimited.left", "/*");
+    public static readonly IBisTokenType EnfusionDelimitedComment =
+        new BisTokenType("enfusion.comment.delimited.left", @"/\*.*\*/");
 
-    public static readonly IBisTokenType EnfusionDelimitedCommentEnd =
-        new BisTokenType("enfusion.comment.delimited.right", "*/");
-
-    public static readonly IBisTokenType EnfusionLineCommentStart =
+    public static readonly IBisTokenType EnfusionLineComment =
         new BisTokenType("enfusion.comment.line", "//");
 
     public static readonly IBisTokenType EnfusionLineMacro =
@@ -26,6 +26,30 @@ public class EnfusionTokensType<T> : BisTokenTypeSet<T> where T : EnfusionTokens
     public static readonly IBisTokenType EnfusionHashSymbol =
         new BisTokenType("enfusion.symbol.hash", "#");
 
+    public static readonly IBisTokenType EnfusionLCurly =
+        new BisTokenType("enfusion.symbol.curly.left", "{");
+
+    public static readonly IBisTokenType EnfusionRCurly =
+        new BisTokenType("enfusion.symbol.curly.right", "}");
+
+    public static readonly IBisTokenType EnfusionIncludeDirective =
+        new BisTokenType("enfusion.directive.include", "#include");
+
+    public static readonly IBisTokenType EnfusionIfDefinedDirective =
+        new BisTokenType("enfusion.directive.ifdef", "#ifdef");
+
+    public static readonly IBisTokenType EnfusionIfNotDefinedDirective =
+        new BisTokenType("enfusion.directive.ifndef", "#ifndef");
+
+    public static readonly IBisTokenType EnfusionDefineDirective =
+        new BisTokenType("enfusion.directive.define", "#define");
+
+    public static readonly IBisTokenType EnfusionElseDirective =
+        new BisTokenType("enfusion.directive.else", "#else");
+
+    public static readonly IBisTokenType EnfusionEndIfDirective =
+        new BisTokenType("enfusion.directive.endif", "#endif");
+
     public static readonly IBisTokenType EnfusionLiteralString =
         new BisTokenType("enfusion.literal.string", "\".*\"");
 
@@ -34,7 +58,7 @@ public class EnfusionTokensType<T> : BisTokenTypeSet<T> where T : EnfusionTokens
 
 }
 
-public class EnfusionTokensType : EnfusionTokensType<EnfusionTokensType>
+public class EnfusionTokenSet : EnfusionTokenSet<EnfusionTokenSet>
 {
 
 }
