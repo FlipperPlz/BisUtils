@@ -7,6 +7,12 @@ public interface IBisTokenType
 }
 
 
+public abstract class BisTokenTypeCore : IBisTokenType
+{
+    public abstract string TokenType { get; }
+    public abstract string TokenRegex { get; }
+}
+
 public readonly struct BisTokenType : IBisTokenType
 {
     public string TokenType { get; }

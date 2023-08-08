@@ -1,12 +1,13 @@
 ﻿namespace BisUtils.EnLex;
 
+using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 
 // ReSharper disable file StaticMemberInGenericType
 public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet<T>
 {
     public static readonly IBisTokenType EnfusionNewLine =
-        new BisTokenType("enfusion.abstract.newline", "(\r?\n)");
+        new BisEOLTokenType("enfusion");
 
     public static readonly IBisTokenType EnfusionWhitespace =
         new BisTokenType("enfusion.abstract.whitespace", "[\t ]");

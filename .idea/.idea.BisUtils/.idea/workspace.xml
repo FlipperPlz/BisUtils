@@ -15,14 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerExtensions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisEOLTokenType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisStringStepper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisWhitespaceToken.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionLexer.cs" afterDir="false" />
@@ -57,6 +54,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -292,23 +290,7 @@
       <workItem from="1691344645237" duration="1487000" />
       <workItem from="1691413652004" duration="1159000" />
       <workItem from="1691427822088" duration="7171000" />
-      <workItem from="1691462731962" duration="3401000" />
-    </task>
-    <task id="LOCAL-00005" summary="feat(bank): Make Entries Creatable&#10;&#10;- Change necessary data type from int to long for the bank's entries.">
-      <option name="closed" value="true" />
-      <created>1689863287018</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1689863287018</updated>
-    </task>
-    <task id="LOCAL-00006" summary="feat(bank): Make Entry/Properties List Mutable">
-      <option name="closed" value="true" />
-      <created>1689866547306</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1689866547306</updated>
+      <workItem from="1691462731962" duration="11474000" />
     </task>
     <task id="LOCAL-00007" summary="feat(bank): Add functionality for handling file and bank prefixes&#10;&#10;- Add property-centric extensions for ease of manipulation">
       <option name="closed" value="true" />
@@ -686,7 +668,23 @@
       <option name="project" value="LOCAL" />
       <updated>1691461325547</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="feat(enlex): Start Working On Actual Concrete Implementations Of BisLexer And Its Framework">
+      <option name="closed" value="true" />
+      <created>1691466216370</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1691466216372</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat(enlex): Implement Token Lexing For Simple TokenTypes">
+      <option name="closed" value="true" />
+      <created>1691508145448</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1691508145448</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -718,8 +716,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls" />
-    <MESSAGE value="fix(bank): Fix BufferToShort Logic" />
     <MESSAGE value="refactor(bank): Move To Unsigned DataTypes To Improve Accuracy In Reading Entries.&#10; &#10; - Nothing more than UInt.MaxValue should ever be used, even if it is a ULong" />
     <MESSAGE value="fix(bank): Fix Compile Errors With DataType Changes" />
     <MESSAGE value="fix(bank): Fix Compile Errors With DataType Changes&#10;&#10;Signed-off-by: ryann &lt;flipperplz@protonmail.com&gt;" />
@@ -743,7 +739,9 @@
     <MESSAGE value="refactor(lexer): Edit TokenSet So Implementations Are Minimal" />
     <MESSAGE value="feat(EnLex): Start Working On EnfusionTokens.cs" />
     <MESSAGE value="feat(lexer): Finish Up Lexer Implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(lexer): Finish Up Lexer Implementation" />
+    <MESSAGE value="feat(enlex): Start Working On Actual Concrete Implementations Of BisLexer And Its Framework" />
+    <MESSAGE value="feat(enlex): Implement Token Lexing For Simple TokenTypes" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(enlex): Implement Token Lexing For Simple TokenTypes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

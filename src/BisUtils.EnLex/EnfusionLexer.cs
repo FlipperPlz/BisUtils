@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.EnLex;
 
 using Core.Parsing.Lexer;
-using Core.Parsing.Token.Matching;
 using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 
@@ -13,6 +12,7 @@ public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens 
     public IBisTokenType TryMatchDirective();
     public IBisTokenType TryMatchCurly(bool isStartCurly);
     public IBisTokenType TryMatchColon();
+    public IBisTokenType TryMatchNewLine();
 
 }
 
@@ -23,15 +23,36 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
     }
 
     protected override IBisTokenType LocateNextMatch(int tokenStart) =>
-        MoveForward() switch
+    MoveForward() switch
+    {
+        '\r' or '\n'=> TryMatchNewLine(),
+        '/' => TryMatchComment(out _),
+        '#' => TryMatchHash(),
+        '{' => TryMatchCurly(false),
+        '}' => TryMatchCurly(true),
+        ':' => TryMatchColon(),
+        _ => BisInvalidTokeType.Instance
+    };
+
+
+    public IBisTokenType TryMatchNewLine()
+    {
+        switch (CurrentChar)
         {
-            '/' => TryMatchComment(out _),
-            '#' => TryMatchHash(),
-            '{' => TryMatchCurly(false),
-            '}' => TryMatchCurly(true),
-            ':' => TryMatchColon(),
-            _ => BisInvalidTokeType.Instance
-        };
+            case '\r':
+            {
+                if (PeekForward() != '\n')
+                {
+                    return BisInvalidTokeType.Instance;
+                }
+
+                MoveForward();
+                return EnfusionTokenSet.EnfusionNewLine;
+            }
+            case '\n': return EnfusionTokenSet.EnfusionNewLine;
+            default: return BisInvalidTokeType.Instance;
+        }
+    }
 
 
     public IBisTokenType TryMatchComment(out string commentText)

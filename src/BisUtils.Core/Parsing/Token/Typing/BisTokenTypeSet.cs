@@ -19,6 +19,7 @@ public class BisTokenTypeSet<TSelf> : IBisTokenTypeSet<TSelf> where TSelf : IBis
 
     }
 
+
     public IEnumerator<IBisTokenType> GetEnumerator() => this.GetTokens<TSelf>().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

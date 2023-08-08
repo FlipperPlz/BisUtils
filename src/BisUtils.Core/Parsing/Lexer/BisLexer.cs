@@ -1,6 +1,5 @@
 ﻿namespace BisUtils.Core.Parsing.Lexer;
 
-using System.Text;
 using Extensions;
 using Token.Matching;
 using Token.Tokens;
@@ -8,9 +7,13 @@ using Token.Typing;
 
 public interface IBisLexer : IBisMutableStringStepper
 {
-    public IEnumerable<IBisTokenMatch> PreviousMatches { get; }
     public event EventHandler<IBisTokenMatch> OnTokenMatched;
 
+    public IBisTokenMatch? LastMatchedToken { get; }
+    public IEnumerable<IBisTokenMatch> PreviousMatches { get; }
+    public int LineNumber { get; }
+
+    public IBisTokenMatch? MatchForIndex(int tokenIndex);
     public IBisTokenMatch LexToken();
 
 }
@@ -23,13 +26,75 @@ public interface IBisLexer<out TTokens> : IBisLexer where TTokens : IBisTokenTyp
 
 public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTokens> where TTokens : BisTokenTypeSet<TTokens>, new()
 {
+    public IBisTokenMatch? LastMatchedToken { get; private set; }
+
     private readonly List<IBisTokenMatch> previousMatches = new();
     public IEnumerable<IBisTokenMatch> PreviousMatches => previousMatches;
-    public event EventHandler<IBisTokenMatch> OnTokenMatched = delegate {  };
+    public int LineNumber { get; protected set; } = 1;
+    public int LineStart { get; protected set; }
+    public int ColumnNumber => Position - LineStart;
+
+    public event EventHandler<IBisTokenMatch> OnTokenMatched = delegate(object? sender, IBisTokenMatch match)
+    {
+        if (sender is not BisLexer<TTokens> lexer)
+        {
+            return;
+        }
+
+        lexer.LastMatchedToken = match;
+        lexer.AddPreviousMatch(match);
+        if (match.TokenType is not BisEOLTokenType)
+        {
+            return;
+        }
+
+        lexer.LineStart = match.TokenPosition + match.TokenLength;
+        lexer.LineNumber++;
+    };
 
     public TTokens LexicalTokenSet => BisTokenExtensions.FindTokenSet<TTokens>();
 
     protected BisLexer(string content) : base(content) => this.TokenizeUntilEnd();
+
+    /// <summary>
+    /// Uses binary search to find a token match for a given index
+    /// assuming 'previousMatches' is correctly sorted by their positions.
+    /// The function operates with a time complexity of O(log n).
+    /// </summary>
+    /// <param name="tokenIndex">The index of the token to be matched.</param>
+    /// <returns>A token match if one exists; null otherwise.</returns>
+    /// <remarks>
+    /// Given the time complexity of O(log n), use this function
+    /// sparingly, especially on larger data sets to avoid performance
+    /// implications.
+    /// </remarks>
+    public IBisTokenMatch? MatchForIndex(int tokenIndex)
+    {
+        int lowerBound = 0, upperBound = previousMatches.Count - 1;
+        while (lowerBound <= upperBound)
+        {
+            var middle = lowerBound + ((upperBound - lowerBound) / 2);
+            var currentMatch = previousMatches[middle];
+
+            if
+            (
+                tokenIndex >= currentMatch.TokenPosition &&
+                tokenIndex < currentMatch.TokenPosition + currentMatch.TokenLength
+            )
+            {
+                return currentMatch;
+            }
+
+            if (tokenIndex < currentMatch.TokenPosition)
+            {
+                upperBound = middle - 1;
+            }
+
+            lowerBound = middle + 1;
+        }
+
+        return null;
+    }
 
     public IBisTokenMatch LexToken() => RegisterNextMatch(Position);
 
@@ -37,19 +102,35 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
     {
         //we pass our token start because we are so nice and thoughtful towards the people using
         //my shitty frameworks:)
-        //TODO: Maybe handle EOF for these lovely individuals xP
         var type = LocateNextMatch(tokenStart);
 
         var match = type is BisInvalidTokeType or null
             ? CreateInvalidMatch(tokenStart)
             : CreateTokenMatch(type, tokenStart);
-        previousMatches.Add(match);
         OnTokenMatched.Invoke(this, match);
         return match;
     }
 
+    private void AddPreviousMatch(IBisTokenMatch match)
+    {
+        if(previousMatches.Count == 0 || match.TokenPosition >= previousMatches[^1].TokenPosition)
+        {
+            previousMatches.Add(match);
+        }
+
+        var index = previousMatches.BinarySearch(match, Comparer<IBisTokenMatch>.Create((x, y) => x.TokenPosition.CompareTo(y.TokenPosition)));
+        previousMatches.Insert(index < 0 ? ~index : index, match);
+    }
+
+    public override void ResetLexer(string? content = null)
+    {
+        base.ResetLexer(content);
+        previousMatches.Clear();
+    }
+
     protected IBisTokenType TryMatchText(string expectedText, IBisTokenType tokenType, bool consumeCurrent = false)
     {
+
         var start = consumeCurrent ? 1 : 0;
         var matchText = consumeCurrent ? CurrentChar + PeekForwardMulti(expectedText.Length - start) : PeekForwardMulti(expectedText.Length);
 
@@ -70,6 +151,16 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
 
     protected IBisTokenMatch CreateInvalidMatch(int tokenStart) =>
         CreateTokenMatch(BisInvalidTokeType.Instance, tokenStart);
+
+    public override char? JumpTo(int position)
+    {
+        if (position < this.GetFarthestIndexed())
+        {
+            throw new NotSupportedException();
+        }
+
+        return base.JumpTo(position);
+    }
 
     protected abstract IBisTokenType? LocateNextMatch(int tokenStart);
 }
