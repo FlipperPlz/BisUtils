@@ -13,4 +13,5 @@ public sealed class EnConfigLexer : EnfusionLexer<EnConfigTokens>, IEnConfigLexe
     public EnConfigLexer(string content) : base(content)
     {
     }
+
 }

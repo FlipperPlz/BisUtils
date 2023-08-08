@@ -5,7 +5,7 @@ public interface IEnConfig
 
 }
 
-public class EnConfig : IEnConfig
+public class EnConfigFile : IEnConfig
 {
 
 }

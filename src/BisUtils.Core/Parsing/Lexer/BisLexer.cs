@@ -9,6 +9,7 @@ public interface IBisLexer : IBisMutableStringStepper
 {
     public event EventHandler<IBisTokenMatch> OnTokenMatched;
 
+    public bool MuteEvents { get; set; }
     public IBisTokenMatch? LastMatchedToken { get; }
     public IEnumerable<IBisTokenMatch> PreviousMatches { get; }
     public int LineNumber { get; }
@@ -30,26 +31,15 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
 
     private readonly List<IBisTokenMatch> previousMatches = new();
     public IEnumerable<IBisTokenMatch> PreviousMatches => previousMatches;
+
     public int LineNumber { get; protected set; } = 1;
     public int LineStart { get; protected set; }
     public int ColumnNumber => Position - LineStart;
+    public bool MuteEvents { get; set; }
 
     public event EventHandler<IBisTokenMatch> OnTokenMatched = delegate(object? sender, IBisTokenMatch match)
     {
-        if (sender is not BisLexer<TTokens> lexer)
-        {
-            return;
-        }
 
-        lexer.LastMatchedToken = match;
-        lexer.AddPreviousMatch(match);
-        if (match.TokenType is not BisEOLTokenType)
-        {
-            return;
-        }
-
-        lexer.LineStart = match.TokenPosition + match.TokenLength;
-        lexer.LineNumber++;
     };
 
     public TTokens LexicalTokenSet => BisTokenExtensions.FindTokenSet<TTokens>();
@@ -107,8 +97,25 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         var match = type is BisInvalidTokeType or null
             ? CreateInvalidMatch(tokenStart)
             : CreateTokenMatch(type, tokenStart);
-        OnTokenMatched.Invoke(this, match);
+        TokenMatched(match);
         return match;
+    }
+
+    private void TokenMatched(IBisTokenMatch match)
+    {
+        LastMatchedToken = match;
+        AddPreviousMatch(match);
+        if (match.TokenType is not BisEOLTokenType)
+        {
+            return;
+        }
+
+        LineStart = match.TokenPosition + match.TokenLength;
+        LineNumber++;
+        if (!MuteEvents)
+        {
+            OnTokenMatched.Invoke(this, match);
+        }
     }
 
     private void AddPreviousMatch(IBisTokenMatch match)
