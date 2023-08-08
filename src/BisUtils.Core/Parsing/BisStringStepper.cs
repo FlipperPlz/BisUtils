@@ -213,7 +213,7 @@ public class BisStringStepper : IBisStringStepper
     public char? PeekAt(int position) => Content.GetOrNull(position);
 
     /// <inheritdoc />
-    public void ResetLexer(string? content = null)
+    public virtual void ResetLexer(string? content = null)
     {
         if (content is not null)
         {
@@ -278,7 +278,7 @@ public class BisStringStepper : IBisStringStepper
     }
 
     /// <inheritdoc />
-    public char? JumpTo(int position)
+    public virtual char? JumpTo(int position)
     {
         Position = position;
         PreviousChar = Content.GetOrNull(position - 1);

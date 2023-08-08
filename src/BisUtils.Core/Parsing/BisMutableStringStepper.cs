@@ -41,6 +41,7 @@ public interface IBisMutableStringStepper : IBisStringStepper
 
 public class BisMutableStringStepper : BisStringStepper, IBisMutableStringStepper
 {
+
     public BisMutableStringStepper(string content) : base(content)
     {
     }

@@ -81,77 +81,77 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     /// <returns>The macro if it was found, otherwise null.</returns>
     public IRVDefineDirective? LocateMacro(string name) => MacroDefinitions.FirstOrDefault(e => e.MacroName == name);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition EOFDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition EOFDefinition =
         CreateTokenDefinition("rv.eof", RvTypes.SimEOF, 200);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition TextDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition TextDefinition =
         CreateTokenDefinition("rv.text", RvTypes.SimText, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition IdentifierDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition IdentifierDefinition =
         CreateTokenDefinition("rv.identifier", RvTypes.SimIdentifier, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition DHashDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition DHashDefinition =
         CreateTokenDefinition("rv.hash.double", RvTypes.SimDoubleHash, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition HashDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition HashDefinition =
         CreateTokenDefinition("rv.hash.single", RvTypes.SimHash, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition CommaDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition CommaDefinition =
         CreateTokenDefinition("rv.comma", RvTypes.SymComma, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition DefineDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition DefineDefinition =
         CreateTokenDefinition("rv.directive.define", RvTypes.KwDefine, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition IncludeDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition IncludeDefinition =
         CreateTokenDefinition("rv.directive.include", RvTypes.KwInclude, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition NewLineDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition NewLineDefinition =
         CreateTokenDefinition("rv.newLine", RvTypes.AbsNewLine, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition DirectiveNewLineDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition DirectiveNewLineDefinition =
         CreateTokenDefinition("rv.newLine.directive", RvTypes.AbsDirectiveNewLine, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition LineCommentDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition LineCommentDefinition =
         CreateTokenDefinition("rv.comment.line", RvTypes.AbsLineComment, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition BlockCommentDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition BlockCommentDefinition =
         CreateTokenDefinition("rv.comment.block", RvTypes.AbsBlockComment, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition ElseDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition ElseDefinition =
         CreateTokenDefinition("rv.directive.else", RvTypes.KwElse, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition UndefDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition UndefDefinition =
         CreateTokenDefinition("rv.directive.undef", RvTypes.KwUndef, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition IfDefDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition IfDefDefinition =
         CreateTokenDefinition("rv.directive.ifdef", RvTypes.KwIfDef, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition IfNDefDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition IfNDefDefinition =
         CreateTokenDefinition("rv.directive.ifdef.not", RvTypes.KwIfNDef, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition EndifDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition EndifDefinition =
         CreateTokenDefinition("rv.directive.endif", RvTypes.KwEndIf, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition LeftParenthesisDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition LeftParenthesisDefinition =
         CreateTokenDefinition("rv.parenthesis.left", RvTypes.SymLParenthesis, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition RightParenthesisDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition RightParenthesisDefinition =
         CreateTokenDefinition("rv.parenthesis.right", RvTypes.SymRParenthesis, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition LeftAngleDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition LeftAngleDefinition =
         CreateTokenDefinition("rv.angle.left", RvTypes.SymLeftAngle, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition RightAngleDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition RightAngleDefinition =
         CreateTokenDefinition("rv.angle.right", RvTypes.SymRightAngle, 1);
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition QuotedStringDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition QuotedStringDefinition =
         CreateTokenDefinition("rv.string.quoted", RvTypes.AbsQuotedString, 1);
 
 
-    private static readonly IBisLexer<RvTypes>.TokenDefinition WhitespaceDefinition =
+    private static readonly IBisLexerOld<RvTypes>.TokenDefinition WhitespaceDefinition =
         CreateTokenDefinition("rv.whitespace", RvTypes.AbsWhitespace, 1);
 
-    private static readonly IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenDefinitions = new[]
+    private static readonly IEnumerable<IBisLexerOld<RvTypes>.TokenDefinition> TokenDefinitions = new[]
     {
         EOFDefinition, TextDefinition, DHashDefinition, HashDefinition, CommaDefinition, LeftParenthesisDefinition,
         RightParenthesisDefinition, LeftAngleDefinition, RightAngleDefinition, UndefDefinition,
@@ -160,8 +160,8 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
         QuotedStringDefinition
     };
 
-    public override IEnumerable<IBisLexer<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
-    public override IBisLexer<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
+    public override IEnumerable<IBisLexerOld<RvTypes>.TokenDefinition> TokenTypes => TokenDefinitions;
+    public override IBisLexerOld<RvTypes>.TokenDefinition EOFToken => EOFDefinition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RVPreProcessor"/> class.
@@ -186,11 +186,11 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     /// Handles the event of a token match.
     /// </summary>
     /// <param name="match">matched token</param>
-    /// <param name="lexer">lexer instance</param>
-    private void HandlePreviousMatch(IBisLexer<RvTypes>.TokenMatch match, IBisLexer<RvTypes> lexer) =>
+    /// <param name="lexerOld">lexer instance</param>
+    private void HandlePreviousMatch(IBisLexerOld<RvTypes>.TokenMatch match, IBisLexerOld<RvTypes> lexerOld) =>
         AddPreviousMatch(match);
 
-    protected override IBisLexer<RvTypes>.TokenMatch GetNextToken(IBisMutableStringStepper lexer)
+    protected override IBisLexerOld<RvTypes>.TokenMatch GetNextToken(IBisMutableStringStepper lexer)
     {
         if (lexer.Length <= lexer.Position)
         {
@@ -402,7 +402,7 @@ public class RVPreProcessor : BisPreProcessor<RvTypes>, IRVPreProcessor
     {
         var result = Result.ImmutableOk();
 
-        IBisLexer<RvTypes>.TokenMatch token;
+        IBisLexerOld<RvTypes>.TokenMatch token;
         while ((token = NextToken(lexer)) != RvTypes.SimEOF)
         {
             switch (token.TokenType.TokenId)

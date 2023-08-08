@@ -15,19 +15,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/BisUtils.EnfPack.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/BisUtils.EnPack.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Enumerations/EsPackCompressionType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Enumerations/EnPackCompressionType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Extensions/EsPackReaderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Extensions/EnPackReaderExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackDataEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackDirectory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackDirectory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackElement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Models/EsPackFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnfPack/Options/EsPackOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Options/EnPackOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/PackTest/PackTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/PackTest/PackTest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/PackTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/PackTest/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/BisUtils.EnConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/BisUtils.EnConfig.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,19 +37,40 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="SIGN_OFF_COMMIT" value="true" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "FlipperPlz"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="e698dc2b-510d-4a5b-8587-f5814f81dfc4" />
+        <option name="url" value="https://github.com/FlipperPlz/BisUtils" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/42ce119ffb834ddf92d0f07e2a06acfeb1d878/74/80f78404/IEnumerator`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/215ca8fd95391172a79e7562793d1c44d7ec8c3b6bb186f01251b947efd0f6a4/Index.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ab621a475ad1855b32c8fb94315b33ee28b6996ed15846c8c5651a4fd81dbb1/Sum.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3d5314c4b5f391de6f26e7ce0d430d6d2aa1d7a44530b874fdbb1a4a97374/File.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/685740393f59fd572ad94c27112a77e0c086f741e99c9c979bf92113ae/Encoding.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6b328b91f273b497721dcead23dabd813c6a99f9c5613a78ea1cee575b273b/Stream.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/744c30a7462849eebaa8998e6fc518e3cc3a951f55a96722fcfb71c3196393b/Range.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/789e27cba9588f1571c230f9598f299a91666d8b5347a0338dc840e88a742980/BinaryWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ad962ee45417c5a27da355ec387fce4e67e6651c4714405445e47eef693ad4/Byte.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.EnLex/EnfusionLexer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -79,7 +94,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.3719583&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/enconfig&quot;,
     &quot;last_opened_file_path&quot;: &quot;E:/projects/csharp/BisUtils/BisUtils.sln&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -281,103 +296,15 @@
       <workItem from="1690946785174" duration="4522000" />
       <workItem from="1690989673846" duration="14048000" />
       <workItem from="1691019447769" duration="36000" />
-      <workItem from="1691031622334" duration="322000" />
-    </task>
-    <task id="LOCAL-00001" summary="feat(bank): Add Support For Moving Directories">
-      <option name="closed" value="true" />
-      <created>1689826369896</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1689826369896</updated>
-    </task>
-    <task id="LOCAL-00002" summary="feat(bank): Implement IRVBankDataEntry::ExpandDirectoryStructure">
-      <option name="closed" value="true" />
-      <created>1689859548381</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1689859548381</updated>
-    </task>
-    <task id="LOCAL-00003" summary="feat(core): Create BisCompatibleLZSS::Decode Method">
-      <option name="closed" value="true" />
-      <created>1689862119872</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1689862119872</updated>
-    </task>
-    <task id="LOCAL-00004" summary="refactor(core): Change BisCompatibleLZSS::Decode Signature To Accept Byte Array Instead Of Reader">
-      <option name="closed" value="true" />
-      <created>1689862345542</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1689862345542</updated>
-    </task>
-    <task id="LOCAL-00005" summary="feat(bank): Make Entries Creatable&#10;&#10;- Change necessary data type from int to long for the bank's entries.">
-      <option name="closed" value="true" />
-      <created>1689863287018</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1689863287018</updated>
-    </task>
-    <task id="LOCAL-00006" summary="feat(bank): Make Entry/Properties List Mutable">
-      <option name="closed" value="true" />
-      <created>1689866547306</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1689866547306</updated>
-    </task>
-    <task id="LOCAL-00007" summary="feat(bank): Add functionality for handling file and bank prefixes&#10;&#10;- Add property-centric extensions for ease of manipulation">
-      <option name="closed" value="true" />
-      <created>1689868885879</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1689868885879</updated>
-    </task>
-    <task id="LOCAL-00008" summary="feat(bank): Implement Data Reading">
-      <option name="closed" value="true" />
-      <created>1689870638662</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1689870638662</updated>
-    </task>
-    <task id="LOCAL-00009" summary="feat(bank): Finish Bank Reading">
-      <option name="closed" value="true" />
-      <created>1689875118342</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1689875118342</updated>
-    </task>
-    <task id="LOCAL-00010" summary="feat(bank): Add Full Support For PBO Writing">
-      <option name="closed" value="true" />
-      <created>1689879328246</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1689879328246</updated>
-    </task>
-    <task id="LOCAL-00011" summary="feat(A2S): Add Library For A2S Server Queries">
-      <option name="closed" value="true" />
-      <created>1689880893736</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1689880893736</updated>
-    </task>
-    <task id="LOCAL-00012" summary="fix: Small Fixes Made To Bank Library. Additions To Param.&#10;&#10;This update fixes some minor issues found in the Bank library. Notably, it changes the return type of IRVBankEntry properties like Offset, OriginalSize, TimeStamp and others from long to uint. Furthermore, IRVBankEntry's method CalculateLength now returns uint as well.&#10;&#10;In addition to that, various changes were made to support new features in the Param library, such as the ability to obtain array values. Some additions were also made to provide more functionality such as creating, adding, and removing variables.&#10;&#10;The update also includes a new feature for reading param files located in ReadParamFile method inside Src/BisUtils.Param/Model/ParamFile.cs.&#10;&#10;Finally, the importance of properties like OriginalSize, Offset, TimeStamp in RVBankDirectory.cs has been changed to uint, for consistency with other parts of the system. The commit also includes minor code cleanups and improvements across multiple files.">
-      <option name="closed" value="true" />
-      <created>1689967091376</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1689967091376</updated>
+      <workItem from="1691031622334" duration="1703000" />
+      <workItem from="1691072372786" duration="8520000" />
+      <workItem from="1691084489223" duration="3635000" />
+      <workItem from="1691090927198" duration="5857000" />
+      <workItem from="1691338132592" duration="376000" />
+      <workItem from="1691344645237" duration="1487000" />
+      <workItem from="1691413652004" duration="1159000" />
+      <workItem from="1691427822088" duration="7171000" />
+      <workItem from="1691462731962" duration="22869000" />
     </task>
     <task id="LOCAL-00013" summary="feat(dzconfig): Crudely Finished DZConfig Implementation&#10;&#10;- Remove DzCfgMods.cs and DzMod.cs, rename DzCfgPatches to DzCfgPatch, add DzConfig.cs and DzCfgMod.cs&#10;- Models DzCfgMods and DzMod are deleted as they were redundant and inefficient.&#10;- DzCfgPatches is renamed to DzCfgPatch to accurately represent its functionality.">
       <option name="closed" value="true" />
@@ -627,7 +554,151 @@
       <option name="project" value="LOCAL" />
       <updated>1691019381588</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="chore: Restructure Solution Layout">
+      <option name="closed" value="true" />
+      <created>1691031982338</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1691031982338</updated>
+    </task>
+    <task id="LOCAL-00045" summary="feat(EnConfig): Initial Commit; Create EnConfig Project">
+      <option name="closed" value="true" />
+      <created>1691032128244</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1691032128244</updated>
+    </task>
+    <task id="LOCAL-00046" summary="feat(enconfig): Create Basic Antlr Writeup For Config Language">
+      <option name="closed" value="true" />
+      <created>1691076239980</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1691076239980</updated>
+    </task>
+    <task id="LOCAL-00047" summary="feat(enConfig): Finish Up Grammar Draft">
+      <option name="closed" value="true" />
+      <created>1691079957903</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1691079957903</updated>
+    </task>
+    <task id="LOCAL-00048" summary="feat(enConfig): Add csproj For Scratch Project">
+      <option name="closed" value="true" />
+      <created>1691080009090</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1691080009090</updated>
+    </task>
+    <task id="LOCAL-00049" summary="feat(core): Start Working On Parser Framework Overhaul">
+      <option name="closed" value="true" />
+      <created>1691088992354</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1691088992354</updated>
+    </task>
+    <task id="LOCAL-00050" summary="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig">
+      <option name="closed" value="true" />
+      <created>1691089060166</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1691089060166</updated>
+    </task>
+    <task id="LOCAL-00051" summary="refactor(lexer): Edit TokenSet So Implementations Are Minimal">
+      <option name="closed" value="true" />
+      <created>1691336246910</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1691336246910</updated>
+    </task>
+    <task id="LOCAL-00052" summary="feat(EnLex): Start Working On EnfusionTokens.cs">
+      <option name="closed" value="true" />
+      <created>1691430715358</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1691430715358</updated>
+    </task>
+    <task id="LOCAL-00053" summary="feat(lexer): Finish Up Lexer Implementation">
+      <option name="closed" value="true" />
+      <created>1691461325547</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1691461325547</updated>
+    </task>
+    <task id="LOCAL-00054" summary="feat(enlex): Start Working On Actual Concrete Implementations Of BisLexer And Its Framework">
+      <option name="closed" value="true" />
+      <created>1691466216370</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1691466216372</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat(enlex): Implement Token Lexing For Simple TokenTypes">
+      <option name="closed" value="true" />
+      <created>1691508145448</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1691508145448</updated>
+    </task>
+    <task id="LOCAL-00056" summary="feat(lex): Add Line Count And Match Caching To BisLexer">
+      <option name="closed" value="true" />
+      <created>1691512769781</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1691512769781</updated>
+    </task>
+    <task id="LOCAL-00057" summary="feat(enlex): Create Logic For Parsing Whitespaces And Identifiers">
+      <option name="closed" value="true" />
+      <created>1691514691790</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1691514691791</updated>
+    </task>
+    <task id="LOCAL-00058" summary="feat(enconfig): Create Shell Lexer/Types For EnConfig (They Should Stay Relatively Untouched As All Tokens Used In The Language Are Defined Globally)">
+      <option name="closed" value="true" />
+      <created>1691515624232</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1691515624232</updated>
+    </task>
+    <task id="LOCAL-00059" summary="feat(parser): Create New Parser Structure&#10;&#10;Abstract public constructors so singletons can be created dynamically if not found.">
+      <option name="closed" value="true" />
+      <created>1691518791797</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1691518791797</updated>
+    </task>
+    <task id="LOCAL-00060" summary="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage.">
+      <option name="closed" value="true" />
+      <created>1691521866183</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1691521866183</updated>
+    </task>
+    <task id="LOCAL-00061" summary="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability">
+      <option name="closed" value="true" />
+      <created>1691522743624</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1691522743624</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -659,24 +730,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fix(bank): Fix RVBankDirectory::CalculateLength" />
-    <MESSAGE value="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure" />
-    <MESSAGE value="feat(bank): Start Another Bank Rewrite ;-;" />
-    <MESSAGE value="feat(bank): Start Working On RVBankDataEntry" />
-    <MESSAGE value="feat(bank): Adjustments To Bank Debinarization" />
-    <MESSAGE value="refactor(bank): Refactor ExpandDirectoryStructure feature" />
-    <MESSAGE value="refactor(bank): Declutter RVBank::Debinarize Function&#10;" />
-    <MESSAGE value="refactor(bank): Removed some of the clutter in the RVBank::Debinarize function to simplify logic and improve readability.&#10;&#10; The earlier logic that looped through bank entries and handled multiple conditions was unwrapped into self-contained functions. This change makes the code easier to follow and reason about. &#10; &#10; - Moreover, a new exception 'RVBankChecksumMismatch' is introduced to handle cases of digest mismatch between actual and expected, enhancing error reporting in the application" />
-    <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;" />
-    <MESSAGE value="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;- Made abstracted methods from last commit static&#10;- Refactored RVBank.cs to use new or explicit constructors instead of a static method for reading PBO files. Simplified the process of reading and initializing an RVBank object, providing better support for different sources (files, streams) and conditions." />
-    <MESSAGE value="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls" />
-    <MESSAGE value="fix(bank): Fix BufferToShort Logic" />
-    <MESSAGE value="refactor(bank): Move To Unsigned DataTypes To Improve Accuracy In Reading Entries.&#10; &#10; - Nothing more than UInt.MaxValue should ever be used, even if it is a ULong" />
-    <MESSAGE value="fix(bank): Fix Compile Errors With DataType Changes" />
-    <MESSAGE value="fix(bank): Fix Compile Errors With DataType Changes&#10;&#10;Signed-off-by: ryann &lt;flipperplz@protonmail.com&gt;" />
-    <MESSAGE value="feat(bank): More DataType Finalization" />
-    <MESSAGE value="feat(bank): Remove Prints; Finalize Changes" />
-    <MESSAGE value="feat(bank): Finalize Bank Offset Logic" />
     <MESSAGE value="feat(bank.extensions): Create RVBank.DzConfigExtensions" />
     <MESSAGE value="refactor(bank): Small Syntax Changes" />
     <MESSAGE value="feat(bank.extensions): Create Enumerable Functions For Reading ParamFiles" />
@@ -684,7 +737,25 @@
     <MESSAGE value="feat(pak): Finish Up Pak Library" />
     <MESSAGE value="feat(bank.extras): Create BisUtils.Extensions.RVBank.Extras" />
     <MESSAGE value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
+    <MESSAGE value="chore: Restructure Solution Layout" />
+    <MESSAGE value="feat(EnConfig): Initial Commit; Create EnConfig Project" />
+    <MESSAGE value="feat(enconfig): Create Basic Antlr Writeup For Config Language" />
+    <MESSAGE value="feat(enConfig): Finish Up Grammar Draft" />
+    <MESSAGE value="feat(enConfig): Add csproj For Scratch Project" />
+    <MESSAGE value="feat(core): Start Working On Parser Framework Overhaul" />
+    <MESSAGE value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
+    <MESSAGE value="refactor(lexer): Edit TokenSet So Implementations Are Minimal" />
+    <MESSAGE value="feat(EnLex): Start Working On EnfusionTokens.cs" />
+    <MESSAGE value="feat(lexer): Finish Up Lexer Implementation" />
+    <MESSAGE value="feat(enlex): Start Working On Actual Concrete Implementations Of BisLexer And Its Framework" />
+    <MESSAGE value="feat(enlex): Implement Token Lexing For Simple TokenTypes" />
+    <MESSAGE value="feat(lex): Add Line Count And Match Caching To BisLexer" />
+    <MESSAGE value="feat(enlex): Create Logic For Parsing Whitespaces And Identifiers" />
+    <MESSAGE value="feat(enconfig): Create Shell Lexer/Types For EnConfig (They Should Stay Relatively Untouched As All Tokens Used In The Language Are Defined Globally)" />
+    <MESSAGE value="feat(parser): Create New Parser Structure&#10;&#10;Abstract public constructors so singletons can be created dynamically if not found." />
+    <MESSAGE value="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage." />
+    <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -694,10 +765,10 @@
           <line>319</line>
           <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="313" containingFunctionPresentation="Method 'ParseParamArray'">
             <startOffsets>
-              <option value="12396" />
+              <option value="12408" />
             </startOffsets>
             <endOffsets>
-              <option value="12415" />
+              <option value="12427" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="6" />
@@ -707,10 +778,10 @@
           <line>342</line>
           <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="336" containingFunctionPresentation="Method 'ParseParamArray'">
             <startOffsets>
-              <option value="13135" />
+              <option value="13147" />
             </startOffsets>
             <endOffsets>
-              <option value="13144" />
+              <option value="13156" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="7" />
