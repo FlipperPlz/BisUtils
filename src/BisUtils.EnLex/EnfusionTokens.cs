@@ -65,4 +65,9 @@ public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet
 public class EnfusionTokenSet : EnfusionTokenSet<EnfusionTokenSet>
 {
 
+    private EnfusionTokenSet()
+    {
+
+    }
+
 }

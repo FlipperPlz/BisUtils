@@ -16,8 +16,6 @@ public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens 
     public IBisTokenType TryMatchColon();
     public IBisTokenType TryMatchNewLine();
     public IBisTokenType TryMatchWhitespace();
-
-
 }
 
 public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens> where TTokens : EnfusionTokenSet<TTokens>, new()

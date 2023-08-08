@@ -7,4 +7,10 @@
     </PropertyGroup>
 
 
+    <ItemGroup>
+      <ProjectReference Include="..\BisUtils.EnLex\BisUtils.EnLex.csproj" />
+    </ItemGroup>
+
+
+
 </Project>
