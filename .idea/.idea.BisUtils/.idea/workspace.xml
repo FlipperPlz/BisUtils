@@ -15,23 +15,58 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisLexicalLibrary/.template.config/template.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisLexicalLibrary/BisLexicalLibrary.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisLexicalLibrary/Lexer/LanguageNameLexer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisLexicalLibrary/Tokens/LanguageNameTokens.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/BisUtils.EnConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/BisUtils.EnConfig.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Errors/RVBankEmptyPropertyNameError.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Errors/RVEncryptedBankException.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Errors/RVObfuscatedBankException.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankEncryptedEntryWarning.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankImproperMetaWarning.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankImproperMimeWarning.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankNamedVersionEntryWarning.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankUnnamedEntryWarning.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Enumerations/RVBankDataType.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Enumerations/RVBankEntryMime.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Enumerations/RVBankSection.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankDataEntryExtensions.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankDirectoryExtensions.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankEntryExtensions.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankVersionEntryExtensions.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Entry/RVBankDataEntry.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Entry/RVBankDirectory.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Entry/RVBankVersionEntry.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Misc/RVBankDigest.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/RVBank.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Stubs/RVBankElement.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Stubs/RVBankEntry.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Stubs/RVBankProperty.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/Options/RVBankOptions.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/UML/include.puml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSON File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="feat/enconfig" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -88,30 +123,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.3719583&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat/enconfig&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/projects/csharp/BisUtils/BisUtils.sln&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "XThreadsFramesViewSplitterKey": "0.3719583",
+    "git-widget-placeholder": "refactor/parsing",
+    "last_opened_file_path": "E:/projects/csharp/BisUtils/docs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\ryann\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
+      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
+      "C:\\Users\\ryann\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.BankTest">
     <configuration name="Publish BisUtils.RVBank to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
       <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/src/BisUtils.RVBank/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="-775555546124957071" uuid_low="-8586648064013952717" />
@@ -304,15 +339,7 @@
       <workItem from="1691344645237" duration="1487000" />
       <workItem from="1691413652004" duration="1159000" />
       <workItem from="1691427822088" duration="7171000" />
-      <workItem from="1691462731962" duration="22869000" />
-    </task>
-    <task id="LOCAL-00013" summary="feat(dzconfig): Crudely Finished DZConfig Implementation&#10;&#10;- Remove DzCfgMods.cs and DzMod.cs, rename DzCfgPatches to DzCfgPatch, add DzConfig.cs and DzCfgMod.cs&#10;- Models DzCfgMods and DzMod are deleted as they were redundant and inefficient.&#10;- DzCfgPatches is renamed to DzCfgPatch to accurately represent its functionality.">
-      <option name="closed" value="true" />
-      <created>1689969936915</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1689969936915</updated>
+      <workItem from="1691462731962" duration="26719000" />
     </task>
     <task id="LOCAL-00014" summary="feat(logging): Add logging infrastructure to the BisUtils project via 'IBisLoggable' and 'IBinaryObject'">
       <option name="closed" value="true" />
@@ -698,7 +725,15 @@
       <option name="project" value="LOCAL" />
       <updated>1691522743624</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="feat(parse): Add Context Info To Parser Framework">
+      <option name="closed" value="true" />
+      <created>1691528522059</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1691528522059</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -730,7 +765,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank.extensions): Create RVBank.DzConfigExtensions" />
     <MESSAGE value="refactor(bank): Small Syntax Changes" />
     <MESSAGE value="feat(bank.extensions): Create Enumerable Functions For Reading ParamFiles" />
     <MESSAGE value="feat(pak): Add Start To Pak Project" />
@@ -755,7 +789,8 @@
     <MESSAGE value="feat(parser): Create New Parser Structure&#10;&#10;Abstract public constructors so singletons can be created dynamically if not found." />
     <MESSAGE value="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage." />
     <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
+    <MESSAGE value="feat(parse): Add Context Info To Parser Framework" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(parse): Add Context Info To Parser Framework" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

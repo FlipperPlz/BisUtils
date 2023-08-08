@@ -2,6 +2,7 @@
 
 using Core.Singleton;
 using EnLex;
+using EnLex.Tokens;
 
 public sealed class EnConfigTokens : EnfusionTokenSet<EnConfigTokens>
 {

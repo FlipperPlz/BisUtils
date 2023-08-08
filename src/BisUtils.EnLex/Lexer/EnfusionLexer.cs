@@ -3,6 +3,7 @@
 using Core.Parsing.Lexer;
 using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
+using Tokens;
 
 public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens : EnfusionTokenSet<TTokens>
 {

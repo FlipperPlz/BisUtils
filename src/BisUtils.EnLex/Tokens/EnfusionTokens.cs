@@ -1,7 +1,7 @@
-﻿namespace BisUtils.EnLex;
+﻿namespace BisUtils.EnLex.Tokens;
 
-using Core.Parsing.Token.Tokens;
-using Core.Parsing.Token.Typing;
+using BisUtils.Core.Parsing.Token.Tokens;
+using BisUtils.Core.Parsing.Token.Typing;
 
 // ReSharper disable file StaticMemberInGenericType
 public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet<T>
