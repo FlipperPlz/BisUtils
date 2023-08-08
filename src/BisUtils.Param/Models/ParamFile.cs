@@ -54,7 +54,7 @@ public class ParamFile : ParamClass, IParamFile
             var content = options.Charset.GetString(memory.ToArray());
             Console.WriteLine(content);
             var lexer = new ParamLexerOld(content);
-            var result = ParamParser.Instance.Parse(out var node, lexer, logger);
+            var result = ParamParserOld.Instance.Parse(out var node, lexer, logger);
             return node;
         }
         reader.BaseStream.Seek(-4, SeekOrigin.Current);

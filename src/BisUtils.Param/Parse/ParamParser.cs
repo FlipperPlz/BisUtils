@@ -19,14 +19,14 @@ using PreProcessor.RV;
 /// It specifically parses `ParamFile` nodes using the `ParamLexer` and `ParamTypes` types.
 /// It also uses `RVPreProcessor` for preprocessing.
 /// </summary>
-public class ParamParser : IBisParser<ParamFile, ParamLexerOld, ParamTypes, RVPreProcessor>
+public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes, RVPreProcessor>
 {
     /// <summary>
     /// Gets the current and only instance of the parser.
     /// </summary>
-    public static readonly ParamParser Instance = new();
+    public static readonly ParamParserOld Instance = new();
 
-    private ParamParser()
+    private ParamParserOld()
     {
     }
 
