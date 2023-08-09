@@ -15,130 +15,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvMaterial/BisUtils.RvMaterial.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/.template.config/template.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/BisUtils.LexLibrary.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/Lexer/__LexName__Lexer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/Tokens/__LexName__Tokens.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Errors/RVBankEmptyPropertyNameError.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Errors/RVEncryptedBankException.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Errors/RVObfuscatedBankException.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankEncryptedEntryWarning.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankImproperMetaWarning.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankImproperMimeWarning.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankNamedVersionEntryWarning.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Alerts/Warnings/RVBankUnnamedEntryWarning.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Enumerations/RVBankDataType.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Enumerations/RVBankEntryMime.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Enumerations/RVBankSection.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankDataEntryExtensions.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankDirectoryExtensions.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankEntryExtensions.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Extensions/RVBankVersionEntryExtensions.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Entry/RVBankDataEntry.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Entry/RVBankDirectory.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Entry/RVBankVersionEntry.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Misc/RVBankDigest.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/RVBank.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Stubs/RVBankElement.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Stubs/RVBankEntry.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Model/Stubs/RVBankProperty.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/Options/RVBankOptions.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/UML/include.puml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.All/BisUtils.All.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.All/BisUtils.All.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.DZConfig/BisUtils.DZConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.DZConfig/BisUtils.DZConfig.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/BisUtils.Extensions.RVBank.DzConfigExtensions.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/BisUtils.RvBank.DzConfigExtensions.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.DzConfigExtensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.Extras/BisUtils.Extensions.RVBank.Extras.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank.ExtraExtensions/BisUtils.RVBank.ExtraExtensions.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Extensions.RVBank.Extras/RVBankDirectoryTreeExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RVBank.ExtraExtensions/RVBankDirectoryTreeExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/BisUtils.Param.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/BisUtils.Param.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/BisUtils.PreProcessor.RV.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/BisUtils.RvProcess.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Enumerations/RVStringType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Enumerations/RvStringType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Enumerations/RvTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Enumerations/RvTypes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Directives/RVDefineDirective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Directives/RvDefineDirective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Directives/RVIfDefinedDirective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Directives/RvIfDefinedDirective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Directives/RVIfNotDefinedDirective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Directives/RvIfNotDefinedDirective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Directives/RVIncludeDirective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Directives/RvIncludeDirective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Directives/RVUndefineDirective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Directives/RvUndefineDirective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Elements/RVIncludeString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Elements/RvIncludeString.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Elements/RVMacro.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Elements/RvMacro.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Stubs/RVDirective.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Stubs/RvDirective.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Models/Stubs/RVElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Stubs/RvElement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/RVPreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/RvPreProcessor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.PreProcessor.RV/Utils/RVIncludeFinderDelegate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Utils/RvIncludeFinderDelegate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Errors/RVBankEmptyPropertyNameError.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Errors/RvBankEmptyPropertyNameError.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Errors/RVEncryptedBankException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Errors/RvEncryptedBankException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Errors/RVObfuscatedBankException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Errors/RvObfuscatedBankException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Exceptions/RVBankChecksumMismatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Exceptions/RvBankChecksumMismatchException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Warnings/RVBankEncryptedEntryWarning.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Warnings/RvBankEncryptedEntryWarning.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Warnings/RVBankImproperMetaWarning.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Warnings/RvBankImproperMetaWarning.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Warnings/RVBankImproperMimeWarning.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Warnings/RvBankImproperMimeWarning.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Warnings/RVBankNamedVersionEntryWarning.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Warnings/RvBankNamedVersionEntryWarning.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Alerts/Warnings/RVBankUnnamedEntryWarning.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Alerts/Warnings/RvBankUnnamedEntryWarning.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/BisUtils.RVBank.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/BisUtils.RvBank.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Enumerations/RVBankDataType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Enumerations/RvBankDataType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Enumerations/RVBankEntryMime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Enumerations/RvBankEntryMime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Enumerations/RVBankSection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Enumerations/RvBankSection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDataEntryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankDataEntryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankEntryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankEntryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankReaderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankReaderExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Extensions/RVBankVersionEntryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankVersionEntryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankDataEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankDirectory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankDirectory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Entry/RVBankVersionEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankVersionEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Misc/RVBankDigest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Misc/RvBankDigest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/RVBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/RvBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankElement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Model/Stubs/RVBankProperty.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankProperty.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVBank/Options/RVBankOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Options/RvBankOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVMaterial/BisUtils.RVMaterial.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVMaterial/Models/RVMaterial.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvMaterial/Models/RvMaterial.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/BisUtils.RVShape.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/BisUtils.RvShape.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Errors/RVShapeFaceReadError.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Errors/RvShapeFaceReadError.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Errors/RVShapeLodReadError.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Errors/RvShapeLodReadError.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Extensions/RVFaceExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Extensions/RvFaceExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Extensions/RVPointAttributeExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Extensions/RvPointAttributeExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Extensions/RVShapeDataExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Extensions/RvShapeDataExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Extensions/RVShapeExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Extensions/RvShapeExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVAnimationPhase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvAnimationPhase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVModelConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvModelConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVNamedProperty.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvNamedProperty.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVNamedSelection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvNamedSelection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVSelection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvSelection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVSharpEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvSharpEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Data/RVUvMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvUvMap.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Face/RVFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Face/RvFace.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Face/RVFaceFlag.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Face/RvFaceFlag.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Lod/RVFaceHint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Lod/RvFaceHint.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Lod/RVLod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Lod/RvLod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Lod/RVLodFlag.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Lod/RvLodFlag.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Lod/RVLodType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Lod/RvLodType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Point/RVPoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Point/RvPoint.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Point/RVPointAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Point/RvPointAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Point/RVPointFlag.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Point/RvPointFlag.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/RVShape.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/RvShape.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVConstants.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Utils/RvShapeConstants.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVDataVertex.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Utils/RvDataVertex.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Models/Utils/RVResolution.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Utils/RvResolution.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVShape/Options/RVShapeOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Options/RvShapeOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVTexture/BisUtils.RVTexture.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvTexture/BisUtils.RvTexture.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVTexture/Models/RVPalette.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvTexture/Models/RvPalette.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVTexture/Models/RVTexture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvTexture/Models/RvTexture.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RVTexture/Options/RVTextureOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvTexture/Options/RvTextureOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/Lexer/LanguageNameLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/templates/BisLexicalLibrary/Lexer/LanguageNameLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/BisUtils.Bank.Benchmarks.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/BisUtils.RvBank.Benchmarks.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileBinarizationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankBinarizationBenchmarks.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/PboFileCreationBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankCreationBenchmarks.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/BisUtils.Bank.Benchmarks/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/BankTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/BankTest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/BankTest/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/ParamTest/ParamTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ParamTest/ParamTest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/ShapeTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ShapeTest/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Scratches/ShapeTest/ShapeTest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ShapeTest/ShapeTest.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/.template.config/template.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/BisLexicalLibrary.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/Lexer/LanguageNameLexer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/Tokens/LanguageNameTokens.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -325,7 +212,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.RVBank.ExtraExtensions/BisUtils.RVBank.ExtraExtensions.csproj" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/BisUtils.RvBank.ExtraExtensions.csproj" />
       <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
@@ -433,15 +320,7 @@
       <workItem from="1691413652004" duration="1159000" />
       <workItem from="1691427822088" duration="7171000" />
       <workItem from="1691462731962" duration="28188000" />
-      <workItem from="1691599035713" duration="2897000" />
-    </task>
-    <task id="LOCAL-00015" summary="feat(bank): Work On Duplicate Entries">
-      <option name="closed" value="true" />
-      <created>1690304093653</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1690304093653</updated>
+      <workItem from="1691599035713" duration="6487000" />
     </task>
     <task id="LOCAL-00016" summary="feat(bank): Refactor RVBank &amp; RVBankDirectoryExtensions: Clean-up and Optimization. RVBankDirectoryExtensions needs some MAJOR fixes - has been giving me a headache&#10;&#10;The `RVBank.cs` and `RVBankDirectoryExtensions.cs` have been deeply refactored to improve readability, and optimize performance by minimizing excess operations during binarization and debinarization.  &#10;Log messages about the start and end of debinarization were removed from the `RVBank.cs`.&#10;Also, an addition of bank test project was made to the solution file `BisUtils.sln` while the `BisCompatibleLZSS.cs` class now decodes and compresses using encoding UTF8 and returns byte arrays.&#10;&#10;These changes are necessary to improve the performance of data debinarization and binarization, and ultimately enhance the overall efficiency of the project.">
       <option name="closed" value="true" />
@@ -827,7 +706,15 @@
       <option name="project" value="LOCAL" />
       <updated>1691532249690</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`">
+      <option name="closed" value="true" />
+      <created>1691603053920</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1691603053920</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -859,7 +746,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank.extensions): Create Enumerable Functions For Reading ParamFiles" />
     <MESSAGE value="feat(pak): Add Start To Pak Project" />
     <MESSAGE value="feat(pak): Finish Up Pak Library" />
     <MESSAGE value="feat(bank.extras): Create BisUtils.Extensions.RVBank.Extras" />
@@ -884,7 +770,8 @@
     <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
     <MESSAGE value="feat(parse): Add Context Info To Parser Framework" />
     <MESSAGE value="feat(templates): Add BisLexicalLibrary Template" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(templates): Add BisLexicalLibrary Template" />
+    <MESSAGE value="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,8 +1,8 @@
-﻿namespace BisUtils.RVBank.ExtraExtensions;
+﻿namespace BisUtils.RvBank.ExtraExtensions;
 
-using RvBank.Model.Entry;
+using Model.Entry;
 
-public static class RVBankDirectoryTreeExtensions
+public static class RvBankDirectoryTreeExtensions
 {
     public static IEnumerable<string> DirectoryTree(this IRvBankDirectory directory, int indent = 0)
     {

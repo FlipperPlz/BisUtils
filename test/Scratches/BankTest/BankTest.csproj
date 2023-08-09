@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\BisUtils.RVBank.ExtraExtensions\BisUtils.RVBank.ExtraExtensions.csproj" />
+      <ProjectReference Include="..\..\..\src\BisUtils.RvBank.ExtraExtensions\BisUtils.RvBank.ExtraExtensions.csproj" />
       <ProjectReference Include="..\..\..\src\BisUtils.RvBank\BisUtils.RvBank.csproj" />
     </ItemGroup>
 
