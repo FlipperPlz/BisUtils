@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.EnLex.Tokens;
 
-using BisUtils.Core.Parsing.Token.Tokens;
-using BisUtils.Core.Parsing.Token.Typing;
+using Core.Parsing.Token.Tokens;
+using Core.Parsing.Token.Typing;
 
 // ReSharper disable file StaticMemberInGenericType
 public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet<T>
@@ -36,23 +36,23 @@ public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet
     public static readonly IBisTokenType EnfusionColon =
         new BisTokenType("enfusion.symbol.colon", ":");
 
-    public static readonly IBisTokenType EnfusionIncludeDirective =
-        new BisTokenType("enfusion.directive.include", "#include");
-
-    public static readonly IBisTokenType EnfusionIfDefinedDirective =
-        new BisTokenType("enfusion.directive.ifdef", "#ifdef");
-
-    public static readonly IBisTokenType EnfusionIfNotDefinedDirective =
-        new BisTokenType("enfusion.directive.ifndef", "#ifndef");
-
-    public static readonly IBisTokenType EnfusionDefineDirective =
-        new BisTokenType("enfusion.directive.define", "#define");
-
-    public static readonly IBisTokenType EnfusionElseDirective =
-        new BisTokenType("enfusion.directive.else", "#else");
-
-    public static readonly IBisTokenType EnfusionEndIfDirective =
-        new BisTokenType("enfusion.directive.endif", "#endif");
+    // public static readonly IBisTokenType EnfusionIncludeDirective =
+    //     new BisTokenType("enfusion.directive.include", "#include");
+    //
+    // public static readonly IBisTokenType EnfusionIfDefinedDirective =
+    //     new BisTokenType("enfusion.directive.ifdef", "#ifdef");
+    //
+    // public static readonly IBisTokenType EnfusionIfNotDefinedDirective =
+    //     new BisTokenType("enfusion.directive.ifndef", "#ifndef");
+    //
+    // public static readonly IBisTokenType EnfusionDefineDirective =
+    //     new BisTokenType("enfusion.directive.define", "#define");
+    //
+    // public static readonly IBisTokenType EnfusionElseDirective =
+    //     new BisTokenType("enfusion.directive.else", "#else");
+    //
+    // public static readonly IBisTokenType EnfusionEndIfDirective =
+    //     new BisTokenType("enfusion.directive.endif", "#endif");
 
     public static readonly IBisTokenType EnfusionLiteralString =
         new BisTokenType("enfusion.literal.string", "\".*\"");

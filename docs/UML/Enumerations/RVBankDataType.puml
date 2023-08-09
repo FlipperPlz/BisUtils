@@ -1,7 +1,0 @@
-@startuml
-enum RVBankDataType {
-    Original,
-    Compressed,
-    Encrypted,
-}
-@enduml

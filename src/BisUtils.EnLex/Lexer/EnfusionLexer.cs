@@ -1,7 +1,7 @@
-﻿namespace BisUtils.EnLex;
+﻿namespace BisUtils.EnLex.Lexer;
 
-using Core.Parsing.Lexer;
-using Core.Parsing.Token.Tokens;
+using BisUtils.Core.Parsing.Lexer;
+using BisUtils.Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Tokens;
 
@@ -12,7 +12,7 @@ public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens 
     public IBisTokenType TryMatchString(out string stringContent);
     public IBisTokenType TryMatchIdentifier(out string id);
     public IBisTokenType TryMatchHash();
-    public IBisTokenType TryMatchDirective();
+    //public IBisTokenType TryMatchDirective();
     public IBisTokenType TryMatchCurly(bool isStartCurly);
     public IBisTokenType TryMatchColon();
     public IBisTokenType TryMatchNewLine();
@@ -122,36 +122,36 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
             return BisInvalidTokeType.Instance;
         }
 
-        var directiveType = TryMatchDirective();
-        return directiveType is BisInvalidTokeType ? directiveType : EnfusionTokenSet.EnfusionHashSymbol;
+        // var directiveType = TryMatchDirective();
+        return /*directiveType is BisInvalidTokeType ? directiveType :*/ EnfusionTokenSet.EnfusionHashSymbol;
     }
 
-    public IBisTokenType TryMatchDirective()
-    {
-        if (CurrentChar != '#')
-        {
-            return BisInvalidTokeType.Instance;
-        }
-
-        return PeekForward() switch
-        {
-            'd' => TryMatchText("#define", EnfusionTokenSet.EnfusionDefineDirective),
-            'e' => PeekForward(2) switch
-            {
-                'n' => TryMatchText("#endif", EnfusionTokenSet.EnfusionEndIfDirective),
-                'l' => TryMatchText("#else", EnfusionTokenSet.EnfusionElseDirective),
-                _ => BisInvalidTokeType.Instance
-            },
-            'i' => PeekForward(3) switch
-            {
-                'c' => TryMatchText("#include", EnfusionTokenSet.EnfusionIncludeDirective),
-                'd' => TryMatchText("#ifdef", EnfusionTokenSet.EnfusionIfDefinedDirective),
-                'n' => TryMatchText("#ifndef", EnfusionTokenSet.EnfusionIfNotDefinedDirective),
-                _ => BisInvalidTokeType.Instance
-            },
-            _ => BisInvalidTokeType.Instance
-        };
-    }
+    // public IBisTokenType TryMatchDirective()
+    // {
+    //     if (CurrentChar != '#')
+    //     {
+    //         return BisInvalidTokeType.Instance;
+    //     }
+    //
+    //     return PeekForward() switch
+    //     {
+    //         'd' => TryMatchText("#define", EnfusionTokenSet.EnfusionDefineDirective),
+    //         'e' => PeekForward(2) switch
+    //         {
+    //             'n' => TryMatchText("#endif", EnfusionTokenSet.EnfusionEndIfDirective),
+    //             'l' => TryMatchText("#else", EnfusionTokenSet.EnfusionElseDirective),
+    //             _ => BisInvalidTokeType.Instance
+    //         },
+    //         'i' => PeekForward(3) switch
+    //         {
+    //             'c' => TryMatchText("#include", EnfusionTokenSet.EnfusionIncludeDirective),
+    //             'd' => TryMatchText("#ifdef", EnfusionTokenSet.EnfusionIfDefinedDirective),
+    //             'n' => TryMatchText("#ifndef", EnfusionTokenSet.EnfusionIfNotDefinedDirective),
+    //             _ => BisInvalidTokeType.Instance
+    //         },
+    //         _ => BisInvalidTokeType.Instance
+    //     };
+    // }
 
     public IBisTokenType TryMatchCurly(bool isStartCurly)
     {
@@ -177,5 +177,5 @@ public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens>
         return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
 
-    public IBisTokenType TryMatchColon() => CurrentChar == ':' ? EnfusionTokenSet.EnfusionIncludeDirective : BisInvalidTokeType.Instance;
+    public IBisTokenType TryMatchColon() => CurrentChar == ':' ? EnfusionTokenSet.EnfusionColon : BisInvalidTokeType.Instance;
 }

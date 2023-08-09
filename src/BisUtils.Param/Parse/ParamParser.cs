@@ -12,14 +12,14 @@ using Models;
 using Models.Literals;
 using Models.Statements;
 using Models.Stubs.Holders;
-using PreProcessor.RV;
+using RvProcess;
 
 /// <summary>
 /// The `ParamParser` class implements the `IBisParser` interface for parsing parameter files.
 /// It specifically parses `ParamFile` nodes using the `ParamLexer` and `ParamTypes` types.
 /// It also uses `RVPreProcessor` for preprocessing.
 /// </summary>
-public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes, RVPreProcessor>
+public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes, RvPreProcessor>
 {
     /// <summary>
     /// Gets the current and only instance of the parser.

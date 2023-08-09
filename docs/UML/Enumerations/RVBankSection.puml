@@ -1,9 +1,0 @@
-@startuml
-enum RVBankSection {
-    NotApplicable,
-    Header,
-    Data,
-    Signature,
-    Finished,
-}
-@enduml

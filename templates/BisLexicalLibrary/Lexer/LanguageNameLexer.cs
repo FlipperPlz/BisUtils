@@ -1,4 +1,6 @@
-﻿namespace BisLexicalLibrary.Lexer;
+﻿using BisLexicalLibrary.Tokens;
+
+namespace $name$.LOL;
 
 using BisUtils.Core.Parsing.Lexer;
 using BisUtils.Core.Parsing.Token.Typing;

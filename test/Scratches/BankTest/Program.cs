@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using BisUtils.Extensions.RVBank.Extras;
-using BisUtils.RVBank.Extensions;
-using BisUtils.RVBank.Model;
-using BisUtils.RVBank.Options;
+using BisUtils.RvBank.Extensions;
+using BisUtils.RVBank.ExtraExtensions;
+using BisUtils.RvBank.Model;
+using BisUtils.RvBank.Options;
 using Microsoft.Extensions.Logging.Abstractions;
 
-var bankOptions = new RVBankOptions()
+var bankOptions = new RvBankOptions()
 {
     AllowObfuscated = true,
     FlatRead = false,
@@ -35,7 +35,7 @@ var output = @"C:\Users\ryann\Downloads\Ryann\LBMaster\out2w.pbo";
 File.Delete(output);
 File.Delete(@"C:\Users\ryann\Desktop\test.cpp");
 var outStream = File.Open(output, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-var bank = new RVBank(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
+var bank = new RvBank(@"C:\Users\ryann\Downloads\Ryann\LBMaster\AdvancedGroups_Server.pbo", bankOptions, outStream, NullLogger.Instance);
 foreach (var treeLevel in bank.DirectoryTree())
 {
     Console.WriteLine(treeLevel);
@@ -49,5 +49,5 @@ File.WriteAllBytes(@"C:\Users\ryann\Desktop\test.cpp", config.EntryData.ToArray(
 outStream.Close();
 Console.WriteLine();
 
-var outBank = new RVBank(output, bankOptions, null, NullLogger.Instance);
+var outBank = new RvBank(output, bankOptions, null, NullLogger.Instance);
 Console.WriteLine();

@@ -1,6 +1,0 @@
-@startuml
-class RVEncryptedBankException {
-    + RVEncryptedBankException()
-}
-IOException <|-- RVEncryptedBankException
-@enduml

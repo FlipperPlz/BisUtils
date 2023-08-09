@@ -10,9 +10,9 @@
     <ItemGroup>
       <ProjectReference Include="..\..\lib\FResults\FResults\FResults.csproj" />
       <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
-      <ProjectReference Include="..\BisUtils.RVBank\BisUtils.RVBank.csproj" />
+      <ProjectReference Include="..\BisUtils.RvBank\BisUtils.RvBank.csproj" />
       <ProjectReference Include="..\BisUtils.Param\BisUtils.Param.csproj" />
-      <ProjectReference Include="..\BisUtils.PreProcessor.RV\BisUtils.PreProcessor.RV.csproj" />
+      <ProjectReference Include="..\BisUtils.RvProcess\BisUtils.RvProcess.csproj" />
     </ItemGroup>
   
 </Project>

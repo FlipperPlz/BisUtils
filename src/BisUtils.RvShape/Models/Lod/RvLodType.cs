@@ -1,0 +1,35 @@
+﻿namespace BisUtils.RvShape.Models.Lod;
+
+public enum RvLodType
+{
+    ViewGunner,
+    ViewPilot,
+    ViewCargo,
+    Geometry,
+    Memory,
+    LandContact,
+    Roadway,
+    Paths,
+    HitPoints,
+    ViewGeometry,
+    FireGeometry,
+    ViewCargoGeometry,
+    ViewCargoFireGeometry,
+    ViewCommander,
+    ViewCommanderGeometry,
+    ViewCommanderFireGeometry,
+    ViewPilotGeometry,
+    ViewPilotFireGeometry,
+    ViewGunnerGeometry,
+    ViewGunnerFireGeometry,
+    SubParts,
+    ShadowVolumeViewCargo,
+    ShadowVolumeViewPilot,
+    ShadowVolumeViewGunner,
+    Wreck,
+    PhysX,
+    ShadowVolume,
+    Resolution,
+    Undefined,
+    Edit
+}
