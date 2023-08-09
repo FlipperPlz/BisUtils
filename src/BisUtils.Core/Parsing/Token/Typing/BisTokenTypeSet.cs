@@ -13,6 +13,8 @@ public interface IBisTokenTypeSet<out TSelf> : IBisTokenTypeSet where TSelf : IB
 
 public class BisTokenTypeSet<TSelf> : BisSingleton, IBisTokenTypeSet<TSelf> where TSelf : IBisTokenTypeSet<TSelf>
 {
+    protected const string ToComplex = "to complex";
+
     public IEnumerator<IBisTokenType> GetEnumerator() => this.GetTokens<TSelf>().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

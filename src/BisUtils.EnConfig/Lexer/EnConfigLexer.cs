@@ -4,12 +4,12 @@ using EnLex;
 using EnLex.Lexer;
 using Tokens;
 
-public interface IEnConfigLexer : IEnfusionLexer<EnConfigTokens>
+public interface IEnConfigLexer : IEnfusionLexer<EnConfigTokenSet>
 {
 
 }
 
-public sealed class EnConfigLexer : EnfusionLexer<EnConfigTokens>, IEnConfigLexer
+public sealed class EnConfigLexer : EnfusionLexer<EnConfigTokenSet>, IEnConfigLexer
 {
     public EnConfigLexer(string content) : base(content)
     {

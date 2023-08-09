@@ -15,17 +15,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/.template.config/template.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/BisUtils.LexLibrary.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/Lexer/__LexName__Lexer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/Tokens/__LexName__Tokens.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Param/Tokens/RvConfigTokens.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/.template.config/template.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/BisLexicalLibrary.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/Lexer/LanguageNameLexer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisLexicalLibrary/Tokens/LanguageNameTokens.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisEOLTokenType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisEOLTokenType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokenSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/BisUtils.Param.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/BisUtils.Param.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,30 +105,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.3719583&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;refactor/parsing&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/projects/csharp/BisUtils/docs&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;RiderCSharpLiveTemplatesSettingsId&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "XThreadsFramesViewSplitterKey": "0.3719583",
+    "git-widget-placeholder": "refactor/parsing",
+    "last_opened_file_path": "E:/projects/csharp/BisUtils/BisUtils.sln",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "RiderCSharpLiveTemplatesSettingsId",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\ryann\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
+      "C:\\Users\\ryann\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
+      "C:\\Users\\ryann\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.BankTest">
     <configuration name="Publish BisUtils.RVBank to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
       <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/src/BisUtils.RVBank/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="-775555546124957071" uuid_low="-8586648064013952717" />
@@ -321,14 +323,7 @@
       <workItem from="1691427822088" duration="7171000" />
       <workItem from="1691462731962" duration="28188000" />
       <workItem from="1691599035713" duration="6487000" />
-    </task>
-    <task id="LOCAL-00016" summary="feat(bank): Refactor RVBank &amp; RVBankDirectoryExtensions: Clean-up and Optimization. RVBankDirectoryExtensions needs some MAJOR fixes - has been giving me a headache&#10;&#10;The `RVBank.cs` and `RVBankDirectoryExtensions.cs` have been deeply refactored to improve readability, and optimize performance by minimizing excess operations during binarization and debinarization.  &#10;Log messages about the start and end of debinarization were removed from the `RVBank.cs`.&#10;Also, an addition of bank test project was made to the solution file `BisUtils.sln` while the `BisCompatibleLZSS.cs` class now decodes and compresses using encoding UTF8 and returns byte arrays.&#10;&#10;These changes are necessary to improve the performance of data debinarization and binarization, and ultimately enhance the overall efficiency of the project.">
-      <option name="closed" value="true" />
-      <created>1690322069935</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1690322069935</updated>
+      <workItem from="1691607559202" duration="2101000" />
     </task>
     <task id="LOCAL-00017" summary="chore(bank): Add BankTest Project">
       <option name="closed" value="true" />
@@ -714,7 +709,15 @@
       <option name="project" value="LOCAL" />
       <updated>1691603053920</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="chore(template): Rename BisUtils.LexLibrary Template Name">
+      <option name="closed" value="true" />
+      <created>1691607671767</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1691607671768</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -746,7 +749,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(pak): Add Start To Pak Project" />
     <MESSAGE value="feat(pak): Finish Up Pak Library" />
     <MESSAGE value="feat(bank.extras): Create BisUtils.Extensions.RVBank.Extras" />
     <MESSAGE value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
@@ -771,7 +773,8 @@
     <MESSAGE value="feat(parse): Add Context Info To Parser Framework" />
     <MESSAGE value="feat(templates): Add BisLexicalLibrary Template" />
     <MESSAGE value="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`" />
+    <MESSAGE value="chore(template): Rename BisUtils.LexLibrary Template Name" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore(template): Rename BisUtils.LexLibrary Template Name" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

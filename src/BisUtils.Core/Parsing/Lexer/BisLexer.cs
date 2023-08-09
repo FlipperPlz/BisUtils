@@ -86,6 +86,16 @@ public abstract class BisLexer<TTokens> : BisMutableStringStepper, IBisLexer<TTo
         return null;
     }
 
+    protected IBisTokenType TryMatchChar(char c, IBisTokenType validTokenType)
+    {
+        if (CurrentChar == c)
+        {
+            return validTokenType;
+        }
+
+        return BisInvalidTokeType.Instance;
+    }
+
     public BisTokenMatch LexToken() => RegisterNextMatch(Position);
 
     private BisTokenMatch RegisterNextMatch(int tokenStart)

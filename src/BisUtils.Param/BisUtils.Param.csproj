@@ -9,8 +9,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
+    <ProjectReference Include="..\BisUtils.RvLex\BisUtils.RvLex.csproj" />
     <ProjectReference Include="..\BisUtils.RvProcess\BisUtils.RvProcess.csproj" />
   </ItemGroup>
+
 
 
 
