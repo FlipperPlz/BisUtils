@@ -10,11 +10,8 @@
       <Content Include=".template.config\template.json" />
     </ItemGroup>
 
-
     <ItemGroup>
       <ProjectReference Include="..\..\src\BisUtils.Core\BisUtils.Core.csproj" />
     </ItemGroup>
-
-
 
 </Project>
