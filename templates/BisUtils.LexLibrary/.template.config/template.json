@@ -3,7 +3,7 @@
   "author": "Ryann (FlipperPlz) ",
   "classifications": ["BisUtils", "Lexer"],
   "identity": "BisUtils.LexLibrary",
-  "name": "A Lexer Library Template for bisutils",
+  "name": "BisUtils Lexical Library",
   "shortName": "bislexlib",
   "sourceName": "BisUtils.LexLibrary",
   "tags": {
