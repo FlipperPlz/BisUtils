@@ -1,32 +1,32 @@
 ﻿namespace BisUtils.RvLex.Lexer;
 
 using Core.Parsing.Lexer;
-using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Tokens;
 
-public interface IRvLexer<out TTokens> : IBisLexer<TTokens> where TTokens : RvTokenSet<TTokens>
+public interface IRvLexer<out TTokens> : IBisLexerAbs<TTokens> where TTokens : RvTokenSet<TTokens>, new()
 {
     public IBisTokenType TryMatchNewLine();
     public IBisTokenType TryMatchComma();
 }
 
-public class RvLexer<TTokens> : BisLexer<TTokens>, IRvLexer<TTokens>
+public abstract class RvLexer<TTokens> : BisLexerAbs<TTokens>, IRvLexer<TTokens>
     where TTokens : RvTokenSet<TTokens>, new()
 {
-    public RvLexer(string content) : base(content)
+    protected RvLexer(string content) : base(content, true)
     {
     }
 
-    protected override IBisTokenType LocateNextMatch(int tokenStart) =>
-        MoveForward() switch
-        {
-            '\n' => TryMatchNewLine(),
-            ',' => TryMatchComma(),
-            _ => BisInvalidTokeType.Instance
-        };
+    protected abstract override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar);
+
+    protected override IBisTokenType LocateNextMatch(int tokenStart, char? currentChar) =>currentChar switch
+    {
+        '\n' => TryMatchNewLine(),
+        ',' => TryMatchComma(),
+        _ => InvalidToken
+    };
 
     public IBisTokenType TryMatchNewLine() => TryMatchChar('\n', RvTokenSet.RvNewLine);
 
-    public IBisTokenType TryMatchComma() => TryMatchChar(',', RvTokenSet.RvNewLine);
+    public IBisTokenType TryMatchComma() => TryMatchChar(',', RvTokenSet.RvComma);
 }

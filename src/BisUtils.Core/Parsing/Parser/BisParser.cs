@@ -11,7 +11,7 @@ public interface IBisParser<
     in TTokens,
     in TContextInfo
 >
-    where TLexer : BisLexer<TTokens>
+    where TLexer : IBisLexer<TTokens>
     where TTokens : BisTokenTypeSet<TTokens>, new()
     where TSyntaxTree : new()
     where TContextInfo : IBisParserContext, new()
@@ -27,7 +27,7 @@ public abstract class BisParser<
     TTokens,
     TContextInfo
 > : BisSingleton, IBisParser<TSyntaxTree, TLexer, TTokens, TContextInfo>
-    where TLexer : BisLexer<TTokens>
+    where TLexer : IBisLexer<TTokens>
     where TTokens : BisTokenTypeSet<TTokens>, new()
     where TSyntaxTree : new()
     where TContextInfo : IBisParserContext, new()
@@ -37,12 +37,18 @@ public abstract class BisParser<
     {
         var file = new TSyntaxTree();
         var info = new TContextInfo();
+        var mute = false;
 
         lexer.OnTokenMatched += (_, match) =>
         {
-            lexer.MuteEvents = true;
+            if (mute)
+            {
+                return;
+            }
+
+            mute = true;
             ParseToken(file, lexer, match, info);
-            lexer.MuteEvents = false;
+            mute = false;
         };
 
         while (info.ShouldContinue())

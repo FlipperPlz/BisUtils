@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.EnConfig.Lexer;
 
+using Core.Parsing.Token.Typing;
 using EnLex;
 using EnLex.Lexer;
 using Tokens;
@@ -15,4 +16,5 @@ public sealed class EnConfigLexer : EnfusionLexer<EnConfigTokenSet>, IEnConfigLe
     {
     }
 
+    protected override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar) => throw new NotImplementedException();
 }

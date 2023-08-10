@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.LexLibrary.Lexer;
 
 using Core.Parsing.Lexer;
-using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Tokens;
 
@@ -10,18 +9,20 @@ public interface I__LexName__Lexer<out TTokens> : IBisLexer<TTokens> where TToke
     public IBisTokenType TryMatchNewLine();
 }
 
-public class __LexName__Lexer<TTokens> : BisLexer<TTokens>, I__LexName__Lexer<TTokens>
+public abstract class __LexName__Lexer<TTokens> : BisLexerAbs<TTokens>, I__LexName__Lexer<TTokens>
     where TTokens : __LexName__TokenSet<TTokens>, new()
 {
-    public __LexName__Lexer(string content) : base(content)
+    protected __LexName__Lexer(string content) : base(content, true)
     {
     }
 
-    protected override IBisTokenType LocateNextMatch(int tokenStart) =>
-        MoveForward() switch
+    protected abstract override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar);
+
+    protected override IBisTokenType LocateNextMatch(int tokenStart, char? currentChar) =>
+        currentChar switch
         {
             '\r' or '\n' => TryMatchNewLine(),
-            _ => BisInvalidTokeType.Instance
+            _ => InvalidToken
         };
 
     public IBisTokenType TryMatchNewLine()
@@ -32,14 +33,14 @@ public class __LexName__Lexer<TTokens> : BisLexer<TTokens>, I__LexName__Lexer<TT
             {
                 if (PeekForward() != '\n')
                 {
-                    return BisInvalidTokeType.Instance;
+                    return InvalidToken;
                 }
 
                 MoveForward();
                 return __LexName__TokenSet.__LexName__NewLine;
             }
             case '\n': return __LexName__TokenSet.__LexName__NewLine;
-            default: return BisInvalidTokeType.Instance;
+            default: return InvalidToken;
         }
     }
 }

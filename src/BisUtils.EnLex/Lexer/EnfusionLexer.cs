@@ -5,7 +5,7 @@ using BisUtils.Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Tokens;
 
-public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens : EnfusionTokenSet<TTokens>
+public interface IEnfusionLexer<out TTokens> : IBisLexerAbs<TTokens> where TTokens : EnfusionTokenSet<TTokens>, new()
 {
 
     public IBisTokenType TryMatchComment(out string commentText);
@@ -19,14 +19,16 @@ public interface IEnfusionLexer<out TTokens> : IBisLexer<TTokens> where TTokens 
     public IBisTokenType TryMatchWhitespace();
 }
 
-public class EnfusionLexer<TTokens> : BisLexer<TTokens>, IEnfusionLexer<TTokens> where TTokens : EnfusionTokenSet<TTokens>, new()
+public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLexer<TTokens> where TTokens : EnfusionTokenSet<TTokens>, new()
 {
-    public EnfusionLexer(string content) : base(content)
+    protected EnfusionLexer(string content) : base(content, false)
     {
     }
 
-    protected override IBisTokenType LocateNextMatch(int tokenStart) =>
-    MoveForward() switch
+
+    protected abstract override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar);
+
+    protected override IBisTokenType LocateNextMatch(int tokenStart, char? currentChar) => currentChar switch
     {
         '\r' or '\n'=> TryMatchNewLine(),
         '"' => TryMatchString(out _),
