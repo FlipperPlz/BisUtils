@@ -1,10 +1,10 @@
 ﻿namespace BisUtils.RvShape.Models.Data;
 
 using Core.IO;
-using Param.Models;
-using Param.Models.Statements;
-using Param.Models.Stubs;
-using Param.Options;
+using RvConfig.Models;
+using RvConfig.Models.Statements;
+using RvConfig.Models.Stubs;
+using RvConfig.Options;
 using Microsoft.Extensions.Logging;
 
 public interface IRvModelConfig : IParamFile

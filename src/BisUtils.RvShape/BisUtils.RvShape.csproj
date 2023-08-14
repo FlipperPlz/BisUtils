@@ -10,7 +10,7 @@
 
 
     <ItemGroup>
-      <ProjectReference Include="..\BisUtils.Param\BisUtils.Param.csproj" />
+      <ProjectReference Include="..\BisUtils.RvConfig\BisUtils.RvConfig.csproj" />
     </ItemGroup>
 
 </Project>

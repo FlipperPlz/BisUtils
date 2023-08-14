@@ -1,9 +1,9 @@
 ﻿namespace BisUtils.DZConfig;
 
 using Models;
-using Param.Extensions;
-using Param.Models;
-using Param.Utils;
+using RvConfig.Extensions;
+using RvConfig.Models;
+using RvConfig.Utils;
 
 public interface IDzConfig : IParamConfigAbstraction<IParamFile>
 {

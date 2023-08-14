@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.Core", "src\BisUti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RvBank", "src\BisUtils.RvBank\BisUtils.RvBank.csproj", "{F53CAC57-01A3-4A71-88D6-19146D271933}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.Param", "src\BisUtils.Param\BisUtils.Param.csproj", "{1C3D2806-0E33-4816-BF09-3A84CF50AA80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RvConfig", "src\BisUtils.RvConfig\BisUtils.RvConfig.csproj", "{1C3D2806-0E33-4816-BF09-3A84CF50AA80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RvProcess", "src\BisUtils.RvProcess\BisUtils.RvProcess.csproj", "{44137427-4E99-4F20-829F-C7B40C6F0D36}"
 EndProject

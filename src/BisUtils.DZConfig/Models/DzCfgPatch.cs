@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.DZConfig.Models;
 
-using Param.Models.Statements;
-using Param.Utils;
+using RvConfig.Models.Statements;
+using RvConfig.Utils;
 
 public interface IDzCfgPatch : IParamConfigAbstraction<IParamClass>
 {

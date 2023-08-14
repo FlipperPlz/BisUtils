@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
-      <ProjectReference Include="..\BisUtils.Param\BisUtils.Param.csproj" />
+      <ProjectReference Include="..\BisUtils.RvConfig\BisUtils.RvConfig.csproj" />
       <ProjectReference Include="..\BisUtils.RvProcess\BisUtils.RvProcess.csproj" />
     </ItemGroup>
 

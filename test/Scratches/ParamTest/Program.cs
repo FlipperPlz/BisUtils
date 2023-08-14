@@ -1,8 +1,8 @@
 ﻿namespace ParamTest;
 
 using BisUtils.Core.Binarize.Flagging;
-using BisUtils.Param.Models;
-using BisUtils.Param.Options;
+using BisUtils.RvConfig.Models;
+using BisUtils.RvConfig.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
