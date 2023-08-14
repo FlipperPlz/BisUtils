@@ -13,7 +13,6 @@ public interface IBisParser<
 >
     where TLexer : IBisLexer<TTokens>
     where TTokens : BisTokenTypeSet<TTokens>, new()
-    where TSyntaxTree : new()
     where TContextInfo : IBisParserContext, new()
 {
     public TSyntaxTree Parse(TLexer lexer);

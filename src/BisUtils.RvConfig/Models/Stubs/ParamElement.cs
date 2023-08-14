@@ -17,12 +17,17 @@ public interface IParamElement : IStrictBinaryObject<ParamOptions>
 
 public abstract class ParamElement : StrictBinaryObject<ParamOptions>, IParamElement
 {
-    public IParamFile ParamFile { get; set; }
+    public IParamFile ParamFile { get; set; } = null!;
 
     protected ParamElement(IParamFile file, ILogger? logger) : base(logger) => ParamFile = file;
 
     protected ParamElement(BisBinaryReader reader, ParamOptions options, IParamFile file, ILogger? logger) : base(reader, options, logger) =>
         ParamFile = file;
+
+    protected ParamElement() : base(default)
+    {
+
+    }
 
     public abstract Result WriteParam(ref StringBuilder builder, ParamOptions options);
 }

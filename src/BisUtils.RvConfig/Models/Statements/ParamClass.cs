@@ -27,7 +27,7 @@ public class ParamClass : ParamStatement, IParamClass
     public override byte StatementId => 0;
     public string ClassName { get; set; } = "";
     public string? InheritedClassname { get; set; }
-    public List<IParamStatement> Statements { get; set; }
+    public List<IParamStatement> Statements { get; set; } = null!;
 
     public ParamClass(
         string className,
@@ -51,6 +51,11 @@ public class ParamClass : ParamStatement, IParamClass
         {
             LastResult!.Throw();
         }
+    }
+
+    protected ParamClass()
+    {
+
     }
 
     public override Result Validate(ParamOptions options)

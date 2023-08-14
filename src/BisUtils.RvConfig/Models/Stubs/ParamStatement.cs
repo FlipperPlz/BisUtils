@@ -22,8 +22,9 @@ public abstract class ParamStatement : ParamElement, IParamStatement
         ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base( reader, options, file, logger) =>
         ParentClass = parent;
 
+
     public abstract byte StatementId { get; }
-    public IParamStatementHolder ParentClass { get; set; }
+    public IParamStatementHolder ParentClass { get; set; } = null!;
 
     public void SyncToContext(IParamStatementHolder holder)
     {
@@ -39,5 +40,10 @@ public abstract class ParamStatement : ParamElement, IParamStatement
         }
 
         return Result.Ok();
+    }
+
+    protected ParamStatement()
+    {
+
     }
 }

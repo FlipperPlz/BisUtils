@@ -35,6 +35,11 @@ public class ParamFile : ParamClass, IParamFile
         }
     }
 
+    public ParamFile()
+    {
+
+    }
+
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
 
