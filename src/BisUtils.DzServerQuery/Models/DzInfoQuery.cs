@@ -1,4 +1,4 @@
-﻿namespace BisUtils.DZServerQuery.Models;
+﻿namespace BisUtils.DzServerQuery.Models;
 
 using System.Text;
 using Core.Binarize.Flagging;

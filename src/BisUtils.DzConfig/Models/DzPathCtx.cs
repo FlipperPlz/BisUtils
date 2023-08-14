@@ -1,4 +1,4 @@
-﻿namespace BisUtils.DZConfig.Models;
+﻿namespace BisUtils.DzConfig.Models;
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

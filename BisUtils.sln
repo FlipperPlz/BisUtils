@@ -46,9 +46,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RvTexture", "src\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.RvMaterial", "src\BisUtils.RvMaterial\BisUtils.RvMaterial.csproj", "{3901DEA3-27CE-4527-BD71-4983A8D60A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DZServerQuery", "src\BisUtils.DZServerQuery\BisUtils.DZServerQuery.csproj", "{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DzServerQuery", "src\BisUtils.DzServerQuery\BisUtils.DzServerQuery.csproj", "{F66B6237-15A8-4E5F-B8B5-503DEED19CC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DZConfig", "src\BisUtils.DZConfig\BisUtils.DZConfig.csproj", "{84FACE60-3827-4810-A987-92FA811DB900}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BisUtils.DzConfig", "src\BisUtils.DzConfig\BisUtils.DzConfig.csproj", "{84FACE60-3827-4810-A987-92FA811DB900}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankTest", "test\Scratches\BankTest\BankTest.csproj", "{9328E3ED-589E-41F7-8DFC-18C7E3141CB8}"
 EndProject

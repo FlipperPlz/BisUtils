@@ -1,4 +1,4 @@
-﻿namespace BisUtils.DZServerQuery.Models;
+﻿namespace BisUtils.DzServerQuery.Models;
 
 public interface IDzQuery {
     public static readonly byte[] QueryHeader = new byte[] {0xFF, 0xFF, 0xFF, 0xFF};

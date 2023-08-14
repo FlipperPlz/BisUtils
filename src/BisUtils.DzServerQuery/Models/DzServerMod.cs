@@ -1,4 +1,4 @@
-﻿namespace BisUtils.DZServerQuery.Models;
+﻿namespace BisUtils.DzServerQuery.Models;
 
 public record DzServerMod(
     string ModName,

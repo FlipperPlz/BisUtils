@@ -1,4 +1,4 @@
-﻿namespace BisUtils.DZConfig;
+﻿namespace BisUtils.DzConfig;
 
 using Models;
 using RvConfig.Extensions;

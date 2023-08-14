@@ -1,4 +1,4 @@
-﻿namespace BisUtils.DZServerQuery.Enumerations;
+﻿namespace BisUtils.DzServerQuery.Enumerations;
 
 public enum DzInfoQueryFlags
 {

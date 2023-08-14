@@ -1,7 +1,7 @@
 ﻿namespace BisUtils.RvBank.DzConfigExtensions;
 
 using Core.IO;
-using DZConfig;
+using DzConfig;
 using Extensions;
 using Model.Entry;
 using RvConfig.Models;
