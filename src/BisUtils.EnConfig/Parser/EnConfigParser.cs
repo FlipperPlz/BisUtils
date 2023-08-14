@@ -17,7 +17,7 @@ public sealed class EnConfigParser : BisParser<EnConfigFile, EnConfigLexer, EnCo
 {
     public static EnConfigParser Instance => BisSingletonProvider.LocateInstance<EnConfigParser>();
 
-    public override void ParseToken(EnConfigFile file, EnConfigLexer lexer, BisTokenMatch match, EnConfigContext info)
+    protected override void ParseToken(EnConfigFile file, EnConfigLexer lexer, BisTokenMatch match, EnConfigContext info)
     {
         if (match.TokenType == EnConfigTokenSet.EnfusionIdentifier)
         {

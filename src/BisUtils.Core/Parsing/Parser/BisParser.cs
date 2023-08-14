@@ -6,7 +6,7 @@ using Token.Matching;
 using Token.Typing;
 
 public interface IBisParser<
-    TSyntaxTree,
+    out TSyntaxTree,
     in TLexer,
     in TTokens,
     in TContextInfo
@@ -17,7 +17,6 @@ public interface IBisParser<
 {
     public TSyntaxTree Parse(TLexer lexer);
 
-    public void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match, TContextInfo info);
 }
 
 public abstract class BisParser<
@@ -58,5 +57,5 @@ public abstract class BisParser<
         return file;
     }
 
-    public abstract void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match, TContextInfo info);
+    protected abstract void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match, TContextInfo info);
 }

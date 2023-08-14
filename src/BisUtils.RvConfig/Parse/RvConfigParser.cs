@@ -25,11 +25,47 @@ public class RvConfigParser : BisParser<
 {
     public static readonly RvConfigParser Instance = BisSingletonProvider.LocateInstance<RvConfigParser>();
 
-    public override void ParseToken(ParamFile file, RvConfigLexer lexer, BisTokenMatch match, RvConfigParseContext info)
+    protected override void ParseToken(ParamFile file, RvConfigLexer lexer, BisTokenMatch match, RvConfigParseContext info)
     {
-        switch (match.TokenType)
+        if (match.TokenType == RvConfigTokenSet.ConfigWhitespace || match.TokenType == RvConfigTokenSet.RvNewLine)
         {
-
+            return;
         }
+
+        if (match.TokenType == RvConfigTokenSet.BisEOF)
+        {
+            if (info.Context.Count > 1)
+            {
+                throw new NotSupportedException(); //TODO: Error
+            }
+
+            info.ShouldEnd = true;
+            return;
+        }
+
+        if (match.TokenType == RvConfigTokenSet.ConfigRCurly)
+        {
+            if ((match = lexer.LexToken()).TokenType != RvConfigTokenSet.ConfigSeparator)
+            {
+                throw new NotSupportedException(); //TODO: Error
+            }
+
+            if (info.Context.Count == 1)
+            {
+                throw new NotSupportedException(); //TODO: Error no class to end
+            }
+
+            info.Context.Pop();
+            return;
+        }
+
+
+        if (match.TokenType == RvConfigTokenSet.ConfigClass)
+        {
+            //TODO Class
+        }
+
+
+
     }
 }

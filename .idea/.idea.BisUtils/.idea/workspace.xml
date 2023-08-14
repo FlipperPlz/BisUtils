@@ -15,10 +15,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Param/Enumerations/RvConfigKeywordType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerCore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerCore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/RvConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/RvConfigLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,13 +74,12 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/BisUtils.DZConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/BisUtils.RVBank.ExtraExtensions/RVBankDirectoryTreeExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Parsing/Parser/BisParser.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/templates/BisLexicalLibrary/.template.config/template.json" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/templates/BisLexicalLibrary/Lexer/LanguageNameLexer.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/templates/BisLexicalLibrary/Tokens/LanguageNameTokens.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/RvBankDirectoryTreeExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankBinarizationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankCreationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -85,7 +88,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -318,39 +321,8 @@
       <workItem from="1691677978739" duration="734000" />
       <workItem from="1691679245412" duration="9091000" />
       <workItem from="1691776746083" duration="1785000" />
-      <workItem from="1692026896196" duration="402000" />
-    </task>
-    <task id="LOCAL-00019" summary="fix(bank): Fix Entry Length Calculation; Fix Extensions">
-      <option name="closed" value="true" />
-      <created>1690388397052</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1690388397052</updated>
-    </task>
-    <task id="LOCAL-00020" summary="fix(bank): Fix RVBankEntry::Move">
-      <option name="closed" value="true" />
-      <created>1690389413207</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1690389413207</updated>
-    </task>
-    <task id="LOCAL-00021" summary="fix(bank): Write Path Instead Of Name">
-      <option name="closed" value="true" />
-      <created>1690390125975</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1690390125975</updated>
-    </task>
-    <task id="LOCAL-00022" summary="fix(bank): Fix RVBankDirectory::CalculateLength">
-      <option name="closed" value="true" />
-      <created>1690392206287</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1690392206287</updated>
+      <workItem from="1692026896196" duration="1734000" />
+      <workItem from="1692035905490" duration="2630000" />
     </task>
     <task id="LOCAL-00023" summary="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure">
       <option name="closed" value="true" />
@@ -712,7 +684,39 @@
       <option name="project" value="LOCAL" />
       <updated>1691692722870</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="feat(rvConfig): Finish Up RvConfig Lexer">
+      <option name="closed" value="true" />
+      <created>1692027326874</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1692027326874</updated>
+    </task>
+    <task id="LOCAL-00069" summary="chore: Rename BisUtils.Param to BisUtils.RvConfig">
+      <option name="closed" value="true" />
+      <created>1692027455669</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1692027455669</updated>
+    </task>
+    <task id="LOCAL-00070" summary="chore: Fix DZ Capitalization.">
+      <option name="closed" value="true" />
+      <created>1692027580238</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1692027580238</updated>
+    </task>
+    <task id="LOCAL-00071" summary="feat(rvConfig): Create RvConfigParser">
+      <option name="closed" value="true" />
+      <created>1692028577626</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1692028577626</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -744,10 +748,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
-    <MESSAGE value="chore: Restructure Solution Layout" />
-    <MESSAGE value="feat(EnConfig): Initial Commit; Create EnConfig Project" />
-    <MESSAGE value="feat(enconfig): Create Basic Antlr Writeup For Config Language" />
     <MESSAGE value="feat(enConfig): Finish Up Grammar Draft" />
     <MESSAGE value="feat(enConfig): Add csproj For Scratch Project" />
     <MESSAGE value="feat(core): Start Working On Parser Framework Overhaul" />
@@ -769,35 +769,24 @@
     <MESSAGE value="chore(template): Rename BisUtils.LexLibrary Template Name" />
     <MESSAGE value="feat(rv): Start Work On Implementing New Lexer/Parser Framework To BisUtils.Param" />
     <MESSAGE value="feat(lexer): Add Clear Points Of Extension; Spruce Up Framework&#10;&#10;Made changes in the Lexer, Parser, and their respective usages to leverage abstract base classes (BisLexerAbs and BisLexerCore), improving code reusability and structure. Introduced BisLexerAbs and BisLexerCore in Parsing namespace. Rewrote existing code to diminish redundancy. This increases code scalability and readability, and prepares the groundwork for additional improvements and potential Lexer extensions." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(lexer): Add Clear Points Of Extension; Spruce Up Framework&#10;&#10;Made changes in the Lexer, Parser, and their respective usages to leverage abstract base classes (BisLexerAbs and BisLexerCore), improving code reusability and structure. Introduced BisLexerAbs and BisLexerCore in Parsing namespace. Rewrote existing code to diminish redundancy. This increases code scalability and readability, and prepares the groundwork for additional improvements and potential Lexer extensions." />
+    <MESSAGE value="feat(rvConfig): Finish Up RvConfig Lexer" />
+    <MESSAGE value="chore: Rename BisUtils.Param to BisUtils.RvConfig" />
+    <MESSAGE value="chore: Fix DZ Capitalization." />
+    <MESSAGE value="feat(rvConfig): Create RvConfigParser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
+          <url>file://$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs</url>
           <line>319</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="313" containingFunctionPresentation="Method 'ParseParamArray'">
-            <startOffsets>
-              <option value="12402" />
-            </startOffsets>
-            <endOffsets>
-              <option value="12421" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="313" containingFunctionPresentation="Method 'ParseParamArray'" />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.Param/Parse/ParamParser.cs</url>
+          <url>file://$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs</url>
           <line>342</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="336" containingFunctionPresentation="Method 'ParseParamArray'">
-            <startOffsets>
-              <option value="13141" />
-            </startOffsets>
-            <endOffsets>
-              <option value="13150" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="336" containingFunctionPresentation="Method 'ParseParamArray'" />
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>

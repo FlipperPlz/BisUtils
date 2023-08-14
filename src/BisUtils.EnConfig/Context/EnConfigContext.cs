@@ -9,5 +9,5 @@ public struct EnConfigContext : IBisParserContext
     }
 
     public Stack<object> CurrentContext { get; } = new Stack<object>();
-    public bool ShouldEnd { get; } = false;
+    public bool ShouldEnd { get; set; } = false;
 }
