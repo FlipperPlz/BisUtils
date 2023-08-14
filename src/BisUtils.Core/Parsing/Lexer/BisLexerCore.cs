@@ -74,6 +74,19 @@ public abstract class BisLexerCore : BisMutableStringStepper, IBisLexer
         return base.JumpTo(position);
     }
 
+    protected IBisTokenType TryMatchWord(string word, IBisTokenType validType)
+    {
+        var wordLength = word.Length;
+        if (PeekForwardMulti(wordLength) != word)
+        {
+            return InvalidToken;
+        }
+
+        MoveForward(wordLength - 1);
+        return validType;
+
+    }
+
     private void AddPreviousMatch(BisTokenMatch match)
     {
         if(previousMatches.Count == 0 || match.TokenPosition >= previousMatches[^1].TokenPosition)

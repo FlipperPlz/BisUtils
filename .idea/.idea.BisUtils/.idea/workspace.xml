@@ -15,17 +15,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerAbs.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerCore.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/RvConfigLexer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Param/Enumerations/RvConfigKeywordType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/ParamLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/ParamLexerOld.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/Lexer/__LexName__Lexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/Lexer/__LexName__Lexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerCore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerCore.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/RvConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Param/Lexer/RvConfigLexer.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +85,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -323,15 +316,9 @@
       <workItem from="1691599035713" duration="6487000" />
       <workItem from="1691607559202" duration="2752000" />
       <workItem from="1691677978739" duration="734000" />
-      <workItem from="1691679245412" duration="6906000" />
-    </task>
-    <task id="LOCAL-00018" summary="fix(bank): Rewrite DirectoryExtensions">
-      <option name="closed" value="true" />
-      <created>1690385840705</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1690385840706</updated>
+      <workItem from="1691679245412" duration="9091000" />
+      <workItem from="1691776746083" duration="1785000" />
+      <workItem from="1692026896196" duration="402000" />
     </task>
     <task id="LOCAL-00019" summary="fix(bank): Fix Entry Length Calculation; Fix Extensions">
       <option name="closed" value="true" />
@@ -717,7 +704,15 @@
       <option name="project" value="LOCAL" />
       <updated>1691609730255</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="feat(lexer): Add Clear Points Of Extension; Spruce Up Framework&#10;&#10;Made changes in the Lexer, Parser, and their respective usages to leverage abstract base classes (BisLexerAbs and BisLexerCore), improving code reusability and structure. Introduced BisLexerAbs and BisLexerCore in Parsing namespace. Rewrote existing code to diminish redundancy. This increases code scalability and readability, and prepares the groundwork for additional improvements and potential Lexer extensions.">
+      <option name="closed" value="true" />
+      <created>1691692722870</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1691692722870</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -749,7 +744,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(bank.extras): Create BisUtils.Extensions.RVBank.Extras" />
     <MESSAGE value="feat(bank.extras): Create And Add BisUtils.Extensions.RVBank.Extras Project" />
     <MESSAGE value="chore: Restructure Solution Layout" />
     <MESSAGE value="feat(EnConfig): Initial Commit; Create EnConfig Project" />
@@ -774,7 +768,8 @@
     <MESSAGE value="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`" />
     <MESSAGE value="chore(template): Rename BisUtils.LexLibrary Template Name" />
     <MESSAGE value="feat(rv): Start Work On Implementing New Lexer/Parser Framework To BisUtils.Param" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(rv): Start Work On Implementing New Lexer/Parser Framework To BisUtils.Param" />
+    <MESSAGE value="feat(lexer): Add Clear Points Of Extension; Spruce Up Framework&#10;&#10;Made changes in the Lexer, Parser, and their respective usages to leverage abstract base classes (BisLexerAbs and BisLexerCore), improving code reusability and structure. Introduced BisLexerAbs and BisLexerCore in Parsing namespace. Rewrote existing code to diminish redundancy. This increases code scalability and readability, and prepares the groundwork for additional improvements and potential Lexer extensions." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(lexer): Add Clear Points Of Extension; Spruce Up Framework&#10;&#10;Made changes in the Lexer, Parser, and their respective usages to leverage abstract base classes (BisLexerAbs and BisLexerCore), improving code reusability and structure. Introduced BisLexerAbs and BisLexerCore in Parsing namespace. Rewrote existing code to diminish redundancy. This increases code scalability and readability, and prepares the groundwork for additional improvements and potential Lexer extensions." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
