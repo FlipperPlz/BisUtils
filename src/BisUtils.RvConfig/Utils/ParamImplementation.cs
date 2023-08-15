@@ -12,29 +12,29 @@ using Options;
 
 public interface IParamImplementation : IBinaryObject<ParamOptions>
 {
-    IParamFile ParamFile { get; set; }
+    IRvConfigFile RvConfigFile { get; set; }
     string Name { get; set; }
 }
 
 public class ParamImplementation : BinaryObject<ParamOptions>, IParamImplementation
 {
-    public IParamFile ParamFile { get; set; }
-    public string Name { get => ParamFile.FileName; set => ParamFile.FileName = value; }
+    public IRvConfigFile RvConfigFile { get; set; }
+    public string Name { get => RvConfigFile.FileName; set => RvConfigFile.FileName = value; }
 
-    protected ParamImplementation(IParamFile paramFile) : base(((ParamElement)paramFile).Logger) => ParamFile = paramFile;
+    protected ParamImplementation(IRvConfigFile rvConfigFile) : base(((ParamElement)rvConfigFile).Logger) => RvConfigFile = rvConfigFile;
 
     protected ParamImplementation(string name, BisBinaryReader reader, ParamOptions options, ILogger? logger) : base(logger)
     {
-        ParamFile = new ParamFile(name, reader, options, logger);
-        if (ParamFile.LastResult is { } result && result)
+        RvConfigFile = new RvConfigFile(name, reader, options, logger);
+        if (RvConfigFile.LastResult is { } result && result)
         {
             result.Throw();
         }
     }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) =>
-       LastResult = ParamFile.Binarize(writer, options);
+       LastResult = RvConfigFile.Binarize(writer, options);
 
     public sealed override Result Debinarize(BisBinaryReader reader, ParamOptions options) =>
-        LastResult = ParamFile.Debinarize(reader, options);
+        LastResult = RvConfigFile.Debinarize(reader, options);
 }

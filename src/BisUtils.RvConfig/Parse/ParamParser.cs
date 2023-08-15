@@ -19,7 +19,7 @@ using RvProcess;
 /// It specifically parses `ParamFile` nodes using the `ParamLexer` and `ParamTypes` types.
 /// It also uses `RVPreProcessor` for preprocessing.
 /// </summary>
-public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes, RvPreProcessor>
+public class ParamParserOld : IBisParserOld<RvConfigFile, ParamLexerOld, ParamTypes, RvPreProcessor>
 {
     /// <summary>
     /// Gets the current and only instance of the parser.
@@ -42,10 +42,10 @@ public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes
     /// <param name="lexerOld">The `ParamLexer` instance to be parsed.</param>
     /// <param name="logger">Logger for parsing</param>
     /// <returns>A `Result` instance representing the result of the parsing operation.</returns>
-    public Result Parse(out ParamFile? node, ParamLexerOld lexerOld, ILogger? logger)
+    public Result Parse(out RvConfigFile? node, ParamLexerOld lexerOld, ILogger? logger)
     {
         var results = new List<Result>();
-        node = new ParamFile("config", new List<IParamStatement>(), logger);
+        node = new RvConfigFile("config", new List<IParamStatement>(), logger);
         var stack = new Stack<IParamStatementHolder>();
         stack.Push(node);
         var context = stack.Peek();
@@ -238,7 +238,7 @@ public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes
     /// <param name="lexerOld">The `ParamLexer` providing the literal to parse.</param>
     /// <param name="next">Output parameter to hand back the next token after parsing the literal.</param>
     /// <returns>An `IParamLiteralBase` instance representing the parsed literal.</returns>
-    private static IParamLiteral ParseLiteral(IParamFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexerOld lexerOld, ref IBisLexerOld<ParamTypes>.TokenMatch next)
+    private static IParamLiteral ParseLiteral(IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexerOld lexerOld, ref IBisLexerOld<ParamTypes>.TokenMatch next)
     {
         do
         {
@@ -248,13 +248,13 @@ public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes
         return lexerOld.CurrentChar == '{' ? ParseParamArray(file, parent, logger, lexerOld) : ParseParamPrimitive(file, parent, logger, lexerOld);
     }
 
-    private static IParamLiteral ParseParamPrimitive(IParamFile? file, IParamLiteralHolder? parent, ILogger? logger, IBisStringStepper lexer, params char[] delimiters)
+    private static IParamLiteral ParseParamPrimitive(IRvConfigFile? file, IParamLiteralHolder? parent, ILogger? logger, IBisStringStepper lexer, params char[] delimiters)
     {
         var value = ParseParamString(file, parent, logger, lexer, delimiters);
         return value.ToFloat(out var paramFloat) ? paramFloat : value.ToInt(out var paramInt) ? paramInt : value;
     }
 
-    private static ParamString ParseParamString(IParamFile file, IParamLiteralHolder parent, ILogger? logger, IBisStringStepper? lexer, params char[] delimiters)
+    private static ParamString ParseParamString(IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger, IBisStringStepper? lexer, params char[] delimiters)
     {
         var quoted = false;
         if (lexer.CurrentChar == '"')
@@ -311,7 +311,7 @@ public class ParamParserOld : IBisParserOld<ParamFile, ParamLexerOld, ParamTypes
         }
     }
 
-    private static ParamArray ParseParamArray(IParamFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexerOld lexerOld)
+    private static ParamArray ParseParamArray(IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger, ParamLexerOld lexerOld)
     {
         var results = new List<Result>();
         var array = new ParamArray(new List<IParamLiteral>(), file, parent, logger);

@@ -80,11 +80,11 @@ public static class ParamStatementHolderExtensions
         return null;
     }
 
-    public static T CreateVariable<T>(this IParamStatementHolder ctx, string name, T value, ILogger? logger) where T : IParamLiteral => (T) new ParamVariable(name, value, ParamOperatorType.Assign, ctx.ParamFile, ctx, logger).VariableValue;
+    public static T CreateVariable<T>(this IParamStatementHolder ctx, string name, T value, ILogger? logger) where T : IParamLiteral => (T) new ParamVariable(name, value, ParamOperatorType.Assign, ctx.RvConfigFile, ctx, logger).VariableValue;
 
     public static T AddVariable<T>(this IParamStatementHolder ctx, string name, T value, ILogger? logger) where T : IParamLiteral
     {
-        var variable = new ParamVariable(name, value, ParamOperatorType.Assign, ctx.ParamFile, ctx, logger);
+        var variable = new ParamVariable(name, value, ParamOperatorType.Assign, ctx.RvConfigFile, ctx, logger);
         ctx.Statements.Add(variable);
         return (T)variable.VariableValue;
 

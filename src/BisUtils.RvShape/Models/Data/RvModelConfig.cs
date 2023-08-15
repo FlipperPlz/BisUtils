@@ -7,7 +7,7 @@ using RvConfig.Models.Stubs;
 using RvConfig.Options;
 using Microsoft.Extensions.Logging;
 
-public interface IRvModelConfig : IParamFile
+public interface IRvModelConfig : IRvConfigFile
 {
     public string ModelName { get; }
     public IParamClass? SkeletonConfigs { get; }
@@ -15,7 +15,7 @@ public interface IRvModelConfig : IParamFile
     public IParamClass? ModelConfig { get; }
 }
 
-public class RvModelConfig : ParamFile, IRvModelConfig
+public class RvModelConfig : RvConfigFile, IRvModelConfig
 {
     public string ModelName => FileName;
     public IParamClass? SkeletonConfigs { get; }

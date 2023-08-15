@@ -26,13 +26,13 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>
     public IParamLiteralHolder Parent { get; set; }
     public abstract T Value { get; set; }
 
-    protected ParamLiteral(T? value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(file, logger)
+    protected ParamLiteral(T? value, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(file, logger)
     {
         ParamValue = value;
         Parent = parent;
     }
 
-    protected ParamLiteral(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger)
+    protected ParamLiteral(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger)
         : base(reader, options, file, logger) =>
         Parent = parent;
 
@@ -53,7 +53,7 @@ public abstract class ParamLiteral<T> : ParamElement, IParamLiteral<T>
     public void SyncToContext(IParamLiteralHolder holder)
     {
         Parent = holder;
-        ParamFile = holder.ParamFile;
+        RvConfigFile = holder.RvConfigFile;
     }
 
     public override Result Validate(ParamOptions options) =>

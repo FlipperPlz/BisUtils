@@ -34,11 +34,11 @@ public abstract class ParamVariableBase : ParamStatement, IParamVariable
         set => VariableValue = value[0];
     }
 
-    protected ParamVariableBase(IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger)
+    protected ParamVariableBase(IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger)
     {
     }
 
-    protected ParamVariableBase(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
+    protected ParamVariableBase(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
     }
 
@@ -65,14 +65,14 @@ public class ParamVariable : ParamVariableBase, IParamVariable
     }
 
 
-    public ParamVariable(string variableName, IParamLiteral variableValue, ParamOperatorType operatorType, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger)
+    public ParamVariable(string variableName, IParamLiteral variableValue, ParamOperatorType operatorType, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger)
     {
         VariableName = variableName;
         VariableOperator = operatorType;
         VariableValue = variableValue;
     }
 
-    public ParamVariable(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
+    public ParamVariable(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {
@@ -100,7 +100,7 @@ public class ParamVariable : ParamVariableBase, IParamVariable
 
         var result = reader.ReadAsciiZ(out var name, options);
         VariableName = name;
-        result.WithReasons(ParamLiteralFactory.ReadLiteral(reader, options, out var value, ParamFile, this, Logger).Reasons);
+        result.WithReasons(ParamLiteralFactory.ReadLiteral(reader, options, out var value, RvConfigFile, this, Logger).Reasons);
         VariableValue = value!;
         return result;
     }

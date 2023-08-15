@@ -79,7 +79,7 @@ public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx
             variable = (IParamVariable) added.Parent;
         }
 
-        variable.VariableValue = (IParamLiteral) new ParamString(value, ParamStringType.Quoted, ParamContext.ParamFile, variable, Logger);
+        variable.VariableValue = (IParamLiteral) new ParamString(value, ParamStringType.Quoted, ParamContext.RvConfigFile, variable, Logger);
 
     }
 
@@ -97,6 +97,6 @@ public abstract class ParamConfigAbstraction<TCtx>: IParamConfigAbstraction<TCtx
         }
 
         variable.VariableValue = new ParamArray( values.Select(it =>
-            (IParamLiteral)new ParamString(it, ParamStringType.Quoted, ParamContext.ParamFile, variable, Logger)), ParamContext.ParamFile, variable, Logger);
+            (IParamLiteral)new ParamString(it, ParamStringType.Quoted, ParamContext.RvConfigFile, variable, Logger)), ParamContext.RvConfigFile, variable, Logger);
     }
 }

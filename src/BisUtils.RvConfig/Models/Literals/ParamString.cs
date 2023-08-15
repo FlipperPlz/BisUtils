@@ -25,10 +25,10 @@ public class ParamString : ParamLiteral<string>, IParamString
     public ParamStringType StringType { get; }
     public static IParamString EmptyNoParents { get; } = new ParamString(null!, null!, null!, null!, null);
 
-    public ParamString(string value, ParamStringType stringType, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger) =>
+    public ParamString(string value, ParamStringType stringType, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger) =>
         StringType = stringType;
 
-    public ParamString(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) :
+    public ParamString(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) :
         base(reader, options, file, parent, logger)
     {
         StringType = ParamStringType.Quoted;
@@ -79,7 +79,7 @@ public class ParamString : ParamLiteral<string>, IParamString
             return response;
         }
 
-        paramInt = new ParamInt(parsedInt, ParamFile, Parent, Logger);
+        paramInt = new ParamInt(parsedInt, RvConfigFile, Parent, Logger);
         return true;
     }
 
@@ -91,7 +91,7 @@ public class ParamString : ParamLiteral<string>, IParamString
             paramFloat = null;
             return response;
         }
-        paramFloat = new ParamFloat(parsedInt, ParamFile, Parent, null);
+        paramFloat = new ParamFloat(parsedInt, RvConfigFile, Parent, null);
         return true;
     }
 

@@ -19,9 +19,9 @@ public class ParamExternalClass : ParamStatement, IParamExternalClass
     public string ClassName { get; set; } = null!;
     public override byte StatementId => 3;
 
-    public ParamExternalClass(string className, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger) => ClassName = className;
+    public ParamExternalClass(string className, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger) => ClassName = className;
 
-    public ParamExternalClass(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
+    public ParamExternalClass(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

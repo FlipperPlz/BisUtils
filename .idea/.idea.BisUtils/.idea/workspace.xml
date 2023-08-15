@@ -15,10 +15,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Enumerations/RvConfigValueType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.DzConfig/DzConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.DzConfig/DzConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Extensions/ParamStatementHolderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Extensions/ParamStatementHolderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Factories/ParamLiteralFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Factories/ParamLiteralFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Factories/ParamStatementFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Factories/ParamStatementFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamArray.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamArray.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamFloat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamFloat.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamInt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamInt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Literals/ParamString.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/ParamFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/RvConfigFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamClass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamDelete.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamDelete.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamExternalClass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamExternalClass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamVariable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Statements/ParamVariable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Stubs/ParamElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Stubs/ParamElement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Stubs/ParamLiteral.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Stubs/ParamLiteral.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Stubs/ParamStatement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/Stubs/ParamStatement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamConfigAbstraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamConfigAbstraction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamImplementation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamImplementation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvModelConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvShape/Models/Data/RvModelConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Scratches/ParamTest/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Scratches/ParamTest/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -322,15 +347,8 @@
       <workItem from="1692026896196" duration="1734000" />
       <workItem from="1692035905490" duration="3518000" />
       <workItem from="1692040867693" duration="11129000" />
-      <workItem from="1692120460713" duration="1220000" />
-    </task>
-    <task id="LOCAL-00026" summary="feat(bank): Adjustments To Bank Debinarization">
-      <option name="closed" value="true" />
-      <created>1690477130394</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1690477130394</updated>
+      <workItem from="1692120460713" duration="1658000" />
+      <workItem from="1692126571797" duration="1372000" />
     </task>
     <task id="LOCAL-00027" summary="refactor(bank): Refactor ExpandDirectoryStructure feature">
       <option name="closed" value="true" />
@@ -716,7 +734,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692111273274</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="feat(rvConfig): More Work On Param Variable Parsing">
+      <option name="closed" value="true" />
+      <created>1692121719701</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1692121719701</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -748,7 +774,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
     <MESSAGE value="refactor(lexer): Edit TokenSet So Implementations Are Minimal" />
     <MESSAGE value="feat(EnLex): Start Working On EnfusionTokens.cs" />
     <MESSAGE value="feat(lexer): Finish Up Lexer Implementation" />
@@ -773,7 +798,8 @@
     <MESSAGE value="feat(rvConfig): Start Writing New RvConfig Parser" />
     <MESSAGE value="feat(rvConfig): More Work On RvConfig Parser.&#10;&#10;-Several changes aiming to improve the Parser and Lexer functionality within the BisUtils package. -The Lexer has seen a restructure to improve token matching and whitespace handling. Both these enhancements lead to a more robust and precise tokenization process. &#10;- The Parser has been refactored to cover various edge case scenarios and to provide more insightful error messages. Changes also include better handling of tokens and context information, leading to a more accurate parsing process. &#10;- The ILogger has been introduced to support better logging throughout these processes. The changes are a crucial part of making the BisUtils more efficient and reliable in its parsing and tokenizing tasks." />
     <MESSAGE value="refactor(rvConfig): Organization Of Parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(rvConfig): Organization Of Parser" />
+    <MESSAGE value="feat(rvConfig): More Work On Param Variable Parsing" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(rvConfig): More Work On Param Variable Parsing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

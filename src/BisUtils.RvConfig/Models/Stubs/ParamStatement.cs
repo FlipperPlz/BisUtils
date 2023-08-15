@@ -15,11 +15,11 @@ public interface IParamStatement : IParamElement
 
 public abstract class ParamStatement : ParamElement, IParamStatement
 {
-    protected ParamStatement(IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, logger) =>
+    protected ParamStatement(IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(file, logger) =>
         ParentClass = parent;
 
     protected ParamStatement(  BisBinaryReader reader,
-        ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base( reader, options, file, logger) =>
+        ParamOptions options, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base( reader, options, file, logger) =>
         ParentClass = parent;
 
 
@@ -29,7 +29,7 @@ public abstract class ParamStatement : ParamElement, IParamStatement
     public void SyncToContext(IParamStatementHolder holder)
     {
         ParentClass = holder;
-        ParamFile = holder.ParamFile;
+        RvConfigFile = holder.RvConfigFile;
     }
 
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options)

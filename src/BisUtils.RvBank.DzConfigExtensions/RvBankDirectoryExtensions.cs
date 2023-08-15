@@ -13,7 +13,7 @@ public static class RvBankDirectoryExtensions
     public static IRvBankDataEntry? LocateConfigEntry(this IRvBankDirectory directory) =>
         directory.GetDataEntry("config.cpp") ?? directory.GetDataEntry("config.bin");
 
-    public static IParamFile? LocateConfigFile(this IRvBankDirectory directory, ParamOptions paramOptions)
+    public static IRvConfigFile? LocateConfigFile(this IRvBankDirectory directory, ParamOptions paramOptions)
     {
         var entry = LocateConfigEntry(directory);
         if (entry is null)
@@ -22,7 +22,7 @@ public static class RvBankDirectoryExtensions
         }
 
         using var reader = new BisBinaryReader(entry.EntryData, paramOptions.Charset, true);
-        return new ParamFile("config", reader, paramOptions, directory.Logger);
+        return new RvConfigFile("config", reader, paramOptions, directory.Logger);
     }
 
     public static DzConfig? LocateAddonConfig(this IRvBankDirectory directory, ParamOptions paramOptions)
@@ -60,11 +60,11 @@ public static class RvBankDirectoryExtensions
         return configs;
     }
 
-    public static IEnumerable<IParamFile> LocateConfigFiles(this IRvBankDirectory directory, ParamOptions paramOptions, SearchOption option) =>
+    public static IEnumerable<IRvConfigFile> LocateConfigFiles(this IRvBankDirectory directory, ParamOptions paramOptions, SearchOption option) =>
         LocateConfigEntries(directory, option).Select(it =>
         {
             using var reader = new BisBinaryReader(it.EntryData, paramOptions.Charset, true);
-            return new ParamFile("config", reader, paramOptions, directory.Logger);
+            return new RvConfigFile("config", reader, paramOptions, directory.Logger);
         });
 
     public static IEnumerable<DzConfig> LocateAddonConfigs(this IRvBankDirectory directory, ParamOptions paramOptions,

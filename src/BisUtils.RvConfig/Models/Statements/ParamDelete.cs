@@ -21,10 +21,10 @@ public class ParamDelete : ParamStatement, IParamDelete
     public override byte StatementId => 4;
     public string DeleteTargetName { get; set; } = null!;
 
-    public ParamDelete(string target, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger) =>
+    public ParamDelete(string target, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(file, parent, logger) =>
         DeleteTargetName = target;
 
-    public ParamDelete(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
+    public ParamDelete(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

@@ -11,22 +11,22 @@ using Parse;
 using Statements;
 using Stubs;
 
-public interface IParamFile : IParamClass
+public interface IRvConfigFile : IParamClass
 {
     string FileName { get; set; }
 }
 
-public class ParamFile : ParamClass, IParamFile
+public class RvConfigFile : ParamClass, IRvConfigFile
 {
     public string FileName { get => ClassName; set => ClassName = value; }
 
-    public ParamFile(string fileName, List<IParamStatement> statements, ILogger? logger) : base( fileName, null, statements, null!, null!, logger)
+    public RvConfigFile(string fileName, List<IParamStatement> statements, ILogger? logger) : base( fileName, null, statements, null!, null!, logger)
     {
         FileName = fileName;
         Statements = statements;
     }
 
-    public ParamFile(string fileName, BisBinaryReader reader, ParamOptions options, ILogger? logger) : base(reader, options, null!, null!, logger)
+    public RvConfigFile(string fileName, BisBinaryReader reader, ParamOptions options, ILogger? logger) : base(reader, options, null!, null!, logger)
     {
         FileName = fileName;
         if (!Debinarize(reader, options))
@@ -35,7 +35,7 @@ public class ParamFile : ParamClass, IParamFile
         }
     }
 
-    public ParamFile()
+    public RvConfigFile()
     {
 
     }
@@ -43,7 +43,7 @@ public class ParamFile : ParamClass, IParamFile
     public override Result Binarize(BisBinaryWriter writer, ParamOptions options) => throw new NotImplementedException();
 
 
-    public static ParamFile? ReadParamFile(string fileName, Stream stream, ParamOptions options, ILogger? logger)
+    public static RvConfigFile? ReadParamFile(string fileName, Stream stream, ParamOptions options, ILogger? logger)
     {
         stream.Seek(0, SeekOrigin.Begin);
         using var memory = new MemoryStream();
@@ -63,7 +63,7 @@ public class ParamFile : ParamClass, IParamFile
             return node;
         }
         reader.BaseStream.Seek(-4, SeekOrigin.Current);
-        return new ParamFile(fileName, reader, options, logger);
+        return new RvConfigFile(fileName, reader, options, logger);
     }
 
     private new Result Debinarize(BisBinaryReader reader, ParamOptions options)

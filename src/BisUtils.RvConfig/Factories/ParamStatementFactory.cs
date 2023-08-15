@@ -11,7 +11,7 @@ using Options;
 
 public static class ParamStatementFactory
 {
-    public static Result ReadStatement(BisBinaryReader reader, ParamOptions options, out IParamStatement? statement, IParamFile file, IParamStatementHolder parent, ILogger? logger)
+    public static Result ReadStatement(BisBinaryReader reader, ParamOptions options, out IParamStatement? statement, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger)
     {
         statement = (options.LastStatementId = reader.ReadByte()) switch
         {

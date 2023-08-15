@@ -33,7 +33,7 @@ public class ParamClass : ParamStatement, IParamClass
         string className,
         string? inheritedClassname,
         List<IParamStatement>? statements,
-        IParamFile file,
+        IRvConfigFile file,
         IParamStatementHolder parent,
         ILogger? logger
     ) : base(file, parent, logger)
@@ -43,7 +43,7 @@ public class ParamClass : ParamStatement, IParamClass
         InheritedClassname = inheritedClassname;
     }
 
-    public ParamClass(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamStatementHolder parent, ILogger? logger) :
+    public ParamClass(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamStatementHolder parent, ILogger? logger) :
         base(reader, options, file, parent, logger)
     {
         Statements = new List<IParamStatement>();
@@ -100,7 +100,7 @@ public class ParamClass : ParamStatement, IParamClass
 
         for (var i = 0; i < reader.ReadCompactInteger(); i++)
         {
-            value.WithReasons(ParamStatementFactory.ReadStatement(reader, options, out var statement, ParamFile, this, Logger)
+            value.WithReasons(ParamStatementFactory.ReadStatement(reader, options, out var statement, RvConfigFile, this, Logger)
                 .Reasons);
             if (statement is null)
             {

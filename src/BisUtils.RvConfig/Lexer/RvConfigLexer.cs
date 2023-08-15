@@ -1,6 +1,5 @@
 ﻿namespace BisUtils.RvConfig.Lexer;
 
-using Core.Parsing.Token.Matching;
 using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Enumerations;
@@ -9,10 +8,10 @@ using Tokens;
 
 public interface IRvConfigLexer : IRvLexer<RvConfigTokenSet>
 {
-    public IBisTokenType MatchWhitespace();
     public IBisTokenType MatchCurly(bool isLeft);
     public IBisTokenType MatchSquare(bool isLeft);
     public IBisTokenType MatchColon();
+    public IBisTokenType MatchQuotedString(int tokenStart, char? currentChar);
     public IBisTokenType TryMatchOperator(ParamOperatorType type);
     public IBisTokenType TryMatchSubAssign();
     public IBisTokenType TryMatchAddAssign();
@@ -22,11 +21,6 @@ public interface IRvConfigLexer : IRvLexer<RvConfigTokenSet>
     public IBisTokenType MatchAssignOperator();
     public IBisTokenType MatchSeparator();
 
-    public static bool IsWhitespace(char? c) => c switch
-    {
-        '\t' or '\u000B' or '\u000C' or ' ' or '\r' or '\n' => true,
-        _ => false
-    };
 
     public static bool IsIdentifierChar(char? c, bool isFirst = false)
     {
@@ -51,47 +45,31 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
     }
 
 
-    protected override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar)
+    protected override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar) => currentChar switch
     {
-        if (IRvConfigLexer.IsWhitespace(currentChar))
-        {
-            return MatchWhitespace();
-        }
+        '{' => MatchCurly(true),
+        '}' => MatchCurly(false),
+        ';' => MatchSeparator(),
+        ':' => MatchColon(),
+        '[' => MatchSquare(true),
+        ']' => MatchSquare(false),
+        '+' => TryMatchOperator(ParamOperatorType.AddAssign),
+        '-' => TryMatchOperator(ParamOperatorType.SubAssign),
+        '=' => TryMatchOperator(ParamOperatorType.Assign),
+        'c' => TryMatchKeyword(RvConfigKeywordType.Class),
+        'e' => TryMatchKeyword(RvConfigKeywordType.Enum),
+        'd' => TryMatchKeyword(RvConfigKeywordType.Delete),
+        _ => TryMatchIdentifier()
+    };
 
-        return currentChar switch
-        {
-            '{' => MatchCurly(true),
-            '}' => MatchCurly(false),
-            ';' => MatchSeparator(),
-            ':' => MatchColon(),
-            '[' => MatchSquare(true),
-            ']' => MatchSquare(false),
-            '+' => TryMatchOperator(ParamOperatorType.AddAssign),
-            '-' => TryMatchOperator(ParamOperatorType.SubAssign),
-            '=' => TryMatchOperator(ParamOperatorType.Assign),
-            'c' => TryMatchKeyword(RvConfigKeywordType.Class),
-            'e' => TryMatchKeyword(RvConfigKeywordType.Enum),
-            'd' => TryMatchKeyword(RvConfigKeywordType.Delete),
-            _ => TryMatchIdentifier()
-        };
+    public override IBisTokenType MatchQuote(int tokenStart, char? currentChar) =>
+        PeekForward() == '"' ? RvConfigTokenSet.ConfigQuoteEscape : MatchQuotedString(tokenStart, currentChar);
+
+    public IBisTokenType MatchQuotedString(int tokenStart, char? currentChar)
+    {
+        throw new NotImplementedException();
     }
 
-    public int LexWhitespace(ref BisTokenMatch match, bool matchCurrent = false)
-    {
-
-        if (!matchCurrent)
-        {
-            match = LexToken();
-        }
-        var i = 0;
-        while (match.TokenType == RvConfigTokenSet.ConfigWhitespace || match.TokenType == RvConfigTokenSet.RvNewLine)
-        {
-            match = LexToken();
-            i++;
-        }
-
-        return i;
-    }
 
     public IBisTokenType TryMatchIdentifier()
     {
@@ -164,7 +142,5 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
     public IBisTokenType MatchSeparator() => RvConfigTokenSet.ConfigSeparator;
 
 
-    public IBisTokenType MatchWhitespace() =>
-        MatchWhile(IRvConfigLexer.IsWhitespace, RvConfigTokenSet.ConfigWhitespace, false);
 
 }

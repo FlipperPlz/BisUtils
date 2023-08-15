@@ -24,16 +24,16 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
     public List<IParamLiteral> Literals { get => Value; set => Value = value; }
     public static IParamArray Nill { get; } = new ParamArray(null!, null!, null!, null!);
 
-    public ParamArray(List<IParamLiteral> value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
+    public ParamArray(List<IParamLiteral> value, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
     {
     }
 
-    public ParamArray(IEnumerable<IParamLiteral> value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : this(value.ToList(), file,
+    public ParamArray(IEnumerable<IParamLiteral> value, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : this(value.ToList(), file,
         parent, logger)
     {
     }
 
-    public ParamArray(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) :
+    public ParamArray(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) :
         base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
@@ -56,7 +56,7 @@ public class ParamArray : ParamLiteral<List<IParamLiteral>>, IParamArray
         var contents = new List<IParamLiteral>(reader.ReadCompactInteger());
         for (var i = 0; i < contents.Capacity; ++i)
         {
-            results.WithReasons(ParamLiteralFactory.ReadLiteral(reader, options, out var literal, ParamFile, this, Logger)
+            results.WithReasons(ParamLiteralFactory.ReadLiteral(reader, options, out var literal, RvConfigFile, this, Logger)
                 .Reasons);
             if (literal is null)
             {

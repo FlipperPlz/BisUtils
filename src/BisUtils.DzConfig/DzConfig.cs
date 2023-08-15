@@ -5,19 +5,19 @@ using RvConfig.Extensions;
 using RvConfig.Models;
 using RvConfig.Utils;
 
-public interface IDzConfig : IParamConfigAbstraction<IParamFile>
+public interface IDzConfig : IParamConfigAbstraction<IRvConfigFile>
 {
     public IEnumerable<IDzCfgPatch>? CfgPatches { get; }
     public IEnumerable<IDzCfgMod>? CfgMods { get; }
 }
 
-public class DzConfig : ParamConfigAbstraction<IParamFile>, IDzConfig
+public class DzConfig : ParamConfigAbstraction<IRvConfigFile>, IDzConfig
 {
     public IEnumerable<IDzCfgPatch>? CfgPatches { get; private set; }
 
     public IEnumerable<IDzCfgMod>? CfgMods { get; private set; }
 
-    public DzConfig(IParamFile ctx) : base(ctx)
+    public DzConfig(IRvConfigFile ctx) : base(ctx)
     {
         if (ParamContext.LocateBaseClass("CfgPatches") is { } patches)
         {

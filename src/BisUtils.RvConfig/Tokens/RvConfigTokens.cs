@@ -8,8 +8,6 @@ public sealed class RvConfigTokenSet : RvTokenSet<RvConfigTokenSet>
 {
     public static RvConfigTokenSet Instance => BisSingletonProvider.LocateInstance<RvConfigTokenSet>();
 
-    public static readonly IBisTokenType ConfigWhitespace =
-        new BisTokenType("param.abstract.whitespace", "[\t ]");
 
     public static readonly IBisTokenType ConfigLiteral =
         new BisTokenType("param.abstract.literal", ToComplex);
@@ -43,6 +41,9 @@ public sealed class RvConfigTokenSet : RvTokenSet<RvConfigTokenSet>
 
     public static readonly IBisTokenType ConfigClass =
         new BisTokenType("param.keyword.class", "class");
+
+    public static readonly IBisTokenType ConfigQuoteEscape =
+        new BisTokenType("param.string.escape.quote", "\"\"");
 
     public static readonly IBisTokenType ConfigDelete =
         new BisTokenType("param.keyword.delete", "delete");

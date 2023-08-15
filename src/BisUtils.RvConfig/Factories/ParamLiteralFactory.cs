@@ -13,7 +13,7 @@ public static class ParamLiteralFactory
 {
 
     public static Result ReadLiteral(BisBinaryReader reader,
-        ParamOptions options, out IParamLiteral? literal, IParamFile file, IParamLiteralHolder parent, ILogger? logger)
+        ParamOptions options, out IParamLiteral? literal, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger)
     {
         literal = (options.LastLiteralId = reader.ReadByte()) switch
         {

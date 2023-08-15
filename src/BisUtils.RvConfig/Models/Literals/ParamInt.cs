@@ -20,11 +20,11 @@ public class ParamInt : ParamLiteral<int>, IParamInt
     public override byte LiteralId => 2;
     public override int Value { get; set; }
 
-    public ParamInt(int value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
+    public ParamInt(int value, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
     {
     }
 
-    public ParamInt(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
+    public ParamInt(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {

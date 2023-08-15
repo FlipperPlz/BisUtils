@@ -19,11 +19,11 @@ public class ParamFloat : ParamLiteral<float>, IParamFloat
     public override byte LiteralId => 1;
     public override float Value { get; set; }
 
-    public ParamFloat(float value, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
+    public ParamFloat(float value, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger)
     {
     }
 
-    public ParamFloat(BisBinaryReader reader, ParamOptions options, IParamFile file, IParamLiteralHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
+    public ParamFloat(BisBinaryReader reader, ParamOptions options, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(reader, options, file, parent, logger)
     {
         if (!Debinarize(reader, options))
         {
