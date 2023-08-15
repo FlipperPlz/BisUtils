@@ -16,7 +16,7 @@ public static class BisLexerExtensions
         }
     }
 
-    public static bool IfMatches(this IBisTokenMatch match, Action<IBisTokenMatch> predicate, IBisTokenType validTokenType )
+    public static bool IfMatches(this IBisTokenMatch match,IBisTokenType validTokenType, Action<IBisTokenMatch> predicate)
     {
         if (validTokenType == match.TokenType)
         {
