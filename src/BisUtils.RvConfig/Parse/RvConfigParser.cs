@@ -5,6 +5,7 @@ using Core.Parsing.Parser;
 using Core.Parsing.Token.Matching;
 using Core.Parsing.Token.Typing;
 using Core.Singleton;
+using Enumerations;
 using Lexer;
 using Microsoft.Extensions.Logging;
 using Models;
@@ -24,8 +25,53 @@ public interface IRvConfigParser : IBisParser<
     public static void ParseVariable(IParamClass context, ParamFile file, RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
     {
         var variableName = match.TokenText;
-        lexer.LexWhitespace(ref match);
+        var variableType = ParseVariableType(lexer, ref match, logger);
+        var op = ParseVariableOperator(lexer, ref match, logger);
+
+
         throw new NotImplementedException();
+    }
+
+
+    public static RvConfigValueType ParseVariableType(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
+    {
+        lexer.LexWhitespace(ref match);
+        if (!match.IsType(RvConfigTokenSet.ConfigLSquare))
+        {
+            return RvConfigValueType.ParamString;
+        }
+
+        ParseArraySquare(lexer, ref match, logger);
+        return RvConfigValueType.ParamArray;
+    }
+
+    public static ParamOperatorType ParseVariableOperator(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
+    {
+        lexer.LexWhitespace(ref match);
+        if (match.IsType(RvConfigTokenSet.ConfigAssign))
+        {
+            return ParamOperatorType.Assign;
+        }
+
+        if (match.IsType(RvConfigTokenSet.ConfigAddAssign))
+        {
+            return ParamOperatorType.AddAssign;
+        }
+
+        if (match.IsType(RvConfigTokenSet.ConfigSubAssign))
+        {
+            return ParamOperatorType.SubAssign;
+        }
+
+        throw new NotImplementedException(); //TODO: Unknown Operator
+    }
+
+    public static void ParseArraySquare(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
+    {
+        lexer.LexWhitespace(ref match);
+        if (match.IsNotType(RvConfigTokenSet.ConfigRSquare))
+        {
+        }
     }
 
     public static void ParseEnum(IParamClass context, ParamFile file, RvConfigLexer lexer, out BisTokenMatch match, RvConfigParseContext info, ILogger? logger)

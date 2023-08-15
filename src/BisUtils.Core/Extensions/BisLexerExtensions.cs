@@ -18,7 +18,7 @@ public static class BisLexerExtensions
 
     public static bool IfMatches(this IBisTokenMatch match,IBisTokenType validTokenType, Action<IBisTokenMatch> predicate)
     {
-        if (validTokenType == match.TokenType)
+        if (validTokenType != match.TokenType)
         {
             return false;
         }
@@ -26,6 +26,21 @@ public static class BisLexerExtensions
         predicate(match);
         return true;
 
+    }
 
+    public static bool IsNotType(this IBisTokenMatch match, IBisTokenType type) => !IsType(match, type);
+
+
+    public static bool IsType(this IBisTokenMatch match, IBisTokenType type) => match.TokenType == type;
+
+    public static bool IfDoesntMatch(this IBisTokenMatch match, IBisTokenType invalidTokenType, Action<IBisTokenMatch> predicate)
+    {
+        if (invalidTokenType == match.TokenType)
+        {
+            return false;
+        }
+
+        predicate(match);
+        return true;
     }
 }

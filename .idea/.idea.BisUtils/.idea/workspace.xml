@@ -15,6 +15,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Enumerations/RvConfigValueType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
@@ -69,12 +70,14 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Parsing/Parser/BisParser.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.DZConfig/Models/DzCfgMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/RvBankDirectoryTreeExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankBinarizationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankCreationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -318,15 +321,8 @@
       <workItem from="1691776746083" duration="1785000" />
       <workItem from="1692026896196" duration="1734000" />
       <workItem from="1692035905490" duration="3518000" />
-      <workItem from="1692040867693" duration="10775000" />
-    </task>
-    <task id="LOCAL-00025" summary="feat(bank): Start Working On RVBankDataEntry">
-      <option name="closed" value="true" />
-      <created>1690474797210</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1690474797210</updated>
+      <workItem from="1692040867693" duration="11129000" />
+      <workItem from="1692120460713" duration="1220000" />
     </task>
     <task id="LOCAL-00026" summary="feat(bank): Adjustments To Bank Debinarization">
       <option name="closed" value="true" />
@@ -712,7 +708,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692110123990</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="refactor(rvConfig): Organization Of Parser">
+      <option name="closed" value="true" />
+      <created>1692111273274</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1692111273274</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -744,7 +748,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(core): Start Working On Parser Framework Overhaul" />
     <MESSAGE value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
     <MESSAGE value="refactor(lexer): Edit TokenSet So Implementations Are Minimal" />
     <MESSAGE value="feat(EnLex): Start Working On EnfusionTokens.cs" />
@@ -769,7 +772,8 @@
     <MESSAGE value="feat(rvConfig): Create RvConfigParser" />
     <MESSAGE value="feat(rvConfig): Start Writing New RvConfig Parser" />
     <MESSAGE value="feat(rvConfig): More Work On RvConfig Parser.&#10;&#10;-Several changes aiming to improve the Parser and Lexer functionality within the BisUtils package. -The Lexer has seen a restructure to improve token matching and whitespace handling. Both these enhancements lead to a more robust and precise tokenization process. &#10;- The Parser has been refactored to cover various edge case scenarios and to provide more insightful error messages. Changes also include better handling of tokens and context information, leading to a more accurate parsing process. &#10;- The ILogger has been introduced to support better logging throughout these processes. The changes are a crucial part of making the BisUtils more efficient and reliable in its parsing and tokenizing tasks." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(rvConfig): More Work On RvConfig Parser.&#10;&#10;-Several changes aiming to improve the Parser and Lexer functionality within the BisUtils package. -The Lexer has seen a restructure to improve token matching and whitespace handling. Both these enhancements lead to a more robust and precise tokenization process. &#10;- The Parser has been refactored to cover various edge case scenarios and to provide more insightful error messages. Changes also include better handling of tokens and context information, leading to a more accurate parsing process. &#10;- The ILogger has been introduced to support better logging throughout these processes. The changes are a crucial part of making the BisUtils more efficient and reliable in its parsing and tokenizing tasks." />
+    <MESSAGE value="refactor(rvConfig): Organization Of Parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(rvConfig): Organization Of Parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
