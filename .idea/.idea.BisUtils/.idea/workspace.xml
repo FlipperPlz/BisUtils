@@ -16,13 +16,14 @@
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Processing/BisPreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Processing/BisPreProcessor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -322,15 +323,8 @@
       <workItem from="1691679245412" duration="9091000" />
       <workItem from="1691776746083" duration="1785000" />
       <workItem from="1692026896196" duration="1734000" />
-      <workItem from="1692035905490" duration="2630000" />
-    </task>
-    <task id="LOCAL-00023" summary="fix(bank): Fix  RVBankDataEntry::ExpandDirectoryStructure">
-      <option name="closed" value="true" />
-      <created>1690401479906</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1690401479906</updated>
+      <workItem from="1692035905490" duration="3518000" />
+      <workItem from="1692040867693" duration="9777000" />
     </task>
     <task id="LOCAL-00024" summary="feat(bank): Start Another Bank Rewrite ;-;">
       <option name="closed" value="true" />
@@ -716,7 +710,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692028577626</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="feat(rvConfig): Start Writing New RvConfig Parser">
+      <option name="closed" value="true" />
+      <created>1692038581128</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1692038581128</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -748,7 +750,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(enConfig): Finish Up Grammar Draft" />
     <MESSAGE value="feat(enConfig): Add csproj For Scratch Project" />
     <MESSAGE value="feat(core): Start Working On Parser Framework Overhaul" />
     <MESSAGE value="feat(enlex): Add Enlex Project For Use With BisUtils.EnScript And BisUtils.EnConfig" />
@@ -773,6 +774,8 @@
     <MESSAGE value="chore: Rename BisUtils.Param to BisUtils.RvConfig" />
     <MESSAGE value="chore: Fix DZ Capitalization." />
     <MESSAGE value="feat(rvConfig): Create RvConfigParser" />
+    <MESSAGE value="feat(rvConfig): Start Writing New RvConfig Parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(rvConfig): Start Writing New RvConfig Parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,6 +1,5 @@
 ﻿namespace BisUtils.RvConfig.Tokens;
 
-using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Core.Singleton;
 using RvLex.Tokens;
@@ -8,9 +7,6 @@ using RvLex.Tokens;
 public sealed class RvConfigTokenSet : RvTokenSet<RvConfigTokenSet>
 {
     public static RvConfigTokenSet Instance => BisSingletonProvider.LocateInstance<RvConfigTokenSet>();
-
-    public static readonly IBisTokenType ConfigNewLine =
-        new BisEOLTokenType("param");
 
     public static readonly IBisTokenType ConfigWhitespace =
         new BisTokenType("param.abstract.whitespace", "[\t ]");

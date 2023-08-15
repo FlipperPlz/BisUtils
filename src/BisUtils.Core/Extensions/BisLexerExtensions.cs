@@ -2,6 +2,7 @@
 
 using Parsing.Lexer;
 using Parsing.Token;
+using Parsing.Token.Matching;
 using Parsing.Token.Typing;
 
 public static class BisLexerExtensions
@@ -13,5 +14,18 @@ public static class BisLexerExtensions
         {
             lexer.LexToken();
         }
+    }
+
+    public static bool IfMatches(this IBisTokenMatch match, Action<IBisTokenMatch> predicate, IBisTokenType validTokenType )
+    {
+        if (validTokenType == match.TokenType)
+        {
+            return false;
+        }
+
+        predicate(match);
+        return true;
+
+
     }
 }

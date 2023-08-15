@@ -1,6 +1,7 @@
 ﻿namespace BisUtils.Core.Parsing.Parser;
 
 using Lexer;
+using Microsoft.Extensions.Logging;
 using Singleton;
 using Token.Matching;
 using Token.Typing;
@@ -15,7 +16,7 @@ public interface IBisParser<
     where TTokens : BisTokenTypeSet<TTokens>, new()
     where TContextInfo : IBisParserContext, new()
 {
-    public TSyntaxTree Parse(TLexer lexer);
+    public TSyntaxTree Parse(TLexer lexer, ILogger? logger);
 
 }
 
@@ -31,7 +32,7 @@ public abstract class BisParser<
     where TContextInfo : IBisParserContext, new()
 {
 
-    public virtual TSyntaxTree Parse(TLexer lexer)
+    public virtual TSyntaxTree Parse(TLexer lexer, ILogger? logger = default!)
     {
         var file = new TSyntaxTree();
         var info = new TContextInfo();
@@ -45,7 +46,7 @@ public abstract class BisParser<
             }
 
             mute = true;
-            ParseToken(file, lexer, match, info);
+            ParseToken(file, lexer, match, info, logger);
             mute = false;
         };
 
@@ -57,5 +58,5 @@ public abstract class BisParser<
         return file;
     }
 
-    protected abstract void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match, TContextInfo info);
+    protected abstract void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match, TContextInfo info, ILogger? logger);
 }

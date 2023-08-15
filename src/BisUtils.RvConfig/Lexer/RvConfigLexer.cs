@@ -1,5 +1,6 @@
 ﻿namespace BisUtils.RvConfig.Lexer;
 
+using Core.Parsing.Token.Matching;
 using Core.Parsing.Token.Tokens;
 using Core.Parsing.Token.Typing;
 using Enumerations;
@@ -75,6 +76,23 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
         };
     }
 
+    public int LexWhitespace(ref BisTokenMatch match, bool matchCurrent = false)
+    {
+
+        if (!matchCurrent)
+        {
+            match = LexToken();
+        }
+        var i = 0;
+        while (match.TokenType == RvConfigTokenSet.ConfigWhitespace || match.TokenType == RvConfigTokenSet.RvNewLine)
+        {
+            match = LexToken();
+            i++;
+        }
+
+        return i;
+    }
+
     public IBisTokenType TryMatchIdentifier()
     {
         if (!IRvConfigLexer.IsIdentifierChar(CurrentChar, true))
@@ -123,8 +141,8 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
         var keyWordType = type switch
         {
             RvConfigKeywordType.Class => TryMatchWord("class", RvConfigTokenSet.ConfigClass),
-            RvConfigKeywordType.Enum => TryMatchWord("enum", RvConfigTokenSet.ConfigClass),
-            RvConfigKeywordType.Delete => TryMatchWord("delete", RvConfigTokenSet.ConfigClass),
+            RvConfigKeywordType.Enum => TryMatchWord("enum", RvConfigTokenSet.ConfigEnum),
+            RvConfigKeywordType.Delete => TryMatchWord("delete", RvConfigTokenSet.ConfigDelete),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 

@@ -5,6 +5,7 @@ using Core.Parsing.Parser;
 using Core.Parsing.Token.Matching;
 using Core.Singleton;
 using Lexer;
+using Microsoft.Extensions.Logging;
 using Models;
 using Tokens;
 
@@ -17,7 +18,8 @@ public sealed class EnConfigParser : BisParser<EnConfigFile, EnConfigLexer, EnCo
 {
     public static EnConfigParser Instance => BisSingletonProvider.LocateInstance<EnConfigParser>();
 
-    protected override void ParseToken(EnConfigFile file, EnConfigLexer lexer, BisTokenMatch match, EnConfigContext info)
+    protected override void ParseToken(EnConfigFile file, EnConfigLexer lexer, BisTokenMatch match,
+        EnConfigContext info, ILogger? logger)
     {
         if (match.TokenType == EnConfigTokenSet.EnfusionIdentifier)
         {
