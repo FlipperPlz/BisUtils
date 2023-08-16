@@ -1,9 +1,9 @@
 ﻿namespace BisUtils.RvConfig.Parse;
 
-using Core.Extensions;
-using Core.Parsing.Parser;
-using Core.Parsing.Token.Matching;
-using Core.Parsing.Token.Typing;
+using Core.ParsingFramework.Extensions;
+using Core.ParsingFramework.Parser;
+using Core.ParsingFramework.Tokens.Match;
+using Core.ParsingFramework.Tokens.Type;
 using Core.Singleton;
 using Enumerations;
 using Lexer;

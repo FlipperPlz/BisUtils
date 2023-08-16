@@ -1,7 +1,6 @@
 ﻿namespace BisUtils.EnConfig.Lexer;
 
-using Core.Parsing.Token.Typing;
-using EnLex;
+using Core.ParsingFramework.Tokens.Type;
 using EnLex.Lexer;
 using Tokens;
 

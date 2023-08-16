@@ -1,4 +1,4 @@
-﻿namespace BisUtils.Core.Parsing;
+﻿namespace BisUtils.Core.IO;
 
 public static class RVPathUtilities
 {

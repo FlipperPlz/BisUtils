@@ -1,8 +1,12 @@
 ﻿namespace BisUtils.RvConfig.Lexer;
 
-using Core.Parsing.Token.Tokens;
-using Core.Parsing.Token.Typing;
+using System.Text;
+using Core.ParsingFramework.Extensions;
+using Core.ParsingFramework.Misc;
+using Core.ParsingFramework.Tokens.Type;
+using Core.ParsingFramework.Tokens.Type.Types;
 using Enumerations;
+using Microsoft.Extensions.Logging;
 using RvLex.Lexer;
 using Tokens;
 
@@ -44,6 +48,11 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
     {
     }
 
+    public RvConfigLexer(BinaryReader content, Encoding encoding, StepperDisposalOption option, ILogger? logger = default, int? length = null, long? stringStart = null) :
+        base(content, encoding, option, logger, length, stringStart)
+    {
+    }
+
 
     protected override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar) => currentChar switch
     {
@@ -63,7 +72,7 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
     };
 
     public override IBisTokenType MatchQuote(int tokenStart, char? currentChar) =>
-        PeekForward() == '"' ? RvConfigTokenSet.ConfigQuoteEscape : MatchQuotedString(tokenStart, currentChar);
+        this.PeekForward() == '"' ? RvConfigTokenSet.ConfigQuoteEscape : MatchQuotedString(tokenStart, currentChar);
 
     public IBisTokenType MatchQuotedString(int tokenStart, char? currentChar)
     {
@@ -78,7 +87,7 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
             return InvalidToken;
         }
 
-        while (IRvConfigLexer.IsIdentifierChar(PeekForward()))
+        while (IRvConfigLexer.IsIdentifierChar(this.PeekForward()))
         {
             MoveForward();
         }
@@ -124,7 +133,7 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
-        return keyWordType is BisInvalidTokeType ? TryMatchIdentifier() : keyWordType;
+        return keyWordType is BisInvalidTokenTypeCore ? TryMatchIdentifier() : keyWordType;
     }
 
     public IBisTokenType MatchAssignOperator() =>
@@ -140,7 +149,5 @@ public sealed class RvConfigLexer : RvLexer<RvConfigTokenSet>, IRvConfigLexer
         isLeft ? RvConfigTokenSet.ConfigLCurly : RvConfigTokenSet.ConfigRCurly;
 
     public IBisTokenType MatchSeparator() => RvConfigTokenSet.ConfigSeparator;
-
-
 
 }

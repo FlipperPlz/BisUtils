@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.EnConfig.Parser;
 
 using Context;
-using Core.Parsing.Parser;
-using Core.Parsing.Token.Matching;
+using Core.ParsingFramework.Parser;
+using Core.ParsingFramework.Tokens.Match;
 using Core.Singleton;
 using Lexer;
 using Microsoft.Extensions.Logging;

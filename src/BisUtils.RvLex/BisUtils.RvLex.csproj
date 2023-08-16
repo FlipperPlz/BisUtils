@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\BisUtils.Core\BisUtils.Core.csproj" />
+      <ProjectReference Include="..\BisUtils.Core.ParsingFramework\BisUtils.Core.ParsingFramework.csproj" />
     </ItemGroup>
 
 </Project>

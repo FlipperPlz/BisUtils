@@ -2,7 +2,6 @@
 
 using BisUtils.Core.Binarize.Synchronization;
 using BisUtils.Core.IO;
-using BisUtils.Core.Parsing;
 using FResults;
 using Microsoft.Extensions.Logging;
 using Options;

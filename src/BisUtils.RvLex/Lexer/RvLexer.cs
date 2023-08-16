@@ -1,8 +1,11 @@
 ﻿namespace BisUtils.RvLex.Lexer;
 
-using Core.Parsing.Lexer;
-using Core.Parsing.Token.Matching;
-using Core.Parsing.Token.Typing;
+using System.Text;
+using Core.ParsingFramework.Lexer;
+using Core.ParsingFramework.Misc;
+using Core.ParsingFramework.Tokens.Match;
+using Core.ParsingFramework.Tokens.Type;
+using Microsoft.Extensions.Logging;
 using Tokens;
 
 public interface IRvLexer<out TTokens> : IBisLexerAbs<TTokens> where TTokens : RvTokenSet<TTokens>, new()
@@ -22,6 +25,11 @@ public abstract class RvLexer<TTokens> : BisLexerAbs<TTokens>, IRvLexer<TTokens>
     where TTokens : RvTokenSet<TTokens>, new()
 {
     protected RvLexer(string content) : base(content, true)
+    {
+    }
+
+    protected RvLexer(BinaryReader content, Encoding encoding, StepperDisposalOption option, ILogger? logger = default, int? length = null, long? stringStart = null) :
+        base(content, encoding, option, logger, length, stringStart)
     {
     }
 

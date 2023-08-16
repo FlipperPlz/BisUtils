@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.RvConfig.Tokens;
 
-using Core.Parsing.Token.Typing;
+using Core.ParsingFramework.Tokens.Type;
 using Core.Singleton;
 using RvLex.Tokens;
 

@@ -1,6 +1,9 @@
 ﻿namespace BisUtils.Core.ParsingFramework.Lexer;
 
+using System.Text;
 using Extensions;
+using Microsoft.Extensions.Logging;
+using Misc;
 using Steppers.Mutable;
 using Tokens.Match;
 using Tokens.Type;
@@ -26,6 +29,11 @@ public abstract class BisLexerCore : BisMutableStringStepper, IBisLexer
     public IEnumerable<BisTokenMatch> PreviousMatches => previousMatches;
 
     protected BisLexerCore(string content) : base(content)
+    {
+    }
+
+    protected BisLexerCore(BinaryReader content, Encoding encoding, StepperDisposalOption option, ILogger? logger = default, int? length = null, long? stringStart = null) :
+        base(content, encoding, option, logger, length, stringStart)
     {
     }
 

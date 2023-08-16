@@ -1,10 +1,11 @@
 ﻿namespace BisUtils.RvLex.Tokens;
 
-using Core.Parsing.Token.Tokens;
-using Core.Parsing.Token.Typing;
+using Core.ParsingFramework.Tokens.Type;
+using Core.ParsingFramework.Tokens.Type.Types;
+using Core.ParsingFramework.Tokens.TypeSet;
 
 // ReSharper disable file StaticMemberInGenericType
-public class RvTokenSet<T> : BisTokenTypeSet<T> where T : RvTokenSet<T>
+public class RvTokenSet<T> : BisTokenTypeSet<T> where T : RvTokenSet<T>, new()
 {
     public static readonly IBisTokenType RvNewLine =
         new BisCustomEOLTokenType("rv", "\n");
@@ -28,8 +29,7 @@ public class RvTokenSet<T> : BisTokenTypeSet<T> where T : RvTokenSet<T>
 
 public sealed class RvTokenSet : RvTokenSet<RvTokenSet>
 {
-
-    private RvTokenSet()
+    public RvTokenSet()
     {
 
     }

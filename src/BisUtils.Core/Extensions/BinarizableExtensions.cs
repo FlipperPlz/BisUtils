@@ -1,15 +1,12 @@
 ﻿namespace BisUtils.Core.Extensions;
 
 using System.Collections.Immutable;
-using System.Text;
 using Binarize;
 using Binarize.Options;
 using Binarize.Utils;
 using FResults;
 using FResults.Extensions;
 using IO;
-using Parsing;
-using Parsing.Lexer;
 
 /// <summary>
 /// Provides extension methods for objects that implement <see cref="IStrictBinarizable{TBinarizationOptions}"/>

@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.EnLex.Lexer;
 
-using BisUtils.Core.Parsing.Lexer;
-using BisUtils.Core.Parsing.Token.Tokens;
-using Core.Parsing.Token.Typing;
+using Core.ParsingFramework.Extensions;
+using Core.ParsingFramework.Lexer;
+using Core.ParsingFramework.Tokens.Type;
 using Tokens;
 
 public interface IEnfusionLexer<out TTokens> : IBisLexerAbs<TTokens> where TTokens : EnfusionTokenSet<TTokens>, new()
@@ -45,10 +45,10 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
         if (CurrentChar != '"')
         {
             stringContent = string.Empty;
-            return BisInvalidTokeType.Instance;
+            return InvalidToken;
         }
 
-        stringContent = GetWhile(_ => CurrentChar != '"' || PreviousChar == '\\');
+        stringContent = this.GetWhile(() => CurrentChar != '"' || PreviousChar == '\\');
         return EnfusionTokenSet.EnfusionLiteralString;
     }
 
@@ -61,7 +61,7 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
             return TryMatchWhitespace();
         }
 
-        id = ScanUntil(e => !IsIdentifierChar(e), true);
+        id = this.ScanUntil(e => !IsIdentifierChar(e), true);
         return EnfusionTokenSet.EnfusionIdentifier;
     }
 
@@ -71,16 +71,16 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
         {
             case '\r':
             {
-                if (PeekForward() != '\n')
+                if (this.PeekForward() != '\n')
                 {
-                    return BisInvalidTokeType.Instance;
+                    return InvalidToken;
                 }
 
                 MoveForward();
                 return EnfusionTokenSet.EnfusionNewLine;
             }
             case '\n': return EnfusionTokenSet.EnfusionNewLine;
-            default: return BisInvalidTokeType.Instance;
+            default: return InvalidToken;
         }
     }
 
@@ -88,10 +88,10 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
     {
         if (CurrentChar is not (' ' or '\t'))
         {
-            return BisInvalidTokeType.Instance;
+            return InvalidToken;
         }
 
-        ScanUntil(c => c is not (' ' or '\t'));
+        this.ScanUntil(c => c is not (' ' or '\t'));
         return EnfusionTokenSet.EnfusionWhitespace;
     }
 
@@ -100,7 +100,7 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
     {
         if (CurrentChar == '/' && MoveForward() == '/')
         {
-            commentText = GetWhile(_ => CurrentChar != '\n');
+            commentText = this.GetWhile(() => CurrentChar != '\n');
             return EnfusionTokenSet.EnfusionLineComment;
         }
 
@@ -108,25 +108,16 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
         {
             commentText = MoveForward() == '/'
                 ? string.Empty
-                : GetWhile(_ => !(PreviousChar == '*' && CurrentChar == '/'));
+                : this.GetWhile(() => !(PreviousChar == '*' && CurrentChar == '/'));
             return EnfusionTokenSet.EnfusionDelimitedComment;
 
         }
 
         commentText = string.Empty;
-        return BisInvalidTokeType.Instance;
+        return InvalidToken;
     }
 
-    public IBisTokenType TryMatchHash()
-    {
-        if (CurrentChar != '#')
-        {
-            return BisInvalidTokeType.Instance;
-        }
-
-        // var directiveType = TryMatchDirective();
-        return /*directiveType is BisInvalidTokeType ? directiveType :*/ EnfusionTokenSet.EnfusionHashSymbol;
-    }
+    public virtual IBisTokenType TryMatchHash() => CurrentChar != '#' ? InvalidToken : EnfusionTokenSet.EnfusionHashSymbol;
 
     // public IBisTokenType TryMatchDirective()
     // {
@@ -159,9 +150,9 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
     {
         if (isStartCurly)
         {
-            return CurrentChar == '{' ? EnfusionTokenSet.EnfusionLCurly : BisInvalidTokeType.Instance;
+            return CurrentChar == '{' ? EnfusionTokenSet.EnfusionLCurly : InvalidToken;
         }
-        return CurrentChar == '}' ? EnfusionTokenSet.EnfusionRCurly : BisInvalidTokeType.Instance;
+        return CurrentChar == '}' ? EnfusionTokenSet.EnfusionRCurly : InvalidToken;
     }
 
     public bool IsIdentifierChar(char? idChar, bool isFirst = false)
@@ -179,5 +170,5 @@ public abstract class EnfusionLexer<TTokens> : BisLexerAbs<TTokens>, IEnfusionLe
         return char.IsAsciiLetter(currentChar) || char.IsAsciiDigit(currentChar) || currentChar is '_';
     }
 
-    public IBisTokenType TryMatchColon() => CurrentChar == ':' ? EnfusionTokenSet.EnfusionColon : BisInvalidTokeType.Instance;
+    public IBisTokenType TryMatchColon() => CurrentChar == ':' ? EnfusionTokenSet.EnfusionColon : InvalidToken;
 }

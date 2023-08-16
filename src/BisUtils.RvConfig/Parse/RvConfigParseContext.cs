@@ -1,6 +1,6 @@
 ﻿namespace BisUtils.RvConfig.Parse;
 
-using Core.Parsing.Parser;
+using Core.ParsingFramework.Parser;
 using Models;
 using Models.Statements;
 

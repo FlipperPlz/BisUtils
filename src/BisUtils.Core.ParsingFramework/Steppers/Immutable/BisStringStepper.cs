@@ -24,17 +24,12 @@ public class BisStringStepper : IBisStringStepper, IBisLoggable
     public BisStringStepper(byte[] contents, Encoding encoding, ILogger? logger = default)
     : this(encoding.GetString(contents), logger)
     {
+
     }
 
-    public BisStringStepper
-    (
-        BinaryReader reader,
-        Encoding encoding,
-        int? length = null,
-        long? stringStart = null,
-        StepperDisposalOption readDisposalOption = StepperDisposalOption.JumpBackToStart,
-        ILogger? logger = default
-    )
+
+
+    public BisStringStepper(BinaryReader reader, Encoding encoding, StepperDisposalOption option, ILogger? logger = default, int? length = null, long? stringStart = null)
     {
         Logger = logger;
         var backupStart = reader.BaseStream.Position;
@@ -47,7 +42,7 @@ public class BisStringStepper : IBisStringStepper, IBisLoggable
         var byteCount = length ?? (int)(reader.BaseStream.Length - reader.BaseStream.Position);
 
         Content = encoding.GetString(reader.ReadBytes(byteCount));
-        switch (readDisposalOption)
+        switch (option)
         {
             case StepperDisposalOption.JumpBackToStart:
                 reader.BaseStream.Seek(backupStart, SeekOrigin.Begin);
@@ -61,7 +56,7 @@ public class BisStringStepper : IBisStringStepper, IBisLoggable
             case StepperDisposalOption.JumpToStringEnd:
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(readDisposalOption), readDisposalOption, null);
+                throw new ArgumentOutOfRangeException(nameof(option), option, null);
         }
     }
 

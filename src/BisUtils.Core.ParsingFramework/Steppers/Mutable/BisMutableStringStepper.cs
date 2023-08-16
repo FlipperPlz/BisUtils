@@ -12,13 +12,11 @@ public class BisMutableStringStepper : BisStringStepper, IBisMutableStringSteppe
     {
     }
 
-    public BisMutableStringStepper(byte[] contents, Encoding encoding, ILogger? logger = default) : base(contents, encoding, logger)
+    public BisMutableStringStepper(BinaryReader content, Encoding encoding, StepperDisposalOption option, ILogger? logger = default, int? length = null, long? stringStart = null) :
+        base(content, encoding, option, logger, length, stringStart)
     {
     }
 
-    public BisMutableStringStepper(BinaryReader reader, Encoding encoding, int? length = null, long? stringStart = null, StepperDisposalOption readDisposalOption = StepperDisposalOption.JumpBackToStart, ILogger? logger = default) : base(reader, encoding, length, stringStart, readDisposalOption, logger)
-    {
-    }
 
     public void ReplaceRange(Range range, string replacement, out string replacedText)
     {

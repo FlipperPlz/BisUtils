@@ -4,7 +4,6 @@ using Core.Binarize.Exceptions;
 using Core.IO;
 using Alerts.Warnings;
 using Core.Compression;
-using Core.Parsing;
 using Enumerations;
 using Extensions;
 using FResults;
