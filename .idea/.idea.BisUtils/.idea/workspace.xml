@@ -15,63 +15,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisParserExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisTokenExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexerAbs.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Misc/StepperDisposalOption.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/IBisParser.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/IBisParserContext.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Processor/BisPreProcessor.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Processor/IBisPreProcessor.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/IBisTokenMatch.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/BisTokenType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/BisTokenTypeCore.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/IBisTokenType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/Types/BisEOLTokenType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/TypeSet/BisTokenTypeSet.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/TypeSet/IBisTokenTypeSet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/BisUtils.Core.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisMutableStringStepper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisParserOld.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisPreProcessor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/BisStringStepper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Errors/BisEndOfFileError.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Errors/BisEndOfLineError.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerAbs.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerCore.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Lexer/BisLexerOld.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParser.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/BisParserExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Parser/IBisParserContext.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/ParserExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Processing/BisPreProcessor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/RVPathUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/IO/RVPathUtilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatch.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Matching/BisTokenMatchExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisEOLTokenType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/Types/BisInvalidTokenType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Tokens/BisInvalidTokeType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Parsing/Token/Typing/BisTokenTypeSet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Singleton/BisSingleton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Singleton/BisSingleton.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Singleton/BisSingletonProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Singleton/BisSingletonProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BinarizableExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BinarizableExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/IO/RVPathUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/IO/RVPathUtilities.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankDirectoryExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankDataEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/ParamLexerOld.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/RvConfigFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/RvConfigFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamPathString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamPathString.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Elements/RvIncludeString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Elements/RvIncludeString.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvProcess/RvPreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/RvPreProcessor.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,11 +98,12 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/RvBankDirectoryTreeExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankBinarizationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankCreationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -375,15 +351,7 @@
       <workItem from="1692120460713" duration="1658000" />
       <workItem from="1692126571797" duration="3384000" />
       <workItem from="1692150497958" duration="1188000" />
-      <workItem from="1692196501169" duration="8192000" />
-    </task>
-    <task id="LOCAL-00029" summary="refactor(pbo): Remove static RVBank::ReadPbo Method In Favor Of More Object Constructors&#10;&#10;- Made abstracted methods from last commit static&#10;- Refactored RVBank.cs to use new or explicit constructors instead of a static method for reading PBO files. Simplified the process of reading and initializing an RVBank object, providing better support for different sources (files, streams) and conditions.">
-      <option name="closed" value="true" />
-      <created>1690908117181</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1690908117181</updated>
+      <workItem from="1692196501169" duration="11504000" />
     </task>
     <task id="LOCAL-00030" summary="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls">
       <option name="closed" value="true" />
@@ -769,7 +737,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692128636114</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="refactor(parsing): Move All Of Parsing Framework To Its Own Project">
+      <option name="closed" value="true" />
+      <created>1692206216239</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1692206216240</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -801,7 +777,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(lexer): Finish Up Lexer Implementation" />
     <MESSAGE value="feat(enlex): Start Working On Actual Concrete Implementations Of BisLexer And Its Framework" />
     <MESSAGE value="feat(enlex): Implement Token Lexing For Simple TokenTypes" />
     <MESSAGE value="feat(lex): Add Line Count And Match Caching To BisLexer" />
@@ -826,25 +801,10 @@
     <MESSAGE value="feat(rvConfig): More Work On Param Variable Parsing" />
     <MESSAGE value="refactor(rvConfig): Move Quotation And New Line Tokens Down To RvLex" />
     <MESSAGE value="refactor(rvConfig): Clean Up Config Parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(rvConfig): Clean Up Config Parser" />
+    <MESSAGE value="refactor(parsing): Move All Of Parsing Framework To Its Own Project" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(parsing): Move All Of Parsing Framework To Its Own Project" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs</url>
-          <line>319</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="313" containingFunctionPresentation="Method 'ParseParamArray'" />
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs</url>
-          <line>342</line>
-          <properties documentPath="E:\projects\csharp\bisutils\src\BisUtils.Param\Parse\ParamParser.cs" initialLine="336" containingFunctionPresentation="Method 'ParseParamArray'" />
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#BisUtils.Core.Binarize.Implementation.BinaryObject`1" memberName="Logger" />

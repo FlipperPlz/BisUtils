@@ -1,10 +1,11 @@
 ﻿namespace BisUtils.LexLibrary.Lexer;
 
-using Core.Parsing.Lexer;
-using Core.Parsing.Token.Typing;
+using Core.ParsingFramework.Extensions;
+using Core.ParsingFramework.Lexer;
+using Core.ParsingFramework.Tokens.Type;
 using Tokens;
 
-public interface I__LexName__Lexer<out TTokens> : IBisLexer<TTokens> where TTokens : __LexName__TokenSet<TTokens>
+public interface I__LexName__Lexer<out TTokens> : IBisLexer<TTokens> where TTokens : __LexName__TokenSet<TTokens>, new()
 {
     public IBisTokenType TryMatchNewLine();
 }
@@ -31,7 +32,7 @@ public abstract class __LexName__Lexer<TTokens> : BisLexerAbs<TTokens>, I__LexNa
         {
             case '\r':
             {
-                if (PeekForward() != '\n')
+                if (this.PeekForward() != '\n')
                 {
                     return InvalidToken;
                 }
