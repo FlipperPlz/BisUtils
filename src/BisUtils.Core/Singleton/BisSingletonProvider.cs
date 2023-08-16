@@ -1,11 +1,11 @@
 ﻿namespace BisUtils.Core.Singleton;
 
-public class BisSingletonProvider
+public static class BisSingletonProvider
 {
-    private static readonly Dictionary<Type, BisSingleton> Instances = new();
+    private static readonly Dictionary<Type, IBisSingleton> Instances = new();
 
 
-    public static TSingleton LocateInstance<TSingleton>() where TSingleton : BisSingleton, new()
+    public static TSingleton LocateInstance<TSingleton>() where TSingleton : IBisSingleton, new()
     {
         var type = typeof(TSingleton);
         if (Instances.TryGetValue(type, out var instance))
@@ -16,6 +16,12 @@ public class BisSingletonProvider
         var created = new TSingleton();
         Instances.TryAdd(type, created);
         return created;
+    }
+
+    public static void AddInstance<TSingleton>(TSingleton singleton) where TSingleton : IBisSingleton, new()
+    {
+        var type = typeof(TSingleton);
+        Instances.TryAdd(type, singleton);
     }
 
 }

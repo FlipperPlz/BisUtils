@@ -1,6 +1,10 @@
 ﻿namespace BisUtils.Core.Singleton;
 
-public abstract class BisSingleton
+public interface IBisSingleton
+{
+
+}
+public abstract class BisSingleton : IBisSingleton
 {
     public BisSingleton()
     {
