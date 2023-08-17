@@ -13,6 +13,7 @@ public class RvConfigParseContext : IBisParserContext
     public Stack<IParamClass> Context { get; set; }
     public IParamClass CurrentContext => Context.Peek();
     public IRvConfigFile Root { get; set; }
+    public bool InArray { get; set; }
 
     public RvConfigParseContext()
     {

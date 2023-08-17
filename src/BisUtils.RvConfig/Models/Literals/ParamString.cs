@@ -23,7 +23,7 @@ public class ParamString : ParamLiteral<string>, IParamString
     public override byte LiteralId => 4;
     public override string Value { get; set; } = null!;
     public ParamStringType StringType { get; }
-    public static IParamString EmptyNoParents { get; } = new ParamString(null!, null!, null!, null!, null);
+    public static readonly IParamString EmptyNoParents = new ParamString(string.Empty, ParamStringType.Unquoted, null!, null!, null);
 
     public ParamString(string value, ParamStringType stringType, IRvConfigFile file, IParamLiteralHolder parent, ILogger? logger) : base(value, file, parent, logger) =>
         StringType = stringType;

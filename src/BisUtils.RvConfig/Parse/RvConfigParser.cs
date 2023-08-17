@@ -9,6 +9,7 @@ using Enumerations;
 using Lexer;
 using Microsoft.Extensions.Logging;
 using Models;
+using Models.Literals;
 using Models.Statements;
 using Models.Stubs;
 using Models.Stubs.Holders;
@@ -25,8 +26,10 @@ public interface IRvConfigParser : IBisParser<
         ILogger? logger);
     void ParseArraySquare(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger);
     void ParseVariable(IParamClass context, RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match,
-        ILogger? logger);
+        RvConfigParseContext info, ILogger? logger);
 
+    void ParseVariableValue(RvConfigFile file, RvConfigLexer lexer, ParamVariable variable, RvConfigValueType valueType,
+        ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger);
 
     void ParseRCurly(RvConfigLexer lexer, ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger);
     void ParseEOF(RvConfigParseContext info, ILogger? logger = default);
@@ -54,16 +57,50 @@ public sealed class RvConfigParser : BisParser<
     protected override bool CanTokenBeMatched(RvConfigParseContext info, ref BisTokenMatch match,
         RvConfigLexer bisLexer, ILogger? logger)
     {
-
-        if (match.IfMatches(RvConfigTokenSet.RvQuote, _ =>
-            {
-                info.LexicalStage = info.LexicalStage == RvConfigLexicalStage.Code
-                    ? RvConfigLexicalStage.Text
-                    : RvConfigLexicalStage.Code;
-            }))
+        match.IfMatches(RvConfigTokenSet.RvQuote, _ =>
         {
-            match.ReassignToken(RvConfigTokenSet.RvText);
-        };
+            if (info.LexicalStage == RvConfigLexicalStage.Code)
+            {
+                info.LexicalStage = RvConfigLexicalStage.QuotedText;
+            }
+        });
+
+        switch (info.LexicalStage)
+        {
+            case RvConfigLexicalStage.Text:
+            {
+                if
+                (
+                    match.IsType(RvConfigTokenSet.ConfigSeparator) ||
+                    match.IsType(RvConfigTokenSet.RvNewLine) ||
+                    ((match.IsType(RvConfigTokenSet.RvComma) || match.IsType(RvConfigTokenSet.ConfigRCurly)) &&
+                     info.InArray)
+                )
+                {
+                    info.LexicalStage = RvConfigLexicalStage.Code;
+                }
+                match.ReassignToken(RvConfigTokenSet.RvText);
+                break;
+            }
+            case RvConfigLexicalStage.QuotedText:
+            {
+                match.IfMatches(RvConfigTokenSet.RvQuote, _ => info.LexicalStage = RvConfigLexicalStage.Code);
+                if (match.IsType(RvConfigTokenSet.ConfigQuoteEscape))
+                {
+                    break;
+                }
+
+                if (match.IsType(RvConfigTokenSet.RvNewLine))
+                {
+                    throw new Exception(); //TODO string read error
+                }
+
+                match.ReassignToken(RvConfigTokenSet.RvText);
+
+                break;
+            }
+            default: break;
+        }
 
         return base.CanTokenBeMatched(info, ref match, bisLexer, logger);
     }
@@ -81,7 +118,7 @@ public sealed class RvConfigParser : BisParser<
              !match.IfMatches(RvConfigTokenSet.ConfigClass, m => ParseClass(context, file, lexer, ref m, info, logger)) &&
              !match.IfMatches(RvConfigTokenSet.ConfigDelete, m => ParseDelete(context, file, lexer, ref m, logger)) &&
              !match.IfMatches(RvConfigTokenSet.ConfigEnum, m => ParseEnum(context, file, lexer, ref m, info, logger)) &&
-             !match.IfMatches(RvConfigTokenSet.RvIdentifier, m => ParseVariable(context, file, lexer, ref m, logger)))
+             !match.IfMatches(RvConfigTokenSet.RvIdentifier, m => ParseVariable(context, file, lexer, ref m, info, logger)))
         )
         {
             throw new NotSupportedException(); //TODO: Error: your token currently makes no sense to me
@@ -91,14 +128,40 @@ public sealed class RvConfigParser : BisParser<
 
 
 
-    public void ParseVariable(IParamClass context, RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
+    public void ParseVariable(IParamClass context, RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match,
+        RvConfigParseContext info, ILogger? logger)
     {
-        // var variableName = match.TokenText;
-        // var variableType = ParseVariableType(lexer, ref match, logger);
-        // var op = ParseVariableOperator(lexer, ref match, logger);
+        var variableName = match.TokenText;
+        var variableType = ParseVariableType(lexer, ref match, logger);
+        var variableOperator = ParseVariableOperator(lexer, ref match, logger);
+        var variableValue = ParamString.EmptyNoParents;
+        var variable = new ParamVariable(variableName, variableValue, variableOperator, file, context, logger);
+        ParseVariableValue(file, lexer, variable, variableType, ref match, info, logger);
 
+    }
 
-        throw new NotImplementedException();
+    public void ParseVariableValue(RvConfigFile file, RvConfigLexer lexer, ParamVariable variable, RvConfigValueType valueType, ref BisTokenMatch match,  RvConfigParseContext info, ILogger? logger)
+    {
+        lexer.LexWhitespace(ref match);
+        switch (valueType)
+        {
+            case RvConfigValueType.ParamArray:
+            {
+
+                break;
+            }
+            default:
+            {
+                var quoted = info.LexicalStage == RvConfigLexicalStage.QuotedText;
+                if (!quoted)
+                {
+                    info.LexicalStage = RvConfigLexicalStage.Text;
+                    match.ReassignToken(RvConfigTokenSet.RvText);
+                }
+
+                throw new NotImplementedException();
+            }
+        }
     }
 
 
