@@ -12,7 +12,7 @@ using Tokens.Type.Types;
 public abstract class BisLexerCore : BisMutableStringStepper, IBisLexer
 {
     protected static readonly IBisTokenType InvalidToken = BisInvalidTokenType.Instance;
-    public event EventHandler<BisTokenMatch> OnTokenMatched = delegate
+    public event BisMatchHandler OnTokenMatched = delegate
     {
 
     };
@@ -37,7 +37,7 @@ public abstract class BisLexerCore : BisMutableStringStepper, IBisLexer
     {
     }
 
-    public BisTokenMatch LexToken() => RegisterNextMatch(Position);
+    public virtual BisTokenMatch LexToken() => RegisterNextMatch(Position);
 
     protected BisTokenMatch RegisterNextMatch(int tokenStart)
     {
@@ -56,18 +56,20 @@ public abstract class BisLexerCore : BisMutableStringStepper, IBisLexer
 
     protected void TokenMatched(BisTokenMatch match)
     {
+
+
+        if (!EventsMuted)
+        {
+            OnTokenMatched.Invoke(ref match);
+        }
+
+        LineStart = match.TokenPosition + match.TokenLength;
+        LineNumber++;
         LastMatchedToken = match;
         AddPreviousMatch(match);
         if (match.TokenType is not BisEOLTokenType)
         {
             return;
-        }
-
-        LineStart = match.TokenPosition + match.TokenLength;
-        LineNumber++;
-        if (!EventsMuted)
-        {
-            OnTokenMatched.Invoke(this, match);
         }
     }
 

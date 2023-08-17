@@ -27,7 +27,8 @@ public interface IRvConfigParser : IBisParser<
     void ParseVariable(IParamClass context, RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match,
         ILogger? logger);
 
-    void ParseRCurly(RvConfigLexer lexer, out BisTokenMatch match, RvConfigParseContext info, ILogger? logger);
+
+    void ParseRCurly(RvConfigLexer lexer, ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger);
     void ParseEOF(RvConfigParseContext info, ILogger? logger = default);
     void AssertToken(IBisTokenMatch match, IBisTokenType validType, ILogger? logger);
     void ParseExternalClass(string classname, IRvConfigFile file, IParamStatementHolder context, ILogger? logger);
@@ -35,6 +36,7 @@ public interface IRvConfigParser : IBisParser<
 
     RvConfigValueType ParseVariableType(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger);
     ParamOperatorType ParseVariableOperator(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger);
+    IParamLiteral ParseLiteral(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger);
 
 
     void AssertWhitespace(RvConfigLexer lexer, out BisTokenMatch match, ILogger? logger);
@@ -49,25 +51,45 @@ public sealed class RvConfigParser : BisParser<
 {
     public static readonly RvConfigParser Instance = BisSingletonProvider.LocateInstance<RvConfigParser>();
 
-    protected override void ParseToken(RvConfigFile file, RvConfigLexer lexer, BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
+    protected override bool CanTokenBeMatched(RvConfigParseContext info, ref BisTokenMatch match,
+        RvConfigLexer bisLexer, ILogger? logger)
+    {
+
+        if (match.IfMatches(RvConfigTokenSet.RvQuote, _ =>
+            {
+                info.LexicalStage = info.LexicalStage == RvConfigLexicalStage.Code
+                    ? RvConfigLexicalStage.Text
+                    : RvConfigLexicalStage.Code;
+            }))
+        {
+            match.ReassignToken(RvConfigTokenSet.RvText);
+        };
+
+        return base.CanTokenBeMatched(info, ref match, bisLexer, logger);
+    }
+
+    protected override void ParseToken(RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
     {
         var context = info.CurrentContext;
         if
         (
-            !match.IfMatches(RvConfigTokenSet.RvWhitespace, _ => { }) &&
-            !match.IfMatches(RvConfigTokenSet.RvNewLine, _ => { }) &&
-            !match.IfMatches(RvConfigTokenSet.BisEOF, _ => ParseEOF(info, logger)) &&
-            !match.IfMatches(RvConfigTokenSet.ConfigRCurly, _ => ParseRCurly(lexer, out match, info, logger)) &&
-            !match.IfMatches(RvConfigTokenSet.ConfigClass, _ => ParseClass(context, file, lexer, out match, info, logger)) &&
-            !match.IfMatches(RvConfigTokenSet.ConfigDelete, _ => ParseDelete(context, file, lexer, out match, logger)) &&
-            !match.IfMatches(RvConfigTokenSet.ConfigDelete, _ => ParseEnum(context, file, lexer, out match, info, logger)) &&
-            !match.IfMatches(RvConfigTokenSet.RvIdentifier, _ => ParseVariable(context, file, lexer, ref match, logger))
+            info.LexicalStage != RvConfigLexicalStage.Code ||
+            (!match.IfMatches(RvConfigTokenSet.RvWhitespace, _ => { }) &&
+             !match.IfMatches(RvConfigTokenSet.RvNewLine, _ => { }) &&
+             !match.IfMatches(RvConfigTokenSet.BisEOF, _ => ParseEOF(info, logger)) &&
+             !match.IfMatches(RvConfigTokenSet.ConfigRCurly, m => ParseRCurly(lexer, ref m, info, logger)) &&
+             !match.IfMatches(RvConfigTokenSet.ConfigClass, m => ParseClass(context, file, lexer, ref m, info, logger)) &&
+             !match.IfMatches(RvConfigTokenSet.ConfigDelete, m => ParseDelete(context, file, lexer, ref m, logger)) &&
+             !match.IfMatches(RvConfigTokenSet.ConfigEnum, m => ParseEnum(context, file, lexer, ref m, info, logger)) &&
+             !match.IfMatches(RvConfigTokenSet.RvIdentifier, m => ParseVariable(context, file, lexer, ref m, logger)))
         )
         {
             throw new NotSupportedException(); //TODO: Error: your token currently makes no sense to me
 
         }
     }
+
+
 
     public void ParseVariable(IParamClass context, RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
     {
@@ -113,6 +135,12 @@ public sealed class RvConfigParser : BisParser<
         throw new NotImplementedException(); //TODO: Unknown Operator
     }
 
+    public IParamLiteral ParseLiteral(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
+    {
+
+        throw new NotImplementedException();
+    }
+
     public void ParseArraySquare(RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
     {
         lexer.LexWhitespace(ref match);
@@ -121,7 +149,7 @@ public sealed class RvConfigParser : BisParser<
         }
     }
 
-    public void ParseEnum(IParamClass context, RvConfigFile file, RvConfigLexer lexer, out BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
+    public void ParseEnum(IParamClass context, RvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
     {
         AssertToken(match = lexer.LexToken(), RvConfigTokenSet.ConfigLCurly, logger);
 
@@ -129,7 +157,7 @@ public sealed class RvConfigParser : BisParser<
         throw new NotImplementedException();
     }
 
-    public void ParseDelete(IParamStatementHolder context, IRvConfigFile file, RvConfigLexer lexer, out BisTokenMatch match, ILogger? logger)
+    public void ParseDelete(IParamStatementHolder context, IRvConfigFile file, RvConfigLexer lexer, ref BisTokenMatch match, ILogger? logger)
     {
         AssertWhitespace(lexer, out match, logger);
         AssertToken(match, RvConfigTokenSet.RvIdentifier, logger);
@@ -137,7 +165,7 @@ public sealed class RvConfigParser : BisParser<
     }
 
     public void ParseClass(IParamStatementHolder context, IRvConfigFile file, RvConfigLexer lexer,
-        out BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
+        ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
     {
         string? superClass = null;
 
@@ -197,7 +225,7 @@ public sealed class RvConfigParser : BisParser<
         info.ShouldEnd = true;
     }
 
-    public void ParseRCurly(RvConfigLexer lexer, out BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
+    public void ParseRCurly(RvConfigLexer lexer, ref BisTokenMatch match, RvConfigParseContext info, ILogger? logger)
     {
         if ((match = lexer.LexToken()).TokenType != RvConfigTokenSet.ConfigSeparator)
         {

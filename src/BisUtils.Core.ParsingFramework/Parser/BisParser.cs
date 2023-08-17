@@ -25,15 +25,15 @@ public abstract class BisParser<
         var info = new TContextInfo();
         var mute = false;
 
-        lexer.OnTokenMatched += (_, match) =>
+        lexer.OnTokenMatched += delegate(ref BisTokenMatch match)
         {
-            if (mute)
+            if (mute || !CanTokenBeMatched(info, ref match, lexer, logger))
             {
                 return;
             }
 
             mute = true;
-            ParseToken(file, lexer, match, info, logger);
+            ParseToken(file, lexer, ref match, info, logger);
             mute = false;
         };
 
@@ -45,5 +45,9 @@ public abstract class BisParser<
         return file;
     }
 
-    protected abstract void ParseToken(TSyntaxTree file, TLexer lexer, BisTokenMatch match, TContextInfo info, ILogger? logger);
+    protected virtual bool CanTokenBeMatched(TContextInfo info, ref BisTokenMatch match, TLexer bisLexer, ILogger? logger)
+        => false;
+
+
+    protected abstract void ParseToken(TSyntaxTree file, TLexer lexer, ref BisTokenMatch match, TContextInfo info, ILogger? logger);
 }

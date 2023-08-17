@@ -6,7 +6,7 @@ using Tokens.TypeSet;
 
 public interface IBisLexer : IBisMutableStringStepper
 {
-    public event EventHandler<BisTokenMatch> OnTokenMatched;
+    public event BisMatchHandler OnTokenMatched;
 
     public bool EventsMuted { get; }
     public BisTokenMatch? LastMatchedToken { get; }

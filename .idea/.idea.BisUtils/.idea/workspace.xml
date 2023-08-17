@@ -15,38 +15,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisMatchHandlerDelegate.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexicalStage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BinarizableExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BinarizableExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core/IO/RVPathUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core/IO/RVPathUtilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Context/EnConfigContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Lexer/EnConfigLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnPack/Models/EnPackFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankDirectoryExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Extensions/RvBankDirectoryExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankDataEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Entry/RvBankDataEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvBank/Model/Stubs/RvBankEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/ParamLexerOld.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/RvConfigFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Models/RvConfigFile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/ParamParser.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamPathString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Utils/ParamPathString.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Lexer/RvLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/Tokens/RvTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Elements/RvIncludeString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/Models/Elements/RvIncludeString.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvProcess/RvPreProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvProcess/RvPreProcessor.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,6 +62,7 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/42ce119ffb834ddf92d0f07e2a06acfeb1d878/46/303d64ea/EventHandler`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/42ce119ffb834ddf92d0f07e2a06acfeb1d878/74/80f78404/IEnumerator`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/215ca8fd95391172a79e7562793d1c44d7ec8c3b6bb186f01251b947efd0f6a4/Index.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
@@ -98,8 +77,6 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.Core/Extensions/BisLexerExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
@@ -351,23 +328,8 @@
       <workItem from="1692120460713" duration="1658000" />
       <workItem from="1692126571797" duration="3384000" />
       <workItem from="1692150497958" duration="1188000" />
-      <workItem from="1692196501169" duration="11504000" />
-    </task>
-    <task id="LOCAL-00030" summary="fix: BisSynchronizable needs a rewrite. Removing event excessive event calls">
-      <option name="closed" value="true" />
-      <created>1690909399174</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1690909399174</updated>
-    </task>
-    <task id="LOCAL-00031" summary="fix(bank): Fix BufferToShort Logic">
-      <option name="closed" value="true" />
-      <created>1690909631850</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1690909631850</updated>
+      <workItem from="1692196501169" duration="13201000" />
+      <workItem from="1692248474144" duration="2933000" />
     </task>
     <task id="LOCAL-00032" summary="refactor(bank): Move To Unsigned DataTypes To Improve Accuracy In Reading Entries.&#10; &#10; - Nothing more than UInt.MaxValue should ever be used, even if it is a ULong">
       <option name="closed" value="true" />
@@ -745,7 +707,23 @@
       <option name="project" value="LOCAL" />
       <updated>1692206216240</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="refactor(rvConfig): Move RvConfig Over To ParsingFramework">
+      <option name="closed" value="true" />
+      <created>1692217092627</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1692217092627</updated>
+    </task>
+    <task id="LOCAL-00080" summary="fix: Clean Up Remaining Errors From ParseFramework Change">
+      <option name="closed" value="true" />
+      <created>1692217344892</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1692217344892</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -777,8 +755,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(enlex): Start Working On Actual Concrete Implementations Of BisLexer And Its Framework" />
-    <MESSAGE value="feat(enlex): Implement Token Lexing For Simple TokenTypes" />
     <MESSAGE value="feat(lex): Add Line Count And Match Caching To BisLexer" />
     <MESSAGE value="feat(enlex): Create Logic For Parsing Whitespaces And Identifiers" />
     <MESSAGE value="feat(enconfig): Create Shell Lexer/Types For EnConfig (They Should Stay Relatively Untouched As All Tokens Used In The Language Are Defined Globally)" />
@@ -802,7 +778,9 @@
     <MESSAGE value="refactor(rvConfig): Move Quotation And New Line Tokens Down To RvLex" />
     <MESSAGE value="refactor(rvConfig): Clean Up Config Parser" />
     <MESSAGE value="refactor(parsing): Move All Of Parsing Framework To Its Own Project" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(parsing): Move All Of Parsing Framework To Its Own Project" />
+    <MESSAGE value="refactor(rvConfig): Move RvConfig Over To ParsingFramework" />
+    <MESSAGE value="fix: Clean Up Remaining Errors From ParseFramework Change" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: Clean Up Remaining Errors From ParseFramework Change" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>
