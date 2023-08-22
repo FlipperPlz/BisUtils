@@ -137,7 +137,6 @@ public sealed class RvConfigParser : BisParser<
         var variableValue = ParamString.EmptyNoParents;
         var variable = new ParamVariable(variableName, variableValue, variableOperator, file, context, logger);
         ParseVariableValue(file, lexer, variable, variableType, ref match, info, logger);
-
     }
 
     public void ParseVariableValue(RvConfigFile file, RvConfigLexer lexer, ParamVariable variable, RvConfigValueType valueType, ref BisTokenMatch match,  RvConfigParseContext info, ILogger? logger)

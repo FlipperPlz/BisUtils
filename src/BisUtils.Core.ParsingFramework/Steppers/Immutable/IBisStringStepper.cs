@@ -5,7 +5,7 @@
 /// Provides an interface for a class designated to a string that can be read character by character via a sliding
 /// window.
 /// </summary>
-public interface IBisStringStepper
+public interface IBisStringStepper : IDisposable
 {
 
     /// <summary>
@@ -16,7 +16,7 @@ public interface IBisStringStepper
     /// <summary>
     /// Gets the length of the buffer loaded.
     /// </summary>
-    public int Length => Content.Length;
+    public int Length { get; }
 
     /// <summary>
     /// Gets the current position in the content.

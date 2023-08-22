@@ -15,15 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisMatchHandlerDelegate.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Lexer/RvConfigLexicalStage.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/StepperTests/BisStringStepperTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Parser/EnConfigParser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParseContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,6 +77,7 @@
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/RvBankDirectoryTreeExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RvConfig/Lexer/RvConfigLexicalStage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankBinarizationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankCreationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -329,23 +326,9 @@
       <workItem from="1692126571797" duration="3384000" />
       <workItem from="1692150497958" duration="1188000" />
       <workItem from="1692196501169" duration="13201000" />
-      <workItem from="1692248474144" duration="2933000" />
-    </task>
-    <task id="LOCAL-00032" summary="refactor(bank): Move To Unsigned DataTypes To Improve Accuracy In Reading Entries.&#10; &#10; - Nothing more than UInt.MaxValue should ever be used, even if it is a ULong">
-      <option name="closed" value="true" />
-      <created>1690912250519</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1690912250519</updated>
-    </task>
-    <task id="LOCAL-00033" summary="fix(bank): Fix Compile Errors With DataType Changes">
-      <option name="closed" value="true" />
-      <created>1690912568670</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1690912568670</updated>
+      <workItem from="1692248474144" duration="5176000" />
+      <workItem from="1692632659162" duration="2198000" />
+      <workItem from="1692714591110" duration="353000" />
     </task>
     <task id="LOCAL-00034" summary="fix(bank): Fix Compile Errors With DataType Changes&#10;&#10;Signed-off-by: ryann &lt;flipperplz@protonmail.com&gt;">
       <option name="closed" value="true" />
@@ -723,7 +706,23 @@
       <option name="project" value="LOCAL" />
       <updated>1692217344892</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="refactor(parse): More Work On Parsing Framework">
+      <option name="closed" value="true" />
+      <created>1692282668834</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1692282668835</updated>
+    </task>
+    <task id="LOCAL-00082" summary="feat(rvConfig): Start working on literal parsing">
+      <option name="closed" value="true" />
+      <created>1692284606453</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1692284606453</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -755,8 +754,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(lex): Add Line Count And Match Caching To BisLexer" />
-    <MESSAGE value="feat(enlex): Create Logic For Parsing Whitespaces And Identifiers" />
     <MESSAGE value="feat(enconfig): Create Shell Lexer/Types For EnConfig (They Should Stay Relatively Untouched As All Tokens Used In The Language Are Defined Globally)" />
     <MESSAGE value="feat(parser): Create New Parser Structure&#10;&#10;Abstract public constructors so singletons can be created dynamically if not found." />
     <MESSAGE value="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage." />
@@ -780,9 +777,27 @@
     <MESSAGE value="refactor(parsing): Move All Of Parsing Framework To Its Own Project" />
     <MESSAGE value="refactor(rvConfig): Move RvConfig Over To ParsingFramework" />
     <MESSAGE value="fix: Clean Up Remaining Errors From ParseFramework Change" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: Clean Up Remaining Errors From ParseFramework Change" />
+    <MESSAGE value="refactor(parse): More Work On Parsing Framework" />
+    <MESSAGE value="feat(rvConfig): Start working on literal parsing" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs</url>
+          <line>83</line>
+          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.Core.ParsingFramework\Steppers\Immutable\BisStringStepper.cs" initialLine="83" containingFunctionPresentation="Method 'JumpTo'">
+            <startOffsets>
+              <option value="2658" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2678" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="Type#BisUtils.Core.Binarize.Implementation.BinaryObject`1" memberName="Logger" />

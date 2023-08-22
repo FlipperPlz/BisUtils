@@ -9,8 +9,10 @@ using Misc;
 
 public class BisStringStepper : IBisStringStepper, IBisLoggable
 {
+    private bool disposed;
     public ILogger? Logger { get; }
     public string Content { get; protected set; }
+    public int Length => Content.Length - 1;
     public int Position { get; private set; } = -1;
     public char? CurrentChar { get; private set; }
     public char? PreviousChar { get; private set; }
@@ -27,6 +29,7 @@ public class BisStringStepper : IBisStringStepper, IBisLoggable
 
     }
 
+    ~BisStringStepper() => Dispose(false);
 
 
     public BisStringStepper(BinaryReader reader, Encoding encoding, StepperDisposalOption option, ILogger? logger = default, int? length = null, long? stringStart = null)
@@ -95,4 +98,27 @@ public class BisStringStepper : IBisStringStepper, IBisLoggable
         CurrentChar = null;
     }
 
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        // Check if this object has been disposed already.
+        if (disposed)
+        {
+            return;
+        }
+
+        // TODO: If disposing equals true, dispose all managed resources.
+        if (disposing)
+        {
+            Content = string.Empty;
+            disposed = true;
+        }
+
+        // TODO: Free any unmanaged resources here.
+    }
 }
