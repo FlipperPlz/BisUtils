@@ -30,9 +30,10 @@ public static class StringStepperExtensions
     /// </summary>
     /// <param name="stepper">The string stepper</param>
     /// <param name="until">The condition that stops the scanning.</param>
-    /// <param name="consumeCurrent">Includes the current character in the scanning.</param>
+    /// <param name="consumeCurrent">Includes the first character in the scanning.</param>
+    /// <param name="consumeLast">Includes the last character in the scanning.</param>
     /// <returns>The scanned string.</returns>
-    public static string ScanUntil(this IBisStringStepper stepper, Func<char, bool> until, bool consumeCurrent = false)
+    public static string ScanUntil(this IBisStringStepper stepper, Func<char, bool> until, bool consumeCurrent = false, bool consumeLast = true)
     {
         var builder = new StringBuilder();
         if (consumeCurrent)
@@ -41,6 +42,11 @@ public static class StringStepperExtensions
         }
 
         while (PeekForward(stepper) is { } current && !until(current))
+        {
+            builder.Append(stepper.MoveForward());
+        }
+
+        if (consumeLast)
         {
             builder.Append(stepper.MoveForward());
         }

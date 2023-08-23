@@ -15,12 +15,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test/StepperTests/BisStringStepperTest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/StepperTests/BisMutableStringStepperTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Parse/RvConfigParser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +62,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/35dda6186b16a39ac1162d64ecf0c27b8ebe94f2af6f7ce3b8e9e84698f06c37/LoggerMessage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ab621a475ad1855b32c8fb94315b33ee28b6996ed15846c8c5651a4fd81dbb1/Sum.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3d5314c4b5f391de6f26e7ce0d430d6d2aa1d7a44530b874fdbb1a4a97374/File.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/46a322d26154b982566e1817203e5452c91223f93b0e392d9c5b4806696fdc1/Assert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/685740393f59fd572ad94c27112a77e0c086f741e99c9c979bf92113ae/Encoding.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6b328b91f273b497721dcead23dabd813c6a99f9c5613a78ea1cee575b273b/Stream.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/744c30a7462849eebaa8998e6fc518e3cc3a951f55a96722fcfb71c3196393b/Range.cs" root0="SKIP_HIGHLIGHTING" />
@@ -77,7 +76,6 @@
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/RvBankDirectoryTreeExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://E:/projects/csharp/BisUtils/src/BisUtils.RvConfig/Lexer/RvConfigLexicalStage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankBinarizationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/RvBankCreationBenchmarks.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -92,7 +90,9 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2SouImh2U3j6WVG2a13niYWFPE7" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -121,155 +121,14 @@
     ]
   }
 }</component>
-  <component name="RunManager" selected=".NET Project.BankTest">
+  <component name="RunManager" selected="Publish to folder.Publish BisUtils.RVBank to folder">
     <configuration name="Publish BisUtils.RVBank to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
       <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/src/BisUtils.RVBank/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="-775555546124957071" uuid_low="-8586648064013952717" />
       <method v="2" />
     </configuration>
-    <configuration name="BankTest" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/test/Scratches/BankTest/BankTest.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="BisUtils.Bank.Benchmarks" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/BisUtils.RvBank.Benchmarks.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="BisUtils.EnfPack" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.EnPack/BisUtils.EnPack.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="BisUtils.Extensions.RVBank.DzConfigExtensions" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/BisUtils.RvBank.DzConfigExtensions.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="BisUtils.Extensions.RVBank.Extras" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/src/BisUtils.RvBank.ExtraExtensions/BisUtils.RvBank.ExtraExtensions.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="PackTest" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/test/Scratches/PackTest/PackTest.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="ParamTest" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/test/Scratches/ParamTest/ParamTest.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="ShapeTest" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/test/Scratches/ShapeTest/ShapeTest.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
+    <list>
+      <item itemvalue="Publish to folder.Publish BisUtils.RVBank to folder" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -328,15 +187,8 @@
       <workItem from="1692196501169" duration="13201000" />
       <workItem from="1692248474144" duration="5176000" />
       <workItem from="1692632659162" duration="2198000" />
-      <workItem from="1692714591110" duration="353000" />
-    </task>
-    <task id="LOCAL-00034" summary="fix(bank): Fix Compile Errors With DataType Changes&#10;&#10;Signed-off-by: ryann &lt;flipperplz@protonmail.com&gt;">
-      <option name="closed" value="true" />
-      <created>1690912932491</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1690912932491</updated>
+      <workItem from="1692714591110" duration="1365000" />
+      <workItem from="1692797923592" duration="1480000" />
     </task>
     <task id="LOCAL-00035" summary="feat(bank): More DataType Finalization">
       <option name="closed" value="true" />
@@ -722,7 +574,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692284606453</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="feat(stepper): Make Stepper Disposable; Add Stepper Tests">
+      <option name="closed" value="true" />
+      <created>1692715329245</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1692715329246</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -754,7 +614,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(enconfig): Create Shell Lexer/Types For EnConfig (They Should Stay Relatively Untouched As All Tokens Used In The Language Are Defined Globally)" />
     <MESSAGE value="feat(parser): Create New Parser Structure&#10;&#10;Abstract public constructors so singletons can be created dynamically if not found." />
     <MESSAGE value="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage." />
     <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
@@ -779,22 +638,24 @@
     <MESSAGE value="fix: Clean Up Remaining Errors From ParseFramework Change" />
     <MESSAGE value="refactor(parse): More Work On Parsing Framework" />
     <MESSAGE value="feat(rvConfig): Start working on literal parsing" />
+    <MESSAGE value="feat(stepper): Make Stepper Disposable; Add Stepper Tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(stepper): Make Stepper Disposable; Add Stepper Tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs</url>
-          <line>83</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\src\BisUtils.Core.ParsingFramework\Steppers\Immutable\BisStringStepper.cs" initialLine="83" containingFunctionPresentation="Method 'JumpTo'">
+          <url>file://$PROJECT_DIR$/test/StepperTests/BisMutableStringStepperTest.cs</url>
+          <line>30</line>
+          <properties documentPath="E:\projects\csharp\BisUtils\test\StepperTests\BisMutableStringStepperTest.cs" initialLine="30" containingFunctionPresentation="Lambda expression inside Method 'TestMoveForward'">
             <startOffsets>
-              <option value="2658" />
+              <option value="1099" />
             </startOffsets>
             <endOffsets>
-              <option value="2678" />
+              <option value="1161" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="1" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

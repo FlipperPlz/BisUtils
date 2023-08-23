@@ -35,6 +35,7 @@ public class BisMutableStringStepper : BisStringStepper, IBisMutableStringSteppe
         replacedText = GetRange(range);
         Content = string.Concat(Content.AsSpan(0, start), replacement, Content.AsSpan(end));
         JumpTo(Position);
+        //TODO: Add enum param for deciding on where to end off at
     }
 
     public void ReplaceAll(Regex pattern, string replaceWith)
