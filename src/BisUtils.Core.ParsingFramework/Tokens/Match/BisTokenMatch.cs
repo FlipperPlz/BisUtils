@@ -2,6 +2,7 @@
 
 using Extensions;
 using Lexer;
+using Steppers.Mutable;
 using Type;
 
 public struct BisTokenMatch : IBisTokenMatch
@@ -30,7 +31,7 @@ public struct BisTokenMatch : IBisTokenMatch
 
     public void SetTokenText(string text)
     {
-        lexer.ReplaceRange(this.GetTokenLocation(), TokenText = text, out _);
+        lexer.ReplaceRange(this.GetTokenLocation(), TokenText = text, out _, IBisMutableStringStepper.TextReplacementPositionOption.KeepRemaining);
         TokenLength = text.Length;
     }
 

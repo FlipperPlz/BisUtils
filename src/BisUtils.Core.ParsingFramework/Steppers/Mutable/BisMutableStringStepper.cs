@@ -2,6 +2,7 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
+using Extensions;
 using Immutable;
 using Microsoft.Extensions.Logging;
 using Misc;
@@ -18,9 +19,11 @@ public class BisMutableStringStepper : BisStringStepper, IBisMutableStringSteppe
     }
 
 
-    public void ReplaceRange(Range range, string replacement, out string replacedText)
+
+    public void ReplaceRange(Range range, string replacement, out string replacedText, IBisMutableStringStepper.TextReplacementPositionOption endPositionOption = IBisMutableStringStepper.TextReplacementPositionOption.DontTouch)
     {
         int start = range.Start.Value, end = range.End.Value;
+        var remaining = Length - Position;
 
         if (start < 0 || start > Content.Length)
         {
@@ -32,15 +35,18 @@ public class BisMutableStringStepper : BisStringStepper, IBisMutableStringSteppe
             throw new ArgumentOutOfRangeException(nameof(range), "Ending index is out of bounds.");
         }
 
+
         replacedText = GetRange(range);
         Content = string.Concat(Content.AsSpan(0, start), replacement, Content.AsSpan(end));
-        JumpTo(Position);
-        //TODO: Add enum param for deciding on where to end off at
+        this.JumpToReplaceEnd(remaining, start, end, endPositionOption);
     }
 
-    public void ReplaceAll(Regex pattern, string replaceWith)
+    public void ReplaceAll(Regex pattern, string replaceWith, IBisMutableStringStepper.TextReplacementPositionOption endPositionOption = IBisMutableStringStepper.TextReplacementPositionOption.DontTouch)
     {
+        var remaining = Length - Position;
         Content = pattern.Replace(Content, replaceWith);
-        JumpTo(Position);
+        this.JumpToReplaceEnd(remaining, remaining, remaining, endPositionOption);
     }
+
+
 }

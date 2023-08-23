@@ -5,6 +5,7 @@
     <projectFile>src/BisUtils.Extensions.RVBank.DzConfigExtensions/BisUtils.Extensions.RVBank.DzConfigExtensions.csproj</projectFile>
     <projectFile>src/BisUtils.Extensions.RVBank.Extras/BisUtils.Extensions.RVBank.Extras.csproj</projectFile>
     <projectFile>test/BisUtils.Bank.Benchmarks/BisUtils.Bank.Benchmarks.csproj</projectFile>
+    <projectFile>test/BisUtils.RvBank.Benchmarks/BisUtils.RvBank.Benchmarks.csproj</projectFile>
     <projectFile>test/Scratches/BankTest/BankTest.csproj</projectFile>
     <projectFile>test/Scratches/PackTest/PackTest.csproj</projectFile>
     <projectFile>test/Scratches/ParamTest/ParamTest.csproj</projectFile>
@@ -15,10 +16,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test/StepperTests/BisMutableStringStepperTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +86,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -126,7 +128,26 @@
       <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/src/BisUtils.RVBank/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="-775555546124957071" uuid_low="-8586648064013952717" />
       <method v="2" />
     </configuration>
+    <configuration name="BisUtils.RvBank.Benchmarks" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/test/BisUtils.RvBank.Benchmarks/BisUtils.RvBank.Benchmarks.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <list>
+      <item itemvalue=".NET Project.BisUtils.RvBank.Benchmarks" />
       <item itemvalue="Publish to folder.Publish BisUtils.RVBank to folder" />
     </list>
   </component>
@@ -188,15 +209,8 @@
       <workItem from="1692248474144" duration="5176000" />
       <workItem from="1692632659162" duration="2198000" />
       <workItem from="1692714591110" duration="1365000" />
-      <workItem from="1692797923592" duration="1480000" />
-    </task>
-    <task id="LOCAL-00035" summary="feat(bank): More DataType Finalization">
-      <option name="closed" value="true" />
-      <created>1690916062789</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1690916062789</updated>
+      <workItem from="1692797923592" duration="1835000" />
+      <workItem from="1692803917574" duration="1309000" />
     </task>
     <task id="LOCAL-00036" summary="feat(bank): Finalize Bank Offset Logic">
       <option name="closed" value="true" />
@@ -582,7 +596,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692715329246</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="feat(test): Add MutableStringStepper Tests">
+      <option name="closed" value="true" />
+      <created>1692799456543</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1692799456543</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +636,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(parser): Create New Parser Structure&#10;&#10;Abstract public constructors so singletons can be created dynamically if not found." />
     <MESSAGE value="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage." />
     <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
     <MESSAGE value="feat(parse): Add Context Info To Parser Framework" />
@@ -639,7 +660,8 @@
     <MESSAGE value="refactor(parse): More Work On Parsing Framework" />
     <MESSAGE value="feat(rvConfig): Start working on literal parsing" />
     <MESSAGE value="feat(stepper): Make Stepper Disposable; Add Stepper Tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(stepper): Make Stepper Disposable; Add Stepper Tests" />
+    <MESSAGE value="feat(test): Add MutableStringStepper Tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(test): Add MutableStringStepper Tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

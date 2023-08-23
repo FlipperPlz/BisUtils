@@ -54,6 +54,40 @@ public static class StringStepperExtensions
         return builder.ToString();
     }
 
+    /// <summary>
+    /// Calculate the new position for text replacement based on
+    /// the given TextReplacementPositionOption value.
+    /// </summary>
+    /// <param name="stepper">The stepper to act upon</param>
+    /// <param name="remaining">The remaining number of characters after the replacement.</param>
+    /// <param name="lowerBound">The lower bound value.</param>
+    /// <param name="upperBound">The upper bound value.</param>
+    /// <param name="endPositionOption">The position option for replacement.</param>
+    public static void JumpToReplaceEnd(this IBisMutableStringStepper stepper, int remaining, int lowerBound, int upperBound,
+        IBisMutableStringStepper.TextReplacementPositionOption endPositionOption)
+    {
+        switch (endPositionOption)
+        {
+            case IBisMutableStringStepper.TextReplacementPositionOption.HugRight:
+                stepper.JumpTo(upperBound);
+                break;
+            case IBisMutableStringStepper.TextReplacementPositionOption.HugLeft:
+                stepper.JumpTo(lowerBound);
+                break;
+            case IBisMutableStringStepper.TextReplacementPositionOption.KeepRemaining:
+                stepper.JumpTo(stepper.Length - remaining);
+                break;
+            case IBisMutableStringStepper.TextReplacementPositionOption.DontTouch:
+                stepper.JumpTo(stepper.Position);
+                break;
+            case IBisMutableStringStepper.TextReplacementPositionOption.Reset:
+                stepper.ResetStepper();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(endPositionOption), endPositionOption, null);
+        }
+    }
+
 
     /// <summary>
     /// Peeks at multiple characters backward from the current position without moving the actual position.
@@ -196,8 +230,9 @@ public static class StringStepperExtensions
     /// <param name="stepper">The string stepper</param>
     /// <param name="range">The range of positions to remove.</param>
     /// <param name="removedText">The text that was removed.</param>
-    public static void RemoveRange(this IBisMutableStringStepper stepper, Range range, out string removedText) =>
-        stepper.ReplaceRange(range, "", out removedText);
+    /// <param name="endPositionOption">Where to move the position to after replacement</param>
+    public static void RemoveRange(this IBisMutableStringStepper stepper, Range range, out string removedText, IBisMutableStringStepper.TextReplacementPositionOption endPositionOption = IBisMutableStringStepper.TextReplacementPositionOption.DontTouch) =>
+        stepper.ReplaceRange(range, "", out removedText, endPositionOption);
 
     /// <summary>
     /// Checks if a particular text region in the string stepper matches the specified text.
