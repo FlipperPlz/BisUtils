@@ -16,11 +16,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/LangAssembler" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/BisUtils.Core.ParsingFramework.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisParserExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisTokenExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexerAbs.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Misc/StepperDisposalOption.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/IBisParser.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/IBisParserContext.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Processor/BisPreProcessor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Processor/IBisPreProcessor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisMatchHandlerDelegate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/IBisTokenMatch.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/BisTokenType.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/BisTokenTypeCore.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/IBisTokenType.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/Types/BisEOLTokenType.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/Types/BisInvalidTokenType.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/TypeSet/BisTokenTypeSet.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/TypeSet/IBisTokenTypeSet.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokenSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokenSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/BisUtils.LexLibrary.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/BisUtils.LexLibrary.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/StepperTests/StepperTests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/StepperTests/StepperTests.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,6 +247,7 @@
       <workItem from="1692714591110" duration="1365000" />
       <workItem from="1692797923592" duration="1835000" />
       <workItem from="1692803917574" duration="1309000" />
+      <workItem from="1693240640709" duration="452000" />
     </task>
     <task id="LOCAL-00036" summary="feat(bank): Finalize Bank Offset Logic">
       <option name="closed" value="true" />
@@ -671,10 +708,10 @@
           <line>30</line>
           <properties documentPath="E:\projects\csharp\BisUtils\test\StepperTests\BisMutableStringStepperTest.cs" initialLine="30" containingFunctionPresentation="Lambda expression inside Method 'TestMoveForward'">
             <startOffsets>
-              <option value="1099" />
+              <option value="1098" />
             </startOffsets>
             <endOffsets>
-              <option value="1161" />
+              <option value="1160" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="4" />

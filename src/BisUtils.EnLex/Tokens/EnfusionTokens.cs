@@ -1,56 +1,49 @@
 ﻿namespace BisUtils.EnLex.Tokens;
 
-using Core.ParsingFramework.Tokens.Type;
-using Core.ParsingFramework.Tokens.Type.Types;
-using Core.ParsingFramework.Tokens.TypeSet;
+using System.Collections;
+using LangAssembler.Lexer.Models.Type;
+using LangAssembler.Lexer.Models.TypeSet;
 
 // ReSharper disable file StaticMemberInGenericType
-public class EnfusionTokenSet<T> : BisTokenTypeSet<T> where T : EnfusionTokenSet<T>, new()
+public class EnfusionTokenSet : ITokenTypeSet
 {
-    public static readonly IBisTokenType EnfusionNewLine =
-        new BisEOLTokenType("enfusion");
+    public static readonly ITokenType EnfusionNewLine =
+        new TokenType("enfusion.newline");
 
-    public static readonly IBisTokenType EnfusionWhitespace =
-        new BisTokenType("enfusion.abstract.whitespace", "[\t ]");
+    public static readonly ITokenType EnfusionWhitespace =
+        new TokenType("enfusion.abstract.whitespace");
 
-    public static readonly IBisTokenType EnfusionDelimitedComment =
-        new BisTokenType("enfusion.comment.delimited.left", @"/\*.*\*/");
+    public static readonly ITokenType EnfusionDelimitedComment =
+        new TokenType("enfusion.comment.delimited.left");
 
-    public static readonly IBisTokenType EnfusionLineComment =
-        new BisTokenType("enfusion.comment.line", "//");
+    public static readonly ITokenType EnfusionLineComment =
+        new TokenType("enfusion.comment.line");
 
-    public static readonly IBisTokenType EnfusionLineMacro =
-        new BisTokenType("enfusion.comment.line", "__LINE__");
+    public static readonly ITokenType EnfusionLineMacro =
+        new TokenType("enfusion.comment.line");
 
-    public static readonly IBisTokenType EnfusionFileMacro =
-        new BisTokenType("enfusion.comment.line", "__FILE__");
+    public static readonly ITokenType EnfusionFileMacro =
+        new TokenType("enfusion.comment.line");
 
-    public static readonly IBisTokenType EnfusionHashSymbol =
-        new BisTokenType("enfusion.symbol.hash", "#");
+    public static readonly ITokenType EnfusionHashSymbol =
+        new TokenType("enfusion.symbol.hash");
 
-    public static readonly IBisTokenType EnfusionLCurly =
-        new BisTokenType("enfusion.symbol.curly.left", "{");
+    public static readonly ITokenType EnfusionLCurly =
+        new TokenType("enfusion.symbol.curly.left");
 
-    public static readonly IBisTokenType EnfusionRCurly =
-        new BisTokenType("enfusion.symbol.curly.right", "}");
+    public static readonly ITokenType EnfusionRCurly =
+        new TokenType("enfusion.symbol.curly.right");
 
-    public static readonly IBisTokenType EnfusionColon =
-        new BisTokenType("enfusion.symbol.colon", ":");
+    public static readonly ITokenType EnfusionColon =
+        new TokenType("enfusion.symbol.colon");
 
-    public static readonly IBisTokenType EnfusionLiteralString =
-        new BisTokenType("enfusion.literal.string", "\".*\"");
+    public static readonly ITokenType EnfusionLiteralString =
+        new TokenType("enfusion.literal.string");
 
-    public static readonly IBisTokenType EnfusionIdentifier =
-        new BisTokenType("enfusion.identifier", "[A-Za-z_] [0-9A-Za-z_]*");
+    public static readonly ITokenType EnfusionIdentifier =
+        new TokenType("enfusion.identifier");
 
-}
+    public IEnumerator<ITokenType> GetEnumerator() => throw new NotImplementedException();
 
-public class EnfusionTokenSet : EnfusionTokenSet<EnfusionTokenSet>
-{
-
-    public EnfusionTokenSet()
-    {
-
-    }
-
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
