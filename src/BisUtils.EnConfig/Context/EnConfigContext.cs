@@ -1,8 +1,8 @@
 ﻿namespace BisUtils.EnConfig.Context;
 
-using Core.ParsingFramework.Parser;
+using LangAssembler.Parser.Models;
 
-public struct EnConfigContext : IBisParserContext
+public struct EnConfigContext : IParserContext
 {
     public EnConfigContext()
     {

@@ -1,38 +1,81 @@
 ﻿namespace BisUtils.RvLex.Tokens;
 
-using Core.ParsingFramework.Tokens.Type;
-using Core.ParsingFramework.Tokens.Type.Types;
-using Core.ParsingFramework.Tokens.TypeSet;
+using LangAssembler.Lexer.Base;
+using LangAssembler.Lexer.Models.Match;
+using LangAssembler.Lexer.Models.Type;
+using LangAssembler.Lexer.Models.TypeSet;
 
 // ReSharper disable file StaticMemberInGenericType
-public class RvTokenSet<T> : BisTokenTypeSet<T> where T : RvTokenSet<T>, new()
+
+public interface IRvTokenSet : ITokenTypeSet
 {
-    public static readonly IBisTokenType RvNewLine =
-        new BisCustomEOLTokenType("rv", "\n");
+    public static abstract ITokenType RvNewLine { get; }
+    TokenMatcher NewLineMatcher => MatchNewLine;
 
-    public static readonly IBisTokenType RvComma =
-        new BisTokenType("rv.symbols.comma", ",");
+    static bool MatchNewLine(ILexer lexer, long tokenStart, int? currentChar)
+    {
+        switch (currentChar)
+        {
+            case '\n': break;
+            case '\r':
+            {
+                if (lexer.PeekNext() == '\n')
+                {
+                    lexer.MoveForward();
+                }
 
-    public static readonly IBisTokenType RvWhitespace =
-        new BisTokenType("rv.abstract.whitespace", "[\t ]");
+                break;
+            }
+            default:
+                return false;
+        }
 
-    public static readonly IBisTokenType RvQuote =
-        new BisTokenType("rv.string.quote", "\"");
+        return true;
+    }
 
-    public static readonly IBisTokenType RvText =
-        new BisTokenType("rv.text", ".*");
+    public static abstract ITokenType RvWhitespace { get; }
+    TokenMatcher WhitespaceMatcher => MatchWhitespace;
+    static bool MatchWhitespace(ILexer lexer, long tokenStart, int? currentChar)
+    {
+        //TODO:
+        return false;
+    }
 
 
-    public static readonly IBisTokenType RvIdentifier =
-        new BisTokenType("rv.identifier", "[A-Za-z_] [0-9A-Za-z_]*");
+    public static abstract ITokenType RvIdentifier { get; }
+    TokenMatcher IdentifierMatcher => MatchIdentifier;
+    static bool MatchIdentifier(ILexer lexer, long tokenStart, int? currentChar)
+    {
+
+        //TODO:
+        return false;
+    }
+
+
 }
 
-public sealed class RvTokenSet : RvTokenSet<RvTokenSet>
+public class RvTokenSet : TokenTypeSet, IRvTokenSet
 {
-    public RvTokenSet()
+
+    public static readonly IRvTokenSet Instance =
+        new RvTokenSet();
+    public static ITokenType RvNewLine =>
+        new TokenType("rv.newline", Instance.NewLineMatcher);
+    public static ITokenType RvWhitespace =>
+        new TokenType("rv.abstract.whitespace", Instance.WhitespaceMatcher);
+    public static ITokenType RvIdentifier =>
+        new TokenType("rv.identifier", Instance.IdentifierMatcher);
+
+
+    protected RvTokenSet()
     {
 
     }
 
+    protected override void InitializeTypes()
+    {
+        InitializeType(RvNewLine);
+        InitializeType(RvWhitespace);
+        InitializeType(RvIdentifier);
+    }
 }
-

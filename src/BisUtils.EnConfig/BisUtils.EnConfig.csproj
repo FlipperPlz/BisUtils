@@ -8,6 +8,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\..\lib\LangAssembler\src\LangAssembler.Parser\LangAssembler.Parser.csproj" />
       <ProjectReference Include="..\BisUtils.EnLex\BisUtils.EnLex.csproj" />
     </ItemGroup>
 

@@ -1,19 +1,13 @@
 ﻿namespace BisUtils.EnConfig.Lexer;
 
-using Core.ParsingFramework.Tokens.Type;
 using EnLex.Lexer;
+using LangAssembler.Models.Doc;
 using Tokens;
 
-public interface IEnConfigLexer : IEnfusionLexer<EnConfigTokenSet>
-{
 
-}
-
-public sealed class EnConfigLexer : EnfusionLexer<EnConfigTokenSet>, IEnConfigLexer
+public sealed class EnConfigLexer : EnfusionLexer<EnConfigTokenSet>
 {
-    public EnConfigLexer(string content) : base(content)
+    public EnConfigLexer(Document document, bool leaveOpen = false) : base(document, leaveOpen)
     {
     }
-
-    protected override IBisTokenType LocateExtendedMatch(int tokenStart, char? currentChar) => throw new NotImplementedException();
 }

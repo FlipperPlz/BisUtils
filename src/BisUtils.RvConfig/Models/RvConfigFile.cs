@@ -2,7 +2,6 @@
 
 using Core.Extensions;
 using Core.IO;
-using Core.ParsingFramework.Misc;
 using FResults;
 using FResults.Extensions;
 using Lexer;
@@ -57,14 +56,14 @@ public class RvConfigFile : ParamClass, IRvConfigFile
             reader.ReadByte() != 'a' ||
             reader.ReadByte() != 'P')
         {
-            var lexer = new RvConfigLexer(
-                reader,
-                options.Charset,
-                StepperDisposalOption.Dispose,
-                logger,
-                stringStart: 0L
-            );
-            return RvConfigParser.Instance.Parse(lexer, logger);
+            // var lexer = new RvConfigLexer(
+            //     reader,
+            //     options.Charset,
+            //     StepperDisposalOption.Dispose,
+            //     logger,
+            //     stringStart: 0L
+            // );
+            // return RvConfigParser.Instance.Parse(lexer, logger);
         }
         reader.BaseStream.Seek(-4, SeekOrigin.Current);
         return new RvConfigFile(fileName, reader, options, logger);

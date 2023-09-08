@@ -1,11 +1,11 @@
 ﻿namespace BisUtils.RvConfig.Parse;
 
-using Core.ParsingFramework.Parser;
+using LangAssembler.Parser.Models;
 using Lexer;
 using Models;
 using Models.Statements;
 
-public class RvConfigParseContext : IBisParserContext
+public class RvConfigParseContext : IParserContext
 {
 
     public RvConfigLexicalStage LexicalStage { get; set; } = RvConfigLexicalStage.Code;

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\lib\LangAssembler\src\LangAssembler.Lexer\LangAssembler.Lexer.csproj" />
       <ProjectReference Include="..\..\src\BisUtils.Core\BisUtils.Core.csproj" />
     </ItemGroup>
 
