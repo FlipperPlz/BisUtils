@@ -16,16 +16,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/LangAssembler" beforeDir="false" afterPath="$PROJECT_DIR$/lib/LangAssembler" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/StepperTests/BisMutableStringStepperTest.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/StepperTests/BisStringStepperTest.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/StepperTests/StepperTests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/StepperTests/Usings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/Tokens/RvConfigTokens.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,23 +214,8 @@
       <workItem from="1693241127565" duration="1478000" />
       <workItem from="1693411000900" duration="535000" />
       <workItem from="1694115950300" duration="709000" />
-      <workItem from="1694184559004" duration="5903000" />
-    </task>
-    <task id="LOCAL-00037" summary="feat(bank.extensions): Create RVBank.DzConfigExtensions">
-      <option name="closed" value="true" />
-      <created>1690948163283</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1690948163283</updated>
-    </task>
-    <task id="LOCAL-00038" summary="refactor(bank): Small Syntax Changes">
-      <option name="closed" value="true" />
-      <created>1690948233184</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1690948233184</updated>
+      <workItem from="1694184559004" duration="7714000" />
+      <workItem from="1694194750924" duration="1043000" />
     </task>
     <task id="LOCAL-00039" summary="feat(bank.extensions): Create Enumerable Functions For Reading ParamFiles">
       <option name="closed" value="true" />
@@ -615,7 +593,23 @@
       <option name="project" value="LOCAL" />
       <updated>1693241164556</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="feat(LAsm): Update LangAssembler Library, Work On Converting EnLex To LangAssembler">
+      <option name="closed" value="true" />
+      <created>1694192056005</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1694192056006</updated>
+    </task>
+    <task id="LOCAL-00087" summary="feat(LAsm): Fix Up Compile Errors Regarding Parsing Library Change">
+      <option name="closed" value="true" />
+      <created>1694193225324</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1694193225324</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,8 +641,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
-    <MESSAGE value="feat(parse): Add Context Info To Parser Framework" />
     <MESSAGE value="feat(templates): Add BisLexicalLibrary Template" />
     <MESSAGE value="chore: Rename Projects To Satisfy My OCD. When `BisUtils.Param` is recreated it will adopt the name `BisUtils.RvConfig`" />
     <MESSAGE value="chore(template): Rename BisUtils.LexLibrary Template Name" />
@@ -672,7 +664,9 @@
     <MESSAGE value="feat(stepper): Make Stepper Disposable; Add Stepper Tests" />
     <MESSAGE value="feat(test): Add MutableStringStepper Tests" />
     <MESSAGE value="chore: Remove BisUtils.Core.ParsingFramework Add LangAssembler submodule" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: Remove BisUtils.Core.ParsingFramework Add LangAssembler submodule" />
+    <MESSAGE value="feat(LAsm): Update LangAssembler Library, Work On Converting EnLex To LangAssembler" />
+    <MESSAGE value="feat(LAsm): Fix Up Compile Errors Regarding Parsing Library Change" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(LAsm): Fix Up Compile Errors Regarding Parsing Library Change" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -680,14 +674,7 @@
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/test/StepperTests/BisMutableStringStepperTest.cs</url>
           <line>30</line>
-          <properties documentPath="E:\projects\csharp\BisUtils\test\StepperTests\BisMutableStringStepperTest.cs" initialLine="30" containingFunctionPresentation="Lambda expression inside Method 'TestMoveForward'">
-            <startOffsets>
-              <option value="1098" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1160" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="E:\projects\csharp\BisUtils\test\StepperTests\BisMutableStringStepperTest.cs" initialLine="30" containingFunctionPresentation="Lambda expression inside Method 'TestMoveForward'" />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
