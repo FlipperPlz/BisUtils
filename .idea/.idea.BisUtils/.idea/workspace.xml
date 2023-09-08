@@ -16,47 +16,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="730c2967-dd54-42ba-b571-662f852de5c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/LangAssembler" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BisUtils/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BisUtils.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BisUtils.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/BisUtils.Core.ParsingFramework.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisLexerExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisParserExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/BisTokenExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Extensions/StringStepperExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerAbs.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/BisLexerCore.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Lexer/IBisLexerAbs.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Misc/StepperDisposalOption.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/BisParser.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/IBisParser.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Parser/IBisParserContext.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Processor/BisPreProcessor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Processor/IBisPreProcessor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/BisStringStepper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Immutable/IBisStringStepper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/BisMutableStringStepper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Steppers/Mutable/IBisMutableStringStepper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisMatchHandlerDelegate.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/BisTokenMatch.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Match/IBisTokenMatch.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/BisTokenType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/BisTokenTypeCore.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/IBisTokenType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/Types/BisEOLTokenType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/Type/Types/BisInvalidTokenType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/TypeSet/BisTokenTypeSet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.Core.ParsingFramework/Tokens/TypeSet/IBisTokenTypeSet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokenSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnConfig/Tokens/EnConfigTokenSet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/BisUtils.EnLex.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/LangAssembler" beforeDir="false" afterPath="$PROJECT_DIR$/lib/LangAssembler" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Lexer/EnfusionLexer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.EnLex/Tokens/EnfusionTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvConfig/BisUtils.RvConfig.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/BisUtils.RvLex/BisUtils.RvLex.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/BisUtils.LexLibrary.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/templates/BisUtils.LexLibrary/BisUtils.LexLibrary.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/StepperTests/StepperTests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/StepperTests/StepperTests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/StepperTests/BisMutableStringStepperTest.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/StepperTests/BisStringStepperTest.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/StepperTests/StepperTests.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/StepperTests/Usings.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +79,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbe9aa5b81e7cd15c13ed94fecef706cd5bc19cd724fa4d11f95454ff0/FieldInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e60b8a28a674789a73bf80f2349c8fd7881cb1ed21fea431b814f1e08598/Convert.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb7c16f494241108ae3ccb66dd57dac1e1ce4d3a261b2d6a6019147bd7f70/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/lib/LangAssembler/src/LangAssembler.Lexer/Models/Type/TokenType.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzCfgMod.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.DzConfig/Models/DzPathCtx.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/BisUtils.RvBank.DzConfigExtensions/RvBankDirectoryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
@@ -248,14 +218,10 @@
       <workItem from="1692797923592" duration="1835000" />
       <workItem from="1692803917574" duration="1309000" />
       <workItem from="1693240640709" duration="452000" />
-    </task>
-    <task id="LOCAL-00036" summary="feat(bank): Finalize Bank Offset Logic">
-      <option name="closed" value="true" />
-      <created>1690921917622</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1690921917622</updated>
+      <workItem from="1693241127565" duration="1478000" />
+      <workItem from="1693411000900" duration="535000" />
+      <workItem from="1694115950300" duration="709000" />
+      <workItem from="1694184559004" duration="5903000" />
     </task>
     <task id="LOCAL-00037" summary="feat(bank.extensions): Create RVBank.DzConfigExtensions">
       <option name="closed" value="true" />
@@ -641,7 +607,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692799456543</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="chore: Remove BisUtils.Core.ParsingFramework Add LangAssembler submodule">
+      <option name="closed" value="true" />
+      <created>1693241164556</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1693241164556</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -673,7 +647,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="feat(lexer): Implement Singleton for Lexer, Parser and TokenTypes&#10;&#10;Introduced Singleton pattern to Lexer, Parser, and TokenTypes Classes ensuring that a single instance is used throughout. All public constructors are now abstract enforcing dynamic creation of singletons when not found. Classes now inherit from new BisSingleton abstract class. This revision is mainly for maintaining a consistent state across all instances and to avoid unnecessary resource usage." />
     <MESSAGE value="refactor(lexer): Migrate From IBisTokenMatch To BisTokenMatch For More Easability" />
     <MESSAGE value="feat(parse): Add Context Info To Parser Framework" />
     <MESSAGE value="feat(templates): Add BisLexicalLibrary Template" />
@@ -698,7 +671,8 @@
     <MESSAGE value="feat(rvConfig): Start working on literal parsing" />
     <MESSAGE value="feat(stepper): Make Stepper Disposable; Add Stepper Tests" />
     <MESSAGE value="feat(test): Add MutableStringStepper Tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(test): Add MutableStringStepper Tests" />
+    <MESSAGE value="chore: Remove BisUtils.Core.ParsingFramework Add LangAssembler submodule" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: Remove BisUtils.Core.ParsingFramework Add LangAssembler submodule" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

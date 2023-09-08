@@ -1,49 +1,81 @@
 ﻿namespace BisUtils.EnLex.Tokens;
 
-using System.Collections;
+using LangAssembler.Lexer.Base;
+using LangAssembler.Lexer.Models.Match;
 using LangAssembler.Lexer.Models.Type;
 using LangAssembler.Lexer.Models.TypeSet;
 
 // ReSharper disable file StaticMemberInGenericType
-public class EnfusionTokenSet : ITokenTypeSet
+
+public interface IEnfusionTokenSet : ITokenTypeSet
 {
-    public static readonly ITokenType EnfusionNewLine =
-        new TokenType("enfusion.newline");
+    public static abstract ITokenType EnfusionNewLine { get; }
+    TokenMatcher NewLineMatcher => MatchNewLine;
 
-    public static readonly ITokenType EnfusionWhitespace =
-        new TokenType("enfusion.abstract.whitespace");
+    static bool MatchNewLine(ILexer lexer, long tokenStart, int? currentChar)
+    {
+        switch (currentChar)
+        {
+            case '\n': break;
+            case '\r':
+            {
+                if (lexer.PeekNext() == '\n')
+                {
+                    lexer.MoveForward();
+                }
 
-    public static readonly ITokenType EnfusionDelimitedComment =
-        new TokenType("enfusion.comment.delimited.left");
+                break;
+            }
+            default:
+                return false;
+        }
 
-    public static readonly ITokenType EnfusionLineComment =
-        new TokenType("enfusion.comment.line");
+        return true;
+    }
 
-    public static readonly ITokenType EnfusionLineMacro =
-        new TokenType("enfusion.comment.line");
+    public static abstract ITokenType EnfusionWhitespace { get; }
+    TokenMatcher WhitespaceMatcher => MatchWhitespace;
+    static bool MatchWhitespace(ILexer lexer, long tokenStart, int? currentChar)
+    {
+        //TODO:
+        return false;
+    }
 
-    public static readonly ITokenType EnfusionFileMacro =
-        new TokenType("enfusion.comment.line");
 
-    public static readonly ITokenType EnfusionHashSymbol =
-        new TokenType("enfusion.symbol.hash");
+    public static abstract ITokenType EnfusionIdentifier { get; }
+    TokenMatcher IdentifierMatcher => MatchIdentifier;
+    static bool MatchIdentifier(ILexer lexer, long tokenStart, int? currentChar)
+    {
 
-    public static readonly ITokenType EnfusionLCurly =
-        new TokenType("enfusion.symbol.curly.left");
+        //TODO:
+        return false;
+    }
 
-    public static readonly ITokenType EnfusionRCurly =
-        new TokenType("enfusion.symbol.curly.right");
 
-    public static readonly ITokenType EnfusionColon =
-        new TokenType("enfusion.symbol.colon");
+}
 
-    public static readonly ITokenType EnfusionLiteralString =
-        new TokenType("enfusion.literal.string");
+public class EnfusionTokenSet : TokenTypeSet, IEnfusionTokenSet
+{
 
-    public static readonly ITokenType EnfusionIdentifier =
-        new TokenType("enfusion.identifier");
+    public static readonly IEnfusionTokenSet Instance =
+        new EnfusionTokenSet();
+    public static ITokenType EnfusionNewLine =>
+        new TokenType("enfusion.newline", Instance.NewLineMatcher);
+    public static ITokenType EnfusionWhitespace =>
+        new TokenType("enfusion.abstract.whitespace", Instance.WhitespaceMatcher);
+    public static ITokenType EnfusionIdentifier =>
+        new TokenType("enfusion.identifier", Instance.IdentifierMatcher);
 
-    public IEnumerator<ITokenType> GetEnumerator() => throw new NotImplementedException();
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    protected EnfusionTokenSet()
+    {
+
+    }
+
+    protected override void InitializeTypes()
+    {
+        InitializeType(EnfusionNewLine);
+        InitializeType(EnfusionWhitespace);
+        InitializeType(EnfusionIdentifier);
+    }
 }
