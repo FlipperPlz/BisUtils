@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\LangAssembler\src\LangAssembler.Parser\LangAssembler.Parser.csproj" />
+    <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
+    <ProjectReference Include="..\BisUtils.RvLex\BisUtils.RvLex.csproj" />
+    <ProjectReference Include="..\BisUtils.RvProcess\BisUtils.RvProcess.csproj" />
+  </ItemGroup>
+
+
+
+
+</Project>

@@ -11,6 +11,19 @@
     <ProjectReference Include="..\..\lib\FResults\FResults\FResults.csproj" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0-preview.6.23329.7" />
 
+
+
+
+
+
+
+
+
+
+
+
+
+
   </ItemGroup>
 
 

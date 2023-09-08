@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using BisUtils.Core.Binarize.Synchronization;
 using BisUtils.Core.Extensions;
 using BisUtils.Core.IO;
-using BisUtils.Core.Parsing;
 using BisUtils.EnPack.Extensions;
 using FResults;
 using Microsoft.Extensions.Logging;

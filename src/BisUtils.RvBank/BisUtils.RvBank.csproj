@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <AssemblyName>BisUtils.RvBank</AssemblyName>
+    <RootNamespace>BisUtils.RvBank</RootNamespace>
+    <PackageId>BisUtils.RvBank</PackageId>
+    <Authors>BisUtils.RvBank</Authors>
+    <Company>BisUtils.RvBank</Company>
+    <Product>BisUtils.RvBank</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
+
+
+
+  </ItemGroup>
+
+
+
+
+</Project>

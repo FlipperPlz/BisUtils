@@ -1,3 +1,6 @@
 [submodule "Libraries/FResults"]
 	path = lib/FResults
 	url = https://github.com/FlipperPlz/FResults
+[submodule "lib/LangAssembler"]
+	path = lib/LangAssembler
+	url = https://github.com/FlipperPlz/LangAssembler/

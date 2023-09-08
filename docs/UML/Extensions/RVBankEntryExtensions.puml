@@ -1,8 +1,0 @@
-@startuml
-class RVBankEntryExtensions <<static>> {
-    + {static} RetrieveDuplicateEntries(ctx:IRVBankEntry) : IEnumerable<IRVBankEntry>
-    + {static} RetrieveDuplicateEntry(ctx:T) : T?
-    + {static} IsEmptyMeta(ctx:IRVBankEntry) : bool
-    + {static} IsDummyEntry(ctx:IRVBankEntry) : bool
-}
-@enduml

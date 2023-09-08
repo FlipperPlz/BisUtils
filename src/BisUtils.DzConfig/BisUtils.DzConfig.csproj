@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BisUtils.Core\BisUtils.Core.csproj" />
+      <ProjectReference Include="..\BisUtils.RvConfig\BisUtils.RvConfig.csproj" />
+      <ProjectReference Include="..\BisUtils.RvProcess\BisUtils.RvProcess.csproj" />
+    </ItemGroup>
+
+
+</Project>

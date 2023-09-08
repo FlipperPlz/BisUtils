@@ -1,0 +1,25 @@
+﻿{
+  "$schema": "https://json.schemastore.org/template",
+  "author": "Ryann (FlipperPlz) ",
+  "classifications": ["BisUtils", "Lexer"],
+  "identity": "BisUtils.LexLibrary",
+  "name": "BisUtils Lexical Library",
+  "shortName": "bislexlib",
+  "sourceName": "BisUtils.LexLibrary",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "preferNameDirectory": true,
+  "symbols": {
+    "LexName": {
+      "type": "parameter",
+      "description": "The name of the base language of the lexer. (Max 15 chars)",
+      "datatype": "text",
+      "fileRename": "__LexName__",
+      "replaces": "__LexName__",
+      "isRequired": true,
+      "displayName": "Lexer Name"
+    }
+  }
+}

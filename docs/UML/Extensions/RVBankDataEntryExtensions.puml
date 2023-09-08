@@ -1,4 +1,0 @@
-@startuml
-class RVBankDataEntryExtensions <<static>> {
-}
-@enduml

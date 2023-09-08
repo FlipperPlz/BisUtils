@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>BisUtils.RvBank.DzConfigExtensions</PackageId>
+        <Authors>BisUtils.RvBank.DzConfigExtensions</Authors>
+        <Company>BisUtils.RvBank.DzConfigExtensions</Company>
+        <Product>BisUtils.RvBank.DzConfigExtensions</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BisUtils.DzConfig\BisUtils.DzConfig.csproj" />
+      <ProjectReference Include="..\BisUtils.RvBank\BisUtils.RvBank.csproj" />
+    </ItemGroup>
+
+</Project>
