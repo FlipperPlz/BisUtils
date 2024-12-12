@@ -1,6 +1,6 @@
 # BisUtils
 
-BisUtils is a cross platform actively maintained .NET/C# library for dealing with the many formats used in Bohemia games.
+Im begging you all to look at [BiSharper](https://github.com/BiSharper/BiSharper) as the majority of this code is horrid and not 1:1 with any of the engines whatsoever. If you're using this to learn formats - please dont. 
 
 
 ## Contributing
